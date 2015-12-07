@@ -7,13 +7,72 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		47A4E67D1C0CAE6100354EA8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* AppDelegate.swift */; };
-		47A4E67F1C0CAE6100354EA8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67E1C0CAE6100354EA8 /* ViewController.swift */; };
-		47A4E6821C0CAE6100354EA8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6801C0CAE6100354EA8 /* Main.storyboard */; };
+		4704DDC41C15EE3300B40118 /* UBUNTU FONT LICENCE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDBA1C15EE3300B40118 /* UBUNTU FONT LICENCE.txt */; settings = {ASSET_TAGS = (); }; };
+		4704DDC51C15EE3300B40118 /* Ubuntu-B.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDBB1C15EE3300B40118 /* Ubuntu-B.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDC61C15EE3300B40118 /* Ubuntu-BI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDBC1C15EE3300B40118 /* Ubuntu-BI.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDC71C15EE3300B40118 /* Ubuntu-C.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDBD1C15EE3300B40118 /* Ubuntu-C.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDC81C15EE3300B40118 /* Ubuntu-L.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDBE1C15EE3300B40118 /* Ubuntu-L.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDC91C15EE3300B40118 /* Ubuntu-LI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDBF1C15EE3300B40118 /* Ubuntu-LI.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDCA1C15EE3300B40118 /* Ubuntu-M.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC01C15EE3300B40118 /* Ubuntu-M.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDCB1C15EE3300B40118 /* Ubuntu-MI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC11C15EE3300B40118 /* Ubuntu-MI.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDCC1C15EE3300B40118 /* Ubuntu-R.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC21C15EE3300B40118 /* Ubuntu-R.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDCD1C15EE3300B40118 /* Ubuntu-RI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC31C15EE3300B40118 /* Ubuntu-RI.ttf */; settings = {ASSET_TAGS = (); }; };
+		4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */; settings = {ASSET_TAGS = (); }; };
+		4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6301C0F594700C49522 /* JJMaterialTextfield.m */; settings = {ASSET_TAGS = (); }; };
+		4712B6331C0FAA3B00C49522 /* LoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */; settings = {ASSET_TAGS = (); }; };
+		4712B6391C10780200C49522 /* LSFormNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6381C10780200C49522 /* LSFormNode.swift */; settings = {ASSET_TAGS = (); }; };
+		4712B63B1C11149800C49522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63A1C11149800C49522 /* Utilities.swift */; settings = {ASSET_TAGS = (); }; };
+		4712B63D1C1206BA00C49522 /* NotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4712B63C1C1206BA00C49522 /* NotificationView.xib */; settings = {ASSET_TAGS = (); }; };
+		4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */; settings = {ASSET_TAGS = (); }; };
+		47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* Synnc.swift */; };
 		47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6831C0CAE6100354EA8 /* Assets.xcassets */; };
 		47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */; };
 		47A4E6921C0CAE6200354EA8 /* SynncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E6911C0CAE6200354EA8 /* SynncTests.swift */; };
 		47A4E69D1C0CAE6200354EA8 /* SynncUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E69C1C0CAE6200354EA8 /* SynncUITests.swift */; };
+		47A4E6AF1C0CB46B00354EA8 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E6AE1C0CB46B00354EA8 /* RootViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E6B01C0CB4D600354EA8 /* MainUser.swift */; settings = {ASSET_TAGS = (); }; };
+		47A4E6B31C0CB69700354EA8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		47A4E6B51C0CB6D100354EA8 /* LoginNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */; settings = {ASSET_TAGS = (); }; };
+		47A4E6B71C0CB83E00354EA8 /* SoundcloudApp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6B61C0CB83E00354EA8 /* SoundcloudApp.plist */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E21C0CC6E100354EA8 /* Futura.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6BA1C0CC6E100354EA8 /* Futura.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E31C0CC6E100354EA8 /* FuturaBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6BB1C0CC6E100354EA8 /* FuturaBold.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E41C0CC6E100354EA8 /* FuturaBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6BC1C0CC6E100354EA8 /* FuturaBoldItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E51C0CC6E100354EA8 /* FuturaBook.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6BD1C0CC6E100354EA8 /* FuturaBook.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E61C0CC6E100354EA8 /* FuturaBookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6BE1C0CC6E100354EA8 /* FuturaBookItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E71C0CC6E100354EA8 /* FuturaExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6BF1C0CC6E100354EA8 /* FuturaExtraBold.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E81C0CC6E100354EA8 /* FuturaExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C01C0CC6E100354EA8 /* FuturaExtraBoldItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6E91C0CC6E100354EA8 /* FuturaHeavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C11C0CC6E100354EA8 /* FuturaHeavy.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6EA1C0CC6E100354EA8 /* FuturaHeavyItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C21C0CC6E100354EA8 /* FuturaHeavyItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6EB1C0CC6E100354EA8 /* FuturaItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C31C0CC6E100354EA8 /* FuturaItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6EC1C0CC6E100354EA8 /* FuturaLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C41C0CC6E100354EA8 /* FuturaLight.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6ED1C0CC6E100354EA8 /* FuturaLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C51C0CC6E100354EA8 /* FuturaLightItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6EE1C0CC6E100354EA8 /* FuturaBoldItMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C71C0CC6E100354EA8 /* FuturaBoldItMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6EF1C0CC6E100354EA8 /* FuturaBoldMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C81C0CC6E100354EA8 /* FuturaBoldMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F01C0CC6E100354EA8 /* FuturaBookItMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6C91C0CC6E100354EA8 /* FuturaBookItMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F11C0CC6E100354EA8 /* FuturaBookMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6CA1C0CC6E100354EA8 /* FuturaBookMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F21C0CC6E100354EA8 /* FuturaExBoldMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6CB1C0CC6E100354EA8 /* FuturaExBoldMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F31C0CC6E100354EA8 /* FuturaExtBdItMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6CC1C0CC6E100354EA8 /* FuturaExtBdItMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F41C0CC6E100354EA8 /* FuturaHeaItMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6CD1C0CC6E100354EA8 /* FuturaHeaItMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F51C0CC6E100354EA8 /* FuturaHeaMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6CE1C0CC6E100354EA8 /* FuturaHeaMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F61C0CC6E100354EA8 /* FuturaItMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6CF1C0CC6E100354EA8 /* FuturaItMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F71C0CC6E100354EA8 /* FuturaLigItMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D01C0CC6E100354EA8 /* FuturaLigItMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F81C0CC6E100354EA8 /* FuturaLigMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D11C0CC6E100354EA8 /* FuturaLigMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6F91C0CC6E100354EA8 /* FuturaMas.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D21C0CC6E100354EA8 /* FuturaMas.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6FA1C0CC6E100354EA8 /* FuturaCondensed.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D41C0CC6E100354EA8 /* FuturaCondensed.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6FB1C0CC6E100354EA8 /* FuturaCondensedBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D51C0CC6E100354EA8 /* FuturaCondensedBold.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6FC1C0CC6E100354EA8 /* FuturaCondensedBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D61C0CC6E100354EA8 /* FuturaCondensedBoldItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6FD1C0CC6E100354EA8 /* FuturaCondensedExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D71C0CC6E100354EA8 /* FuturaCondensedExtraBold.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6FE1C0CC6E100354EA8 /* FuturaCondensedExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D81C0CC6E100354EA8 /* FuturaCondensedExtraBoldItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E6FF1C0CC6E100354EA8 /* FuturaCondensedItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6D91C0CC6E100354EA8 /* FuturaCondensedItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7001C0CC6E100354EA8 /* FuturaCondensedLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6DA1C0CC6E100354EA8 /* FuturaCondensedLight.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7011C0CC6E100354EA8 /* FuturCondensedLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6DB1C0CC6E100354EA8 /* FuturCondensedLightItalic.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7021C0CC6E100354EA8 /* FuturaMaxiBlack.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6DD1C0CC6E100354EA8 /* FuturaMaxiBlack.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7031C0CC6E100354EA8 /* FuturaMaxiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6DE1C0CC6E100354EA8 /* FuturaMaxiBold.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7041C0CC6E100354EA8 /* FuturaMaxiBook.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6DF1C0CC6E100354EA8 /* FuturaMaxiBook.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7051C0CC6E100354EA8 /* FuturaMaxiDemi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6E01C0CC6E100354EA8 /* FuturaMaxiDemi.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7061C0CC6E100354EA8 /* FuturaMaxiLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6E11C0CC6E100354EA8 /* FuturaMaxiLight.ttf */; settings = {ASSET_TAGS = (); }; };
+		47A4E7091C0D0BB600354EA8 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */; settings = {ASSET_TAGS = (); }; };
+		AE1887B23F9B3A2975B4ABE6 /* Pods_Synnc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD3328BD9CD839D192721FD5 /* Pods_Synnc.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,10 +93,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4704DDBA1C15EE3300B40118 /* UBUNTU FONT LICENCE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "UBUNTU FONT LICENCE.txt"; sourceTree = "<group>"; };
+		4704DDBB1C15EE3300B40118 /* Ubuntu-B.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-B.ttf"; sourceTree = "<group>"; };
+		4704DDBC1C15EE3300B40118 /* Ubuntu-BI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-BI.ttf"; sourceTree = "<group>"; };
+		4704DDBD1C15EE3300B40118 /* Ubuntu-C.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-C.ttf"; sourceTree = "<group>"; };
+		4704DDBE1C15EE3300B40118 /* Ubuntu-L.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-L.ttf"; sourceTree = "<group>"; };
+		4704DDBF1C15EE3300B40118 /* Ubuntu-LI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-LI.ttf"; sourceTree = "<group>"; };
+		4704DDC01C15EE3300B40118 /* Ubuntu-M.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-M.ttf"; sourceTree = "<group>"; };
+		4704DDC11C15EE3300B40118 /* Ubuntu-MI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-MI.ttf"; sourceTree = "<group>"; };
+		4704DDC21C15EE3300B40118 /* Ubuntu-R.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-R.ttf"; sourceTree = "<group>"; };
+		4704DDC31C15EE3300B40118 /* Ubuntu-RI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-RI.ttf"; sourceTree = "<group>"; };
+		4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASMaterialTextField.swift; sourceTree = "<group>"; };
+		4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Synnc-Bridging-Header.h"; sourceTree = "<group>"; };
+		4712B62F1C0F594700C49522 /* JJMaterialTextfield.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJMaterialTextfield.h; sourceTree = "<group>"; };
+		4712B6301C0F594700C49522 /* JJMaterialTextfield.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJMaterialTextfield.m; sourceTree = "<group>"; };
+		4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginButtonNode.swift; sourceTree = "<group>"; };
+		4712B6381C10780200C49522 /* LSFormNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSFormNode.swift; sourceTree = "<group>"; };
+		4712B63A1C11149800C49522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		4712B63C1C1206BA00C49522 /* NotificationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationView.xib; sourceTree = "<group>"; };
+		4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WildUser+TwitterUser.swift"; sourceTree = "<group>"; };
 		47A4E6791C0CAE6100354EA8 /* Synnc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synnc.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		47A4E67C1C0CAE6100354EA8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		47A4E67E1C0CAE6100354EA8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		47A4E6811C0CAE6100354EA8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		47A4E67C1C0CAE6100354EA8 /* Synnc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Synnc.swift; sourceTree = "<group>"; };
 		47A4E6831C0CAE6100354EA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		47A4E6861C0CAE6100354EA8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47A4E6881C0CAE6100354EA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -47,6 +123,52 @@
 		47A4E6981C0CAE6200354EA8 /* SynncUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SynncUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A4E69C1C0CAE6200354EA8 /* SynncUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynncUITests.swift; sourceTree = "<group>"; };
 		47A4E69E1C0CAE6200354EA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		47A4E6AE1C0CB46B00354EA8 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		47A4E6B01C0CB4D600354EA8 /* MainUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainUser.swift; sourceTree = "<group>"; };
+		47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginNode.swift; sourceTree = "<group>"; };
+		47A4E6B61C0CB83E00354EA8 /* SoundcloudApp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SoundcloudApp.plist; sourceTree = "<group>"; };
+		47A4E6BA1C0CC6E100354EA8 /* Futura.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Futura.ttf; sourceTree = "<group>"; };
+		47A4E6BB1C0CC6E100354EA8 /* FuturaBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBold.ttf; sourceTree = "<group>"; };
+		47A4E6BC1C0CC6E100354EA8 /* FuturaBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBoldItalic.ttf; sourceTree = "<group>"; };
+		47A4E6BD1C0CC6E100354EA8 /* FuturaBook.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBook.ttf; sourceTree = "<group>"; };
+		47A4E6BE1C0CC6E100354EA8 /* FuturaBookItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBookItalic.ttf; sourceTree = "<group>"; };
+		47A4E6BF1C0CC6E100354EA8 /* FuturaExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaExtraBold.ttf; sourceTree = "<group>"; };
+		47A4E6C01C0CC6E100354EA8 /* FuturaExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaExtraBoldItalic.ttf; sourceTree = "<group>"; };
+		47A4E6C11C0CC6E100354EA8 /* FuturaHeavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaHeavy.ttf; sourceTree = "<group>"; };
+		47A4E6C21C0CC6E100354EA8 /* FuturaHeavyItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaHeavyItalic.ttf; sourceTree = "<group>"; };
+		47A4E6C31C0CC6E100354EA8 /* FuturaItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaItalic.ttf; sourceTree = "<group>"; };
+		47A4E6C41C0CC6E100354EA8 /* FuturaLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaLight.ttf; sourceTree = "<group>"; };
+		47A4E6C51C0CC6E100354EA8 /* FuturaLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaLightItalic.ttf; sourceTree = "<group>"; };
+		47A4E6C71C0CC6E100354EA8 /* FuturaBoldItMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBoldItMas.ttf; sourceTree = "<group>"; };
+		47A4E6C81C0CC6E100354EA8 /* FuturaBoldMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBoldMas.ttf; sourceTree = "<group>"; };
+		47A4E6C91C0CC6E100354EA8 /* FuturaBookItMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBookItMas.ttf; sourceTree = "<group>"; };
+		47A4E6CA1C0CC6E100354EA8 /* FuturaBookMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaBookMas.ttf; sourceTree = "<group>"; };
+		47A4E6CB1C0CC6E100354EA8 /* FuturaExBoldMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaExBoldMas.ttf; sourceTree = "<group>"; };
+		47A4E6CC1C0CC6E100354EA8 /* FuturaExtBdItMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaExtBdItMas.ttf; sourceTree = "<group>"; };
+		47A4E6CD1C0CC6E100354EA8 /* FuturaHeaItMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaHeaItMas.ttf; sourceTree = "<group>"; };
+		47A4E6CE1C0CC6E100354EA8 /* FuturaHeaMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaHeaMas.ttf; sourceTree = "<group>"; };
+		47A4E6CF1C0CC6E100354EA8 /* FuturaItMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaItMas.ttf; sourceTree = "<group>"; };
+		47A4E6D01C0CC6E100354EA8 /* FuturaLigItMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaLigItMas.ttf; sourceTree = "<group>"; };
+		47A4E6D11C0CC6E100354EA8 /* FuturaLigMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaLigMas.ttf; sourceTree = "<group>"; };
+		47A4E6D21C0CC6E100354EA8 /* FuturaMas.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMas.ttf; sourceTree = "<group>"; };
+		47A4E6D41C0CC6E100354EA8 /* FuturaCondensed.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensed.ttf; sourceTree = "<group>"; };
+		47A4E6D51C0CC6E100354EA8 /* FuturaCondensedBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensedBold.ttf; sourceTree = "<group>"; };
+		47A4E6D61C0CC6E100354EA8 /* FuturaCondensedBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensedBoldItalic.ttf; sourceTree = "<group>"; };
+		47A4E6D71C0CC6E100354EA8 /* FuturaCondensedExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensedExtraBold.ttf; sourceTree = "<group>"; };
+		47A4E6D81C0CC6E100354EA8 /* FuturaCondensedExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensedExtraBoldItalic.ttf; sourceTree = "<group>"; };
+		47A4E6D91C0CC6E100354EA8 /* FuturaCondensedItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensedItalic.ttf; sourceTree = "<group>"; };
+		47A4E6DA1C0CC6E100354EA8 /* FuturaCondensedLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaCondensedLight.ttf; sourceTree = "<group>"; };
+		47A4E6DB1C0CC6E100354EA8 /* FuturCondensedLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturCondensedLightItalic.ttf; sourceTree = "<group>"; };
+		47A4E6DD1C0CC6E100354EA8 /* FuturaMaxiBlack.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiBlack.ttf; sourceTree = "<group>"; };
+		47A4E6DE1C0CC6E100354EA8 /* FuturaMaxiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiBold.ttf; sourceTree = "<group>"; };
+		47A4E6DF1C0CC6E100354EA8 /* FuturaMaxiBook.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiBook.ttf; sourceTree = "<group>"; };
+		47A4E6E01C0CC6E100354EA8 /* FuturaMaxiDemi.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiDemi.ttf; sourceTree = "<group>"; };
+		47A4E6E11C0CC6E100354EA8 /* FuturaMaxiLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiLight.ttf; sourceTree = "<group>"; };
+		47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
+		BD3328BD9CD839D192721FD5 /* Pods_Synnc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Synnc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDEF559C0FAFE63DEC6A424D /* Pods-Synnc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Synnc.release.xcconfig"; path = "Pods/Target Support Files/Pods-Synnc/Pods-Synnc.release.xcconfig"; sourceTree = "<group>"; };
+		FCC4FBCD071656B8A7818426 /* Pods-Synnc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Synnc.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Synnc/Pods-Synnc.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +176,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE1887B23F9B3A2975B4ABE6 /* Pods_Synnc.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +197,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4704DDB91C15EE3300B40118 /* ubuntu */ = {
+			isa = PBXGroup;
+			children = (
+				4704DDBA1C15EE3300B40118 /* UBUNTU FONT LICENCE.txt */,
+				4704DDBB1C15EE3300B40118 /* Ubuntu-B.ttf */,
+				4704DDBC1C15EE3300B40118 /* Ubuntu-BI.ttf */,
+				4704DDBD1C15EE3300B40118 /* Ubuntu-C.ttf */,
+				4704DDBE1C15EE3300B40118 /* Ubuntu-L.ttf */,
+				4704DDBF1C15EE3300B40118 /* Ubuntu-LI.ttf */,
+				4704DDC01C15EE3300B40118 /* Ubuntu-M.ttf */,
+				4704DDC11C15EE3300B40118 /* Ubuntu-MI.ttf */,
+				4704DDC21C15EE3300B40118 /* Ubuntu-R.ttf */,
+				4704DDC31C15EE3300B40118 /* Ubuntu-RI.ttf */,
+			);
+			path = ubuntu;
+			sourceTree = "<group>";
+		};
+		4712B62B1C0F58BD00C49522 /* MaterialTextField */ = {
+			isa = PBXGroup;
+			children = (
+				4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */,
+				4712B62F1C0F594700C49522 /* JJMaterialTextfield.h */,
+				4712B6301C0F594700C49522 /* JJMaterialTextfield.m */,
+			);
+			name = MaterialTextField;
+			sourceTree = "<group>";
+		};
+		4712B63E1C12867A00C49522 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4712B63C1C1206BA00C49522 /* NotificationView.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		47A4E6701C0CAE6100354EA8 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +239,8 @@
 				47A4E6901C0CAE6200354EA8 /* SynncTests */,
 				47A4E69B1C0CAE6200354EA8 /* SynncUITests */,
 				47A4E67A1C0CAE6100354EA8 /* Products */,
+				A7CDB247A4C74A4566C4D725 /* Pods */,
+				7E17BCCEA77E9EB1A172E5F7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,12 +257,15 @@
 		47A4E67B1C0CAE6100354EA8 /* Synnc */ = {
 			isa = PBXGroup;
 			children = (
-				47A4E67C1C0CAE6100354EA8 /* AppDelegate.swift */,
-				47A4E67E1C0CAE6100354EA8 /* ViewController.swift */,
-				47A4E6801C0CAE6100354EA8 /* Main.storyboard */,
-				47A4E6831C0CAE6100354EA8 /* Assets.xcassets */,
-				47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */,
-				47A4E6881C0CAE6100354EA8 /* Info.plist */,
+				47A4E6B01C0CB4D600354EA8 /* MainUser.swift */,
+				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
+				4712B63A1C11149800C49522 /* Utilities.swift */,
+				4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */,
+				4712B63E1C12867A00C49522 /* Views */,
+				4712B62B1C0F58BD00C49522 /* MaterialTextField */,
+				47A4E7071C0D0B9800354EA8 /* Nodes */,
+				47A4E6AB1C0CB42800354EA8 /* ViewControllers */,
+				47A4E6AA1C0CAEDC00354EA8 /* Assets */,
 			);
 			path = Synnc;
 			sourceTree = "<group>";
@@ -125,6 +288,150 @@
 			path = SynncUITests;
 			sourceTree = "<group>";
 		};
+		47A4E6AA1C0CAEDC00354EA8 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */,
+				47A4E6B81C0CC6E100354EA8 /* Futura */,
+				4704DDB91C15EE3300B40118 /* ubuntu */,
+				47A4E6831C0CAE6100354EA8 /* Assets.xcassets */,
+				47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */,
+				47A4E6B61C0CB83E00354EA8 /* SoundcloudApp.plist */,
+				47A4E6881C0CAE6100354EA8 /* Info.plist */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		47A4E6AB1C0CB42800354EA8 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6AD1C0CB44000354EA8 /* RootViewController */,
+				47A4E6AC1C0CB42E00354EA8 /* LoginViewController */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		47A4E6AC1C0CB42E00354EA8 /* LoginViewController */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */,
+				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
+				4712B6381C10780200C49522 /* LSFormNode.swift */,
+			);
+			name = LoginViewController;
+			sourceTree = "<group>";
+		};
+		47A4E6AD1C0CB44000354EA8 /* RootViewController */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6AE1C0CB46B00354EA8 /* RootViewController.swift */,
+			);
+			name = RootViewController;
+			sourceTree = "<group>";
+		};
+		47A4E6B81C0CC6E100354EA8 /* Futura */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6B91C0CC6E100354EA8 /* Futura */,
+				47A4E6C61C0CC6E100354EA8 /* Futura Mas */,
+				47A4E6D31C0CC6E100354EA8 /* FuturaCondensed */,
+				47A4E6DC1C0CC6E100354EA8 /* FuturaMaxi */,
+			);
+			name = Futura;
+			path = fonts/Futura;
+			sourceTree = "<group>";
+		};
+		47A4E6B91C0CC6E100354EA8 /* Futura */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6BA1C0CC6E100354EA8 /* Futura.ttf */,
+				47A4E6BB1C0CC6E100354EA8 /* FuturaBold.ttf */,
+				47A4E6BC1C0CC6E100354EA8 /* FuturaBoldItalic.ttf */,
+				47A4E6BD1C0CC6E100354EA8 /* FuturaBook.ttf */,
+				47A4E6BE1C0CC6E100354EA8 /* FuturaBookItalic.ttf */,
+				47A4E6BF1C0CC6E100354EA8 /* FuturaExtraBold.ttf */,
+				47A4E6C01C0CC6E100354EA8 /* FuturaExtraBoldItalic.ttf */,
+				47A4E6C11C0CC6E100354EA8 /* FuturaHeavy.ttf */,
+				47A4E6C21C0CC6E100354EA8 /* FuturaHeavyItalic.ttf */,
+				47A4E6C31C0CC6E100354EA8 /* FuturaItalic.ttf */,
+				47A4E6C41C0CC6E100354EA8 /* FuturaLight.ttf */,
+				47A4E6C51C0CC6E100354EA8 /* FuturaLightItalic.ttf */,
+			);
+			path = Futura;
+			sourceTree = "<group>";
+		};
+		47A4E6C61C0CC6E100354EA8 /* Futura Mas */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6C71C0CC6E100354EA8 /* FuturaBoldItMas.ttf */,
+				47A4E6C81C0CC6E100354EA8 /* FuturaBoldMas.ttf */,
+				47A4E6C91C0CC6E100354EA8 /* FuturaBookItMas.ttf */,
+				47A4E6CA1C0CC6E100354EA8 /* FuturaBookMas.ttf */,
+				47A4E6CB1C0CC6E100354EA8 /* FuturaExBoldMas.ttf */,
+				47A4E6CC1C0CC6E100354EA8 /* FuturaExtBdItMas.ttf */,
+				47A4E6CD1C0CC6E100354EA8 /* FuturaHeaItMas.ttf */,
+				47A4E6CE1C0CC6E100354EA8 /* FuturaHeaMas.ttf */,
+				47A4E6CF1C0CC6E100354EA8 /* FuturaItMas.ttf */,
+				47A4E6D01C0CC6E100354EA8 /* FuturaLigItMas.ttf */,
+				47A4E6D11C0CC6E100354EA8 /* FuturaLigMas.ttf */,
+				47A4E6D21C0CC6E100354EA8 /* FuturaMas.ttf */,
+			);
+			path = "Futura Mas";
+			sourceTree = "<group>";
+		};
+		47A4E6D31C0CC6E100354EA8 /* FuturaCondensed */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6D41C0CC6E100354EA8 /* FuturaCondensed.ttf */,
+				47A4E6D51C0CC6E100354EA8 /* FuturaCondensedBold.ttf */,
+				47A4E6D61C0CC6E100354EA8 /* FuturaCondensedBoldItalic.ttf */,
+				47A4E6D71C0CC6E100354EA8 /* FuturaCondensedExtraBold.ttf */,
+				47A4E6D81C0CC6E100354EA8 /* FuturaCondensedExtraBoldItalic.ttf */,
+				47A4E6D91C0CC6E100354EA8 /* FuturaCondensedItalic.ttf */,
+				47A4E6DA1C0CC6E100354EA8 /* FuturaCondensedLight.ttf */,
+				47A4E6DB1C0CC6E100354EA8 /* FuturCondensedLightItalic.ttf */,
+			);
+			path = FuturaCondensed;
+			sourceTree = "<group>";
+		};
+		47A4E6DC1C0CC6E100354EA8 /* FuturaMaxi */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6DD1C0CC6E100354EA8 /* FuturaMaxiBlack.ttf */,
+				47A4E6DE1C0CC6E100354EA8 /* FuturaMaxiBold.ttf */,
+				47A4E6DF1C0CC6E100354EA8 /* FuturaMaxiBook.ttf */,
+				47A4E6E01C0CC6E100354EA8 /* FuturaMaxiDemi.ttf */,
+				47A4E6E11C0CC6E100354EA8 /* FuturaMaxiLight.ttf */,
+			);
+			path = FuturaMaxi;
+			sourceTree = "<group>";
+		};
+		47A4E7071C0D0B9800354EA8 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */,
+				4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */,
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
+		7E17BCCEA77E9EB1A172E5F7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BD3328BD9CD839D192721FD5 /* Pods_Synnc.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A7CDB247A4C74A4566C4D725 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FCC4FBCD071656B8A7818426 /* Pods-Synnc.debug.xcconfig */,
+				DDEF559C0FAFE63DEC6A424D /* Pods-Synnc.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +439,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 47A4E6A11C0CAE6200354EA8 /* Build configuration list for PBXNativeTarget "Synnc" */;
 			buildPhases = (
+				1C8C7FAFE48DCF9029918DF8 /* Check Pods Manifest.lock */,
 				47A4E6751C0CAE6100354EA8 /* Sources */,
 				47A4E6761C0CAE6100354EA8 /* Frameworks */,
 				47A4E6771C0CAE6100354EA8 /* Resources */,
+				F95D0FAF1D251CC59D9817A9 /* Embed Pods Frameworks */,
+				47D406F14D5F60645CF8BA93 /* Copy Pods Resources */,
+				4712B6411C1327B000C49522 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -187,11 +498,13 @@
 		47A4E6711C0CAE6100354EA8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Arda Erzin";
 				TargetAttributes = {
 					47A4E6781C0CAE6100354EA8 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 6H8UU9QLZ9;
 					};
 					47A4E68C1C0CAE6200354EA8 = {
 						CreatedOnToolsVersion = 7.0;
@@ -228,9 +541,57 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47A4E6F91C0CC6E100354EA8 /* FuturaMas.ttf in Resources */,
+				47A4E6E61C0CC6E100354EA8 /* FuturaBookItalic.ttf in Resources */,
+				47A4E6F31C0CC6E100354EA8 /* FuturaExtBdItMas.ttf in Resources */,
+				47A4E7041C0CC6E100354EA8 /* FuturaMaxiBook.ttf in Resources */,
+				4704DDC81C15EE3300B40118 /* Ubuntu-L.ttf in Resources */,
+				47A4E6E91C0CC6E100354EA8 /* FuturaHeavy.ttf in Resources */,
+				4704DDCD1C15EE3300B40118 /* Ubuntu-RI.ttf in Resources */,
+				47A4E7061C0CC6E100354EA8 /* FuturaMaxiLight.ttf in Resources */,
+				4704DDCB1C15EE3300B40118 /* Ubuntu-MI.ttf in Resources */,
+				4704DDC71C15EE3300B40118 /* Ubuntu-C.ttf in Resources */,
+				47A4E6E41C0CC6E100354EA8 /* FuturaBoldItalic.ttf in Resources */,
+				47A4E7031C0CC6E100354EA8 /* FuturaMaxiBold.ttf in Resources */,
+				47A4E6B71C0CB83E00354EA8 /* SoundcloudApp.plist in Resources */,
+				47A4E7001C0CC6E100354EA8 /* FuturaCondensedLight.ttf in Resources */,
+				47A4E6FD1C0CC6E100354EA8 /* FuturaCondensedExtraBold.ttf in Resources */,
+				47A4E6F41C0CC6E100354EA8 /* FuturaHeaItMas.ttf in Resources */,
+				47A4E6E21C0CC6E100354EA8 /* Futura.ttf in Resources */,
+				47A4E6F71C0CC6E100354EA8 /* FuturaLigItMas.ttf in Resources */,
+				4704DDC51C15EE3300B40118 /* Ubuntu-B.ttf in Resources */,
+				47A4E6F81C0CC6E100354EA8 /* FuturaLigMas.ttf in Resources */,
+				4712B63D1C1206BA00C49522 /* NotificationView.xib in Resources */,
+				47A4E6EE1C0CC6E100354EA8 /* FuturaBoldItMas.ttf in Resources */,
+				47A4E6FB1C0CC6E100354EA8 /* FuturaCondensedBold.ttf in Resources */,
+				4704DDCA1C15EE3300B40118 /* Ubuntu-M.ttf in Resources */,
 				47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */,
 				47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */,
-				47A4E6821C0CAE6100354EA8 /* Main.storyboard in Resources */,
+				47A4E6FE1C0CC6E100354EA8 /* FuturaCondensedExtraBoldItalic.ttf in Resources */,
+				47A4E6FC1C0CC6E100354EA8 /* FuturaCondensedBoldItalic.ttf in Resources */,
+				4704DDC41C15EE3300B40118 /* UBUNTU FONT LICENCE.txt in Resources */,
+				4704DDC61C15EE3300B40118 /* Ubuntu-BI.ttf in Resources */,
+				47A4E7021C0CC6E100354EA8 /* FuturaMaxiBlack.ttf in Resources */,
+				47A4E6FA1C0CC6E100354EA8 /* FuturaCondensed.ttf in Resources */,
+				47A4E6EB1C0CC6E100354EA8 /* FuturaItalic.ttf in Resources */,
+				4704DDC91C15EE3300B40118 /* Ubuntu-LI.ttf in Resources */,
+				47A4E6F21C0CC6E100354EA8 /* FuturaExBoldMas.ttf in Resources */,
+				47A4E6EA1C0CC6E100354EA8 /* FuturaHeavyItalic.ttf in Resources */,
+				47A4E6E71C0CC6E100354EA8 /* FuturaExtraBold.ttf in Resources */,
+				47A4E6EC1C0CC6E100354EA8 /* FuturaLight.ttf in Resources */,
+				47A4E6E31C0CC6E100354EA8 /* FuturaBold.ttf in Resources */,
+				47A4E6F61C0CC6E100354EA8 /* FuturaItMas.ttf in Resources */,
+				47A4E6ED1C0CC6E100354EA8 /* FuturaLightItalic.ttf in Resources */,
+				47A4E6FF1C0CC6E100354EA8 /* FuturaCondensedItalic.ttf in Resources */,
+				47A4E6F11C0CC6E100354EA8 /* FuturaBookMas.ttf in Resources */,
+				47A4E6EF1C0CC6E100354EA8 /* FuturaBoldMas.ttf in Resources */,
+				47A4E6F51C0CC6E100354EA8 /* FuturaHeaMas.ttf in Resources */,
+				47A4E7051C0CC6E100354EA8 /* FuturaMaxiDemi.ttf in Resources */,
+				47A4E6F01C0CC6E100354EA8 /* FuturaBookItMas.ttf in Resources */,
+				4704DDCC1C15EE3300B40118 /* Ubuntu-R.ttf in Resources */,
+				47A4E6E51C0CC6E100354EA8 /* FuturaBook.ttf in Resources */,
+				47A4E6E81C0CC6E100354EA8 /* FuturaExtraBoldItalic.ttf in Resources */,
+				47A4E7011C0CC6E100354EA8 /* FuturCondensedLightItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,13 +611,84 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1C8C7FAFE48DCF9029918DF8 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4712B6411C1327B000C49522 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 47f502ee49ade8a26f22e7aca8e384f1495bd755 a7fa59fe01bc4316f5c3cc278964657dc27cbb733c55df31ee0fb213869f1cce";
+		};
+		47D406F14D5F60645CF8BA93 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Synnc/Pods-Synnc-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F95D0FAF1D251CC59D9817A9 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Synnc/Pods-Synnc-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		47A4E6751C0CAE6100354EA8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47A4E67F1C0CAE6100354EA8 /* ViewController.swift in Sources */,
-				47A4E67D1C0CAE6100354EA8 /* AppDelegate.swift in Sources */,
+				47A4E6B31C0CB69700354EA8 /* LoginViewController.swift in Sources */,
+				4712B6391C10780200C49522 /* LSFormNode.swift in Sources */,
+				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
+				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
+				4712B6331C0FAA3B00C49522 /* LoginButtonNode.swift in Sources */,
+				4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */,
+				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
+				47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */,
+				47A4E6B51C0CB6D100354EA8 /* LoginNode.swift in Sources */,
+				47A4E6AF1C0CB46B00354EA8 /* RootViewController.swift in Sources */,
+				4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */,
+				47A4E7091C0D0BB600354EA8 /* ButtonNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,14 +724,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		47A4E6801C0CAE6100354EA8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				47A4E6811C0CAE6100354EA8 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -396,23 +820,34 @@
 		};
 		47A4E6A21C0CAE6200354EA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FCC4FBCD071656B8A7818426 /* Pods-Synnc.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "BrandAsset-2";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Synnc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		47A4E6A31C0CAE6200354EA8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DDEF559C0FAFE63DEC6A424D /* Pods-Synnc.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "BrandAsset-2";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Synnc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -483,6 +918,7 @@
 				47A4E6A31C0CAE6200354EA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		47A4E6A41C0CAE6200354EA8 /* Build configuration list for PBXNativeTarget "SynncTests" */ = {
 			isa = XCConfigurationList;
@@ -491,6 +927,7 @@
 				47A4E6A61C0CAE6200354EA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		47A4E6A71C0CAE6200354EA8 /* Build configuration list for PBXNativeTarget "SynncUITests" */ = {
 			isa = XCConfigurationList;
@@ -499,6 +936,7 @@
 				47A4E6A91C0CAE6200354EA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SCAppClientId</key>
+	<string>1de582e8965ef07fa3d7b53a6e1cf3f7</string>
+	<key>SCAppClientSecret</key>
+	<string>66358effd05d9524978c53e93e411280</string>
+	<key>SCAppRedirectURL</key>
+	<string>http://malta-game.codio.io:9000</string>
+	<key>SCApiBaseUrl</key>
+	<string>https://api.soundcloud.com/</string>
+	<key>SCAuthorizationUrl</key>
+	<string>https://soundcloud.com/connect?</string>
+</dict>
+</plist>
