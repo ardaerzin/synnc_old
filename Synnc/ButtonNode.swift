@@ -60,16 +60,6 @@ class ButtonNode : ASButtonNode {
         didSet {
             
             let x = POPTransition(scaleAnimationProgress, startValue: 1, endValue: minScale)
-//            print(self.contentsScale)
-            
-//            self.contentsScale = x
-            
-//            self.view.layer.transform = CATransform3DMakeScale(x, x, 1)
-//                CGAffineTransformMakeScale(x, x)
-//            print(self.layer)
-//            print(self.layer.transform)
-//            print(CATransform3DIdentity)
-//            self.alpha = x
             POPLayerSetScaleXY(self.layer, CGPointMake(x, x))
         }
     }
@@ -157,13 +147,17 @@ class ButtonNode : ASButtonNode {
         }
     }
     
+    func changedSelected(){
+        if selected {
+            self.backgroundAnimation.toValue = self.selectedBgColor
+        } else {
+            self.backgroundAnimation.toValue = self.normalBgColor
+        }
+    }
+    
     var selected : Bool = false {
         didSet {
-            if selected {
-                self.backgroundAnimation.toValue = self.selectedBgColor
-            } else {
-                self.backgroundAnimation.toValue = self.normalBgColor
-            }
+            self.changedSelected()
         }
     }
     

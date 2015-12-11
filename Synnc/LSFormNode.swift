@@ -103,7 +103,7 @@ class InputFieldArea : ASDisplayNode {
         } else if self.state == .Signup {
             fieldTxt = "email"
         }
-        emailField.attributedPlaceholder = NSAttributedString(string: fieldTxt, attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48)])
+        emailField.attributedPlaceholder = NSAttributedString(string: fieldTxt, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48), NSKernAttributeName : 1])
         emailField.enableMaterialPlaceHolder(true)
         
         self.formStateAnimation.toValue = self.state == .Login ? 0 : 1
@@ -115,38 +115,38 @@ class InputFieldArea : ASDisplayNode {
         let w = self.calculatedSize.width
         if emailField == nil {
             emailField = JJMaterialTextfield(frame: CGRectMake(0, 10, w, 25))
-            emailField.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48)])
+            emailField.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48), NSKernAttributeName : 1])
             emailField.autocapitalizationType = .None
             emailField.enableMaterialPlaceHolder(true)
             self.view.addSubview(emailField)
             emailField.text = nil
             emailField.lineColor = UIColor.blackColor().colorWithAlphaComponent(0.07)
             emailField.returnKeyType = UIReturnKeyType.Next
-            emailField.defaultTextAttributes = [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+            emailField.defaultTextAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor(), NSKernAttributeName : 1]
         }
         
         if usernameField == nil {
             usernameField = JJMaterialTextfield(frame: CGRectMake(0, 10+25+buttonSpacing, w, 25))
-            usernameField.attributedPlaceholder = NSAttributedString(string: "username", attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48)])
+            usernameField.attributedPlaceholder = NSAttributedString(string: "username", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48), NSKernAttributeName : 1])
             usernameField.enableMaterialPlaceHolder(true)
             self.view.addSubview(usernameField)
             usernameField.autocapitalizationType = .None
             usernameField.text = nil
             usernameField.lineColor = UIColor.blackColor().colorWithAlphaComponent(0.07)
             usernameField.returnKeyType = UIReturnKeyType.Next
-            usernameField.defaultTextAttributes = [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+            usernameField.defaultTextAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor(), NSKernAttributeName : 1]
         }
         
         
         if passwordField == nil {
             passwordField = JJMaterialTextfield(frame: CGRectMake(0, 10+50+(2*buttonSpacing), w, 25))
-            passwordField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48)])
+            passwordField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.48), NSKernAttributeName : 1])
             passwordField.enableMaterialPlaceHolder(true)
             self.view.addSubview(passwordField)
             passwordField.text = nil
             passwordField.secureTextEntry = true
             passwordField.lineColor = UIColor.blackColor().colorWithAlphaComponent(0.07)
-            passwordField.defaultTextAttributes = [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+            passwordField.defaultTextAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor(), NSKernAttributeName : 1]
             passwordField.returnKeyType = UIReturnKeyType.Go
             
             let x = 50+2*buttonSpacing+25+buttonSpacing
@@ -236,6 +236,7 @@ class LSFormNode : ASDisplayNode {
     }
     var titleStateProgress : CGFloat = 0 {
         didSet {
+            self.actionButton.titleNode.alpha = titleStateProgress
             self.titleNode.alpha = titleStateProgress
             self.greetingMsgNode.alpha = titleStateProgress
         }
@@ -245,36 +246,16 @@ class LSFormNode : ASDisplayNode {
     func didChangeState(previousState : FormNodeState!) {
         
         if previousState == FormNodeState.None {
-            var titleString : String!
-            var greetingString : String!
-            
-            if self.state == .Login {
-                titleString = "HI AGAIN"
-                greetingString = "GOT SOME WEED?"
-            } else if self.state == .Signup {
-                titleString = "JOIN US"
-                greetingString = "WE HAVE FREE COOKIES"
-            }
-            self.titleNode.attributedString = NSAttributedString(string: titleString, attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 2.57])
-            self.greetingMsgNode.attributedString = NSAttributedString(string: greetingString, attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 106/255, green: 104/255, blue: 104/255, alpha: 1), NSKernAttributeName : 2])
+            self.setTitleStrings()
+            self.setButtonString()
         } else if self.state != .None {
             
             self.titleAreaAnimation.fromValue = 1
             self.titleAreaAnimation.completionBlock = {
                 anim, finished in
                 if finished {
-                    var titleString : String!
-                    var greetingString : String!
-                    
-                    if self.state == .Login {
-                        titleString = "HI AGAIN"
-                        greetingString = "GOT SOME WEED?"
-                    } else if self.state == .Signup {
-                        titleString = "JOIN US"
-                        greetingString = "WE HAVE FREE COOKIES"
-                    }
-                    self.titleNode.attributedString = NSAttributedString(string: titleString, attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 2.57])
-                    self.greetingMsgNode.attributedString = NSAttributedString(string: greetingString, attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 106/255, green: 104/255, blue: 104/255, alpha: 1), NSKernAttributeName : 2])
+                    self.setTitleStrings()
+                    self.setButtonString()
                     self.setNeedsLayout()
                     
                     self.titleAreaAnimation.toValue = 1
@@ -323,25 +304,35 @@ class LSFormNode : ASDisplayNode {
         }
         return true
     }
+    
+    func setButtonString(){
+        let buttonMsg = self.state == .Login ? "CONTINUE YOUR JOURNEY" : "START YOUR JOURNEY"
+        let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 2.57]
+        let normalTitleString = NSAttributedString(string: buttonMsg, attributes: attributes)
+        self.actionButton.setAttributedTitle(normalTitleString, forState: ASButtonStateNormal)
+    }
+    func setTitleStrings() {
+        
+        let titleMsg = self.state == .Login ? "HI AGAIN" : "JOIN US"
+        let subtitleMsg = self.state == .Login ? "GOT SOME WEED?" : "WE HAVE FREE COOKIES!"
+        
+        self.titleNode.attributedString = NSAttributedString(string: titleMsg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 2.57])
+        self.greetingMsgNode.attributedString = NSAttributedString(string: subtitleMsg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 106/255, green: 104/255, blue: 104/255, alpha: 1), NSKernAttributeName : 2.57])
+    }
     override init!() {
         super.init()
         
         self.titleNode = ASTextNode()
         self.titleNode.alpha = 0
         self.titleNode.spacingBefore = titleSpacing
-        self.titleNode.attributedString = NSAttributedString(string: "HI AGAIN", attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 2.57])
         
         self.greetingMsgNode = ASTextNode()
         self.greetingMsgNode.alpha = 0
         self.greetingMsgNode.spacingBefore = 25
-        self.greetingMsgNode.attributedString = NSAttributedString(string: "GOT SOME WEED?", attributes: [NSFontAttributeName : UIFont(name: "Futura-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 106/255, green: 104/255, blue: 104/255, alpha: 1), NSKernAttributeName : 2])
         
         self.inputArea = InputFieldArea()
         self.inputArea.alpha = 0
         self.inputArea.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: 10))
-        
-        let attributes = [NSFontAttributeName : UIFont(name: "FuturaBold", size: 12)!, NSForegroundColorAttributeName : UIColor.whiteColor()]
-        let normalTitleString = NSAttributedString(string: "CONTINUE YOUR JOURNEY", attributes: attributes)
         
         self.actionButton = ButtonNode(normalColor: UIColor.SynncColor(), selectedColor: UIColor.SynncColor())
         self.actionButton.alpha = 0
@@ -349,7 +340,6 @@ class LSFormNode : ASDisplayNode {
         self.actionButton.minScale = 0.85
         self.actionButton.cornerRadius = 3
         self.actionButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.actionButton.setAttributedTitle(normalTitleString, forState: ASButtonStateNormal)
         
         self.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
@@ -402,7 +392,7 @@ class LSFormNode : ASDisplayNode {
     }
     override func layout() {
         super.layout()
-        print("layout")
+//        print("layout")
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let inputSpec = ASStaticLayoutSpec(children: [inputArea])
@@ -412,8 +402,6 @@ class LSFormNode : ASDisplayNode {
         c.alignSelf = .Stretch
         c.flexGrow = true
         c.spacingBefore = 20
-        
-        print("za")
         
         let spacer = ASLayoutSpec()
         spacer.flexBasis = ASRelativeDimension(type: .Points, value: 60)

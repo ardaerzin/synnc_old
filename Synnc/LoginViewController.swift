@@ -26,7 +26,7 @@ class LoginViewController : ASViewController {
         }
     }
     deinit {
-        print("deinit shit")
+//        print("deinit shit")
     }
     init(){
         let node = LoginNode()
@@ -36,25 +36,33 @@ class LoginViewController : ASViewController {
         node.formNode.buttonHolder.twitterLoginButton.addTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.formNode.buttonHolder.regularLoginButton.addTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.formNode.closeFormButton.addTarget(self, action: Selector("closeFormView:"), forControlEvents: .TouchUpInside)
-        
         node.formNode.formSwitcher.switchButton.addTarget(self, action: Selector("switchForm:"), forControlEvents: .TouchUpInside)
         
         self.screenNode = node
     }
-    
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        if parent == nil {
+            self.user.delegate = nil
+            self.screenNode.formNode.buttonHolder.facebookLoginButton.removeTarget(self, action: Selector("loginWithFacebook:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.formNode.buttonHolder.twitterLoginButton.removeTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.formNode.buttonHolder.regularLoginButton.removeTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.formNode.closeFormButton.removeTarget(self, action: Selector("closeFormView:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.formNode.formSwitcher.switchButton.removeTarget(self, action: Selector("switchForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.removeFromSupernode()
+            self.screenNode = nil
+            self.loginCallback = nil
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if let root = self.parentViewController as? RootViewController {
-            root.displayStatusBar = true
-            root.setNeedsStatusBarAppearanceUpdate()
+            root.displayStatusBar = false
         }
         self.screenNode.formNode.alpha = 0
         if let c1 = self.user.isLoggedIn(.Facebook), let c2 = self.user.isLoggedIn(.Twitter), let c3 = self.user.isLoggingIn(.Facebook), let c4 = self.user.isLoggingIn(.Twitter) where c1 || c2 || c3 || c4 {
-            print("ZA")
             self.screenNode.formNode.serverCheckStatusAnimation.toValue = 1
         } else {
-            print("ZA2")
             self.screenNode.formNode.serverCheckStatusAnimation.toValue = 0
         }
         self.user.delegate = self
@@ -67,9 +75,11 @@ class LoginViewController : ASViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        self.screenNode.backgroundNode.logoHolder.startAnimation()
+        
         self.screenNode.formNode.formDisplayStatus = false
         self.screenNode.formNode.alpha = 1
-//        self.screenNode.formNode.formDisplayAnimation.toValue = 0
     }
 }
 
@@ -109,6 +119,20 @@ extension LoginViewController : WCLUserDelegate {
             self.screenNode.formNode.spinnerNode.updateForUser(user)
             self.screenNode.formNode.spinnerNode.loginStatusAnimation.toValue = 1
             Async.main(after: 2) {
+                if let root = self.parentViewController as? RootViewController {
+                    root.displayStatusBar = true
+                }
+                self.screenNode.displayAnimation.completionBlock = {
+                    anim, finished in
+                    
+                    if finished {
+                        if let rvc = self.parentViewController as? RootViewController {
+                            rvc.dismissLoginController()
+                        }
+                    }
+                }
+                self.screenNode.displayAnimation.springSpeed = 0
+                self.screenNode.displayAnimation.dynamicsFriction = 10
                 self.screenNode.displayAnimation.toValue = 0
             }
         } else {
@@ -121,7 +145,6 @@ extension LoginViewController : WCLUserDelegate {
         } else {
             
             if ext == WCLUserLoginType.Facebook.rawValue || ext == WCLUserLoginType.Twitter.rawValue {
-                print("WAIT FOR SERVER RESPONSE")
                 self.screenNode.formNode.serverCheckStatusAnimation.toValue = 1
             } else {
 //                print("sex")

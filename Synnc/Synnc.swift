@@ -100,11 +100,11 @@ class Synnc : UIResponder, UIApplicationDelegate {
 //        }
         
         for name in UIFont.familyNames() {
-            print("*!*!*!*!**!*!*!")
-            print(name)
+//            print("*!*!*!*!**!*!*!")
+//            print(name)
 //            if let nameString = name as? String
 //            {
-                print(UIFont.fontNamesForFamilyName(name))
+//                print(UIFont.fontNamesForFamilyName(name))
 //            }
         }
         

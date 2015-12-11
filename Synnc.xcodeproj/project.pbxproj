@@ -17,6 +17,9 @@
 		4704DDCB1C15EE3300B40118 /* Ubuntu-MI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC11C15EE3300B40118 /* Ubuntu-MI.ttf */; settings = {ASSET_TAGS = (); }; };
 		4704DDCC1C15EE3300B40118 /* Ubuntu-R.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC21C15EE3300B40118 /* Ubuntu-R.ttf */; settings = {ASSET_TAGS = (); }; };
 		4704DDCD1C15EE3300B40118 /* Ubuntu-RI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4704DDC31C15EE3300B40118 /* Ubuntu-RI.ttf */; settings = {ASSET_TAGS = (); }; };
+		4704DDCF1C1732A000B40118 /* AnimatedLogoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */; settings = {ASSET_TAGS = (); }; };
+		4704DDD11C17A9DA00B40118 /* TabControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4704DDD01C17A9DA00B40118 /* TabControllerNode.swift */; settings = {ASSET_TAGS = (); }; };
+		4704DDD31C17AC1900B40118 /* TabNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4704DDD21C17AC1900B40118 /* TabNode.swift */; settings = {ASSET_TAGS = (); }; };
 		4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */; settings = {ASSET_TAGS = (); }; };
 		4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6301C0F594700C49522 /* JJMaterialTextfield.m */; settings = {ASSET_TAGS = (); }; };
 		4712B6331C0FAA3B00C49522 /* LoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */; settings = {ASSET_TAGS = (); }; };
@@ -24,6 +27,10 @@
 		4712B63B1C11149800C49522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63A1C11149800C49522 /* Utilities.swift */; settings = {ASSET_TAGS = (); }; };
 		4712B63D1C1206BA00C49522 /* NotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4712B63C1C1206BA00C49522 /* NotificationView.xib */; settings = {ASSET_TAGS = (); }; };
 		4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */; settings = {ASSET_TAGS = (); }; };
+		471834231C187F59005C9533 /* HeaderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471834221C187F59005C9533 /* HeaderNode.swift */; settings = {ASSET_TAGS = (); }; };
+		471834271C18893C005C9533 /* SubsectionSelectorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471834261C18893C005C9533 /* SubsectionSelectorNode.swift */; settings = {ASSET_TAGS = (); }; };
+		471834291C199AEF005C9533 /* TabbarContentScroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471834281C199AEF005C9533 /* TabbarContentScroller.swift */; settings = {ASSET_TAGS = (); }; };
+		4718342E1C1A791A005C9533 /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4718342D1C1A791A005C9533 /* TabItem.swift */; settings = {ASSET_TAGS = (); }; };
 		47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* Synnc.swift */; };
 		47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6831C0CAE6100354EA8 /* Assets.xcassets */; };
 		47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */; };
@@ -103,6 +110,9 @@
 		4704DDC11C15EE3300B40118 /* Ubuntu-MI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-MI.ttf"; sourceTree = "<group>"; };
 		4704DDC21C15EE3300B40118 /* Ubuntu-R.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-R.ttf"; sourceTree = "<group>"; };
 		4704DDC31C15EE3300B40118 /* Ubuntu-RI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-RI.ttf"; sourceTree = "<group>"; };
+		4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedLogoNode.swift; sourceTree = "<group>"; };
+		4704DDD01C17A9DA00B40118 /* TabControllerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabControllerNode.swift; sourceTree = "<group>"; };
+		4704DDD21C17AC1900B40118 /* TabNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabNode.swift; sourceTree = "<group>"; };
 		4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASMaterialTextField.swift; sourceTree = "<group>"; };
 		4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Synnc-Bridging-Header.h"; sourceTree = "<group>"; };
 		4712B62F1C0F594700C49522 /* JJMaterialTextfield.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJMaterialTextfield.h; sourceTree = "<group>"; };
@@ -112,6 +122,10 @@
 		4712B63A1C11149800C49522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		4712B63C1C1206BA00C49522 /* NotificationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationView.xib; sourceTree = "<group>"; };
 		4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WildUser+TwitterUser.swift"; sourceTree = "<group>"; };
+		471834221C187F59005C9533 /* HeaderNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderNode.swift; sourceTree = "<group>"; };
+		471834261C18893C005C9533 /* SubsectionSelectorNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubsectionSelectorNode.swift; sourceTree = "<group>"; };
+		471834281C199AEF005C9533 /* TabbarContentScroller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarContentScroller.swift; sourceTree = "<group>"; };
+		4718342D1C1A791A005C9533 /* TabItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
 		47A4E6791C0CAE6100354EA8 /* Synnc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synnc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A4E67C1C0CAE6100354EA8 /* Synnc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Synnc.swift; sourceTree = "<group>"; };
 		47A4E6831C0CAE6100354EA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -232,6 +246,18 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		4718342C1C1A78F3005C9533 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				4704DDD01C17A9DA00B40118 /* TabControllerNode.swift */,
+				4704DDD21C17AC1900B40118 /* TabNode.swift */,
+				471834281C199AEF005C9533 /* TabbarContentScroller.swift */,
+				471834221C187F59005C9533 /* HeaderNode.swift */,
+				471834261C18893C005C9533 /* SubsectionSelectorNode.swift */,
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
 		47A4E6701C0CAE6100354EA8 = {
 			isa = PBXGroup;
 			children = (
@@ -325,6 +351,8 @@
 			isa = PBXGroup;
 			children = (
 				47A4E6AE1C0CB46B00354EA8 /* RootViewController.swift */,
+				4718342D1C1A791A005C9533 /* TabItem.swift */,
+				4718342C1C1A78F3005C9533 /* Nodes */,
 			);
 			name = RootViewController;
 			sourceTree = "<group>";
@@ -409,6 +437,7 @@
 		47A4E7071C0D0B9800354EA8 /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */,
 				47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */,
 				4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */,
 			);
@@ -678,17 +707,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				47A4E6B31C0CB69700354EA8 /* LoginViewController.swift in Sources */,
+				4704DDD11C17A9DA00B40118 /* TabControllerNode.swift in Sources */,
+				471834271C18893C005C9533 /* SubsectionSelectorNode.swift in Sources */,
 				4712B6391C10780200C49522 /* LSFormNode.swift in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
 				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
+				4704DDCF1C1732A000B40118 /* AnimatedLogoNode.swift in Sources */,
 				4712B6331C0FAA3B00C49522 /* LoginButtonNode.swift in Sources */,
 				4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */,
 				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
 				47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */,
+				471834231C187F59005C9533 /* HeaderNode.swift in Sources */,
+				4718342E1C1A791A005C9533 /* TabItem.swift in Sources */,
 				47A4E6B51C0CB6D100354EA8 /* LoginNode.swift in Sources */,
 				47A4E6AF1C0CB46B00354EA8 /* RootViewController.swift in Sources */,
+				4704DDD31C17AC1900B40118 /* TabNode.swift in Sources */,
 				4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */,
 				47A4E7091C0D0BB600354EA8 /* ButtonNode.swift in Sources */,
+				471834291C199AEF005C9533 /* TabbarContentScroller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -823,7 +859,6 @@
 			baseConfigurationReference = FCC4FBCD071656B8A7818426 /* Pods-Synnc.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "BrandAsset-2";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Synnc/Info.plist;
@@ -832,6 +867,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -840,7 +876,6 @@
 			baseConfigurationReference = DDEF559C0FAFE63DEC6A424D /* Pods-Synnc.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "BrandAsset-2";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Synnc/Info.plist;
@@ -848,6 +883,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
