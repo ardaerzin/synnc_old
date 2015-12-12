@@ -61,11 +61,9 @@ class MainUser : WCLUser {
                     callback?(status: false)
                     return
                 }
-                
                 if self.joinedUsers.indexOf(id) == nil {
                     self.joinedUsers.append(id)
                 }
-                print("left room")
                 callback?(status: status)
             }
         } else {
@@ -84,7 +82,6 @@ class MainUser : WCLUser {
                 if self.joinedUsers.indexOf(id) == nil {
                     self.joinedUsers.append(id)
                 }
-                print("joined room")
                 callback?(status: status)
             }
         } else {
@@ -95,10 +92,8 @@ class MainUser : WCLUser {
     override func userLoginStatusChanged() {
         super.userLoginStatusChanged()
         
-//        print("LOGIN STATUS CHANGED")
         if self.status {
             self.syncFollowed()
-//            print("SEX")
         }
     }
     

@@ -93,7 +93,6 @@ class TabbarContentScroller : ASScrollNode {
         self.pages = []
         for (index,subsection) in item.subsections.enumerate() {
             let a = ASDisplayNode()
-//            a.backgroundColor = self.colors[index]
             self.addSubnode(a)
             self.pages.append(a)
         }
@@ -137,7 +136,6 @@ extension TabbarContentScroller : UIScrollViewDelegate {
         let x = targetContentOffset.memory.x
         let ci = Int(x / self.view.frame.width)
         self.currentIndex = ci
-//        self.isScrolling = false
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let ratio = self.view.contentOffset.x / (self.view.contentSize.width - self.calculatedSize.width)
@@ -157,9 +155,6 @@ extension TabbarContentScroller : SubsectionSelectorDelegate {
             self.updatePositionAnimation.toValue = CGFloat(subsectionIndex) * self.calculatedSize.width
             self.isUpdating = false
             self.currentIndex = subsectionIndex
-            print("ZA")
-        } else {
-            print("SEX")
         }
     }
     func willSelectSubsection(subsectionIndex: Int) {

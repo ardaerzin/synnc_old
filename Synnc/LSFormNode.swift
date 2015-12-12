@@ -390,10 +390,6 @@ class LSFormNode : ASDisplayNode {
         POPLayerSetTranslationY(self.inputArea.layer, c)
         POPLayerSetTranslationY(self.actionButton.layer, b)
     }
-    override func layout() {
-        super.layout()
-//        print("layout")
-    }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let inputSpec = ASStaticLayoutSpec(children: [inputArea])
         let b = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: inputSpec)

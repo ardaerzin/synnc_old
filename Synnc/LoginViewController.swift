@@ -26,7 +26,7 @@ class LoginViewController : ASViewController {
         }
     }
     deinit {
-//        print("deinit shit")
+        print("deinit login view controller")
     }
     init(){
         let node = LoginNode()
@@ -91,16 +91,12 @@ extension LoginViewController {
     func displaySignupForm(sender : ASButtonNode) {
         self.screenNode.formNode.formDisplayStatus = true
         self.screenNode.formNode.formHolder.state = .Signup
-//        let v = WCLNotificationView.new(nibName: "NotificationView")!
-//        WCLNotificationManager.sharedInstance().newNotification(v, info: WCLNotificationInfo(body: "You can try Facebook login instead.", title: "Feature not Available", image : "exclamation-medium"))
     }
     func loginWithTwitter(sender : AnyObject){
         Synnc.sharedInstance.user.socialLogin(.Twitter)
     }
     
     func switchForm(sender : ASButtonNode){
-//        let v = WCLNotificationView.new(nibName: "NotificationView")!
-//        WCLNotificationManager.sharedInstance().newNotification(v, info: WCLNotificationInfo(body: "You can try Facebook login instead.", title: "Feature not Available", image : "exclamation-medium"))
         let a = self.screenNode.formNode.formSwitcher.targetForm
         self.screenNode.formNode.formDisplayStatus = true
         self.screenNode.formNode.formHolder.state = self.screenNode.formNode.formSwitcher.targetForm
@@ -147,7 +143,6 @@ extension LoginViewController : WCLUserDelegate {
             if ext == WCLUserLoginType.Facebook.rawValue || ext == WCLUserLoginType.Twitter.rawValue {
                 self.screenNode.formNode.serverCheckStatusAnimation.toValue = 1
             } else {
-//                print("sex")
             }
         }
     }

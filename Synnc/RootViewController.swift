@@ -19,6 +19,7 @@ class RootViewController : ASViewController {
             self.setNeedsStatusBarAppearanceUpdate()
         }
     }
+    
     override func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
         return UIStatusBarAnimation.Slide
     }
@@ -26,7 +27,16 @@ class RootViewController : ASViewController {
         return !displayStatusBar
     }
     init(){
-        let node = TabControllerNode()
+        
+        let controllers : [TabItemController] = [
+            HomeController(),
+            SearchController(),
+            MyStreamController(),
+            PlaylistsController(),
+            MeController()
+        ]
+        
+        let node = TabControllerNode(items: controllers)
         super.init(node: node)
         self.screenNode = node
     }
@@ -68,10 +78,7 @@ extension RootViewController {
 extension RootViewController : TabbarDelegate {
     func willSetTabItem(item: TabItem) {
         self.screenNode.item = item
-        
         self.screenNode.updateForItem(item)
-//        self.screenNode.scrollNode.updateForItem(item)
-//        self.screenNode.headerNode.updateForItem(item)
     }
     func didSetTabItem(item: TabItem) {
         

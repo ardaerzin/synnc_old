@@ -99,14 +99,14 @@ class Synnc : UIResponder, UIApplicationDelegate {
 //            menuController.updateForUser()
 //        }
         
-        for name in UIFont.familyNames() {
+//        for name in UIFont.familyNames() {
 //            print("*!*!*!*!**!*!*!")
 //            print(name)
 //            if let nameString = name as? String
 //            {
 //                print(UIFont.fontNamesForFamilyName(name))
 //            }
-        }
+//        }
         
         return true
     }

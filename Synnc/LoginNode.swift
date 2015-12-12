@@ -22,6 +22,7 @@ class SeperatorNode : ASDisplayNode {
     var seperatorText : ASTextNode!
     
     deinit {
+        print("deinit SeperatorNode")
     }
     
     override init!() {
@@ -68,6 +69,7 @@ class ButtonHolder : ASDisplayNode {
     var seperatorNode : SeperatorNode!
     
     deinit {
+        print("deinit button holder")
     }
     
     override init!() {
@@ -75,7 +77,7 @@ class ButtonHolder : ASDisplayNode {
         
         var buttonHeight : CGFloat = 60
         
-        var screenSize = UIScreen.mainScreen().bounds.size
+        let screenSize = UIScreen.mainScreen().bounds.size
         if screenSize.height < 600 {
             buttonHeight = 44
         } else {
@@ -147,6 +149,7 @@ class FormSwitcherNode : ASDisplayNode {
     }
     
     deinit {
+        print("deinit FormSwitcherNode")
     }
     func didChangeState(){
         switch self.targetForm {
@@ -192,14 +195,13 @@ class FormSwitcherNode : ASDisplayNode {
 
 class SpinnerNode : ASDisplayNode {
     var spinnerHolder : ASDisplayNode!
-    var spinner : RTSpinKitView!
     var msgNode : ASTextNode!
     
     var userImageNode : ASNetworkImageNode!
     var userLoginMsgNode : ASTextNode!
     
     deinit {
-        print("sector")
+        print("deinit spinner node")
     }
     
     var loginStatusAnimatableProperty : POPAnimatableProperty {
@@ -244,18 +246,11 @@ class SpinnerNode : ASDisplayNode {
     var loginStatusAnimationProgress : CGFloat = 0 {
         didSet {
             let a = POPTransition(loginStatusAnimationProgress, startValue: 1, endValue: 0)
-//            spinner.alpha = a
             msgNode.alpha = a
             
-            let c = CGAffineTransformIdentity
-            let scale = CGAffineTransformScale(c, a, a)
-//            self.spinner.transform = scale
-            
-//            POPLayerSetScaleXY(self.spinnerHolder.layer, CGPointMake(a,a))
             POPLayerSetScaleXY(self.msgNode.layer, CGPointMake(a,a))
             
             let b = CGFloat(1-a)
-//            userImageNode.alpha = b
             userLoginMsgNode.alpha = b
             POPLayerSetScaleXY(self.userImageNode.layer, CGPointMake(b,b))
             POPLayerSetScaleXY(self.userLoginMsgNode.layer, CGPointMake(b,b))
@@ -314,18 +309,15 @@ class SpinnerNode : ASDisplayNode {
         self.spinnerHolder = ASDisplayNode()
         self.spinnerHolder.preferredFrameSize = CGSizeMake(75, 75)
         
-        self.spinner = RTSpinKitView(style: .StyleWave, color: UIColor.SynncColor(), spinnerSize: 50)
-        self.spinner.alpha = 0
-        
         msgNode = ASTextNode()
         msgNode.attributedString = NSAttributedString(string: "Rolling a joint..", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
         msgNode.spacingBefore = 20
         
         userImageNode = ASNetworkImageNode()
         userImageNode.alpha = 0
-//        userImageNode.image = UIImage(named: "texture")
         userImageNode.preferredFrameSize = CGSizeMake(75, 75)
         userImageNode.imageModificationBlock = {
+            [unowned self]
             img in
             UIGraphicsBeginImageContextWithOptions(img.size, false, UIScreen.mainScreen().scale);
             let rect = CGRectMake(0,0,img.size.width, img.size.height)
@@ -361,8 +353,6 @@ class SpinnerNode : ASDisplayNode {
     }
     override func didLoad() {
         super.didLoad()
-        
-        self.spinnerHolder.view.addSubview(spinner)
         POPLayerSetScaleXY(self.userImageNode.layer, CGPointMake(0,0))
         POPLayerSetScaleXY(self.userLoginMsgNode.layer, CGPointMake(0,0))
     }
@@ -384,7 +374,8 @@ class FormNode : ASDisplayNode {
     var formHolder : LSFormNode!
     
     deinit {
-//        print("shit")
+        print("deinit form node")
+        self.spinnerNode = nil
     }
     
     var serverCheckStatusAnimatableProperty : POPAnimatableProperty {
@@ -508,8 +499,6 @@ class FormNode : ASDisplayNode {
         }
     }
     
-    
-    
     override init!() {
         super.init()
         
@@ -585,6 +574,7 @@ class BackgroundNode : ASDisplayNode {
     var titleNode : ASTextNode!
     
     deinit {
+        print("deinit background node")
     }
     
     override init!() {
@@ -601,11 +591,8 @@ class BackgroundNode : ASDisplayNode {
     }
     override func layout() {
         super.layout()
-        
         self.logoHolder.position.x = self.calculatedSize.width - self.logoHolder.calculatedSize.width / 2
         self.logoHolder.position.y = self.titleNode.position.y
-        
-//        print("layout")
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let spacer = ASLayoutSpec()
@@ -630,7 +617,7 @@ class LoginNode : ASDisplayNode {
     var backgroundNode : BackgroundNode!
     
     deinit {
-//        print("deinit login node")
+        print("deinit login node")
     }
     
     override init!() {
@@ -710,5 +697,4 @@ class LoginNode : ASDisplayNode {
             self.backgroundNode.logoHolder.alpha = displayProgress
         }
     }
-//    var loginControllerHideAnimation
 }

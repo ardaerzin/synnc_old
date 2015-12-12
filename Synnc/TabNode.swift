@@ -26,8 +26,8 @@ class TabbarButton : ButtonNode {
         
         self.item = item
         
-        let normalImage = UIImage(named: item.image)!
-        let selectedImage = UIImage(named: item.image+"_selected")!
+        let normalImage = UIImage(named: item.imageName)!
+        let selectedImage = UIImage(named: item.imageName+"_selected")!
         
         setImage(normalImage, forState: ASButtonStateNormal)
         setImage(selectedImage, forState: ASButtonStateHighlighted)
@@ -54,21 +54,27 @@ class TabNode : ASDisplayNode {
     var blurView : UIVisualEffectView!
     var tabbarButtons : [TabbarButton] = []
     var tabbarNodes : [ASLayoutable] = []
-    let tabbarItems : [TabItem] = [
-        TabItem(image: "Home", title: "Home", subsections : ["Social", "Streams", "Recommended"], hasTitleIcon: true),
-        TabItem(image: "search_icon", title: "Search", subsections : ["Streams", "Users"], hasTitleIcon: true),
-        TabItem(image: "mystream_icon", title: "My Stream", subsections : [], hasTitleIcon: true),
-        TabItem(image: "playlists_icon", title: "Playlists", subsections : ["My Playlists", "Import Playlists"], hasTitleIcon: true),
-        TabItem(image: "user", title: "User", subsections : ["Profile", "Inbox", "Achievements"], hasTitleIcon: true),
-    ]
+    var tabbarItems : [TabItem] = []
+    
+    
+//    let tabbarItems : [TabItem] = [
+//        TabItem(image: "Home", title: "Home", subsections : ["Social", "Streams", "Recommended"], hasTitleIcon: true),
+//        TabItem(image: "search_icon", title: "Search", subsections : ["Streams", "Users"], hasTitleIcon: true),
+//        TabItem(image: "mystream_icon", title: "My Stream", subsections : [], hasTitleIcon: true),
+//        TabItem(image: "playlists_icon", title: "Playlists", subsections : ["My Playlists", "Import Playlists"], hasTitleIcon: true),
+//        TabItem(image: "user", title: "User", subsections : ["Profile", "Inbox", "Achievements"], hasTitleIcon: true),
+//    ]
+    
     var initiallyLoaded : Bool = false
 //    override func willEnterHierarchy() {
 //        super.willEnterHierarchy()
 //        self.selectedButton = self.tabbarButtons.first!
 //    }
-    override init!() {
+    
+    init(tabbarItems : [TabItem]) {
         super.init()
         self.alignSelf = .Stretch
+        self.tabbarItems = tabbarItems
         
         for (index,item) in tabbarItems.enumerate() {
             
@@ -93,7 +99,6 @@ class TabNode : ASDisplayNode {
             }
         }
     }
-    
     var selectedTabItem : TabItem? {
         get {
             return self.selectedButton?.item

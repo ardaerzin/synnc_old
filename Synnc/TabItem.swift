@@ -14,37 +14,60 @@ import AsyncDisplayKit
 import pop
 import SpinKit
 import WCLUserManager
-import DeviceKit
 
-func ==(lhs: TabItem, rhs: TabItem) -> Bool {
-    return lhs.title == rhs.title
+class TabSubsectionController : ASViewController {
+    internal var _title : String! {
+        get {
+            return "Subsection"
+        }
+    }
+    override var title : String! {
+        get {
+            return _title
+        }
+        set {
+        }
+    }
 }
 
-//class TabItemController : ASViewController, TabItemZa {
-//    var image : String!
-//    var subsections : [ASViewController]!
-//    var titleIcon : AnyObject?
-//    var selectedIndex : Int = 0
-//    var titleItem : AnyObject!
-//}
-//protocol TabItemZa {
-//    var image : String! {get set}
-//    var titleItem : AnyObject! {get set}
-//    var subsections : [ASViewController]! {get set}
-//    var titleIcon : AnyObject? {get set}
-//    var selectedIndex : Int {get set}
-//}
-
-class TabItem: Equatable {
-    var image : String!
-    var title : String!
-    var subsections : [String]!
-    var hasTitleIcon : Bool!
-    var selectedIndex : Int = 0
-    
-    init(image: String, title: String, subsections: [String], hasTitleIcon : Bool) {
-        self.image = image
-        self.title = title
-        self.subsections = subsections
+class TabItemController : ASViewController, TabItem {
+    var identifier : String! {
+        get {
+            return "id"
+        }
     }
+    var imageName : String! {
+        get {
+            return "hey"
+        }
+    }
+    internal var _subsections : [TabSubsectionController]!
+    var subsections : [TabSubsectionController]! {
+        get {
+            return []
+        }
+    }
+    internal var _titleItem : ASDisplayNode!
+    var titleItem : ASDisplayNode! {
+        get {
+            return nil
+        }
+    }
+    internal var _iconItem : ASDisplayNode!
+    var iconItem : ASDisplayNode! {
+        get {
+            return nil
+        }
+    }
+    final var selectedIndex : Int = 0
+    var titleAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 30)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.15]
+}
+@objc protocol TabItem {
+    var identifier : String! {get}
+    var imageName : String! {get}
+    
+    var titleItem : ASDisplayNode! {get}
+    var iconItem : ASDisplayNode! {get}
+    var subsections : [TabSubsectionController]! {get}
+    var selectedIndex : Int {get set}
 }

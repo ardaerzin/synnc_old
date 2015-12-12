@@ -24,11 +24,10 @@ class TabControllerNode : ASDisplayNode {
     var scrollNode : TabbarContentScroller!
     var item: TabItem!
     
-    override init!() {
-        
-        print("init")
+    init(items: [TabItem]) {
         super.init()
-        tabbar = TabNode()
+        
+        tabbar = TabNode(tabbarItems: items)
         tabbar.flexBasis = ASRelativeDimension(type: .Points, value: 50)
         
         headerNode = HeaderNode()
@@ -47,6 +46,28 @@ class TabControllerNode : ASDisplayNode {
         self.addSubnode(headerNode)
         self.addSubnode(tabbar)
     }
+    
+//    override init!() {
+//        super.init()
+////        tabbar = TabNode()
+//        tabbar.flexBasis = ASRelativeDimension(type: .Points, value: 50)
+//        
+//        headerNode = HeaderNode()
+//        headerNode.flexBasis = ASRelativeDimension(type: .Points, value: 130)
+//        
+//        self.scrollNode = TabbarContentScroller()
+//        self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+//        self.scrollNode.backgroundColor = UIColor.whiteColor()
+//        self.scrollNode.delegate = self
+//        
+//        self.headerNode.subSectionArea.delegate = self.scrollNode
+//        
+//        self.backgroundColor = UIColor.whiteColor()
+//        
+//        self.addSubnode(scrollNode)
+//        self.addSubnode(headerNode)
+//        self.addSubnode(tabbar)
+//    }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let spacer = ASLayoutSpec()

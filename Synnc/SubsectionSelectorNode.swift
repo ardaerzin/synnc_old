@@ -36,8 +36,10 @@ class SubsectionButtonNode : ButtonNode {
         let normalAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.3), NSKernAttributeName : 0.17]
         let selectedAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.17]
         
-        self.normalTitle = NSAttributedString(string: item.subsections[index], attributes: normalAttributes)
-        self.selectedTitle = NSAttributedString(string: item.subsections[index], attributes: selectedAttributes)
+        self.minScale = 0.95
+        
+        self.normalTitle = NSAttributedString(string: item.subsections[index].title, attributes: normalAttributes)
+        self.selectedTitle = NSAttributedString(string: item.subsections[index].title, attributes: selectedAttributes)
         
         self.setAttributedTitle(normalTitle, forState: ASButtonStateNormal)
         self.setAttributedTitle(selectedTitle, forState: ASButtonStateHighlighted)
@@ -236,8 +238,7 @@ class SubsectionSelectorNode : ASDisplayNode {
         for (index,item) in tabItem.subsections.enumerate() {
             let button = SubsectionButtonNode(item: tabItem, index: index)
             button.addTarget(self, action: Selector("didSelectSubsection:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-            let title = NSAttributedString(string: item, attributes: self.titleAttributes)
-            
+            let title = NSAttributedString(string: item.title, attributes: self.titleAttributes)
             button.setAttributedTitle(title, forState: ASButtonStateNormal)
             button.flexGrow = true
             buttons.append(button)
