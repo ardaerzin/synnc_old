@@ -12,12 +12,14 @@ import Socket_IO_Client_Swift
 import TwitterKit
 import Fabric
 import DeviceKit
+import WCLDataManager
 
 extension UIColor {
     class func SynncColor() -> UIColor {
         return UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1)
     }
 }
+
 @UIApplicationMain
 class Synnc : UIResponder, UIApplicationDelegate {
     
@@ -25,6 +27,12 @@ class Synnc : UIResponder, UIApplicationDelegate {
     var socket: SocketIOClient!
     var device = Device()
     var window: UIWindow?
+    
+    var moc : NSManagedObjectContext {
+        get {
+            return WildDataManager.sharedInstance().coreDataStack.getMainContext()
+        }
+    }
     
     class var sharedInstance : Synnc {
         get {
@@ -34,7 +42,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
     
     override init() {
         super.init()
-        
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Twitter.sharedInstance()])
         
@@ -42,71 +49,28 @@ class Synnc : UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // [Optional] Power your app with Local Datastore. For more info, go to
-        // https://parse.com/docs/ios_guide#localdatastore/iOS
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
+        SPTAuth.defaultInstance().sessionUserDefaultsKey = "SynncSPT"
+        SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
+        SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://ivory-yes.codio.io:9500/refresh")
+        SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://ivory-yes.codio.io:9500/swap")
+        SPTAuth.defaultInstance().redirectURL = NSURL(string: "synnc://callback")
+        SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserReadPrivateScope, SPTAuthStreamingScope]
         
+        WildDataManager.sharedInstance().setCoreDataStack(dbName: "SynncDB", modelName: "SynncDataModel", bundle: nil, iCloudSync: false)
         
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.user = MainUser(socket: self.socket)
         
+        //Notifications
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "", name: <#T##String?#>, object: <#T##AnyObject?#>)
+        
         //Initialize rootViewController for main window
-//        let a = BackgroundViewController()
-//        let b = MainMapStripController(backgroundController: a)
-//        
-//        
-//        self.menuController = MenuViewController()
         self.window?.rootViewController = RootViewController()
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
-//
-//        let window = WCLWindowManager.sharedInstance.newWindow(b, animated: false, options: WCLWindowOptions(link: true, drag: true, limit: 315))
-//        if let x = window.rootViewController as? WCLWindowRootVC {
-//            x.navigationBarHidden = true
-//        }
-        
-//        window.layer.shadowPath = UIBezierPath(rect: CGRectMake(0, 0, window.bounds.width + 50, window.bounds.height)).CGPath
-//        
-//        window.layer.shadowColor = UIColor.blackColor().CGColor
-//        window.layer.shadowOpacity = 0.5
-//        window.layer.shadowRadius = 5
-//        window.layer.shadowOffset = CGSizeMake(-20, -5)
-        
-//        window.dismissButton.alpha = 0
-//        self.user = MainUser(alternatives: [.Facebook])
-//        self.user.needsToNotify = true
-//        
-//        if !self.user.status {
-//            let lc = LoginController(callback: { (status) -> Void in
-//                if status {
-//                    b.updateUIForUser()
-//                }
-//            })
-//            
-//            let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: false)
-//            let x = WCLPopupViewController(nibName: nil, bundle: nil, options: opts, size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
-//            x.addChildViewController(lc)
-//            lc.view.frame = x.view.bounds
-//            x.view.addSubview(lc.view)
-//            lc.didMoveToParentViewController(x)
-//            
-//            x.view.backgroundColor = UIColor.redColor()
-//            WCLPopupManager.sharedInstance.newPopup(x)
-//            
-//        } else {
-//            menuController.updateForUser()
-//        }
-        
-//        for name in UIFont.familyNames() {
-//            print("*!*!*!*!**!*!*!")
-//            print(name)
-//            if let nameString = name as? String
-//            {
-//                print(UIFont.fontNamesForFamilyName(name))
-//            }
-//        }
         
         return true
     }

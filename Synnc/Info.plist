@@ -25,9 +25,12 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.wildcardlabs.Synnc</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb670404233105871</string>
+				<string>Synnc</string>
 			</array>
 		</dict>
 	</array>
