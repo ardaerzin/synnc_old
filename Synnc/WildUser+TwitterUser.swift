@@ -68,7 +68,6 @@ class WildTwitterUser : WCLUserExtension {
     //Mark: Protocol Functions
     override func socialLogin() {
         self.loginWithTwitter()
-//        self.loginWithSpotify()
     }
     override func socialLogout() {
         self.logoutTwitterSession()
@@ -123,28 +122,8 @@ class WildTwitterUser : WCLUserExtension {
     private func loginWithTwitter(){
         
         Twitter.sharedInstance().logInWithViewController(nil) { (session, error) -> Void in
-            if let sess = session {
-//                self.accessToke
-                self.loadTwitterSession()
-            }
+            self.loadTwitterSession()
         }
-//        let loginViewController = SPTAuthViewController.authenticationViewController()
-//        //        SpotifyLoginViewController(nibName: "SpotifyLoginView", bundle: nil)
-//        //        SPTAuthViewController.authenticationViewController()
-//        
-//        loginViewController.delegate = self
-//        loginViewController.modalPresentationStyle = .OverFullScreen
-//        
-//        //root view controller for presenting loginViewController
-//        let rootViewController = UIApplication.sharedApplication().delegate?.window!!.rootViewController
-//        
-//        //present loginViewController
-//        let x = rootViewController?.presentedViewController
-//        if x == nil {
-//            rootViewController?.presentViewController(loginViewController, animated: true, completion: nil)
-//        } else {
-//            x!.presentViewController(loginViewController, animated: true, completion: nil)
-//        }
     }
     
     //Mark: Logout
@@ -167,22 +146,10 @@ class WildTwitterUser : WCLUserExtension {
         //        self.accessToken = nil
         //        SPTAuth.defaultInstance()
     }
-    
-//    lazy var spotifyQueue:NSOperationQueue = {
-//        var queue = NSOperationQueue()
-//        queue.name = "Spotify queue"
-//        queue.maxConcurrentOperationCount = 1
-//        return queue
-//        }()
-    
+  
     internal func getUserTwitterProfile(){
-        print("TWTR CLIENT", twitterAPIClient)
         twitterAPIClient?.loadUserWithID(self.session.userID) { (user, err) -> Void in
-            print(user, err)
             self.profileInfo = user
-//            if let u = user {
-//                u
-//            }
         }
     }
     
@@ -196,17 +163,4 @@ class WildTwitterUser : WCLUserExtension {
         }
         super.loginStatusChanged()
     }
-    
-//    func authenticationViewController(authenticationViewController: SPTAuthViewController!, didFailToLogin error: NSError!) {
-//        self.loginStatus = false
-//    }
-//    func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
-//        
-//        self.accessToken = session.accessToken
-//        self.loginStatus = true
-//        
-//    }
-//    func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {
-//        self.loginStatus = false
-//    }
 }

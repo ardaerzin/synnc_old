@@ -29,7 +29,7 @@ class TabbarContentScroller : ASScrollNode {
     var pageNodes : [ASLayoutable] = []
     var currentIndex : Int = -1 {
         didSet {
-            if currentIndex != oldValue {
+            if currentIndex != oldValue && currentIndex != -1 {
                 self.delegate?.didChangeCurrentIndex(currentIndex)
             }
         }
@@ -91,11 +91,12 @@ class TabbarContentScroller : ASScrollNode {
             item.removeFromSupernode()
         }
         self.pages = []
-        for (index,subsection) in item.subsections.enumerate() {
+        for (_,_) in item.subsections.enumerate() {
             let a = ASDisplayNode()
             self.addSubnode(a)
             self.pages.append(a)
         }
+        self.currentIndex = item.selectedIndex
         self.updatePositionAnimation.toValue = CGFloat(item.selectedIndex) * self.calculatedSize.width
         self.setNeedsLayout()
     }
@@ -139,9 +140,6 @@ extension TabbarContentScroller : UIScrollViewDelegate {
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let ratio = self.view.contentOffset.x / (self.view.contentSize.width - self.calculatedSize.width)
-        let xPosition = scrollView.contentOffset.x;
-        let fractionalPage = CGFloat(xPosition / scrollView.frame.size.width)
-        
         if !isUpdating {
             self.delegate?.didScrollToRatio(ratio)
         }
