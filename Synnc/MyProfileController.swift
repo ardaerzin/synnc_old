@@ -13,12 +13,4 @@ class MyProfileController : TabSubsectionController {
     override var _title : String! {
         return "Profile"
     }
-    init(){
-        let node = ASDisplayNode()
-        super.init(node: node)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

@@ -6,32 +6,24 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="v" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
-    <entity name="SynncPlaylist" representedClassName="Playlist" syncable="YES">
+    <entity name="SynncPlaylist" representedClassName="SynncPlaylist" syncable="YES">
+        <attribute name="cover_url" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="last_update" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" spotlightIndexingEnabled="YES" syncable="YES"/>
+        <attribute name="songs" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES">
+            <userInfo>
+                <entry key="className" value="SynncTrack"/>
+            </userInfo>
+        </attribute>
         <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sources" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="user" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="v" optional="YES" attributeType="Integer 16" defaultValueString="-1" syncable="YES"/>
-        <relationship name="songs" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SynncSong" inverseName="playlists" inverseEntity="SynncSong" syncable="YES"/>
-    </entity>
-    <entity name="SynncSong" representedClassName="Song" syncable="YES">
-        <attribute name="artist" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
-        <attribute name="artwork_url" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="info" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="song_id" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="streamUrl" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="waveform_url" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="playlists" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SynncPlaylist" inverseName="songs" inverseEntity="SynncPlaylist" syncable="YES"/>
     </entity>
     <elements>
         <element name="Genre" positionX="-56" positionY="30" width="128" height="105"/>
-        <element name="SynncPlaylist" positionX="54" positionY="162" width="128" height="180"/>
-        <element name="SynncSong" positionX="-189" positionY="162" width="128" height="195"/>
+        <element name="SynncPlaylist" positionX="54" positionY="162" width="128" height="195"/>
     </elements>
 </model>

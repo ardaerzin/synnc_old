@@ -27,7 +27,7 @@ pod 'Fabric'
 pod 'TwitterKit'
 pod 'TwitterCore'
 pod 'DeviceKit'
-
+pod 'DKImagePickerController'
 
 end
 

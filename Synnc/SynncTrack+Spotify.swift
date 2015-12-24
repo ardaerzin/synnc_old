@@ -29,7 +29,7 @@ extension SynncTrack {
         
         var artists : [SynncArtist] = []
         for artistData in track.artists {
-            let artist = SynncArtist.spotifyArtist(artistData)
+            let artist = SynncArtist.create(artistData, source: .Spotify)
             artists.append(artist)
         }
         self.artists = artists

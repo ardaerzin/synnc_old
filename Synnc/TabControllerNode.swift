@@ -16,12 +16,41 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 
+extension ASDisplayNode {
+    var tabControllerNode : TabControllerNode! {
+        get {
+            if let tb = self as? TabControllerNode {
+                return tb
+            } else if let sn = self.supernode {
+                return sn.tabControllerNode
+            } else {
+                return nil
+            }
+        }
+    }
+}
+
+class NavigationHolderNode : ASDisplayNode {
+    override func hitTest(point: CGPoint, withEvent event: UIEvent!) -> UIView! {
+        
+        if let ht = super.hitTest(point, withEvent: event) {
+            if ht == self.view {
+                return nil
+            } else {
+                return ht
+            }
+        }
+        return nil
+    }
+}
+
 class TabControllerNode : ASDisplayNode {
     
     var tabbar : TabNode!
     var headerNode : HeaderNode!
-    var blurView : UIVisualEffectView!
+    
     var scrollNode : TabbarContentScroller!
+    var navigationNode : NavigationHolderNode!
     var item: TabItem!
     
     init(items: [TabItem]) {
@@ -33,10 +62,15 @@ class TabControllerNode : ASDisplayNode {
         headerNode = HeaderNode()
         headerNode.flexBasis = ASRelativeDimension(type: .Points, value: 130)
         
-        self.scrollNode = TabbarContentScroller()
-        self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        self.scrollNode.backgroundColor = UIColor.whiteColor()
-        self.scrollNode.delegate = self
+        navigationNode = NavigationHolderNode()
+//        navigationNode.backgroundColor = .purpleColor()
+        
+        navigationNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+        
+        scrollNode = TabbarContentScroller()
+        scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+        scrollNode.backgroundColor = UIColor.whiteColor()
+        scrollNode.delegate = self
         
         self.headerNode.subSectionArea.delegate = self.scrollNode
         
@@ -44,39 +78,30 @@ class TabControllerNode : ASDisplayNode {
         
         self.addSubnode(scrollNode)
         self.addSubnode(headerNode)
+        self.addSubnode(navigationNode)
         self.addSubnode(tabbar)
     }
     
-//    override init!() {
-//        super.init()
-////        tabbar = TabNode()
-//        tabbar.flexBasis = ASRelativeDimension(type: .Points, value: 50)
-//        
-//        headerNode = HeaderNode()
-//        headerNode.flexBasis = ASRelativeDimension(type: .Points, value: 130)
-//        
-//        self.scrollNode = TabbarContentScroller()
-//        self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-//        self.scrollNode.backgroundColor = UIColor.whiteColor()
-//        self.scrollNode.delegate = self
-//        
-//        self.headerNode.subSectionArea.delegate = self.scrollNode
-//        
-//        self.backgroundColor = UIColor.whiteColor()
-//        
-//        self.addSubnode(scrollNode)
-//        self.addSubnode(headerNode)
-//        self.addSubnode(tabbar)
-//    }
-    
+    override func layout() {
+        super.layout()
+        
+        self.tabbar.position.y = self.calculatedSize.height - (self.tabbar.calculatedSize.height / 2)
+    }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
         let subsectionCount = item != nil ? item.subsections.count : 0
         self.scrollNode.view.contentSize = CGSizeMake(constrainedSize.max.width * CGFloat(subsectionCount), constrainedSize.max.height)
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerNode, spacer, tabbar])
-        return ASBackgroundLayoutSpec(child: a, background: self.scrollNode)
+        return ASStaticLayoutSpec(children: [self.headerNode, self.tabbar, self.scrollNode, self.navigationNode])
+        
+//        let subsectionCount = item != nil ? item.subsections.count : 0
+//        self.scrollNode.view.contentSize = CGSizeMake(constrainedSize.max.width * CGFloat(subsectionCount), constrainedSize.max.height)
+//        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerNode, spacer, tabbar])
+//        
+//        let c = ASStaticLayoutSpec(children: [ASBackgroundLayoutSpec(child: a, background: self.scrollNode), navigationNode])
+//        return c
+//            ASBackgroundLayoutSpec(child: a, background: self.scrollNode)
     }
 }
 

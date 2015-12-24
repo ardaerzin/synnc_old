@@ -28,14 +28,14 @@ public extension WCLUser {
         get {
             if self.userExtension(.Twitter) == nil {
                 
-                self.setExtension(WildTwitterUser(), type: .Twitter)
+                self.setExtension(WildTwitterUser(options: []), type: .Twitter)
             }
             return self.userExtension(.Twitter)
         }
         set {
             if newValue != nil {
                 if self.userExtension(.Twitter) == nil {
-                    self.setExtension(WildTwitterUser(), type: .Twitter)
+                    self.setExtension(WildTwitterUser(options: []), type: .Twitter)
                 }
                 self.userExtension(.Twitter)!.profileInfo = newValue
             }
@@ -62,6 +62,10 @@ class WildTwitterUser : WCLUserExtension {
     required init(options : [WCLUserExtensionOptions] = []) {
         super.init(options: options)
         self.type = .Twitter
+    }
+
+    required init() {
+        fatalError("init() has not been implemented")
     }
     
     

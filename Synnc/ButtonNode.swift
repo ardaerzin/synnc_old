@@ -161,7 +161,7 @@ class ButtonNode : ASButtonNode {
         }
     }
     
-    init(normalColor : UIColor, selectedColor : UIColor) {
+    init(normalColor : UIColor? = .clearColor(), selectedColor : UIColor? = .clearColor()) {
         super.init()
         
         self.normalBgColor = normalColor

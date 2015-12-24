@@ -26,7 +26,7 @@ class LoginViewController : ASViewController {
         }
     }
     deinit {
-        print("deinit login view controller")
+//        print("deinit login view controller")
     }
     init(){
         let node = LoginNode()

@@ -16,6 +16,10 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 
+protocol TabbarContentLoaderDelegate {
+    func loadSubsections(item: TabItem, inScroller scroller : TabbarContentScroller)
+}
+
 protocol TabbarContentScrollerDelegate {
     func beganScrolling()
     func didScrollToRatio(ratio : CGFloat)
@@ -24,6 +28,7 @@ protocol TabbarContentScrollerDelegate {
 
 class TabbarContentScroller : ASScrollNode {
     
+    var contentDelegate : TabbarContentLoaderDelegate?
     var delegate : TabbarContentScrollerDelegate?
     var pages : [ASDisplayNode] = []
     var pageNodes : [ASLayoutable] = []
@@ -87,16 +92,14 @@ class TabbarContentScroller : ASScrollNode {
     
     
     func updateForItem(item: TabItem){
-        for item in pages {
-            item.removeFromSupernode()
+        for page in pages {
+//            page.
+            page.removeFromSupernode()
+//            item
         }
         self.pages = []
-        for (_,_) in item.subsections.enumerate() {
-            let a = ASDisplayNode()
-            self.addSubnode(a)
-            self.pages.append(a)
-        }
-        self.currentIndex = item.selectedIndex
+        
+        self.contentDelegate?.loadSubsections(item, inScroller: self)
         self.updatePositionAnimation.toValue = CGFloat(item.selectedIndex) * self.calculatedSize.width
         self.setNeedsLayout()
     }
@@ -109,6 +112,7 @@ class TabbarContentScroller : ASScrollNode {
         super.didLoad()
         self.view.pagingEnabled = true
         self.view.delegate = self
+        self.view.delaysContentTouches = false
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {

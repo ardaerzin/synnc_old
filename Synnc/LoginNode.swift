@@ -22,7 +22,7 @@ class SeperatorNode : ASDisplayNode {
     var seperatorText : ASTextNode!
     
     deinit {
-        print("deinit SeperatorNode")
+//        print("deinit SeperatorNode")
     }
     
     override init!() {
@@ -69,7 +69,7 @@ class ButtonHolder : ASDisplayNode {
     var seperatorNode : SeperatorNode!
     
     deinit {
-        print("deinit button holder")
+//        print("deinit button holder")
     }
     
     override init!() {
@@ -149,7 +149,7 @@ class FormSwitcherNode : ASDisplayNode {
     }
     
     deinit {
-        print("deinit FormSwitcherNode")
+//        print("deinit FormSwitcherNode")
     }
     func didChangeState(){
         switch self.targetForm {
@@ -201,7 +201,7 @@ class SpinnerNode : ASDisplayNode {
     var userLoginMsgNode : ASTextNode!
     
     deinit {
-        print("deinit spinner node")
+//        print("deinit spinner node")
     }
     
     var loginStatusAnimatableProperty : POPAnimatableProperty {
@@ -374,7 +374,7 @@ class FormNode : ASDisplayNode {
     var formHolder : LSFormNode!
     
     deinit {
-        print("deinit form node")
+//        print("deinit form node")
         self.spinnerNode = nil
     }
     
@@ -574,7 +574,7 @@ class BackgroundNode : ASDisplayNode {
     var titleNode : ASTextNode!
     
     deinit {
-        print("deinit background node")
+//        print("deinit background node")
     }
     
     override init!() {
@@ -617,7 +617,7 @@ class LoginNode : ASDisplayNode {
     var backgroundNode : BackgroundNode!
     
     deinit {
-        print("deinit login node")
+//        print("deinit login node")
     }
     
     override init!() {

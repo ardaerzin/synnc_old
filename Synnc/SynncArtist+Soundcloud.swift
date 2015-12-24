@@ -11,12 +11,21 @@ import WCLSoundCloudKit
 import SwiftyJSON
 
 extension SynncArtist {
-    class func soundcloudArtist(data : AnyObject?) -> SynncArtist {
-        let artist = SynncArtist()
-        artist.parseSoundcloud(data)
-        return artist
+//    class func soundcloudArtist(data : AnyObject?) -> SynncArtist {
+//        let artist = SynncArtist()
+//        artist.parseSoundcloud(data)
+//        return artist
+//    }
+    
+    internal class func soundcloudIdFromData(data: AnyObject) -> String {
+        var id : String = ""
+        if let x = JSON(data)["id"].int {
+            id = "\(x)"
+        }
+        return id
     }
-    private func parseSoundcloud(data : AnyObject?) {
+    
+    internal func parseSoundcloud(data : AnyObject?) {
         guard let d = data else {
             print("soundcloud user data is nil")
             return
@@ -26,9 +35,13 @@ extension SynncArtist {
             assertionFailure("JSON for soundcloud Track is not a valid one")
         }
         
-        let id = json["id"].int
-        self.source = .Soundcloud
-        self.id = "\(id)"
+        if let idNo = json["id"].int {
+            self.id = "\(idNo)"
+        } else if let idStr = json["id"].string {
+            self.id = idStr
+        }
+        
+        self.source = SynncExternalSource.Soundcloud.rawValue
         self.name = json["username"].string
         self.avatar = json["avatar_url"].string
     }

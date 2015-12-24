@@ -18,6 +18,9 @@ import DeviceKit
 
 class PlaylistsController : TabItemController {
     
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
     override var identifier : String! {
         return "PlaylistsController"
     }
@@ -50,9 +53,45 @@ class PlaylistsController : TabItemController {
                 item.imageNode.contentMode = UIViewContentMode.ScaleAspectFit
                 item.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(34, 34))
                 item.setImage(UIImage(named: "add_playlist")?.resizeImage(usingWidth: 20), forState: ASButtonStateNormal)
+                item.addTarget(self.myPlaylistsController, action: Selector("newPlaylistAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+                
                 _iconItem = item
             }
             return _iconItem
         }
+    }
+    
+    var myPlaylistsController : MyPlaylistsController! {
+        return self.subsections[0] as! MyPlaylistsController
+    }
+    
+    override init(){
+        let node = NavigationHolderNode()
+        super.init(node: node)
+    }
+    override func willBecomeActiveTab() {
+        super.willBecomeActiveTab()
+        SharedPlaylistDataSource.delegate = self
+        if SharedPlaylistDataSource.allItems.isEmpty {
+            self.iconItem.alpha = 0
+        }
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension PlaylistsController : PlaylistsDataSourceDelegate {
+    func playlistsDataSource(addedItem item: SynncPlaylist, newIndexPath indexPath: NSIndexPath) {
+        myPlaylistsController.playlistsDataSource(addedItem: item, newIndexPath: indexPath)
+    }
+    func playlistsDataSource(removedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath) {
+        myPlaylistsController.playlistsDataSource(removedItem: item, fromIndexPath: indexPath)
+    }
+    func playlistsDataSource(updatedItem item: SynncPlaylist, atIndexPath indexPath: NSIndexPath) {
+        myPlaylistsController.playlistsDataSource(updatedItem: item, atIndexPath: indexPath)
+    }
+    func playlistsDataSource(movedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
+        myPlaylistsController.playlistsDataSource(movedItem: item, fromIndexPath: indexPath, toIndexPath: newIndexPath)
     }
 }

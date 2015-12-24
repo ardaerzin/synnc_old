@@ -12,7 +12,9 @@ import Socket_IO_Client_Swift
 import TwitterKit
 import Fabric
 import DeviceKit
+import WCLSoundCloudKit
 import WCLDataManager
+import Cloudinary
 
 extension UIColor {
     class func SynncColor() -> UIColor {
@@ -23,6 +25,7 @@ extension UIColor {
 @UIApplicationMain
 class Synnc : UIResponder, UIApplicationDelegate {
     
+    var imageUploader : CLUploader!
     var user : MainUser!
     var socket: SocketIOClient!
     var device = Device()
@@ -65,7 +68,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         self.user = MainUser(socket: self.socket)
         
         //Notifications
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "", name: <#T##String?#>, object: <#T##AnyObject?#>)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         
         //Initialize rootViewController for main window
         self.window?.rootViewController = RootViewController()
@@ -122,3 +125,17 @@ extension Synnc {
         }
     }
 }
+
+extension Synnc {
+    func userProfileInfoChanged(notification: NSNotification) {
+        if self.user._id != nil {
+            print("socket synnc now")
+            SynncPlaylist.socketSync(self.socket, inStack: nil, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
+        }
+    }
+}
+
+var SCEngine : WildSoundCloud = {
+    return  WildSoundCloud.sharedInstance()
+}()
+var _cloudinary = CLCloudinary(url: "cloudinary://326995197724877:tNcnWLiEn2oQJDrHIai_546rwrQ@dyl3itg0k")

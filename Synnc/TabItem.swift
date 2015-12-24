@@ -16,6 +16,8 @@ import SpinKit
 import WCLUserManager
 
 class TabSubsectionController : ASViewController {
+    
+    var screenNode : ASDisplayNode!
     internal var _title : String! {
         get {
             return "Subsection"
@@ -27,6 +29,23 @@ class TabSubsectionController : ASViewController {
         }
         set {
         }
+    }
+    init(){
+        let a = ASDisplayNode()
+        super.init(node: a)
+        a.backgroundColor = UIColor.whiteColor()
+        self.screenNode = a
+    }
+    override init!(node: ASDisplayNode!) {
+        super.init(node: node)
+        self.screenNode = node
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
     }
 }
 
@@ -41,7 +60,19 @@ class TabItemController : ASViewController, TabItem {
             return "hey"
         }
     }
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
     internal var _subsections : [TabSubsectionController]!
+        {
+        didSet {
+            if _subsections != nil {
+                for section in _subsections {
+                    self.addChildViewController(section)
+                }
+            }
+        }
+    }
     var subsections : [TabSubsectionController]! {
         get {
             return []
@@ -61,6 +92,24 @@ class TabItemController : ASViewController, TabItem {
     }
     final var selectedIndex : Int = 0
     var titleAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 30)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.15]
+    var screenNode : ASDisplayNode!
+    
+    init(){
+        let a = NavigationHolderNode()
+        super.init(node: a)
+        a.backgroundColor = UIColor.clearColor()
+        self.screenNode = a
+    }
+    override init!(node: ASDisplayNode!) {
+        super.init(node: node)
+        self.screenNode = node
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    func willBecomeActiveTab(){
+        
+    }
 }
 @objc protocol TabItem {
     var identifier : String! {get}

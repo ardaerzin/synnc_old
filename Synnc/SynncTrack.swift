@@ -1,9 +1,9 @@
 //
-//  Song.swift
-//  
+//  SynncTrack.swift
+//  Synnc
 //
-//  Created by Arda Erzin on 8/25/15.
-//
+//  Created by Arda Erzin on 12/15/15.
+//  Copyright © 2015 Arda Erzin. All rights reserved.
 //
 
 import Foundation
@@ -18,19 +18,51 @@ enum SynncExternalSource : String {
     case Spotify = "Spotify"
 }
 
-@objc (SynncTrack)
-class SynncTrack: NSManagedObject {
+class SynncTrackStore {
+    
+    var artists : [SynncArtist] = []
+    var tracks : [SynncTrack] = []
+    
+    class var sharedInstance : SynncTrackStore {
+        get {
+            return _sharedTrackStore
+        }
+    }
+}
 
-    @NSManaged var artwork_url: String?
-    @NSManaged var waveform_url: String?
-    @NSManaged var source: String
-    @NSManaged var id: String
-    @NSManaged var song_id: String
-    @NSManaged var info: AnyObject
-    @NSManaged var playlists: NSOrderedSet
-    @NSManaged var name: String?
-    @NSManaged var artists : [SynncArtist]!
-    @NSManaged var streamUrl : String!
+let _sharedTrackStore: SynncTrackStore = { SynncTrackStore() }()
+class SynncTrack: Serializable {
+    
+    var artwork_url: String?
+    var source: String!
+    var id: String!
+    var song_id: String!
+    var info: AnyObject!
+//    var playlists: NSOrderedSet
+    var name: String!
+    var artists : [SynncArtist]! = []
+    var streamUrl : String!
+    
+    required init() {
+        super.init()
+    }
+    required init(coder aDecoder: NSCoder) {
+        super.init()
+        let keys = self.propertyNames(classForCoder)
+        for key in keys {
+            if key != "artwork_url_large" {
+                self.setValue(aDecoder.decodeObjectForKey(key), forKey: key)
+            }
+        }
+    }
+    func encodeWithCoder(aCoder: NSCoder) {
+        let keys = self.propertyNames(classForCoder)
+        for key in keys {
+            if key != "artwork_url_large" {
+                aCoder.encodeObject(self.valueForKey(key), forKey: key)
+            }
+        }
+    }
     
     /// Computed Properties
     var artwork_url_large : String? {
@@ -51,21 +83,75 @@ class SynncTrack: NSManagedObject {
         }
         return id
     }
+    class func source(fromData data: JSON) -> SynncExternalSource? {
+        var source : SynncExternalSource!
+        if let srcStr = data["source"].string, let src = SynncExternalSource(rawValue: srcStr) {
+            return src
+        } else {
+            return nil
+        }
+    }
+    override func propertyNames(c: AnyClass) -> [String] {
+        if c != self.classForCoder {
+            return super.propertyNames(c)
+        } else {
+            var a = self.propertyList()
+            if let ind = a.indexOf("artwork_url_large") {
+                a.removeAtIndex(ind)
+            }
+            return a
+        }
+    }
+    
     class func create(data: AnyObject, source : SynncExternalSource) -> SynncTrack {
-        let song = SynncTrack.create(inContext: Synnc.sharedInstance.moc) as! SynncTrack
+//        let filtered = SynncTrackStore.sharedInstance.tracks.filter({
+//            track in
+//            
+//            return track.source == source.rawValue && track.song_id == id(fromData: data, type : source)
+//        })
+//        
+//        if let item = filtered.first {
+//            return item
+//        }
+        
+        let track = SynncTrack()
+        
+        
         switch source {
         case .Spotify:
-            song.createSpotifySong(data)
+            track.createSpotifySong(data)
         case .Soundcloud:
-            song.createSoundcloudSong(data)
+            track.createSoundcloudSong(data)
         }
-        return song
+        
+        SynncTrackStore.sharedInstance.tracks.append(track)
+        return track
     }
-    override func toJSON(keyArr: [String]!, populate: Bool) -> [String : AnyObject] {
-        var keys = self.propertyNames()
-        if let ind = keys.indexOf("playlists") {
-            keys.removeAtIndex(ind)
+  
+    
+    override func fromJSON(json: JSON) -> [String] {
+        let x = super.fromJSON(json)
+        
+        if let artistsArr = json["artists"].array {
+            var artists : [SynncArtist] = []
+            for item in artistsArr {
+                let x = SynncArtist()
+                x.fromJSON(item)
+//                print(item)
+//                let x = SynncArtist.create(item.object, source: SynncExternalSource(rawValue: self.source)!)
+//                print(x)
+                artists.append(x)
+//                print(x.name)
+            }
+            self.artists = artists
         }
-        return super.toJSON(keys, populate: populate)
+        return x
     }
+//    override func toJSON(keyArr: [String]!, populate: Bool) -> [String : AnyObject] {
+//        var keys = self.propertyNames()
+//        if let ind = keys.indexOf("playlists") {
+//            keys.removeAtIndex(ind)
+//        }
+//        return super.toJSON(keys, populate: populate)
+//    }
 }

@@ -63,20 +63,12 @@ class IconHolderNode : ASDisplayNode {
     }
     override func layout() {
         super.layout()
-        
-//        if let title = self.iconItem {
-//            title.position.x = (self.calculatedSize.width / 2) + 20
-//        }
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         if iconItem == nil {
             return ASLayoutSpec()
         } else {
-//            if let w = self.supernode?.calculatedSize.width,let h = self.supernode?.calculatedSize.height  {
-//                titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: w - 100), ASRelativeDimension(type: .Points, value: 33))
-//            }
-//            let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [titleItem])])
             return ASStaticLayoutSpec(children: [iconItem])
         }
     }
@@ -233,7 +225,6 @@ class HeaderNode : ASDisplayNode {
         self.iconHolderNode.position.x = (self.iconHolderNode.calculatedSize.width / 2) + 10
         self.iconHolderNode.position.y = self.titleHolderNode.position.y
         self.nowPlayingIcon.position.x = self.calculatedSize.width - (self.nowPlayingIcon.calculatedSize.width / 2)
-        
     }
     
     override func willEnterHierarchy() {

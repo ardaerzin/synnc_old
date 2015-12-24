@@ -26,7 +26,6 @@ extension SynncTrack {
         if json == nil && json.null != nil {
             assertionFailure("JSON for soundcloud Track is not a valid one")
         }
-        
         self.name = json["title"].string
         let x = json["id"].number!
         self.song_id = "\(x)"
@@ -35,11 +34,8 @@ extension SynncTrack {
         var u = json["user"]
         if u.null == nil {
             // Soundcloud only has 1 artist, which is the user
-            let artist = SynncArtist.soundcloudArtist(u.object)
+            let artist = SynncArtist.create(u.object, source: .Soundcloud)
             self.artists = [artist]
-        }
-        if let waveform = json["waveform_url"].string {
-            self.waveform_url = WildSoundCloud.appendAccessToken(waveform)
         }
         if let artwork = json["artwork_url"].string {
             self.artwork_url = WildSoundCloud.appendAccessToken(artwork)

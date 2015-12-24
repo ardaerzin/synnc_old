@@ -55,7 +55,7 @@ class MeController : TabItemController {
         }
     }
     
-    init(){
+    override init(){
         let node = ASDisplayNode()
         super.init(node: node)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)

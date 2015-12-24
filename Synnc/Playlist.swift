@@ -29,7 +29,8 @@ class SynncPlaylist: NSManagedObject {
     @NSManaged var source: String?
     @NSManaged var sources: [String]?
     @NSManaged var last_update: NSDate?
-    @NSManaged var songs: NSOrderedSet
+    @NSManaged var songs: [SynncTrack]
+    @NSManaged var cover_url: String?
     
     var delegate : PlaylistDelegate?
     var needsNotifySocket : Bool = false
@@ -45,7 +46,7 @@ class SynncPlaylist: NSManagedObject {
     }
     var coverImageURL : String! {
         get {
-            if let song = self.songs.firstObject as? SynncTrack {
+            if let song = self.songs.first {
                 if song.source == SynncExternalSource.Soundcloud.rawValue {
                     if let url = song.artwork_url {
                         return url.stringByReplacingOccurrencesOfString("large", withString: "t500x500", options: [], range: nil)
@@ -60,11 +61,11 @@ class SynncPlaylist: NSManagedObject {
     
     func allSources() -> [String] {
         var x : [String] = []
-        for song in self.songs.array as! [SynncTrack] {
-            let ind = x.indexOf(song.source)
-            if ind == nil {
-                x.append(song.source)
-            }
+        for song in self.songs {
+//            let ind = x.indexOf(song.source)
+//            if ind == nil {
+//                x.append(song.source)
+//            }
         }
         return x
     }

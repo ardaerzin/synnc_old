@@ -22,7 +22,8 @@ class TabbarButton : ButtonNode {
     var item : TabItem!
     
     init(item : TabItem) {
-        super.init(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
+        
+        super.init()
         
         self.item = item
         
@@ -55,22 +56,8 @@ class TabNode : ASDisplayNode {
     var tabbarButtons : [TabbarButton] = []
     var tabbarNodes : [ASLayoutable] = []
     var tabbarItems : [TabItem] = []
-    
-    
-//    let tabbarItems : [TabItem] = [
-//        TabItem(image: "Home", title: "Home", subsections : ["Social", "Streams", "Recommended"], hasTitleIcon: true),
-//        TabItem(image: "search_icon", title: "Search", subsections : ["Streams", "Users"], hasTitleIcon: true),
-//        TabItem(image: "mystream_icon", title: "My Stream", subsections : [], hasTitleIcon: true),
-//        TabItem(image: "playlists_icon", title: "Playlists", subsections : ["My Playlists", "Import Playlists"], hasTitleIcon: true),
-//        TabItem(image: "user", title: "User", subsections : ["Profile", "Inbox", "Achievements"], hasTitleIcon: true),
-//    ]
-    
-    var initiallyLoaded : Bool = false
-//    override func willEnterHierarchy() {
-//        super.willEnterHierarchy()
-//        self.selectedButton = self.tabbarButtons.first!
-//    }
-    
+
+    var initiallyLoaded : Bool = false    
     init(tabbarItems : [TabItem]) {
         super.init()
         self.alignSelf = .Stretch

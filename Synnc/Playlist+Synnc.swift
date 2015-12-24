@@ -15,6 +15,34 @@ extension SynncPlaylist {
         self.createdAt = NSDate()
     }
     
+    func indexOf(track : SynncTrack) -> Int? {
+        let x = self.songs.filter{
+            t in
+            return t.source == track.source && t.song_id == track.song_id
+        }
+        
+        if let t = x.first {
+            return self.songs.indexOf(t)
+        } else {
+            return nil
+        }
+    }
+//
+//    func findTrack(track : SynncTrack) -> SynncTrack {
+//        let x = self.songs.filter{
+//            t in
+//            return t.source == track.source && t.song_id == track.song_id
+//        }
+//        return x.first
+//    }
+    func hasTrack(track : SynncTrack) -> Bool {
+        let x = self.songs.filter{
+            t in
+            return t.source == track.source && t.song_id == track.song_id
+        }
+        return !x.isEmpty
+    }
+    
     /**
     Adds songs to the playlist
     
@@ -24,10 +52,10 @@ extension SynncPlaylist {
         if songArr.isEmpty {
             return
         }
+    
+        var previousLastIndex = self.songs.count-1
         
-        let arr = self.mutableOrderedSetValueForKey("songs")
-        var previousLastIndex = arr.count-1
-        arr.addObjectsFromArray(songArr)
+        self.songs += songArr
         var indexPaths : [NSIndexPath] = []
         
         for _ in songArr {
@@ -46,14 +74,18 @@ extension SynncPlaylist {
         if songArr.isEmpty {
             return
         }
-        let arr = self.mutableOrderedSetValueForKey("songs")
+        
+        var songsToDelete : [SynncTrack] = []
         var indexPaths : [NSIndexPath] = []
         for song in songArr {
-            let ind = arr.indexOfObject(song)
-            indexPaths.append(NSIndexPath(forItem: ind, inSection: 0))
+            if let ind = self.indexOf(song) {
+                self.songs.removeAtIndex(ind)
+                indexPaths.append(NSIndexPath(forItem: ind, inSection: 0))
+            }
         }
         
-        self.removeSongs(atIndexPaths: indexPaths)
+        NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["removedSongs" : ["songs" : [], "indexPaths" : indexPaths]])
+//        self.removeSongs(atIndexPaths: indexPaths)
     }
     
     /**
@@ -68,18 +100,21 @@ extension SynncPlaylist {
     
         let indexes = NSMutableIndexSet()
         for index in indexPaths {
-            indexes.addIndex(index.item)
+//            indexes.addIndex(index.item)
         }
         
-        self.removeSongs(indexes, indexPaths: indexPaths)
+//        NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["removedSongs" : ["songs" : [], "indexPaths" : indexPaths]])
+//        self.removeSongs(indexes, indexPaths: indexPaths)
     }
     
-    internal func removeSongs(indexSet : NSMutableIndexSet, indexPaths: [NSIndexPath]){
-        let arr = self.mutableOrderedSetValueForKey("songs")
-        arr.removeObjectsAtIndexes(indexSet)
-        
-        NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["removedSongs" : ["songs" : [], "indexPaths" : indexPaths]])
-    }
+//    internal func removeSongs(indexSet : NSMutableIndexSet, indexPaths: [NSIndexPath]){
+//        let arr = self.mutableOrderedSetValueForKey("songs")
+//        arr.removeObjectsAtIndexes(indexSet)
+//        
+////        self.songs.remo
+//        
+//        NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["removedSongs" : ["songs" : [], "indexPaths" : indexPaths]])
+//    }
     
     /**
     Changes track index in a playlist
@@ -88,8 +123,14 @@ extension SynncPlaylist {
     :param: toIndexPath   Target index path of the track after the change
     */
     func moveSong(fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath){
-        let arr = self.mutableOrderedSetValueForKey("songs")
-        arr.moveObjectsAtIndexes(NSIndexSet(index: fromIndexPath.item), toIndex: toIndexPath.item)
+        
+        
+        let song = self.songs.removeAtIndex(fromIndexPath.item)
+        self.songs.insert(song, atIndex: toIndexPath.item)
+//        self.songs.
+//        self.songs.
+//        let arr = self.mutableOrderedSetValueForKey("songs")
+//        arr.moveObjectsAtIndexes(NSIndexSet(index: fromIndexPath.item), toIndex: toIndexPath.item)
     }
     
     
@@ -97,13 +138,10 @@ extension SynncPlaylist {
         super.didSave()
         
         if self.managedObjectContext == Synnc.sharedInstance.moc {
-            print("did save playlist. changed vals: \(self.changedValuesForCurrentEvent())")
             let msg = self.id == nil ? "create" : "update"
-            
             if needsNotifySocket {
-                Synnc.sharedInstance.socket.emitWithAck("Playlist:\(msg)", self.toJSON(nil, populate: true)) (timeoutAfter: 0) {
+                Synnc.sharedInstance.socket.emitWithAck("SynncPlaylist:\(msg)", self.toJSON(nil, populate: true)) (timeoutAfter: 0) {
                     ack in
-                    print("playlist \(msg) message ack")
                     if let data: AnyObject = ack.first {
                         let json = JSON(data)
                         self.parseFromJSON(self.managedObjectContext!, json: json)
