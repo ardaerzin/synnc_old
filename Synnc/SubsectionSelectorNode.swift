@@ -81,118 +81,14 @@ class SubsectionSelectorNode : ASDisplayNode {
     var sectionIndicator : ASDisplayNode!
     var delegate : SubsectionSelectorDelegate?
     
-    override func layoutDidFinish() {
-        super.layoutDidFinish()
-    }
-   
-//    var colors = [UIColor.blueColor(), UIColor.greenColor(), UIColor.orangeColor()]
-    
-    
-    /**
-    Animation Progress Values
-    */
-    var indicatorWidthAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("indicatorWidthAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! SubsectionSelectorNode).indicatorWidthAnimationProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! SubsectionSelectorNode).indicatorWidthAnimationProgress = values[0]
-                }
-                prop.threshold = 0.01
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var indicatorWidthAnimation : POPSpringAnimation {
-        get {
-            if let anim = self.pop_animationForKey("indicatorWidthAnimation") {
-                return anim as! POPSpringAnimation
-            } else {
-                let x = POPSpringAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    self.pop_removeAnimationForKey("indicatorWidthAnimation")
-                }
-                x.springBounciness = 0
-                x.property = self.indicatorWidthAnimatableProperty
-                self.pop_addAnimation(x, forKey: "indicatorWidthAnimation")
-                return x
-            }
-        }
-    }
-    var indicatorWidthAnimationProgress : CGFloat = 1 {
-        didSet {
-            POPLayerSetScaleX(self.sectionIndicator.layer, indicatorWidthAnimationProgress)
-        }
-    }
-    
-    
-    
-    
-    /**
-    Animation Progress Values
-    */
-    var indicatorPositionAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("indicatorPositionAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! SubsectionSelectorNode).indicatorPositionAnimationProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! SubsectionSelectorNode).indicatorPositionAnimationProgress = values[0]
-                }
-                prop.threshold = 0.01
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var indicatorPositionAnimation : POPSpringAnimation {
-        get {
-            if let anim = self.pop_animationForKey("indicatorPositionAnimation") {
-                return anim as! POPSpringAnimation
-            } else {
-                let x = POPSpringAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    self.pop_removeAnimationForKey("indicatorPositionAnimation")
-                }
-                x.springBounciness = 0
-                x.property = self.indicatorPositionAnimatableProperty
-                self.pop_addAnimation(x, forKey: "indicatorPositionAnimation")
-                return x
-            }
-        }
-    }
-    var indicatorPositionAnimationProgress : CGFloat! {
-        didSet {
-            let a = POPTransition(indicatorPositionAnimationProgress, startValue: minX, endValue: maxX)
-            self.currentIndicatorPosition = a
-        }
-    }
     var currentIndicatorPosition : CGFloat = 0 {
         didSet {
             POPLayerSetTranslationX(self.sectionIndicator.layer, currentIndicatorPosition)
         }
     }
+    
     var minX : CGFloat!
     var maxX : CGFloat!
-    
     
     override init!() {
         super.init()
@@ -207,24 +103,9 @@ class SubsectionSelectorNode : ASDisplayNode {
     func updateIndicator(tabItem: TabItem) {
         let subSectionCount = tabItem.subsections.count
         if subSectionCount > 0 {
-            self.indicatorWidthAnimation.toValue = 1.0 / CGFloat(subSectionCount)
-            
-            let width = self.calculatedSize.width
-            let x = (width / CGFloat(subSectionCount)) / 2
-            
-            let currentPos = width / 2
-            self.minX = x - currentPos
-            self.maxX = (width - x) - currentPos
-            let z = CGFloat(tabItem.selectedIndex) / CGFloat(subSectionCount - 1)
-            
-            if self.indicatorPositionAnimationProgress == nil {
-                self.indicatorPositionAnimationProgress = 0.5
-            } else {
-                self.indicatorPositionAnimationProgress = POPProgress(self.currentIndicatorPosition, startValue: minX, endValue: maxX)
-            }
-            self.indicatorPositionAnimation.toValue = z
+            POPLayerSetScaleX(self.sectionIndicator.layer, 1.0 / CGFloat(subSectionCount))
         } else {
-            self.indicatorWidthAnimation.toValue = 0
+            POPLayerSetScaleX(self.sectionIndicator.layer, 0)
         }
     }
     func updateButtons(tabItem: TabItem) {
@@ -265,6 +146,19 @@ class SubsectionSelectorNode : ASDisplayNode {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: subSectionNodes)
+        
+        if self.minX == nil {
+            let width = constrainedSize.max.width
+            let c = (width / CGFloat(self.subSectionButtons.count)) / 2
+            let currentPos = width / 2
+            
+            self.minX = c - currentPos
+            self.maxX = (width - c) - currentPos
+            
+            let a = POPTransition(CGFloat(self.selectedSubsectionIndex) / CGFloat(self.subSectionButtons.count - 1), startValue: minX, endValue: maxX)
+            self.currentIndicatorPosition = a
+        }
+        
         return ASStaticLayoutSpec(children: [x, self.sectionIndicator])
     }
 }

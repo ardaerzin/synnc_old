@@ -30,7 +30,7 @@ class SynncPlaylist: NSManagedObject {
     @NSManaged var sources: [String]?
     @NSManaged var last_update: NSDate?
     @NSManaged var songs: [SynncTrack]
-    @NSManaged var cover_url: String?
+    @NSManaged var cover_id: String?
     
     var delegate : PlaylistDelegate?
     var needsNotifySocket : Bool = false
@@ -46,15 +46,15 @@ class SynncPlaylist: NSManagedObject {
     }
     var coverImageURL : String! {
         get {
-            if let song = self.songs.first {
-                if song.source == SynncExternalSource.Soundcloud.rawValue {
-                    if let url = song.artwork_url {
-                        return url.stringByReplacingOccurrencesOfString("large", withString: "t500x500", options: [], range: nil)
-                    }
-                } else {
-                    return song.artwork_url
-                }
-            }
+//            if let song = self.songs.first {
+//                if song.source == SynncExternalSource.Soundcloud.rawValue {
+//                    if let url = song.artwork_url {
+//                        return url.stringByReplacingOccurrencesOfString("large", withString: "t500x500", options: [], range: nil)
+//                    }
+//                } else {
+//                    return song.artwork_url
+//                }
+//            }
             return nil
         }
     }

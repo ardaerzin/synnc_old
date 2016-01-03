@@ -31,6 +31,7 @@ class MyPlaylistsNode : ASDisplayNode {
                     self.addSubnode(emptyStateNode)
                 } else {
                     emptyStateNode.removeFromSupernode()
+                    emptyStateNode = nil
                 }
                 self.setNeedsLayout()
             }
@@ -58,10 +59,8 @@ class MyPlaylistsNode : ASDisplayNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
-//        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [collectionNode])
         let a = ASStaticLayoutSpec(children: [self.collectionNode])
         let o = ASOverlayLayoutSpec(child: a, overlay: self.emptyStateNode)
-//        return a
         return o
     }
 }

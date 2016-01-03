@@ -91,17 +91,23 @@ class TabbarContentScroller : ASScrollNode {
     }
     
     
-    func updateForItem(item: TabItem){
+    func updateForItem(item: TabItem, controller : TabItemController){
         for page in pages {
-//            page.
             page.removeFromSupernode()
-//            item
         }
         self.pages = []
         
-        self.contentDelegate?.loadSubsections(item, inScroller: self)
-        self.updatePositionAnimation.toValue = CGFloat(item.selectedIndex) * self.calculatedSize.width
-        self.setNeedsLayout()
+        for (index,ss) in item.subsections.enumerate() {
+            if let vc = ss as? TabSubsectionController {
+                controller.addChildViewController(vc)
+                let a = vc.screenNode
+                vc.view.frame.size = self.view.bounds.size
+                self.addSubnode(a)
+                self.pages.append(a)
+                vc.didMoveToParentViewController(controller)
+            }
+        }
+        self.currentIndex = item.selectedIndex
     }
     
     override init!() {
@@ -122,7 +128,11 @@ class TabbarContentScroller : ASScrollNode {
             let a = ASStaticLayoutSpec(children: [node])
             staticSpecs.append(a)
         }
+        self.view.contentSize = CGSizeMake(CGFloat(self.pages.count) * constrainedSize.max.width, constrainedSize.max.height)
         let hStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: staticSpecs)
+        
+//        self.updatePositionAnimation.toValue = CGFloat(self.currentIndex) * constrainedSize.max.width
+        
         return hStack
     }
 }

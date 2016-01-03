@@ -38,7 +38,7 @@ class RootViewController : ASViewController {
     var displayItem : TabItem! {
         didSet {
             self.screenNode.item = displayItem
-            self.screenNode.updateForItem(displayItem)
+//            self.screenNode.updateForItem(displayItem)
             
             if let vc = displayItem as? TabItemController {
                 vc.willBecomeActiveTab()
@@ -65,7 +65,6 @@ class RootViewController : ASViewController {
         let node = TabControllerNode(items: controllers)
         super.init(node: node)
         self.screenNode = node
-        self.screenNode.scrollNode.contentDelegate = self
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -121,18 +120,6 @@ class RootViewController : ASViewController {
                 return anim as! POPBasicAnimation
             } else {
                 let x = POPBasicAnimation()
-//                x.completionBlock = {
-//                    anim, finished in
-//                    
-//                    if let a = anim as? POPBasicAnimation where finished {
-//                        if (a.toValue as! CGFloat) == 1 {
-//                            self.headerUpdateBlock?()
-//                            self.headerChangeAnimation.toValue = 0
-//                        } else {
-//                            self.pop_removeAnimationForKey("tabChangeAnimation")
-//                        }
-//                    }
-//                }
                 x.duration = 0.2
                 x.property = self.tabChangeAnimatableProperty
                 self.pop_addAnimation(x, forKey: "tabChangeAnimation")
@@ -142,9 +129,6 @@ class RootViewController : ASViewController {
     }
     var tabChangeAnimationProgress : CGFloat = 0 {
         didSet {
-            self.screenNode.scrollNode.alpha = 1-tabChangeAnimationProgress
-            self.screenNode.navigationNode.alpha = 1-tabChangeAnimationProgress
-//            POPLayerSetTranslationX(self.titleHolderNode.layer, titlePositionAnimationProgress)
         }
     }
 }
@@ -158,101 +142,66 @@ extension RootViewController {
 
 // MARK: - TabbarDelegate
 extension RootViewController : TabbarDelegate {
-    func willSetTabItem(item: TabItem) {
-       
-        let oldItem = self.displayItem
-        self.tabChangeAnimation.completionBlock = {
-            anim, finished in
-            
-            if let oi = oldItem {
-                for x in oi.subsections {
-                    x.willMoveToParentViewController(nil)
-                    x.screenNode.removeFromSupernode()
-                    x.removeFromParentViewController()
-                }
-                
-                print(oi)
-                if let x = oi as? TabItemController {
-                    x.willMoveToParentViewController(nil)
-                    x.screenNode.removeFromSupernode()
-                    x.removeFromParentViewController()
-                }
+    func willSetTabItem(tabbar: TabNode, item: TabItem) -> Bool {
+        if item.identifier == "MyStreamController" {
+            Synnc.sharedInstance.streamNavigationController.display()
+            return false
+        } else {
+            if let vc = self.displayItem as? TabItemController, let nvc = vc.navController {
+                nvc.willMoveToParentViewController(nil)
+                nvc.removeFromParentViewController()
+                nvc.view.removeFromSuperview()
+                nvc.didMoveToParentViewController(nil)
             }
-            
-            if let x = item as? TabItemController {
-                x.willMoveToParentViewController(self)
-                self.addChildViewController(x)
-                let a = x.screenNode
-                x.view.frame.size = self.view.bounds.size
-                
-                self.screenNode.navigationNode.addSubnode(x.screenNode)
-                
-                x.didMoveToParentViewController(self)
-                
-            }
-            
-            self.tabChangeAnimation.toValue = 0
+            return true
         }
-        
-        let vc = item as! TabItemController
-        print("CHILDREN:", vc.childViewControllers)
-        
-        self.tabChangeAnimation.toValue = 1
-        self.displayItem = item
-        
-//        if let oldItem = self.displayItem {
-//            for x in oldItem.subsections {
-//                x.willMoveToParentViewController(nil)
-//                x.screenNode.removeFromSupernode()
-//                x.removeFromParentViewController()
-//            }
-//            
-//            if let x = oldItem as? TabItemController {
-//                x.willMoveToParentViewController(nil)
-//                x.screenNode.removeFromSupernode()
-//                x.removeFromParentViewController()
-//            }
-//        }
-//        self.displayItem = item
     }
-    func didSetTabItem(item: TabItem) {
+    func didSetTabItem(tabbar: TabNode, item: TabItem) {
         
-    }
-}
-
-extension RootViewController : TabbarContentLoaderDelegate {
-    
-    
-    func loadSubsections(item: TabItem, inScroller scroller : TabbarContentScroller) {
-        
-//        if let x = item as? TabItemController {
-//            x.willMoveToParentViewController(self)
-//            self.addChildViewController(x)
-//            let a = x.screenNode
-//            x.view.frame.size = self.view.bounds.size
-//            
-//            self.screenNode.navigationNode.addSubnode(x.screenNode)
-//            
-//            x.didMoveToParentViewController(self)
-//            
+//        if let rvc = self.rootViewController {
+//            rvc.displayStatusBar = true
 //        }
         
-        
-        for (index,ss) in item.subsections.enumerate() {
+        if let vc = item as? TabItemController, let rvc = self.rootViewController {
+            let nvc = vc.navController
+            self.addChildViewController(nvc)
+            nvc.view.frame.size = self.view.bounds.size
+            self.screenNode.contentHolder.view.addSubview(nvc.view)
+            nvc.didMoveToParentViewController(self)
+            self.displayItem = item
             
-            if let vc = ss as? TabSubsectionController {
-                vc.willMoveToParentViewController(self)
-                self.addChildViewController(vc)
-                
-                let a = vc.screenNode
-                vc.view.frame.size = self.view.bounds.size
-                
-                scroller.addSubnode(a)
-                scroller.pages.append(a)
-                
-                vc.didMoveToParentViewController(self)
-            }
+            rvc.displayStatusBar = !vc.prefersStatusBarHidden()
         }
-        scroller.currentIndex = item.selectedIndex
     }
+//    func willSetTabItem(tabbar: TabNode, button: TabbarButton, oldButton: TabbarButton?) {
+//        if let rvc = self.rootViewController {
+//            rvc.displayStatusBar = true
+//        }
+//        
+//        if button.item.identifier == "MyStreamController" {
+//            Synnc.sharedInstance.streamController.display()
+//            tabbar.selectedButton = oldButton
+//            return
+//        }
+//        if let vc = self.displayItem as? TabItemController, let nvc = vc.navController {
+//            nvc.willMoveToParentViewController(nil)
+//            nvc.removeFromParentViewController()
+//            nvc.view.removeFromSuperview()
+//            nvc.didMoveToParentViewController(nil)
+//        }
+//        
+//        if let vc = button.item as? TabItemController {
+//            
+//            let nvc = vc.navController
+//            self.addChildViewController(nvc)
+//            nvc.view.frame.size = self.view.bounds.size
+//            self.screenNode.contentHolder.view.addSubview(nvc.view)
+//            nvc.didMoveToParentViewController(self)
+//            self.displayItem = button.item
+//            
+//        }
+//    }
+//    func didSetTabItem(item: TabItem) {
+//        
+//    }
 }

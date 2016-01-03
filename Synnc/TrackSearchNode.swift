@@ -16,6 +16,26 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 
+class SourceLoginButtonNode : SourceButton {
+    
+    override init(source: SynncExternalSource) {
+        super.init(source: source)
+        
+        if let type = WCLUserLoginType(rawValue: source.rawValue.lowercaseString) {
+            
+            if let ext = Synnc.sharedInstance.user.userExtension(type) {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "loginStatusChanged:", name: "\(type.rawValue)LoginStatusChanged", object: ext)
+                self.selected = ext.loginStatus
+            }
+        }
+    }
+    func loginStatusChanged(notification: NSNotification){
+        if let userExtension = notification.object as? WCLUserExtension {
+            self.selected = userExtension.loginStatus
+        }
+    }
+}
+
 class SourceButton : ButtonNode {
     var normalImage : UIImage!
     var selectedImage : UIImage!
@@ -25,7 +45,6 @@ class SourceButton : ButtonNode {
         
         super.init()
         self.source = source
-        print(source.rawValue.lowercaseString + "_inactive")
         let normalImage = UIImage(named: source.rawValue.lowercaseString + "_inactive")!
         let selectedImage = UIImage(named: source.rawValue.lowercaseString + "_active")!
         

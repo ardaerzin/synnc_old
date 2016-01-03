@@ -46,8 +46,8 @@ class TabbarButton : ButtonNode {
 }
 
 protocol TabbarDelegate {
-    func willSetTabItem(item : TabItem)
-    func didSetTabItem(item : TabItem)
+    func willSetTabItem(tabbar: TabNode, item : TabItem) -> Bool
+    func didSetTabItem(tabbar: TabNode, item : TabItem)
 }
 class TabNode : ASDisplayNode {
     
@@ -93,15 +93,22 @@ class TabNode : ASDisplayNode {
     }
     var selectedButton : TabbarButton! {
         willSet {
-            if newValue != selectedButton  {
-                selectedButton?.selected = false
-                newValue?.selected = true
-                self.delegate?.willSetTabItem(newValue!.item)
+//            if newValue != selectedButton  {
+//                self.delegate?.willSetTabItem(self, button: newValue, oldButton: selectedButton)
+//            }
+        }
+        didSet {
+            if selectedButton != oldValue  {
+                oldValue?.selected = false
+                selectedButton?.selected = true
+                self.delegate?.didSetTabItem(self, item: selectedButton!.item)
             }
         }
     }
     func sex(sender : TabbarButton) {
-        self.selectedButton = sender
+        if let del = self.delegate where del.willSetTabItem(self, item: sender.item) {
+            self.selectedButton = sender
+        }
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: tabbarNodes)

@@ -17,10 +17,7 @@ import WCLUserManager
 import DeviceKit
 
 class PlaylistsController : TabItemController {
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
+
     override var identifier : String! {
         return "PlaylistsController"
     }
@@ -64,7 +61,6 @@ class PlaylistsController : TabItemController {
     var myPlaylistsController : MyPlaylistsController! {
         return self.subsections[0] as! MyPlaylistsController
     }
-    
     override init(){
         let node = NavigationHolderNode()
         super.init(node: node)
@@ -72,9 +68,6 @@ class PlaylistsController : TabItemController {
     override func willBecomeActiveTab() {
         super.willBecomeActiveTab()
         SharedPlaylistDataSource.delegate = self
-        if SharedPlaylistDataSource.allItems.isEmpty {
-            self.iconItem.alpha = 0
-        }
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

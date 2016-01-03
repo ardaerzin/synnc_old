@@ -16,6 +16,9 @@ import SwiftyJSON
 enum SynncExternalSource : String {
     case Soundcloud = "Soundcloud"
     case Spotify = "Spotify"
+    case YouTube = "Youtube"
+    case Grooveshark = "Grooveshark"
+    case GooglePlay = "Googleplay"
 }
 
 class SynncTrackStore {
@@ -80,6 +83,8 @@ class SynncTrack: Serializable {
             id = soundcloudIdFromData(data)
         case .Spotify:
             id = spotifyIdFromData(data)
+        default:
+            return ""
         }
         return id
     }
@@ -122,6 +127,8 @@ class SynncTrack: Serializable {
             track.createSpotifySong(data)
         case .Soundcloud:
             track.createSoundcloudSong(data)
+        default:
+            break
         }
         
         SynncTrackStore.sharedInstance.tracks.append(track)
@@ -137,21 +144,10 @@ class SynncTrack: Serializable {
             for item in artistsArr {
                 let x = SynncArtist()
                 x.fromJSON(item)
-//                print(item)
-//                let x = SynncArtist.create(item.object, source: SynncExternalSource(rawValue: self.source)!)
-//                print(x)
                 artists.append(x)
-//                print(x.name)
             }
             self.artists = artists
         }
         return x
     }
-//    override func toJSON(keyArr: [String]!, populate: Bool) -> [String : AnyObject] {
-//        var keys = self.propertyNames()
-//        if let ind = keys.indexOf("playlists") {
-//            keys.removeAtIndex(ind)
-//        }
-//        return super.toJSON(keys, populate: populate)
-//    }
 }

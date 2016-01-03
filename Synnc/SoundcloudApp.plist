@@ -7,7 +7,7 @@
 	<key>SCAppClientSecret</key>
 	<string>66358effd05d9524978c53e93e411280</string>
 	<key>SCAppRedirectURL</key>
-	<string>http://malta-game.codio.io:9000</string>
+	<string>https://silver-sister.codio.io:9500</string>
 	<key>SCApiBaseUrl</key>
 	<string>https://api.soundcloud.com/</string>
 	<key>SCAuthorizationUrl</key>

@@ -93,10 +93,17 @@ extension SynncPlaylist {
     
     :param: indexPaths   Index paths of items to be removed
     */
+    func removeSong(atIndexPath indexPath : NSIndexPath) {
+        self.songs.removeAtIndex(indexPath.item)
+        NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["removedSongs" : ["songs" : [], "indexPaths" : [indexPath]]])
+    }
+    
     func removeSongs(atIndexPaths indexPaths: [NSIndexPath]) {
         if indexPaths.isEmpty {
             return
         }
+        
+//        self.songs.removeAtIndex(<#T##index: Int##Int#>)
     
         let indexes = NSMutableIndexSet()
         for index in indexPaths {
@@ -142,7 +149,10 @@ extension SynncPlaylist {
             if needsNotifySocket {
                 Synnc.sharedInstance.socket.emitWithAck("SynncPlaylist:\(msg)", self.toJSON(nil, populate: true)) (timeoutAfter: 0) {
                     ack in
-                    if let data: AnyObject = ack.first {
+                    if msg == "update" {
+                        return
+                    }
+                    if let data: AnyObject = ack.last {
                         let json = JSON(data)
                         self.parseFromJSON(self.managedObjectContext!, json: json)
                         self.save()

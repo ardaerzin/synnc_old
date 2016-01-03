@@ -17,6 +17,7 @@ import WCLUserManager
 import DeviceKit
 
 class TitleHolderNode : ASDisplayNode {
+    var constrainedSize : CGSize!
     var titleItem : ASDisplayNode! {
         willSet {
             if let item = titleItem {
@@ -35,13 +36,13 @@ class TitleHolderNode : ASDisplayNode {
             title.position.x = (self.calculatedSize.width / 2)
         }
     }
-    
+
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         if titleItem == nil {
             return ASLayoutSpec()
         } else {
-            if let w = self.supernode?.calculatedSize.width {
-                titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: w-100), ASRelativeDimension(type: .Points, value: 33))
+            if let w = self.constrainedSize {
+                titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: w.width-100), ASRelativeDimension(type: .Points, value: 33))
             }
             let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [titleItem])])
             return x
@@ -81,124 +82,15 @@ class HeaderNode : ASDisplayNode {
     var subSectionArea : SubsectionSelectorNode!
     var actionButton : ButtonNode!
     var iconHolderNode : IconHolderNode!
+    var separator : ASDisplayNode!
     
     var selectedItem : TabItem! {
         didSet {
             if selectedItem.identifier != oldValue.identifier {
-                self.updateForItem(selectedItem)
+//                self.updateForItem(selectedItem)
             }
         }
     }
-    
-    var titlePositionAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("titleAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! HeaderNode).titlePositionAnimationProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! HeaderNode).titlePositionAnimationProgress = values[0]
-                }
-                prop.threshold = 0.01
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var titlePositionAnimation : POPBasicAnimation {
-        get {
-            if let anim = self.pop_animationForKey("titlePositionAnimation") {
-                return anim as! POPBasicAnimation
-            } else {
-                let x = POPBasicAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    if let a = anim as? POPBasicAnimation where finished {
-                        if (a.toValue as! CGFloat) == 1 {
-                            self.headerUpdateBlock?()
-                            self.headerChangeAnimation.toValue = 0
-                        } else {
-                            self.pop_removeAnimationForKey("titlePositionAnimation")
-                        }
-                    }
-                }
-                x.duration = 0.2
-                x.property = self.titlePositionAnimatableProperty
-                self.pop_addAnimation(x, forKey: "titlePositionAnimation")
-                return x
-            }
-        }
-    }
-    var titlePositionAnimationProgress : CGFloat = 0 {
-        didSet {
-            POPLayerSetTranslationX(self.titleHolderNode.layer, titlePositionAnimationProgress)
-        }
-    }
-    
-    var headerChangeAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("indicatorWidthAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! HeaderNode).headerChangeAnimationProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! HeaderNode).headerChangeAnimationProgress = values[0]
-                }
-                prop.threshold = 0.01
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var headerChangeAnimation : POPBasicAnimation {
-        get {
-            if let anim = self.pop_animationForKey("indicatorWidthAnimation") {
-                return anim as! POPBasicAnimation
-            } else {
-                let x = POPBasicAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    if let a = anim as? POPBasicAnimation where finished {
-                        if (a.toValue as! CGFloat) == 1 {
-                            self.headerUpdateBlock?()
-                            self.headerChangeAnimation.toValue = 0
-                        } else {
-                            self.pop_removeAnimationForKey("indicatorWidthAnimation")
-                        }
-                    }
-                }
-                x.duration = 0.2
-                x.property = self.headerChangeAnimatableProperty
-                self.pop_addAnimation(x, forKey: "indicatorWidthAnimation")
-                return x
-            }
-        }
-    }
-    var headerChangeAnimationProgress : CGFloat = 0 {
-        didSet {
-            let a = 1-headerChangeAnimationProgress
-            self.titleHolderNode.alpha = a
-            self.iconHolderNode.alpha = a
-            for button in self.subSectionArea.subSectionButtons {
-                button.alpha = 1-headerChangeAnimationProgress
-            }
-        }
-    }
-    var headerUpdateBlock : (()->Void)?
-    
-    
     override init!() {
         super.init()
         self.alignSelf = .Stretch
@@ -211,20 +103,32 @@ class HeaderNode : ASDisplayNode {
         
         self.subSectionArea = SubsectionSelectorNode()
         
+        self.separator = ASDisplayNode()
+        self.separator.backgroundColor = UIColor.lightGrayColor()
+        self.separator.flexBasis = ASRelativeDimension(type: .Points, value: 1 / UIScreen.mainScreen().scale)
+        self.separator.alignSelf = .Stretch
+        
         self.addSubnode(self.titleHolderNode)
         self.addSubnode(self.iconHolderNode)
         
         self.addSubnode(nowPlayingIcon)
         self.addSubnode(subSectionArea)
+        self.addSubnode(separator)
         
         self.backgroundColor = UIColor.whiteColor()
     }
-    
+
     override func layout() {
         super.layout()
         self.iconHolderNode.position.x = (self.iconHolderNode.calculatedSize.width / 2) + 10
         self.iconHolderNode.position.y = self.titleHolderNode.position.y
         self.nowPlayingIcon.position.x = self.calculatedSize.width - (self.nowPlayingIcon.calculatedSize.width / 2)
+        
+        if self.iconHolderNode.iconItem == nil {
+            self.titleHolderNode.position.x = (self.calculatedSize.width / 2 - 25)
+        } else {
+            self.titleHolderNode.position.x = (self.calculatedSize.width / 2)
+        }
     }
     
     override func willEnterHierarchy() {
@@ -235,11 +139,12 @@ class HeaderNode : ASDisplayNode {
         let statusSpacer = ASLayoutSpec()
         statusSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 20)
         
+        self.titleHolderNode.constrainedSize = constrainedSize.max
         let titleSpec = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [iconHolderNode, self.titleHolderNode, nowPlayingIcon])])
         titleSpec.spacingBefore = 17
-        titleSpec.flexBasis = ASRelativeDimension(type: .Points, value: 67)
+        titleSpec.flexBasis = ASRelativeDimension(type: .Points, value: 66)
         
-        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [statusSpacer, titleSpec, subSectionArea])
+        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [statusSpacer, titleSpec, subSectionArea, separator])
         
         return x
     }
@@ -248,20 +153,8 @@ class HeaderNode : ASDisplayNode {
 extension HeaderNode {
     func updateForItem(item : TabItem){
         self.subSectionArea.updateIndicator(item)
-        self.headerUpdateBlock = {
-            self.subSectionArea.updateButtons(item)
-            
-            self.iconHolderNode.iconItem = item.iconItem
-            self.titleHolderNode.titleItem = item.titleItem
-            
-            self.iconHolderNode.setNeedsLayout()
-            self.titleHolderNode.setNeedsLayout()
-        }
-        if item.iconItem == nil {
-            self.titlePositionAnimation.toValue = -25
-        } else {
-            self.titlePositionAnimation.toValue = 0
-        }
-        self.headerChangeAnimation.toValue = 1
+        self.subSectionArea.updateButtons(item)
+        self.iconHolderNode.iconItem = item.iconItem
+        self.titleHolderNode.titleItem = item.titleItem
     }
 }

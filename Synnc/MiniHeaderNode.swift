@@ -12,18 +12,21 @@ import AsyncDisplayKit.ASDisplayNode_Subclasses
 import pop
 
 class SmallHeaderNode : ASDisplayNode {
-    var buttons : [ButtonNode] = []
+    var buttons : [ButtonNode] = [] {
+        didSet {
+            for button in buttons {
+                self.addSubnode(button)
+                button.sizeRange = ASRelativeSizeRangeMake(ASRelativeSizeMake(ASRelativeDimension(type: .Points, value: 0), ASRelativeDimension(type: .Percent, value: 1)), ASRelativeSizeMake(ASRelativeDimension(type: .Points, value: 200), ASRelativeDimension(type: .Percent, value: 1)))
+            }
+            
+            self.setNeedsLayout()
+        }
+    }
     var closeButton : ButtonNode!
     var buttonSpecs : [ASLayoutable] = []
     
-    init(buttons: [ButtonNode]) {
+    override init!() {
         super.init()
-        
-        for button in buttons {
-            self.addSubnode(button)
-            button.sizeRange = ASRelativeSizeRangeMake(ASRelativeSizeMake(ASRelativeDimension(type: .Points, value: 0), ASRelativeDimension(type: .Percent, value: 1)), ASRelativeSizeMake(ASRelativeDimension(type: .Points, value: 200), ASRelativeDimension(type: .Percent, value: 1)))
-            self.buttons.append(button)
-        }
         
         self.closeButton = ButtonNode(normalColor: .clearColor(), selectedColor: .clearColor())
         self.closeButton.setImage(UIImage(named: "chevronDown"), forState: ASButtonStateNormal)
@@ -41,9 +44,9 @@ class SmallHeaderNode : ASDisplayNode {
             buttonsTotalWidth += button.calculatedSize.width
         }
         
-        let diff = self.calculatedSize.width - (buttonsTotalWidth + 30)
+        let diff = self.calculatedSize.width - (buttonsTotalWidth + CGFloat(buttons.count) * 10)
         
-        let buttonSpacing = diff * 0.5 / CGFloat(buttons.count - 1)
+        let buttonSpacing = min(50, diff * 0.5 / CGFloat(buttons.count - 1))
         
         var prevLeft : CGFloat = 0
         for (index,button) in buttons.reverse().enumerate() {

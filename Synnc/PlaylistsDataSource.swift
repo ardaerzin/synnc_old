@@ -70,7 +70,7 @@ class PlaylistsDataSource : NSObject {
                 return false
             }
         }
-        frc = SynncPlaylist.finder(inContext: WildDataManager.sharedInstance().coreDataStack.getMainContext()).filter(NSPredicate(format: "user == %@", Synnc.sharedInstance.user._id)).sort(keys: ["last_update"], ascending: [true]).createFRC(delegate: self)
+        frc = SynncPlaylist.finder(inContext: WildDataManager.sharedInstance().coreDataStack.getMainContext()).filter(NSPredicate(format: "user == %@ AND id != %@", Synnc.sharedInstance.user._id, NSNull())).sort(keys: ["last_update"], ascending: [true]).createFRC(delegate: self)
         
         self.playableItems_all = self.playableItems.map({return $0})
     }

@@ -53,7 +53,10 @@ class SynncArtist : Serializable {
             id = soundcloudIdFromData(data)
         case .Spotify:
             id = spotifyIdFromData(data)
+        default:
+            return ""
         }
+        
         return id
     }
     class func create(data : AnyObject, source : SynncExternalSource) -> SynncArtist {
@@ -74,6 +77,8 @@ class SynncArtist : Serializable {
             artist.parseSpotify(data)
         case .Soundcloud:
             artist.parseSoundcloud(data)
+        default:
+            break
         }
         return artist
     }

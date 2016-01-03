@@ -42,4 +42,9 @@ class HomeController : TabItemController {
             return _titleItem
         }
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+//        self.screenNode.backgroundColor = UIColor.redColor()
+    }
 }

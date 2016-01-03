@@ -19,17 +19,22 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.0</string>
+	<string>0.2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Allow Synnc to use your location while using the app</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>com.wildcardlabs.Synnc</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb670404233105871</string>
+				<string>spotify-ios-sdk-beta</string>
 				<string>Synnc</string>
 			</array>
 		</dict>
@@ -62,6 +67,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
+		<string>spotify-action</string>
 		<string>fb-messenger-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>

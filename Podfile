@@ -28,6 +28,8 @@ pod 'TwitterKit'
 pod 'TwitterCore'
 pod 'DeviceKit'
 pod 'DKImagePickerController'
+pod 'WebASDKImageManager'
+pod 'BFPaperCheckbox'
 
 end
 

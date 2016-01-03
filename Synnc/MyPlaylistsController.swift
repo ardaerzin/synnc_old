@@ -33,7 +33,7 @@ class MyPlaylistsController : TabSubsectionController {
         if SharedPlaylistDataSource.allItems.isEmpty {
             let s = self.screenNode as! MyPlaylistsNode
             s.emptyState = true
-            s.emptyStateNode.newPlaylistButton.addTarget(self, action: Selector("newPlaylistAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            s.emptyStateNode.subTextNode.addTarget(self, action: Selector("newPlaylistAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         }
         
         listNode.collectionNode.view.asyncDataSource = self
@@ -52,19 +52,7 @@ class MyPlaylistsController : TabSubsectionController {
 
 extension MyPlaylistsController {
     func displayPlaylist(playlist: SynncPlaylist?){
-        if let rvc = self.parentViewController as? RootViewController, let vc = rvc.displayItem as? TabItemController {
-            
-            let x = PlaylistController(playlist: playlist)
-            x.willMoveToParentViewController(vc)
-            vc.addChildViewController(x)
-            x.didMoveToParentViewController(vc)
-            x.view.frame = UIScreen.mainScreen().bounds
-            
-            POPLayerSetTranslationY(x.screenNode.layer, self.view.frame.height)
-            vc.screenNode.addSubnode(x.screenNode)
-            
-            x.displayAnimation.toValue = 1
-        }
+        self.navigationController?.pushViewController(PlaylistController(playlist: playlist), animated: true)
     }
     func newPlaylistAction(sender : ButtonNode){
         self.displayPlaylist(nil)
@@ -104,24 +92,35 @@ extension MyPlaylistsController : PlaylistsDataSourceDelegate {
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.insertItemsAtIndexPaths([indexPath])
         }, completion: nil)
+        updatedPlaylists()
     }
     func playlistsDataSource(removedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath) {
         let collectionNode = (self.screenNode as! MyPlaylistsNode).collectionNode.view
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.deleteItemsAtIndexPaths([indexPath])
         }, completion: nil)
+        updatedPlaylists()
     }
     func playlistsDataSource(updatedItem item: SynncPlaylist, atIndexPath indexPath: NSIndexPath) {
         let collectionNode = (self.screenNode as! MyPlaylistsNode).collectionNode.view
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.reloadItemsAtIndexPaths([indexPath])
         }, completion: nil)
+        updatedPlaylists()
     }
     func playlistsDataSource(movedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
         let collectionNode = (self.screenNode as! MyPlaylistsNode).collectionNode.view
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.moveItemAtIndexPath(indexPath, toIndexPath: newIndexPath)
-//                .deleteItemsAtIndexPaths([indexPath])
             }, completion: nil)
+        updatedPlaylists()
+    }
+    
+    func updatedPlaylists(){
+        if SharedPlaylistDataSource.allItems.isEmpty {
+            (self.screenNode as! MyPlaylistsNode).emptyState = true
+        } else {
+            (self.screenNode as! MyPlaylistsNode).emptyState = false
+        }
     }
 }

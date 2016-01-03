@@ -102,7 +102,7 @@ class WildTwitterUser : WCLUserExtension {
     private func loadTwitterSession() {
         var status : Bool = false
         if let b = Twitter.sharedInstance().sessionStore.session() {
-//            Twitter.sharedInstance().sessionStore.logOutUserID(b.userID)
+            Twitter.sharedInstance().sessionStore.logOutUserID(b.userID)
             self.session = b
             self.accessTokenSecret = b.authTokenSecret
             self.accessToken = b.authToken

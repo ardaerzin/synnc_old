@@ -15,6 +15,9 @@ import DeviceKit
 import WCLSoundCloudKit
 import WCLDataManager
 import Cloudinary
+import WCLLocationManager
+import WCLUtilities
+import CoreLocation
 
 extension UIColor {
     class func SynncColor() -> UIColor {
@@ -25,12 +28,34 @@ extension UIColor {
 @UIApplicationMain
 class Synnc : UIResponder, UIApplicationDelegate {
     
+    lazy var streamNavigationController : StreamNavigationController! = {
+        if let rvc = self.window?.rootViewController as? RootViewController {
+            let a = StreamNavigationController()
+            a.view.frame = UIScreen.mainScreen().bounds
+            rvc.addChildViewController(a)
+            rvc.view.addSubview(a.view)
+            a.didMoveToParentViewController(rvc)
+            return a
+        } else {
+            return nil
+        }
+    }()
+    var locationManager : WCLLocationManager = WCLLocationManager.sharedInstance()
+//    {
+//        let a = WCLLocationManager.sharedInstance()
+//        a.delegate = self
+//        a.initLocationManager()
+//        return a
+//    }()
     var imageUploader : CLUploader!
     var user : MainUser!
     var socket: SocketIOClient!
     var device = Device()
     var window: UIWindow?
     
+    var streamManager : StreamManager! {
+        return StreamManager.sharedInstance
+    }
     var moc : NSManagedObjectContext {
         get {
             return WildDataManager.sharedInstance().coreDataStack.getMainContext()
@@ -55,11 +80,14 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
+        self.locationManager.delegate = self
+        self.locationManager.initLocationManager()
+        
         SPTAuth.defaultInstance().sessionUserDefaultsKey = "SynncSPT"
         SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
         SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://ivory-yes.codio.io:9500/refresh")
         SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://ivory-yes.codio.io:9500/swap")
-        SPTAuth.defaultInstance().redirectURL = NSURL(string: "synnc://callback")
+        SPTAuth.defaultInstance().redirectURL = NSURL(string: "Synnc://callback")
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserReadPrivateScope, SPTAuthStreamingScope]
         
         WildDataManager.sharedInstance().setCoreDataStack(dbName: "SynncDB", modelName: "SynncDataModel", bundle: nil, iCloudSync: false)
@@ -71,9 +99,13 @@ class Synnc : UIResponder, UIApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         
         //Initialize rootViewController for main window
-        self.window?.rootViewController = RootViewController()
+        let rvc = RootViewController()
+        self.window?.rootViewController = rvc
         self.window?.backgroundColor = UIColor.whiteColor()
+        
         self.window?.makeKeyAndVisible()
+        
+        self.streamManager.setSocket(self.socket)
         
         return true
     }
@@ -101,10 +133,21 @@ class Synnc : UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        let authCallback : SPTAuthCallback = {
+            (err, session) in
+            
+            if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
+                u.sptAuthenticationStatus(session, error: err)
+            }
+        }
+        
+        if SPTAuth.defaultInstance().canHandleURL(url) {
+            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
+            return true
+        }
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 }
-
 extension Synnc {
     func initSocket(urlStr : String) -> SocketIOClient {
         let x = SocketIOClient(socketURL: urlStr, options: [.Reconnects(false), .ForceWebsockets(true)])
@@ -132,6 +175,47 @@ extension Synnc {
             print("socket synnc now")
             SynncPlaylist.socketSync(self.socket, inStack: nil, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
         }
+    }
+}
+
+extension Synnc : WCLLocationManagerDelegate {
+    //Mark: LocationManager Delegate
+    func locationManager(manager: WCLLocationManager, updatedLocation location: CLLocation) {
+        if self.user._id == nil {
+            return
+        }
+    }
+    func locationManager(manager: WCLLocationManager, changedAuthStatus newStatus: Int) {
+        switch newStatus {
+        case -1 :
+//            Async.main {
+//                self.locationManager.requestLocationPermission(self.locationAuthController())
+//            }
+            break
+        case 0:
+            break
+        case 1:
+            locationManager.initGPSTracking()
+            break
+        default:
+            return
+        }
+    }
+    
+    func locationAuthController() -> SynncLocationAuthVC {
+        let x = SynncLocationAuthVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+        return x
+//        let lc = TrackSearchController()
+//        lc.delegate = self
+//        
+//        let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
+//        let x = WCLPopupViewController(nibName: nil, bundle: nil, options: opts, size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
+//        x.addChildViewController(lc)
+//        lc.view.frame = x.view.bounds
+//        x.view.addSubview(lc.view)
+//        lc.didMoveToParentViewController(x)
+//        
+//        WCLPopupManager.sharedInstance.newPopup(x)
     }
 }
 

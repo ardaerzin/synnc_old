@@ -7,7 +7,7 @@
         <attribute name="v" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="SynncPlaylist" representedClassName="SynncPlaylist" syncable="YES">
-        <attribute name="cover_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cover_id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="last_update" optional="YES" attributeType="Date" syncable="YES"/>
