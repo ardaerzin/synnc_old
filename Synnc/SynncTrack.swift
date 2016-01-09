@@ -44,7 +44,17 @@ class SynncTrack: Serializable {
 //    var playlists: NSOrderedSet
     var name: String!
     var artists : [SynncArtist]! = []
-    var streamUrl : String!
+    
+    var streamUrl : String! {
+        get {
+            if let id = self.song_id where self.source == SynncExternalSource.Soundcloud.rawValue {
+                let x = WildSoundCloud.sharedInstance().getStreamUrlString(id)
+                return x
+            } else {
+                return nil
+            }
+        }
+    }
     
     required init() {
         super.init()
@@ -53,7 +63,7 @@ class SynncTrack: Serializable {
         super.init()
         let keys = self.propertyNames(classForCoder)
         for key in keys {
-            if key != "artwork_url_large" {
+            if key != "artwork_url_large" || key != "stream_url" {
                 self.setValue(aDecoder.decodeObjectForKey(key), forKey: key)
             }
         }
@@ -61,7 +71,7 @@ class SynncTrack: Serializable {
     func encodeWithCoder(aCoder: NSCoder) {
         let keys = self.propertyNames(classForCoder)
         for key in keys {
-            if key != "artwork_url_large" {
+            if key != "artwork_url_large" || key != "stream_url" {
                 aCoder.encodeObject(self.valueForKey(key), forKey: key)
             }
         }
@@ -102,6 +112,8 @@ class SynncTrack: Serializable {
         } else {
             var a = self.propertyList()
             if let ind = a.indexOf("artwork_url_large") {
+                a.removeAtIndex(ind)
+            } else if let ind = a.indexOf("stream_url") {
                 a.removeAtIndex(ind)
             }
             return a

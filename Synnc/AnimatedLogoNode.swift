@@ -18,6 +18,7 @@ import DeviceKit
 
 class BarNode : ASDisplayNode {
     
+    var needsAnimate : Bool = false
     var scaleAnimatableProperty : POPAnimatableProperty {
         get {
             let x = POPAnimatableProperty.propertyWithName("scaleAnimationProperty", initializer: {
@@ -65,14 +66,18 @@ class BarNode : ASDisplayNode {
             self.calculateNextSeed(seed)
             self.animation.completionBlock = {
                 anim, finished in
-                self.seed = self.nextSeed
+                if self.isAnimating && self.seed != 0 {
+                    self.seed = self.nextSeed
+                } else {
+                    self.pop_removeAnimationForKey("scaleAnimation")
+                }
             }
             self.animation.toValue = seed
         }
     }
     var nextSeed : CGFloat = 0
     func calculateNextSeed(currentSeed : CGFloat){
-        self.nextSeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
+        self.nextSeed = isAnimating ? CGFloat(Float(arc4random()) / Float(UINT32_MAX)) : 0
     }
     
     override func didLoad() {
@@ -125,7 +130,12 @@ class AnimatedLogoNode : ASDisplayNode {
             bar.seed = x[index]
         }
     }
-    
+    func stopAnimation() {
+        for (index,bar) in bars.enumerate() {
+            bar.isAnimating = false
+        }
+
+    }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         

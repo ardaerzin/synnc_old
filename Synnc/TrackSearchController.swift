@@ -34,11 +34,11 @@ extension TrackSearchController : WCLAsyncTableViewDataSourceDelegate {
     }
 }
 extension TrackSearchController : WCLAsyncCollectionViewDataSourceDelegate {
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
         let bounds = self.screenNode.artistsCollection.view.bounds
         let h = bounds.height
         
-        return CGSizeMake(100,h)
+        return (min: CGSizeMake(100,h), max: CGSizeMake(100,h))
     }
     func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
         self.artistsManager.performUpdates(self.screenNode.artistsCollection.view, updates: updatedData, animated: true, completion: nil)
@@ -190,19 +190,7 @@ extension TrackSearchController {
         last_search = NSDate()
         let ts = last_search
         
-//        needsRefresh = true
         searchSoundcloud(newString,timeStamp: ts)
-        
-//        searchSpotify(newString,timeStamp: ts)
-        
-//        switch self.selectedSource {
-//        case .Soundcloud:
-//            searchSoundcloud(newString)
-//            break
-//        case .Spotify:
-//            searchSpotify(newString)
-//            break
-//        }
     }
     
     func searchSpotify(str: String, timeStamp: NSDate) {

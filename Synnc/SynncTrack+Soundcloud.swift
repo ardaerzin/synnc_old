@@ -42,7 +42,7 @@ extension SynncTrack {
         }
         if let url = json["stream_url"].string {
             let urlString = WildSoundCloud.appendAccessToken(url)
-            self.streamUrl = urlString
+//            self.streamUrl = urlString
         }
     }
 }

@@ -18,6 +18,8 @@ protocol ParallaxContentScrollerDelegate {
 }
 
 class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
+    var tabbarHeight : CGFloat = 0
+    var topLimit : CGFloat = 150
     
     var delegate : ParallaxContentScrollerDelegate?
     var backgroundNode : ParallaxBackgroundNode! {
@@ -40,20 +42,14 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
             }
         }
     }
-//    var imageGradientNode : ASImageNode!
-    
     init(backgroundNode : ParallaxBackgroundNode? = ParallaxBackgroundNode(), contentNode : ASDisplayNode? = ASDisplayNode()) {
         super.init()
         
         self.backgroundNode = backgroundNode
         self.parallaxContentNode = contentNode
         
-//        imageGradientNode = ASImageNode()
-//        imageGradientNode.image = UIImage(named: "imageGradient")
-
-        self.addSubnode(self.backgroundNode)
-//        self.addSubnode(self.imageGradientNode)
         self.addSubnode(self.parallaxContentNode)
+        self.addSubnode(self.backgroundNode)
     }
     override func didLoad() {
         super.didLoad()
@@ -64,42 +60,60 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
         }
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
-//        if !scrollView.panGestureRecognizer.enabled {
-//            return
-//        }
+        if scrollView != self.view {
+            return
+        }
         let position: CGFloat = scrollView.contentOffset.y
         var delta : CGFloat = 0
-        let limit : CGFloat = self.calculatedSize.width - 150
-        let x = (self.view.frame.size.height / 2 - 150 / 2) + self.view.frame.size.width
+        let limit : CGFloat = self.calculatedSize.width - topLimit
+        
+        self.delegate?.scrollViewDidScroll(self, position: position)
+        
+        let x = (self.view.frame.size.height / 2 - topLimit/2) + self.view.frame.size.width
         var bgScalePosition : CGFloat = 0
+        
+        var a : CGFloat = 0
+        
         if scrollView.contentOffset.y < 0 {
-            self.backgroundNode.view.setContentOffset(CGPointMake(0, 0), animated: false)
+            
+            self.backgroundNode.scrollNode.clipsToBounds = false
+//            self.backgroundNode.scrollNode.view.setContentOffset(CGPointMake(0, 0), animated: false)
+            
+            
             let y = 1 + abs(position / self.calculatedSize.width)
-            bgScalePosition = position / 2
+            bgScalePosition = position / 2 - position
             
-            POPLayerSetTranslationY(self.backgroundNode.imageGradientNode.layer, 0)
-            POPLayerSetScaleXY(self.backgroundNode.imageNode.layer, CGPointMake(y, y))
+            POPLayerSetTranslationY(self.backgroundNode.scrollNode.imageGradientNode.layer, 0)
+            POPLayerSetTranslationY(self.backgroundNode.scrollNode.imageNode.layer, 0)
             POPLayerSetScaleXY(self.backgroundNode.imageGradientNode.layer, CGPointMake(y, y))
+            POPLayerSetScaleXY(self.backgroundNode.imageNode.layer, CGPointMake(y, y))
             
-            self.parallaxContentNode.position.y = x
+            self.parallaxContentNode.position.y = x - (tabbarHeight / 2)
+            
         } else {
-            delta = max(0,position - limit)
-            let sp = min(limit * 0.25, max(0,position) * 0.25)
-//            print(sp / (limit * 0.25))
-            self.parallaxContentNode.position.y = x + delta
-            POPLayerSetScaleXY(self.backgroundNode.imageNode.layer, CGPointMake(1, 1))
-            self.backgroundNode.view.setContentOffset(CGPointMake(0, sp), animated: false)
-            POPLayerSetTranslationY(self.backgroundNode.imageGradientNode.layer, sp)
             
+            self.backgroundNode.scrollNode.clipsToBounds = true
+            
+            delta = max(0,position - limit)
+            let shit = min(position, limit)
+            
+            self.parallaxContentNode.position.y = x + delta - (tabbarHeight / 2)
+            
+            a = -delta
+            let width = self.backgroundNode.calculatedSize.width
+            let p =  (width - shit - (-position / 2 - (a / 2))) / width
+            
+            if p.isFinite {
+                POPLayerSetScaleY(self.backgroundNode.imageGradientNode.layer, p)
+                POPLayerSetTranslationY(self.backgroundNode.scrollNode.imageNode.layer, position / 2 + (a / 2))
+                POPLayerSetTranslationY(self.backgroundNode.scrollNode.imageGradientNode.layer, position + a - ((1-p)*width/2))
+            }
             if let x = self.parallaxContentNode.view as? UIScrollView {
                 x.setContentOffset(CGPointMake(0, delta), animated: false)
             }
         }
-        self.backgroundNode.position.y = (self.backgroundNode.calculatedSize.height / 2) + position - bgScalePosition
         
-//        self.backgroundNode.imageGradientNode.position.y = (self.backgroundNode.calculatedSize.height / 2) + position
-        
-        self.delegate?.scrollViewDidScroll(self, position: position)
+        self.backgroundNode.position.y = (self.backgroundNode.calculatedSize.height / 2) - bgScalePosition - a
     }
     
     override func layout() {
@@ -108,10 +122,8 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
-        print(self.parallaxContentNode)
-        self.parallaxContentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - 150))
+        self.parallaxContentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - topLimit - tabbarHeight))
         self.backgroundNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: constrainedSize.max.width))
-//        imageGradientNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: constrainedSize.max.width))
         
         return ASStaticLayoutSpec(children: [backgroundNode, self.parallaxContentNode])
     }

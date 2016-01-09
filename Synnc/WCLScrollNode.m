@@ -30,14 +30,6 @@ CGPoint oldOffset;
 //        NSLog(@"sector %@", oldOffset);
     }
 }
-//- (void) setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated
-//{
-//    if(self.programaticScrollEnabled) {
-//        [super setContentOffset:contentOffset animated:animated];
-//    } else {
-//        NSLog(@"sector");
-//    }
-//}
 - (instancetype)init
 {
     self = [super init];
@@ -46,11 +38,6 @@ CGPoint oldOffset;
     }
     return self;
 }
-//setContentOffset
-//{
-//    
-//}
-
 @end
 
 @implementation WCLScrollNode

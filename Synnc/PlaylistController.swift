@@ -100,6 +100,8 @@ class PlaylistController : ASViewController, WildAnimated {
         let node = PlaylistNode(playlist: playlist)
         super.init(node: node)
         self.screenNode = node
+        self.screenNode.underTabbar = true
+        
         node.delegate = self
         
         self.automaticallyAdjustsScrollViewInsets = false
@@ -125,6 +127,9 @@ class PlaylistController : ASViewController, WildAnimated {
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        super.didMoveToParentViewController(parent)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -222,6 +227,9 @@ extension PlaylistController : ParallaxNodeDelegate {
             return self.editedImage
         }
     }
+    func gradientImageName() -> String? {
+        return "imageGradient"
+    }
 }
 
 extension PlaylistController : ASEditableTextNodeDelegate {
@@ -245,9 +253,6 @@ extension PlaylistController {
 //        }
         
         if isNewPlaylist {
-            print("SEXXX")
-            print(self.playlist.hasChanges)
-            print(self.playlist.changedValues())
             let vals = self.playlist.changedValues().keys
             if vals.indexOf("songs") == nil && vals.indexOf("name") == nil && vals.indexOf("cover_id") == nil {
                 print("DELETE")
@@ -335,8 +340,6 @@ extension PlaylistController {
 
 extension PlaylistController : TrackSearchControllerDelegate {
     func didSelectTrack(song: SynncTrack) {
-        print("add song to playlist")
-        
         self.playlist.addSongs([song])
         self.playlist.save()
         
@@ -344,8 +347,6 @@ extension PlaylistController : TrackSearchControllerDelegate {
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
     func didDeselectTrack(song: SynncTrack) {
-        print("remove song from playlist")
-        
         self.playlist.removeSongs([song])
         self.playlist.save()
         

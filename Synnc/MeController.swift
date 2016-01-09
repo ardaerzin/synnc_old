@@ -27,11 +27,12 @@ class MeController : TabItemController {
     override init(){
         let node = MeNode(user: Synnc.sharedInstance.user)
         super.init(node: node)
+        node.underTabbar = true
         node.delegate = self
         self.statusBarDisplayed = false
         node.headerNode.closeButton.alpha = 0
         node.headerNode.closeButton.enabled = false
-        node.mainScrollNode.view.contentSize = CGSizeMake(375, 1500)
+        node.mainScrollNode.view.contentSize = CGSizeMake(UIScreen.mainScreen().bounds.width, 1500)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         print(Synnc.sharedInstance.user)
         
@@ -156,6 +157,9 @@ extension MeController : ParallaxNodeDelegate {
             return url
         }
         return nil
+    }
+    func gradientImageName() -> String? {
+        return "imageGradient"
     }
     func headerButtons() -> [ButtonNode] {
         return []

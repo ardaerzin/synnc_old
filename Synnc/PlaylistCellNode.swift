@@ -82,6 +82,7 @@ class PlaylistCellNode : ASCellNode {
         
         if let id = self.imageId, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             self.imageNode.URL = url
+            print(url)
         }
     }
     override init!() {

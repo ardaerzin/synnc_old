@@ -53,6 +53,8 @@ class SourceButton : ButtonNode {
         
         self.normalImage = normalImage
         self.selectedImage = selectedImage
+        
+        self.imageNode.contentMode = UIViewContentMode.ScaleAspectFit
     }
     
     override func changedSelected() {

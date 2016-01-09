@@ -18,6 +18,8 @@ import Cloudinary
 import WCLLocationManager
 import WCLUtilities
 import CoreLocation
+import WCLPopupManager
+import AsyncDisplayKit
 
 extension UIColor {
     class func SynncColor() -> UIColor {
@@ -41,12 +43,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         }
     }()
     var locationManager : WCLLocationManager = WCLLocationManager.sharedInstance()
-//    {
-//        let a = WCLLocationManager.sharedInstance()
-//        a.delegate = self
-//        a.initLocationManager()
-//        return a
-//    }()
+    var chatManager : ChatManager!
     var imageUploader : CLUploader!
     var user : MainUser!
     var socket: SocketIOClient!
@@ -80,6 +77,9 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
+        self.chatManager = ChatManager.sharedInstance()
+        self.chatManager.setupSocket(self.socket)
+        
         self.locationManager.delegate = self
         self.locationManager.initLocationManager()
         
@@ -106,6 +106,15 @@ class Synnc : UIResponder, UIApplicationDelegate {
         self.window?.makeKeyAndVisible()
         
         self.streamManager.setSocket(self.socket)
+        
+        NHNetworkClock.sharedNetworkClock().syncWithComplete({
+            let networkDate = NSDate.networkDate()
+            let normalDate = NSDate()
+            
+            self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+            let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+            print("normal date:", normalDate, "network date:", networkDate, "diff is:", diff)
+        })
         
         return true
     }
@@ -165,6 +174,8 @@ extension Synnc {
             if self == nil {
                 return
             }
+            
+            Genre.socketSync(self!.socket, inStack: nil)
         }
     }
 }
@@ -172,8 +183,21 @@ extension Synnc {
 extension Synnc {
     func userProfileInfoChanged(notification: NSNotification) {
         if self.user._id != nil {
-            print("socket synnc now")
+            let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), user: self.user)
+            
+            x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            WCLPopupManager.sharedInstance.newPopup(x)
+            
+            StreamManager.sharedInstance.updateUserFeed()
             SynncPlaylist.socketSync(self.socket, inStack: nil, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
+        }
+    }
+    
+    func goToProfile(sender : ButtonNode!) {
+        print("go to user profile now")
+        if let rvc = self.window?.rootViewController as? RootViewController {
+            print("rvc", rvc)
+            rvc.willSetTabItem(rvc.screenNode.tabbar, item: rvc.meTab)
         }
     }
 }

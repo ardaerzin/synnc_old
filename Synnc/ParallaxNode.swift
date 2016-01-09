@@ -15,12 +15,20 @@ import WCLUIKit
 
 protocol ParallaxNodeDelegate {
     func imageForBackground() -> AnyObject?
+    func gradientImageName() -> String?
 }
 
 class ParallaxNode : ASDisplayNode {
     
+    var underTabbar : Bool = false {
+        didSet {
+            if underTabbar != oldValue {
+                self.mainScrollNode.tabbarHeight = underTabbar ? 50 : 0
+            }
+        }
+    }
     var delegate : ParallaxNodeDelegate!
-    var topDistance : CGFloat = 200
+    var topDistance : CGFloat = 250
     var mainScrollNode : ParallaxContentScroller!
     var headerNode : SmallHeaderNode!
     
@@ -64,6 +72,12 @@ class ParallaxNode : ASDisplayNode {
         } else {
             mainScrollNode.backgroundNode.imageNode.image = UIImage(named: "camera-large")
             mainScrollNode.backgroundNode.imageNode.contentMode = .Center
+        }
+        
+        if let gradientName = self.delegate?.gradientImageName() {
+            mainScrollNode.backgroundNode.imageGradientNode.image = UIImage(named: gradientName)
+        } else {
+            mainScrollNode.backgroundNode.imageGradientNode.image = UIImage(named: "imageGradient")
         }
     }
 

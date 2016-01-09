@@ -65,7 +65,7 @@ class PlaylistNode : ParallaxNode {
         table.view.separatorStyle = .None
         table.view.scrollEnabled = false
         table.clipsToBounds = true
-
+        
         
         var bgNode = ParallaxBackgroundNode()
         super.init(backgroundNode: bgNode, contentNode: table)

@@ -31,7 +31,7 @@ class NavigationHolderNode : ASDisplayNode {
 //        scrollNode.delegate = self
         
         self.headerNode.subSectionArea.delegate = self.scrollNode
-        self.scrollNode.backgroundColor = UIColor.blueColor()
+        self.scrollNode.backgroundColor = UIColor.whiteColor()
         
         self.addSubnode(self.scrollNode)
         self.addSubnode(self.headerNode)

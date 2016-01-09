@@ -27,7 +27,7 @@ class HomeController : TabItemController {
     override var subsections : [TabSubsectionController]! {
         get {
             if _subsections == nil {
-                _subsections = [SocialFeedController(), StreamsFeedController(), RecommendedFeedController()]
+                _subsections = [StreamsFeedController(), SocialFeedController(), RecommendedFeedController()]
             }
             return _subsections
         }

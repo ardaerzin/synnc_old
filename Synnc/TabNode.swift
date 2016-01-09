@@ -46,8 +46,8 @@ class TabbarButton : ButtonNode {
 }
 
 protocol TabbarDelegate {
-    func willSetTabItem(tabbar: TabNode, item : TabItem) -> Bool
-    func didSetTabItem(tabbar: TabNode, item : TabItem)
+    func willSetTabItem(tabbar: TabNode!, item : TabItem) -> Bool
+    func didSetTabItem(tabbar: TabNode!, item : TabItem)
 }
 class TabNode : ASDisplayNode {
     
@@ -56,8 +56,12 @@ class TabNode : ASDisplayNode {
     var tabbarButtons : [TabbarButton] = []
     var tabbarNodes : [ASLayoutable] = []
     var tabbarItems : [TabItem] = []
-
-    var initiallyLoaded : Bool = false    
+    var buttons : [String : TabbarButton] = [String : TabbarButton]()
+    var initiallyLoaded : Bool = false
+    
+    func buttonForItem(item : TabItem) -> TabbarButton! {
+        return buttons[item.identifier]
+    }
     init(tabbarItems : [TabItem]) {
         super.init()
         self.alignSelf = .Stretch
@@ -78,6 +82,7 @@ class TabNode : ASDisplayNode {
             
             tabbarNodes.append(spacer)
             tabbarNodes.append(s)
+            buttons[item.identifier] = button
             
             if index == tabbarItems.count - 1 {
                 let spacer = ASLayoutSpec()
@@ -106,10 +111,12 @@ class TabNode : ASDisplayNode {
         }
     }
     func sex(sender : TabbarButton) {
+        
         if let del = self.delegate where del.willSetTabItem(self, item: sender.item) {
-            self.selectedButton = sender
+//            self.selectedButton = sender
         }
     }
+    
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
         let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: tabbarNodes)
         x.alignSelf = .Stretch

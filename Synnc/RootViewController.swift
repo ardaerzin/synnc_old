@@ -52,14 +52,22 @@ class RootViewController : ASViewController {
     override func prefersStatusBarHidden() -> Bool {
         return !displayStatusBar
     }
+    
+    var meTab : MeController! = MeController()
+    var homeTab : HomeController! = HomeController()
+    var playlistsTab : PlaylistsController! = PlaylistsController()
+    var mystreamTab : MyStreamController! = MyStreamController()
+    var searchTab : SearchController! = SearchController()
+    
+    
     init(){
         
         let controllers : [TabItemController] = [
-            HomeController(),
-            SearchController(),
-            MyStreamController(),
-            PlaylistsController(),
-            MeController()
+            homeTab,
+            searchTab,
+            mystreamTab,
+            playlistsTab,
+            meTab
         ]
         
         let node = TabControllerNode(items: controllers)
@@ -142,7 +150,7 @@ extension RootViewController {
 
 // MARK: - TabbarDelegate
 extension RootViewController : TabbarDelegate {
-    func willSetTabItem(tabbar: TabNode, item: TabItem) -> Bool {
+    func willSetTabItem(tabbar: TabNode!, item: TabItem) -> Bool {
         if item.identifier == "MyStreamController" {
             Synnc.sharedInstance.streamNavigationController.display()
             return false
@@ -153,10 +161,11 @@ extension RootViewController : TabbarDelegate {
                 nvc.view.removeFromSuperview()
                 nvc.didMoveToParentViewController(nil)
             }
+            tabbar.selectedButton = tabbar.buttonForItem(item)
             return true
         }
     }
-    func didSetTabItem(tabbar: TabNode, item: TabItem) {
+    func didSetTabItem(tabbar: TabNode!, item: TabItem) {
         
 //        if let rvc = self.rootViewController {
 //            rvc.displayStatusBar = true
@@ -173,35 +182,4 @@ extension RootViewController : TabbarDelegate {
             rvc.displayStatusBar = !vc.prefersStatusBarHidden()
         }
     }
-//    func willSetTabItem(tabbar: TabNode, button: TabbarButton, oldButton: TabbarButton?) {
-//        if let rvc = self.rootViewController {
-//            rvc.displayStatusBar = true
-//        }
-//        
-//        if button.item.identifier == "MyStreamController" {
-//            Synnc.sharedInstance.streamController.display()
-//            tabbar.selectedButton = oldButton
-//            return
-//        }
-//        if let vc = self.displayItem as? TabItemController, let nvc = vc.navController {
-//            nvc.willMoveToParentViewController(nil)
-//            nvc.removeFromParentViewController()
-//            nvc.view.removeFromSuperview()
-//            nvc.didMoveToParentViewController(nil)
-//        }
-//        
-//        if let vc = button.item as? TabItemController {
-//            
-//            let nvc = vc.navController
-//            self.addChildViewController(nvc)
-//            nvc.view.frame.size = self.view.bounds.size
-//            self.screenNode.contentHolder.view.addSubview(nvc.view)
-//            nvc.didMoveToParentViewController(self)
-//            self.displayItem = button.item
-//            
-//        }
-//    }
-//    func didSetTabItem(item: TabItem) {
-//        
-//    }
 }

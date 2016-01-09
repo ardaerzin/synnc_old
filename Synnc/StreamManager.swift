@@ -92,12 +92,11 @@ class StreamManager : NSObject, StreamDelegate {
         }
         willSet {
             if let stream = newValue {
-//                self.player.loadStream(stream, loadTracks : newValue == self.userStream)
+                self.player.loadStream(stream, loadTracks : newValue == self.userStream)
             }
         }
     }
-    
-//    var player : StreamPlayer!
+    var player : StreamPlayer!
     
     class var sharedInstance : StreamManager {
         struct Singleton {
@@ -134,7 +133,7 @@ extension StreamManager {
             Synnc.sharedInstance.socket.emitWithAck("Stream:start", stream.o_id)(timeoutAfter: 0) {
                 data in
                 
-//                sharedInstance.player.play()
+                sharedInstance.player.play()
             }
         }
     }
@@ -167,7 +166,7 @@ extension StreamManager {
     //        }
     //    }
     
-    func joinStream(stream: Stream) {
+    func joinStream(stream: Stream, completion : ((status: Bool) -> Void)? ) {
         Synnc.sharedInstance.socket.emitWithAck("Stream:join", stream.o_id)(timeoutAfter: 0) {
             
             [weak self]
@@ -179,13 +178,17 @@ extension StreamManager {
             
             if !data.isEmpty {
                 
+                completion?(status: true)
                 self?.activeStream = stream
-//                self?.player.isSyncing = true
+                self?.player.isSyncing = true
                 
                 if stream.isUserStream {
                 } else {
                 }
+            } else {
+                completion?(status: false)
             }
+            
         }
     }
     
@@ -195,13 +198,16 @@ extension StreamManager {
                 result in
                 Synnc.sharedInstance.socket.emitWithAck("Stream:create", result) (timeoutAfter: 0) {
                     ack in
+                    print("create result:", result)
                     if let data = ack.first {
                         let json = JSON(data)
                         self.userStream?.fromJSON(json)
-                        
+                        self.userStream?.createCallback?(status: true)
                         if $.find(self.streams, callback: {$0 == self.userStream!}) == nil {
                             self.streams.append(self.userStream!)
                         }
+                    } else {
+                        self.userStream?.createCallback?(status: false)
                     }
                 }
             }
@@ -340,7 +346,7 @@ extension StreamManager {
 extension StreamManager {
     
     func setSocket(socket: SocketIOClient) {
-//        self.player = StreamPlayer(socket: socket)
+        self.player = StreamPlayer(socket: socket)
         
         socket.on("Streams", callback: refreshStreamsCallback())
         socket.on("Stream:save", callback: streamSaveCallback())

@@ -52,11 +52,13 @@ class Stream : Serializable {
     var lon: NSNumber!
     var user: WCLUser!
     var userid: String!
+    var city : NSString!
     //    var last_update: NSDate!
     dynamic var currentSongIndex : NSNumber! = 0
     var info : String = ""
     dynamic var playlist : SynncPlaylist!
     
+    var createCallback : ((status : Bool) -> Void)?
     var isActiveStream : Bool {
         get {
             return self === Synnc.sharedInstance.streamManager.activeStream
@@ -175,6 +177,10 @@ class Stream : Serializable {
         if let usInd = prop.indexOf("users") {
             usersInd = usInd
             prop.removeAtIndex(usInd)
+        }
+        
+        if let shit = prop.indexOf("createCallback") {
+            prop.removeAtIndex(shit)
         }
         
         var dict = super.toJSON(prop)

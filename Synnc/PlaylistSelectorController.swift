@@ -1,3 +1,4 @@
+
 //
 //  PlaylistSelectorController.swift
 //  Synnc
@@ -177,9 +178,5 @@ extension PlaylistSelectorController : PlaylistsDataSourceDelegate {
     }
     
     func updatedPlaylists(){
-//        if SharedPlaylistDataSource.allItems.isEmpty {
-//        } else {
-//            (self.screenNode as! MyPlaylistsNode).emptyState = false
-//        }
     }
 }

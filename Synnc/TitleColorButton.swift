@@ -28,7 +28,7 @@ class TitleColorButton : ButtonNode {
         self.selectedTitle = NSAttributedString(string: selectedTitleString, attributes: selectedAttributes)
         
         self.setAttributedTitle(normalTitle, forState: ASButtonStateNormal)
-        self.setAttributedTitle(selectedTitle, forState: ASButtonStateHighlighted)
+//        self.setAttributedTitle(selectedTitle, forState: ASButtonStateHighlighted)
     }
     
     override func changedSelected() {

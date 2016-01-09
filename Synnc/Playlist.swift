@@ -62,10 +62,10 @@ class SynncPlaylist: NSManagedObject {
     func allSources() -> [String] {
         var x : [String] = []
         for song in self.songs {
-//            let ind = x.indexOf(song.source)
-//            if ind == nil {
-//                x.append(song.source)
-//            }
+            let ind = x.indexOf(song.source)
+            if ind == nil {
+                x.append(song.source)
+            }
         }
         return x
     }

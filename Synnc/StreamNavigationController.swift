@@ -68,6 +68,12 @@ class StreamNavigationController : UINavigationController {
         
         self.pushViewController(StreamViewController(stream: nil), animated: false)
     }
+    
+    func displayStream(stream : Stream){
+        self.pushViewController(StreamViewController(stream: stream), animated: false)
+        self.display()
+    }
+    
 //    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
 //        super.init(nibName: nil, bundle: nil)
 //    }

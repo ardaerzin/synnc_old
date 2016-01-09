@@ -29,7 +29,7 @@ class MeContentNode : ASScrollNode {
     override func didLoad() {
         super.didLoad()
         self.view.delegate = self
-        self.view.contentSize = CGSizeMake(375, 1500 - 375)
+        self.view.contentSize = CGSizeMake(UIScreen.mainScreen().bounds.width, 1500 - UIScreen.mainScreen().bounds.width)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {

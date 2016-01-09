@@ -19,11 +19,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.0</string>
+	<string>0.2.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Allow Synnc to use your location while using the app</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -63,7 +61,7 @@
 	<key>FacebookAppID</key>
 	<string>670404233105871</string>
 	<key>FacebookDisplayName</key>
-	<string>MusicApp</string>
+	<string>Synnc</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -105,6 +103,8 @@
 		<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow Synnc to use your location while using the app</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Futura.ttf</string>
@@ -153,6 +153,11 @@
 		<string>Ubuntu-MI.ttf</string>
 		<string>Ubuntu-R.ttf</string>
 		<string>Ubuntu-RI.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
