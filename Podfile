@@ -1,7 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 source 'git@github.com:doguhanokumus/PodSpecs.git'
 
-platform :ios, ‘8.2’
+platform :ios, ‘9.0’
 use_frameworks!
 
 target 'Synnc' do
@@ -11,7 +11,6 @@ pod 'pop'
 pod 'WCLPopupManager'
 pod 'WCLUIKit'
 pod 'WCLUserManager/Core'
-pod 'WCLUserManager/FbUser'
 pod 'WCLUserManager/SocketUser’
 pod 'WCLUserManager/SoundcloudUser’
 pod 'WCLNotificationManager’

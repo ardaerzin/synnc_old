@@ -165,7 +165,7 @@ static NSString *const mark_eraseLongLine = @"largeCheckmarkLine2";
         layer.lineJoin = kCALineJoinRound;
         layer.lineCap = kCALineCapSquare;
         layer.contentsScale = self.layer.contentsScale;
-        layer.lineWidth = 1.f;
+        layer.lineWidth = 2.f;
         layer.strokeColor = self.tintColor.CGColor;
         
         
