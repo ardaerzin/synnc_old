@@ -120,8 +120,8 @@
 		472CB41F1C41BDC100F82523 /* facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3411C41BDC000F82523 /* facebook.png */; };
 		472CB4201C41BDC100F82523 /* facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3421C41BDC000F82523 /* facebook@2x.png */; };
 		472CB4211C41BDC100F82523 /* facebook@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3431C41BDC000F82523 /* facebook@3x.png */; };
-		472CB4221C41BDC100F82523 /* google-play_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3441C41BDC000F82523 /* google-play_active.png */; };
-		472CB4231C41BDC100F82523 /* google-play_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3451C41BDC000F82523 /* google-play_active@2x.png */; };
+		472CB4221C41BDC100F82523 /* googleplay_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3441C41BDC000F82523 /* googleplay_active.png */; };
+		472CB4231C41BDC100F82523 /* googleplay_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3451C41BDC000F82523 /* googleplay_active@2x.png */; };
 		472CB4241C41BDC100F82523 /* google-play_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3461C41BDC000F82523 /* google-play_active@3x.png */; };
 		472CB4251C41BDC100F82523 /* google-play_inactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3471C41BDC000F82523 /* google-play_inactive.png */; };
 		472CB4261C41BDC100F82523 /* google-play_inactive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3481C41BDC000F82523 /* google-play_inactive@2x.png */; };
@@ -532,8 +532,8 @@
 		472CB3411C41BDC000F82523 /* facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook.png; sourceTree = "<group>"; };
 		472CB3421C41BDC000F82523 /* facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook@2x.png"; sourceTree = "<group>"; };
 		472CB3431C41BDC000F82523 /* facebook@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook@3x.png"; sourceTree = "<group>"; };
-		472CB3441C41BDC000F82523 /* google-play_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-play_active.png"; sourceTree = "<group>"; };
-		472CB3451C41BDC000F82523 /* google-play_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-play_active@2x.png"; sourceTree = "<group>"; };
+		472CB3441C41BDC000F82523 /* googleplay_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = googleplay_active.png; sourceTree = "<group>"; };
+		472CB3451C41BDC000F82523 /* googleplay_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "googleplay_active@2x.png"; sourceTree = "<group>"; };
 		472CB3461C41BDC000F82523 /* google-play_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-play_active@3x.png"; sourceTree = "<group>"; };
 		472CB3471C41BDC000F82523 /* google-play_inactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-play_inactive.png"; sourceTree = "<group>"; };
 		472CB3481C41BDC000F82523 /* google-play_inactive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-play_inactive@2x.png"; sourceTree = "<group>"; };
@@ -1059,8 +1059,8 @@
 				472CB3411C41BDC000F82523 /* facebook.png */,
 				472CB3421C41BDC000F82523 /* facebook@2x.png */,
 				472CB3431C41BDC000F82523 /* facebook@3x.png */,
-				472CB3441C41BDC000F82523 /* google-play_active.png */,
-				472CB3451C41BDC000F82523 /* google-play_active@2x.png */,
+				472CB3441C41BDC000F82523 /* googleplay_active.png */,
+				472CB3451C41BDC000F82523 /* googleplay_active@2x.png */,
 				472CB3461C41BDC000F82523 /* google-play_active@3x.png */,
 				472CB3471C41BDC000F82523 /* google-play_inactive.png */,
 				472CB3481C41BDC000F82523 /* google-play_inactive@2x.png */,
@@ -1977,7 +1977,7 @@
 				47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */,
 				472CB4281C41BDC100F82523 /* grooveshark_active.png in Resources */,
 				472CB4A11C41BDC100F82523 /* thumbs-up-outline@2x.png in Resources */,
-				472CB4221C41BDC100F82523 /* google-play_active.png in Resources */,
+				472CB4221C41BDC100F82523 /* googleplay_active.png in Resources */,
 				47A4E6FE1C0CC6E100354EA8 /* FuturaCondensedExtraBoldItalic.ttf in Resources */,
 				47A4E6FC1C0CC6E100354EA8 /* FuturaCondensedBoldItalic.ttf in Resources */,
 				472CB4101C41BDC100F82523 /* close.png in Resources */,
@@ -2031,7 +2031,7 @@
 				47A4E6E31C0CC6E100354EA8 /* FuturaBold.ttf in Resources */,
 				47A4E6F61C0CC6E100354EA8 /* FuturaItMas.ttf in Resources */,
 				47A4E6ED1C0CC6E100354EA8 /* FuturaLightItalic.ttf in Resources */,
-				472CB4231C41BDC100F82523 /* google-play_active@2x.png in Resources */,
+				472CB4231C41BDC100F82523 /* googleplay_active@2x.png in Resources */,
 				472CB4201C41BDC100F82523 /* facebook@2x.png in Resources */,
 				472CB45A1C41BDC100F82523 /* placeholder-image-white@3x.png in Resources */,
 				472CB46E1C41BDC100F82523 /* radio-tower@2x.png in Resources */,

@@ -120,11 +120,14 @@ class TabItemController : ASViewController, TabItem {
     
     var statusBarDisplayed : Bool = true
     override func prefersStatusBarHidden() -> Bool {
+        var status : Bool = false
         if let nvc = self._navController, let vc = nvc.viewControllers.last where vc != self {
-            return vc.prefersStatusBarHidden()
+            status = vc.prefersStatusBarHidden()
+        } else {
+            status = !statusBarDisplayed
         }
-        print(!statusBarDisplayed)
-        return !statusBarDisplayed
+        UIApplication.sharedApplication().statusBarHidden = status
+        return status
     }
     internal var _subsections : [TabSubsectionController]!
         {

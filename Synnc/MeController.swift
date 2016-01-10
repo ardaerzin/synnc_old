@@ -17,7 +17,6 @@ import WCLUserManager
 import DeviceKit
 
 class MeController : TabItemController {
-    
     override var identifier : String! {
         return "MeController"
     }
@@ -48,13 +47,6 @@ class MeController : TabItemController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.screenNode.backgroundColor = UIColor.whiteColor()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-//        if let rvc = self.rootViewController {
-//            rvc.displayStatusBar = false
-//        }
     }
     
     var _inboxController : InboxController!
