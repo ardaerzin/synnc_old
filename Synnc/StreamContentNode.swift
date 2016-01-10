@@ -70,7 +70,7 @@ class StreamContentNode : ASScrollNode {
         super.layoutDidFinish()
         self.view.contentSize = CGSizeMake(self.calculatedSize.width, headerNode.calculatedSize.height)
     }
-    override init!() {
+        override init() {
         super.init()
         
         headerNode = StreamTitleNode()
@@ -84,7 +84,7 @@ class StreamContentNode : ASScrollNode {
         self.addSubnode(connectedUsersNode)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStackLayoutSpec(direction: .Vertical, spacing: 7, justifyContent: .Start, alignItems: .Start, children: [headerNode, connectedUsersNode])
     }
 }
@@ -100,7 +100,7 @@ class StreamTitleNode : ASDisplayNode {
     
     var borderNode : ASDisplayNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         userImage = ASNetworkImageNode(webImage: ())
@@ -142,7 +142,7 @@ class StreamTitleNode : ASDisplayNode {
         self.sourcesNode.setNeedsLayout()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let imageSpec = ASStaticLayoutSpec(children: [self.userImage])
         let titleSpec = ASStackLayoutSpec(direction: .Vertical, spacing: 3, justifyContent: .Start, alignItems: .Start, children: [self.streamTitle, self.usernameNode])
         titleSpec.flexGrow = true
@@ -164,11 +164,11 @@ class StreamSourcesNode : ASDisplayNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var specs : [ASLayoutable] = []
         for n in nodes {
             n.selected = true
@@ -207,7 +207,7 @@ class StreamListenersNode : ASDisplayNode {
             }
         }
     }
-    override init!() {
+        override init() {
         super.init()
     
         titleNode = ASTextNode()
@@ -230,7 +230,7 @@ class StreamListenersNode : ASDisplayNode {
         self.addSubnode(listenersCollection)
         self.addSubnode(noListenersText)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let overlaySpec = ASOverlayLayoutSpec(child: self.listenersCollection, overlay: ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: noListenersText))
         overlaySpec.alignSelf = .Stretch
         overlaySpec.flexBasis = ASRelativeDimension(type: .Points, value: 40)

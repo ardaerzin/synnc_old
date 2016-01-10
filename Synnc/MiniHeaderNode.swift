@@ -25,11 +25,11 @@ class SmallHeaderNode : ASDisplayNode {
     var closeButton : ButtonNode!
     var buttonSpecs : [ASLayoutable] = []
     
-    override init!() {
+        override init() {
         super.init()
         
         self.closeButton = ButtonNode(normalColor: .clearColor(), selectedColor: .clearColor())
-        self.closeButton.setImage(UIImage(named: "chevronDown"), forState: ASButtonStateNormal)
+        self.closeButton.setImage(UIImage(named: "chevronDown"), forState: ASControlState.Normal)
         self.closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimensionMake(.Points, 44), ASRelativeDimensionMake(.Percent, 1))
         
         self.addSubnode(self.closeButton)
@@ -63,7 +63,7 @@ class SmallHeaderNode : ASDisplayNode {
             prevLeft = button.position.x - (button.calculatedSize.width / 2)
         }
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         spacer.flexBasis = ASRelativeDimension(type: .Percent, value: 0.5)

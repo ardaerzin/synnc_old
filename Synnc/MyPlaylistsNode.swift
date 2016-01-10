@@ -42,7 +42,7 @@ class MyPlaylistsNode : ASDisplayNode {
         super.didLoad()
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         let layout = UICollectionViewFlowLayout()
@@ -58,7 +58,7 @@ class MyPlaylistsNode : ASDisplayNode {
         self.addSubnode(collectionNode)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStaticLayoutSpec(children: [self.collectionNode])
         let o = ASOverlayLayoutSpec(child: a, overlay: self.emptyStateNode)
         return o

@@ -25,7 +25,7 @@ class SeperatorNode : ASDisplayNode {
 //        print("deinit SeperatorNode")
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.seperatorLine1 = ASDisplayNode()
@@ -54,7 +54,7 @@ class SeperatorNode : ASDisplayNode {
         self.alignSelf = .Stretch
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.seperatorLine1,self.seperatorText, self.seperatorLine2])
         a.alignSelf = .Stretch
         return a
@@ -72,7 +72,7 @@ class ButtonHolder : ASDisplayNode {
 //        print("deinit button holder")
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         var buttonHeight : CGFloat = 60
@@ -96,7 +96,7 @@ class ButtonHolder : ASDisplayNode {
         self.regularLoginButton.cornerRadius = 3
         self.regularLoginButton.alpha = 0
         self.regularLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.regularLoginButton.setAttributedTitle(normalTitleString, forState: ASButtonStateNormal)
+        self.regularLoginButton.setAttributedTitle(normalTitleString, forState: ASControlState.Normal)
         
         self.seperatorNode = SeperatorNode()
         self.seperatorNode.alpha = 0
@@ -105,18 +105,18 @@ class ButtonHolder : ASDisplayNode {
         self.facebookLoginButton = LoginButtonNode(normalColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1), selectedColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1))
         self.facebookLoginButton.alpha = 0
         self.facebookLoginButton.minScale = 0.85
-        self.facebookLoginButton.setImage(UIImage(named: "facebook"), forState: ASButtonStateNormal)
+        self.facebookLoginButton.setImage(UIImage(named: "facebook"), forState: ASControlState.Normal)
         self.facebookLoginButton.cornerRadius = 3
         self.facebookLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.facebookLoginButton.setAttributedTitle(facebookTitleString, forState: ASButtonStateNormal)
+        self.facebookLoginButton.setAttributedTitle(facebookTitleString, forState: ASControlState.Normal)
         
         self.twitterLoginButton = LoginButtonNode(normalColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1), selectedColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1))
         self.twitterLoginButton.alpha = 0
         self.twitterLoginButton.minScale = 0.85
-        self.twitterLoginButton.setImage(UIImage(named: "twitter"), forState: ASButtonStateNormal)
+        self.twitterLoginButton.setImage(UIImage(named: "twitter"), forState: ASControlState.Normal)
         self.twitterLoginButton.cornerRadius = 3
         self.twitterLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.twitterLoginButton.setAttributedTitle(twitterTitleString, forState: ASButtonStateNormal)
+        self.twitterLoginButton.setAttributedTitle(twitterTitleString, forState: ASControlState.Normal)
         
         
         
@@ -126,7 +126,7 @@ class ButtonHolder : ASDisplayNode {
         self.addSubnode(self.twitterLoginButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let regularButtonStack = ASStaticLayoutSpec(children: [self.regularLoginButton])
         let facebookButtonStack = ASStaticLayoutSpec(children: [self.facebookLoginButton])
@@ -155,11 +155,11 @@ class FormSwitcherNode : ASDisplayNode {
         switch self.targetForm {
         case .Login :
             self.textNode.attributedString = NSAttributedString(string: "Already have an account?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.51), NSKernAttributeName : 0.86])
-            self.switchButton.setAttributedTitle(NSAttributedString(string: "LOGIN", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0]), forState: ASButtonStateNormal)
+            self.switchButton.setAttributedTitle(NSAttributedString(string: "LOGIN", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0]), forState: ASControlState.Normal)
             break
         case .Signup:
             self.textNode.attributedString = NSAttributedString(string: "Don't have an account?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.51), NSKernAttributeName : 0.86])
-            self.switchButton.setAttributedTitle(NSAttributedString(string: "SIGNUP", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0]), forState: ASButtonStateNormal)
+            self.switchButton.setAttributedTitle(NSAttributedString(string: "SIGNUP", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0]), forState: ASControlState.Normal)
             break
         default:
             return
@@ -167,14 +167,14 @@ class FormSwitcherNode : ASDisplayNode {
         
         self.setNeedsLayout()
     }
-    override init!() {
+        override init() {
         super.init()
         
         self.textNode = ASTextNode()
         self.textNode.attributedString = NSAttributedString(string: "Already have an account?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.51), NSKernAttributeName : 0.86])
         
         self.switchButton = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
-        self.switchButton.setAttributedTitle(NSAttributedString(string: "LOGIN", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: ASButtonStateNormal)
+        self.switchButton.setAttributedTitle(NSAttributedString(string: "LOGIN", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: ASControlState.Normal)
         self.switchButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(62, 30))
         self.switchButton.cornerRadius = 3
         self.switchButton.borderColor = UIColor.SynncColor().CGColor
@@ -186,7 +186,7 @@ class FormSwitcherNode : ASDisplayNode {
         self.alignSelf = .Stretch
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStaticLayoutSpec(children: [self.switchButton])
         return ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [textNode, a])
     }
@@ -303,7 +303,7 @@ class SpinnerNode : ASDisplayNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.spinnerHolder = ASDisplayNode()
@@ -316,20 +316,20 @@ class SpinnerNode : ASDisplayNode {
         userImageNode = ASNetworkImageNode()
         userImageNode.alpha = 0
         userImageNode.preferredFrameSize = CGSizeMake(75, 75)
-        userImageNode.imageModificationBlock = {
-            [unowned self]
-            img in
-            UIGraphicsBeginImageContextWithOptions(img.size, false, UIScreen.mainScreen().scale);
-            let rect = CGRectMake(0,0,img.size.width, img.size.height)
-            UIBezierPath(roundedRect: rect, cornerRadius: img.size.width / 2).addClip()
-            (img).drawInRect(rect)
-            
-            let circleimg = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            
-            self.imageDisplayAnimation.toValue = 1
-            return circleimg
-        }
+//        userImageNode.imageModificationBlock = {
+//            [unowned self]
+//            img in
+//            UIGraphicsBeginImageContextWithOptions(img.size, false, UIScreen.mainScreen().scale);
+//            let rect = CGRectMake(0,0,img.size.width, img.size.height)
+//            UIBezierPath(roundedRect: rect, cornerRadius: img.size.width / 2).addClip()
+//            (img).drawInRect(rect)
+//            
+//            let circleimg = UIGraphicsGetImageFromCurrentImageContext();
+//            UIGraphicsEndImageContext();
+//            
+//            self.imageDisplayAnimation.toValue = 1
+//            return circleimg
+//        }
         
         userLoginMsgNode = ASTextNode()
         userLoginMsgNode.spacingBefore = 20
@@ -356,7 +356,7 @@ class SpinnerNode : ASDisplayNode {
         POPLayerSetScaleXY(self.userImageNode.layer, CGPointMake(0,0))
         POPLayerSetScaleXY(self.userLoginMsgNode.layer, CGPointMake(0,0))
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [self.spinnerHolder, self.msgNode])
         
         let y = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [self.userImageNode, self.userLoginMsgNode])
@@ -499,7 +499,7 @@ class FormNode : ASDisplayNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.buttonHolder = ButtonHolder()
@@ -510,8 +510,8 @@ class FormNode : ASDisplayNode {
         self.closeFormButton.imageNode.preferredFrameSize = CGSizeMake(15, 15)
         self.closeFormButton.imageNode.contentMode = .Center
         self.closeFormButton.alpha = 0
-        self.closeFormButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASButtonStateNormal)
-        self.closeFormButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
+        self.closeFormButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASControlState.Normal)
+//        self.closeFormButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
         
         self.formHolder = LSFormNode()
         
@@ -560,7 +560,7 @@ class FormNode : ASDisplayNode {
         self.spinnerNode.position = self.buttonHolder.position
         self.formSwitcher.position.x = size.width / 2
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStaticLayoutSpec(children: [self.spinnerNode])
         let b = ASOverlayLayoutSpec(child: self.buttonHolder, overlay: a)
         let x = ASStaticLayoutSpec(children: [self.formHolder, b, self.closeFormButton, self.formSwitcher])
@@ -577,7 +577,7 @@ class BackgroundNode : ASDisplayNode {
 //        print("deinit background node")
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.logoHolder = AnimatedLogoNode(barCount: 15)
@@ -594,7 +594,7 @@ class BackgroundNode : ASDisplayNode {
         self.logoHolder.position.x = self.calculatedSize.width - self.logoHolder.calculatedSize.width / 2
         self.logoHolder.position.y = self.titleNode.position.y
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexBasis = ASRelativeDimension(type: .Percent, value: 0.1)
         
@@ -620,7 +620,7 @@ class LoginNode : ASDisplayNode {
 //        print("deinit login node")
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.backgroundNode = BackgroundNode()
@@ -638,7 +638,7 @@ class LoginNode : ASDisplayNode {
     override func layout() {
         super.layout()
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         let a = ASStaticLayoutSpec(children: [formNode])

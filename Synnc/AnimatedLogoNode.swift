@@ -137,7 +137,7 @@ class AnimatedLogoNode : ASDisplayNode {
 
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         var children : [ASLayoutable] = []
         for i in 0..<barCount {

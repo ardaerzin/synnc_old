@@ -456,7 +456,7 @@ class ChatBarNode : ASDisplayNode {
     var textNode : ASEditableTextNode!
     var sendButton : ButtonNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         textNode = ASEditableTextNode()
@@ -468,7 +468,7 @@ class ChatBarNode : ASDisplayNode {
         textNode.returnKeyType = UIReturnKeyType.Send
         
         sendButton = ButtonNode(normalColor: UIColor.SynncColor(), selectedColor: UIColor.SynncColor())
-        sendButton.setAttributedTitle(NSAttributedString(string: "Send", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSKernAttributeName : -0.1, NSForegroundColorAttributeName : UIColor.whiteColor()]), forState: ASButtonStateNormal)
+        sendButton.setAttributedTitle(NSAttributedString(string: "Send", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSKernAttributeName : -0.1, NSForegroundColorAttributeName : UIColor.whiteColor()]), forState: ASControlState.Normal)
         
         self.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         self.shadowColor = UIColor(red: 223/255, green: 220/255, blue: 220/255, alpha: 1).CGColor
@@ -481,7 +481,7 @@ class ChatBarNode : ASDisplayNode {
         self.addSubnode(sendButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         sendButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(70, 32))
         let buttonSpec = ASStaticLayoutSpec(children: [sendButton])
         textNode.spacingBefore = 14

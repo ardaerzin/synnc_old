@@ -20,7 +20,7 @@ class StreamsFeedNode : ASDisplayNode {
     
     var streamCollection : ASCollectionNode!
     
-    override init!() {
+        override init() {
         super.init()
         self.backgroundColor = UIColor.redColor()
         
@@ -33,7 +33,7 @@ class StreamsFeedNode : ASDisplayNode {
         self.addSubnode(streamCollection)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStaticLayoutSpec(children: [self.streamCollection])
     }
 }

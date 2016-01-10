@@ -36,7 +36,7 @@ class TabSubsectionController : ASViewController {
         a.backgroundColor = UIColor.whiteColor()
         self.screenNode = a
     }
-    override init!(node: ASDisplayNode!) {
+        override init(node: ASDisplayNode!) {
         super.init(node: node)
         self.screenNode = node
     }
@@ -164,7 +164,7 @@ class TabItemController : ASViewController, TabItem {
         self.screenNode = a
         self.automaticallyAdjustsScrollViewInsets = false
     }
-    override init!(node: ASDisplayNode!) {
+        override init(node: ASDisplayNode!) {
         super.init(node: node)
         self.screenNode = node
         self.automaticallyAdjustsScrollViewInsets = false

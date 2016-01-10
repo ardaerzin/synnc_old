@@ -19,7 +19,7 @@ class ParallaxBackgroundScrollNode : ASDisplayNode {
     var imageGradientNode : ASImageNode!
 
     
-    override init!() {
+        override init() {
         super.init()
 //        self.view.scrollEnabled = false
         
@@ -49,7 +49,7 @@ class ParallaxBackgroundScrollNode : ASDisplayNode {
         super.layoutDidFinish()
 //        self.view.programaticScrollEnabled = true
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: constrainedSize.max.width))
         imageGradientNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: constrainedSize.max.width))
         return ASStaticLayoutSpec(children: [imageNode, imageGradientNode])
@@ -69,7 +69,7 @@ class ParallaxBackgroundNode : ASScrollNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         scrollNode = ParallaxBackgroundScrollNode()
@@ -84,7 +84,7 @@ class ParallaxBackgroundNode : ASScrollNode {
         
         self.addSubnode(scrollNode)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(constrainedSize.max)
         return ASStaticLayoutSpec(children: [self.scrollNode])
     }

@@ -12,7 +12,7 @@ import AsyncDisplayKit
 import Cloudinary
 
 class StreamFeedDataSource : WCLAsyncCollectionViewDataSource {
-    override func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode {
         let node = StreamFeedNode()
         if let stream = self.data[indexPath.item] as? Stream {
             node.configure(stream)
@@ -32,7 +32,7 @@ class StreamFeedNode : ASCellNode {
     var genreStr : String!
     var imgId : String!
     
-    override init!() {
+        override init() {
         super.init()
         
         streamInfoNode = StreamCellInfoNode()
@@ -99,7 +99,7 @@ class StreamFeedNode : ASCellNode {
         self.genresNode.position.y = self.imageNode.calculatedSize.height - 5 - self.genresNode.calculatedSize.height / 2
         self.genresNode.position.x = self.imageNode.calculatedSize.width - 5 - self.genresNode.calculatedSize.width / 2 + 25
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let overlay = ASOverlayLayoutSpec(child: ASStaticLayoutSpec(children: [genresNode]), overlay: imageNode)
         overlay.flexBasis = ASRelativeDimension(type: .Points, value: 110)
         overlay.alignSelf = .Stretch
@@ -110,7 +110,7 @@ class StreamFeedNode : ASCellNode {
 }
 
 class StreamCellInfoNode : StreamTitleNode {
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         if let x = super.layoutSpecThatFits(constrainedSize) as? ASInsetLayoutSpec {
             x.insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             return x

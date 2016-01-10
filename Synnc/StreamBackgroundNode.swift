@@ -108,7 +108,7 @@ class StreamInfoNode : ASDisplayNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         trackAttributes[NSParagraphStyleAttributeName] = paragraphAttributes
@@ -128,7 +128,7 @@ class StreamInfoNode : ASDisplayNode {
         
         
         streamStatusButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
-//        streamStatusButton.setAttributedTitle(NSAttributedString(string: "STOP STREAMING", attributes: buttonAttributes), forState: ASButtonStateNormal)
+//        streamStatusButton.setAttributedTitle(NSAttributedString(string: "STOP STREAMING", attributes: buttonAttributes), forState: ASControlState.Normal)
         streamStatusButton.cornerRadius = 3
         
         addToFavoritesButton = ButtonNode()
@@ -136,7 +136,7 @@ class StreamInfoNode : ASDisplayNode {
         addToFavoritesButton.borderColor = UIColor.whiteColor().CGColor
         addToFavoritesButton.borderWidth = 1
         addToFavoritesButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
-        addToFavoritesButton.setAttributedTitle(NSAttributedString(string: "ADD TO FAVORITES", attributes: buttonAttributes), forState: ASButtonStateNormal)
+        addToFavoritesButton.setAttributedTitle(NSAttributedString(string: "ADD TO FAVORITES", attributes: buttonAttributes), forState: ASControlState.Normal)
         addToFavoritesButton.alpha = 0
         
         streamTitle = ASEditableTextNode()
@@ -147,7 +147,7 @@ class StreamInfoNode : ASDisplayNode {
         startStreamButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         startStreamButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
         startStreamButton.cornerRadius = 3
-        startStreamButton.setAttributedTitle(NSAttributedString(string: "START STREAMING", attributes: buttonAttributes), forState: ASButtonStateNormal)
+        startStreamButton.setAttributedTitle(NSAttributedString(string: "START STREAMING", attributes: buttonAttributes), forState: ASControlState.Normal)
         
         playingIcon = AnimatedLogoNode(barCount: 5)
         playingIcon.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(30, 35))
@@ -230,7 +230,7 @@ class StreamInfoNode : ASDisplayNode {
         titleSizeHeight = self.trackTitle.calculatedSize.height
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let statusButtonSpec = ASStaticLayoutSpec(children: [streamStatusButton])
         statusButtonSpec.spacingAfter = 20
         self.trackTitle.sizeRange = ASRelativeSizeRangeMake(ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 0)), ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 100)))
@@ -397,7 +397,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
 
         self.view.delaysContentTouches = false
@@ -408,7 +408,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         self.updateEditingState()
     }
     
-    override func touchesBegan(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
         self.infoNode.streamTitle.resignFirstResponder()
     }
@@ -435,7 +435,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         } else {
             genreString = "No Genre Info"
         }
-        self.infoNode.genreToggle.setAttributedTitle(NSAttributedString(string: genreString, attributes: self.infoNode.genreAttributes), forState: ASButtonStateNormal)
+        self.infoNode.genreToggle.setAttributedTitle(NSAttributedString(string: genreString, attributes: self.infoNode.genreAttributes), forState: ASControlState.Normal)
     }
     func updateGenres(genres: [Genre]) {
         genreUpdateAnimation.completionBlock = {
@@ -452,7 +452,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                 anim, finished in
                 self.infoNode.genreToggle.pop_removeAnimationForKey("genreUpdateAnimation")
             }
-            self.infoNode.genreToggle.setAttributedTitle(NSAttributedString(string: str, attributes: self.infoNode.genreAttributes), forState: ASButtonStateNormal)
+            self.infoNode.genreToggle.setAttributedTitle(NSAttributedString(string: str, attributes: self.infoNode.genreAttributes), forState: ASControlState.Normal)
             self.infoNode.genreToggle.setNeedsLayout()
             self.genreUpdateAnimation.toValue = 1
         }
@@ -490,7 +490,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         self.infoNode.genreToggle.userInteractionEnabled = editing
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
         self.infoNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(constrainedSize.max)
         return ASStaticLayoutSpec(children: [x, self.infoNode])

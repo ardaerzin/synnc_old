@@ -41,14 +41,14 @@ class SubsectionButtonNode : ButtonNode {
         self.normalTitle = NSAttributedString(string: item.subsections[index].title, attributes: normalAttributes)
         self.selectedTitle = NSAttributedString(string: item.subsections[index].title, attributes: selectedAttributes)
         
-        self.setAttributedTitle(normalTitle, forState: ASButtonStateNormal)
-        self.setAttributedTitle(selectedTitle, forState: ASButtonStateHighlighted)
+        self.setAttributedTitle(normalTitle, forState: ASControlState.Normal)
+        self.setAttributedTitle(selectedTitle, forState: ASControlState.Highlighted)
     }
     
     override func changedSelected() {
         super.changedSelected()
         let title = self.selected ? self.selectedTitle : self.normalTitle
-        self.setAttributedTitle(title, forState: ASButtonStateNormal)
+        self.setAttributedTitle(title, forState: ASControlState.Normal)
     }
 }
 
@@ -90,7 +90,7 @@ class SubsectionSelectorNode : ASDisplayNode {
     var minX : CGFloat!
     var maxX : CGFloat!
     
-    override init!() {
+        override init() {
         super.init()
         self.alignSelf = .Stretch
         self.flexBasis = ASRelativeDimension(type: .Points, value: 30)
@@ -120,7 +120,7 @@ class SubsectionSelectorNode : ASDisplayNode {
             let button = SubsectionButtonNode(item: tabItem, index: index)
             button.addTarget(self, action: Selector("didSelectSubsection:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
             let title = NSAttributedString(string: item.title, attributes: self.titleAttributes)
-            button.setAttributedTitle(title, forState: ASButtonStateNormal)
+            button.setAttributedTitle(title, forState: ASControlState.Normal)
             button.flexGrow = true
             buttons.append(button)
             self.addSubnode(button)
@@ -144,7 +144,7 @@ class SubsectionSelectorNode : ASDisplayNode {
         self.sectionIndicator.position.y = self.calculatedSize.height - 1
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: subSectionNodes)
         
         if self.minX == nil {

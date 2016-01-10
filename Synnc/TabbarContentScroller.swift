@@ -110,7 +110,7 @@ class TabbarContentScroller : ASScrollNode {
         self.currentIndex = item.selectedIndex
     }
     
-    override init!() {
+        override init() {
         super.init()
     }
     
@@ -121,7 +121,7 @@ class TabbarContentScroller : ASScrollNode {
         self.view.delaysContentTouches = false
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var staticSpecs : [ASStaticLayoutSpec] = []
         for node in pages {
             node.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeSize(ASRelativeSizeMake(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Percent, value: 1)))

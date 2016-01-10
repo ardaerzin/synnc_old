@@ -40,36 +40,72 @@ protocol ChatRoomDataSourceDelegate {
 }
 class ChatRoomDataSource : WCLAsyncTableViewDataSource {
     var roomDelegate : ChatRoomDataSourceDelegate?
-    override func flushPendingData() {
-        var data : [NSObject] = []
-        let oldData = self.data
-        let nData = self.pendingData
-        if nData.isEmpty {
-            return
-        }
-        if !dataSourceLocked {
-            self._pendingData.removeAll(keepCapacity: false)
-            if self.refresh {
-                data = nData
-            } else {
-                data = oldData + nData
-            }
-            self.dataSourceLocked = true
-        } else {
-            return
-        }
-        print("yo")
+    
+    
+//    override func flushPendingData() {
+//        var data : [NSObject] = []
+//        let oldData = self.data
+//        let nData = self.pendingData
+//        if nData.isEmpty {
+//            return
+//        }
+//        if !dataSourceLocked {
+//            self._pendingData.removeAll(keepCapacity: false)
+//            if self.refresh {
+//                data = nData
+//            } else {
+//                data = oldData + nData
+//            }
+//            self.dataSourceLocked = true
+//        } else {
+//            return
+//        }
+//        print("yo")
+//        Async.background {
+//            if var chatData = data as? [ChatItem] where !data.isEmpty {
+//                chatData.sortInPlace { $0.timestamp.compare($1.timestamp) == NSComparisonResult.OrderedAscending }
+////                if !self.dataSourceLocked {
+//                print("za")
+//                    self.processPendingData(oldData, newData: data)
+////                }
+//            }
+//        }
+//    }
+    
+//    override func doFlushData(oldData: [NSObject], pendingData: [NSObject]) {
+//        var d : [NSObject] = []
+//        if self.refresh {
+//            d = _pendingData
+//        } else {
+//            d = oldData + pendingData
+//        }
+//        Async.background {
+//            if var chatData = data as? [ChatItem] where !data.isEmpty {
+//                chatData.sortInPlace { $0.timestamp.compare($1.timestamp) == NSComparisonResult.OrderedAscending }
+//                //                if !self.dataSourceLocked {
+//                print("za")
+//                self.processPendingData(oldData, newData: data)
+//                //                }
+//            }
+//        }
+//
+//        self.processPendingData(oldData, newData: d)
+//    }
+    
+    override func processPendingData(oldData: [NSObject], newData: [NSObject]) {
         Async.background {
-            if var chatData = data as? [ChatItem] where !data.isEmpty {
+            if var chatData = newData as? [ChatItem] where !newData.isEmpty {
                 chatData.sortInPlace { $0.timestamp.compare($1.timestamp) == NSComparisonResult.OrderedAscending }
-//                if !self.dataSourceLocked {
+                //                if !self.dataSourceLocked {
                 print("za")
-                    self.processPendingData(oldData, newData: data)
-//                }
+                self.processPendingData(oldData, newData: chatData)
+                //                }
             }
         }
+
     }
-    override func tableView(tableView: ASTableView!, nodeForRowAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    
+    override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = ChatItemNode()
         if let data = self.data[indexPath.item] as? ChatItem {
             node.configure(data)
@@ -144,7 +180,7 @@ class ChatItemNode : ASCellNode {
         super.layout()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let imageSpec = ASStaticLayoutSpec(children: [self.imageNode])
         imageSpec.spacingBefore = 20
         

@@ -22,7 +22,7 @@ class GenreCellNode : ASCellNode {
             let attr = genreTitleNode.attributedString
             self.titleAttributes[NSForegroundColorAttributeName] = UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)
             
-            self.genreTitleNode.attributedString = NSAttributedString(string: self.genreTitleNode.attributedString.string, attributes: self.titleAttributes)
+            self.genreTitleNode.attributedString = NSAttributedString(string: self.genreTitleNode.attributedString!.string, attributes: self.titleAttributes)
             self.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(cellStateAnimationProgress)
         }
     }
@@ -81,7 +81,7 @@ class GenreCellNode : ASCellNode {
     var genreTitleNode : ASTextNode!
     var titleAttributes : [String : AnyObject] = [ NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor()]
     
-    override init!() {
+        override init() {
         super.init()
         genreTitleNode = ASTextNode()
         self.cornerRadius = 3
@@ -100,7 +100,7 @@ class GenreCellNode : ASCellNode {
         self.setNeedsLayout()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         genreTitleNode.flexBasis = ASRelativeDimension(type: .Percent, value: 1)
         let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [genreTitleNode])
         a.alignSelf = .Stretch

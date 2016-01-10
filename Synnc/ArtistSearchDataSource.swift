@@ -15,7 +15,7 @@ class ArtistSearchDataSource : WCLAsyncCollectionViewDataSource {
     
     var nextAction : (()->Void)?
     
-    override func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = SynncArtistSmallNode()
         if let data = self.data[indexPath.item] as? SynncArtist {
             node.configureForArtist(data)
@@ -111,7 +111,7 @@ class SynncArtistSmallNode : ASCellNode {
     }
     
     
-    override init!() {
+        override init() {
         super.init()
         
         self.imageNode = ASNetworkImageNode()
@@ -145,7 +145,7 @@ class SynncArtistSmallNode : ASCellNode {
         }
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         

@@ -30,8 +30,8 @@ class TabbarButton : ButtonNode {
         let normalImage = UIImage(named: item.imageName)!
         let selectedImage = UIImage(named: item.imageName+"_selected")!
         
-        setImage(normalImage, forState: ASButtonStateNormal)
-        setImage(selectedImage, forState: ASButtonStateHighlighted)
+        setImage(normalImage, forState: ASControlState.Normal)
+        setImage(selectedImage, forState: ASControlState.Highlighted)
         
         self.normalImage = normalImage
         self.selectedImage = selectedImage
@@ -41,7 +41,7 @@ class TabbarButton : ButtonNode {
         super.changedSelected()
         
         let img = self.selected ? self.selectedImage : self.normalImage
-        self.setImage(img, forState: ASButtonStateNormal)
+        self.setImage(img, forState: ASControlState.Normal)
     }
 }
 
@@ -117,7 +117,7 @@ class TabNode : ASDisplayNode {
         }
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: tabbarNodes)
         x.alignSelf = .Stretch
         

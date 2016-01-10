@@ -37,7 +37,7 @@ class TitleHolderNode : ASDisplayNode {
         }
     }
 
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         if titleItem == nil {
             return ASLayoutSpec()
         } else {
@@ -66,7 +66,7 @@ class IconHolderNode : ASDisplayNode {
         super.layout()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         if iconItem == nil {
             return ASLayoutSpec()
         } else {
@@ -91,7 +91,7 @@ class HeaderNode : ASDisplayNode {
             }
         }
     }
-    override init!() {
+        override init() {
         super.init()
         self.alignSelf = .Stretch
         
@@ -135,7 +135,7 @@ class HeaderNode : ASDisplayNode {
         super.willEnterHierarchy()
         self.nowPlayingIcon.startAnimation()
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let statusSpacer = ASLayoutSpec()
         statusSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 20)
         

@@ -108,7 +108,7 @@ class InputFieldArea : ASDisplayNode {
         
         self.formStateAnimation.toValue = self.state == .Login ? 0 : 1
     }
-    override init!() {
+        override init() {
         super.init()
     }
     override func layout() {
@@ -285,7 +285,7 @@ class LSFormNode : ASDisplayNode {
         self.setNeedsLayout()
     }
     
-    override func touchesBegan(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         self.resignFirstResponder()
     }
     override func isFirstResponder() -> Bool {
@@ -309,7 +309,7 @@ class LSFormNode : ASDisplayNode {
         let buttonMsg = self.state == .Login ? "CONTINUE YOUR JOURNEY" : "START YOUR JOURNEY"
         let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 2.57]
         let normalTitleString = NSAttributedString(string: buttonMsg, attributes: attributes)
-        self.actionButton.setAttributedTitle(normalTitleString, forState: ASButtonStateNormal)
+        self.actionButton.setAttributedTitle(normalTitleString, forState: ASControlState.Normal)
     }
     func setTitleStrings() {
         
@@ -319,7 +319,7 @@ class LSFormNode : ASDisplayNode {
         self.titleNode.attributedString = NSAttributedString(string: titleMsg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 2.57])
         self.greetingMsgNode.attributedString = NSAttributedString(string: subtitleMsg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 106/255, green: 104/255, blue: 104/255, alpha: 1), NSKernAttributeName : 2.57])
     }
-    override init!() {
+        override init() {
         super.init()
         
         self.titleNode = ASTextNode()
@@ -390,7 +390,7 @@ class LSFormNode : ASDisplayNode {
         POPLayerSetTranslationY(self.inputArea.layer, c)
         POPLayerSetTranslationY(self.actionButton.layer, b)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let inputSpec = ASStaticLayoutSpec(children: [inputArea])
         let b = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: inputSpec)
         b.alignSelf = .Stretch

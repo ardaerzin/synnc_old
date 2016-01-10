@@ -85,7 +85,7 @@ class PlaylistCellNode : ASCellNode {
             print(url)
         }
     }
-    override init!() {
+        override init() {
         super.init()
         
         self.imageNode = ASNetworkImageNode(webImage: ())
@@ -114,7 +114,7 @@ class PlaylistCellNode : ASCellNode {
         self.fetchData()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         

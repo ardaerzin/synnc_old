@@ -32,7 +32,7 @@ class StreamUsersController : NSObject {
         self.dataSource.pendingData = users
     }
 }
-extension StreamUsersController : ASCollectionViewDelegate {
+extension StreamUsersController : ASCollectionDelegate {
     func collectionView(collectionView: ASCollectionView!, willBeginBatchFetchWithContext context: ASBatchContext!) {
         self.manager.batchContext = context
     }
@@ -51,7 +51,7 @@ extension StreamUsersController : WCLAsyncCollectionViewDataSourceDelegate {
 
 class StreamUsersDataSource : WCLAsyncCollectionViewDataSource {
     
-    override func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode {
         let node = ListenerCellNode()
         if let data = self.data[indexPath.item] as? WCLUser {
             node.imageURL = data.avatarURL(WCLUserLoginType(rawValue: data.provider)!, frame: CGRectMake(0, 0, 40, 40), scale: UIScreen.mainScreen().scale)

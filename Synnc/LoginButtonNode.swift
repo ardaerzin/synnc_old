@@ -14,7 +14,7 @@ class LoginButtonNode : ButtonNode {
         super.init(normalColor: normalColor, selectedColor: selectedColor)
         self.imageNode.spacingAfter = 15
     }
-//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
 //        
 //        let spacer = ASLayoutSpec()
 //        spacer.flexGrow = true

@@ -20,7 +20,7 @@ class StreamLoadingNode : ASDisplayNode {
     var animationNode : AnimatedLogoNode!
     var titleNode : ASTextNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         animationNode = AnimatedLogoNode(barCount: 5)
@@ -41,7 +41,7 @@ class StreamLoadingNode : ASDisplayNode {
         titleNode.position.x = (self.calculatedSize.width / 2)
         titleNode.position.y = (self.calculatedSize.height / 2)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [titleNode])
         return ASStaticLayoutSpec(children: [animationNode, titleNode])

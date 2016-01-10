@@ -39,7 +39,7 @@ class PlaylistTableCell : ASCellNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.artistNameNode = ASTextNode()
@@ -95,7 +95,7 @@ class PlaylistTableCell : ASCellNode {
 //        self.seperatorNode.frame = CGRectMake(25, self.calculatedSize.height - 1, self.calculatedSize.width - 42.5, 1)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let bottomLine = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [self.artistNameNode, self.sourceNode])
         bottomLine.alignSelf = .Stretch
         bottomLine.spacingBefore = 5

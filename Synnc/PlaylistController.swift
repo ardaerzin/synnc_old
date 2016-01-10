@@ -311,8 +311,8 @@ extension PlaylistController {
             if let img = assets.first {
             
                 img.fetchFullScreenImageWithCompleteBlock {
-                    i in
-                    if let img = i {
+                    image, info in
+                    if let img = image {
                         self.editedImage = img
                         self.screenNode.imageNode.image = self.editedImage
                     }

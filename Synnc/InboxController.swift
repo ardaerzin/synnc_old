@@ -21,7 +21,7 @@ class SynncNotification : NSObject {
     }
 }
 class InboxDataSource : WCLAsyncTableViewDataSource {
-    override func tableView(tableView: ASTableView!, nodeForRowAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = InboxItemNode()
        
         if let data = self.data[indexPath.item] as? SynncNotification {
@@ -98,7 +98,7 @@ class InboxNode : ASDisplayNode {
     
     let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 60/255, green: 60/255, blue: 60/255, alpha: 1), NSKernAttributeName : -0.1]
     
-    override init!() {
+        override init() {
         super.init()
         
         self.headerNode = ASTextNode()
@@ -108,7 +108,7 @@ class InboxNode : ASDisplayNode {
         
         self.closeButton = ButtonNode(normalColor: .clearColor(), selectedColor: .clearColor())
         self.closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
-        self.closeButton.setImage(UIImage(named: "close")?.resizeImage(usingWidth: 12), forState: ASButtonStateNormal)
+        self.closeButton.setImage(UIImage(named: "close")?.resizeImage(usingWidth: 12), forState: ASControlState.Normal)
         self.closeButton.alpha = 0.6
         
         self.separator = ASDisplayNode()
@@ -136,7 +136,7 @@ class InboxNode : ASDisplayNode {
         self.inboxTable.view.separatorInset = UIEdgeInsets(top: 0, left: 31, bottom: 0, right: 0)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
         buttonSpec.spacingAfter = 18

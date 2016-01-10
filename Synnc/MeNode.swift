@@ -49,7 +49,7 @@ class MeNode : ParallaxNode {
     }
     init(user : WCLUser) {
         
-        var content = MeContentNode()
+        let content = MeContentNode()
         
 //        content.view.backgroundColor = UIColor.redColor()
         content.view.scrollEnabled = false
@@ -76,7 +76,7 @@ class MeNode : ParallaxNode {
     func updateForUser(user : WCLUser) {
         if let name = user.name {
             mainTextNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
-            subTextNode.attributedText = NSAttributedString(string: "@username", attributes: (subTextNode.typingAttributes as! [String : AnyObject]))
+            subTextNode.attributedText = NSAttributedString(string: "@username", attributes: (subTextNode.typingAttributes as [String : AnyObject]!))
         }
     }
     
@@ -90,7 +90,7 @@ class MeNode : ParallaxNode {
         subTextNode.position.y = (mainTextNode.position.y + (mainTextNode.calculatedSize.height / 2)) + 10 + (subTextNode.calculatedSize.height / 2)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
         return ASStaticLayoutSpec(children: [x, mainTextNode, subTextNode])
     }

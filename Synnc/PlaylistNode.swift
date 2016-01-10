@@ -59,7 +59,7 @@ class PlaylistNode : ParallaxNode {
     }
     init(playlist: SynncPlaylist?) {
         
-        var table = ASTableNode(style: UITableViewStyle.Plain)
+        let table = ASTableNode(style: UITableViewStyle.Plain)
         table.alignSelf = .Stretch
         table.flexGrow = true
         table.view.separatorStyle = .None
@@ -67,7 +67,7 @@ class PlaylistNode : ParallaxNode {
         table.clipsToBounds = true
         
         
-        var bgNode = ParallaxBackgroundNode()
+        let bgNode = ParallaxBackgroundNode()
         super.init(backgroundNode: bgNode, contentNode: table)
         
         self.playlist = playlist
@@ -81,7 +81,7 @@ class PlaylistNode : ParallaxNode {
         playlistTitleNode.attributedPlaceholderText = NSAttributedString(string: "New Playlist", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
         playlistTitleNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)]
         if let title = self.playlist?.name {
-            playlistTitleNode.attributedText = NSAttributedString(string: title, attributes: (self.playlistTitleNode.typingAttributes as! [String : AnyObject]))
+            playlistTitleNode.attributedText = NSAttributedString(string: title, attributes: (self.playlistTitleNode.typingAttributes as [String : AnyObject]!))
         }
         countTextNode = ASTextNode()
 
@@ -101,7 +101,7 @@ class PlaylistNode : ParallaxNode {
         countTextNode.position.y = (playlistTitleNode.position.y + (playlistTitleNode.calculatedSize.height / 2)) + 10 + (countTextNode.calculatedSize.height / 2)
     }
 
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
         return ASStaticLayoutSpec(children: [x, playlistTitleNode, countTextNode])
     }

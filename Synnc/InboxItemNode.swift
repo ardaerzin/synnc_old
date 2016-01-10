@@ -14,7 +14,7 @@ import pop
 class NotifcationReadIndicator : ASDisplayNode {
     var indicator : ASDisplayNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.indicator = ASDisplayNode()
@@ -29,7 +29,7 @@ class NotifcationReadIndicator : ASDisplayNode {
         super.layout()
         self.indicator.position = CGPointMake(self.calculatedSize.width / 2, self.calculatedSize.height / 2)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStaticLayoutSpec(children: [self.indicator])
     }
 }
@@ -107,7 +107,7 @@ class InboxItemNode : ASCellNode {
         let a = self.cellStateAnimationProgress
         self.cellStateAnimationProgress = a
     }
-    override init!() {
+        override init() {
         super.init()
 
         self.msgNode = ASTextNode()
@@ -136,7 +136,7 @@ class InboxItemNode : ASCellNode {
         self.msgNode.attributedString = mutableStr
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         

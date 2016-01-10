@@ -60,26 +60,26 @@ extension MyPlaylistsController {
 }
 
 
-extension MyPlaylistsController : ASCollectionViewDataSource {
-    func collectionView(collectionView: ASCollectionView!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
+extension MyPlaylistsController : ASCollectionDataSource {
+    func collectionView(collectionView: ASCollectionView, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath)-> ASSizeRange {
         let x = collectionView.bounds.width / 2
         return ASSizeRangeMake(CGSize(width: x, height: x), CGSize(width: x, height: x))
     }
-    func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = PlaylistCellNode()
         let item = SharedPlaylistDataSource.allItems[indexPath.row]
         node.configureForPlaylist(item)
         return node
     }
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView!) -> Int {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
-    func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return SharedPlaylistDataSource.allItems.count
     }
 }
-extension MyPlaylistsController : ASCollectionViewDelegate {
-    func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
+extension MyPlaylistsController : ASCollectionDelegate {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let playlist = SharedPlaylistDataSource.allItems[indexPath.item]
         self.selectedPlaylist = playlist
         self.displayPlaylist(playlist)

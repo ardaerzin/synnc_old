@@ -76,7 +76,7 @@ class TabControllerNode : ASDisplayNode {
         super.layout()
         self.tabbar.position.y = self.calculatedSize.height - (self.tabbar.calculatedSize.height / 2)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         

@@ -22,7 +22,7 @@ class ListenerCellNode : ASCellNode {
     
     var imageURL : NSURL!
     
-    override init!() {
+        override init() {
         super.init()
         
         imageNode = ASNetworkImageNode(webImage: ())
@@ -40,7 +40,7 @@ class ListenerCellNode : ASCellNode {
         }
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: ASStaticLayoutSpec(children: [imageNode]))
 //            ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [imageNode])
     }

@@ -82,7 +82,7 @@ class PlaylistSelectorController : TabSubsectionController {
     }
 }
 
-extension PlaylistSelectorController : ASCollectionViewDataSource {
+extension PlaylistSelectorController : ASCollectionDataSource {
     func collectionView(collectionView: ASCollectionView!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
         let x = collectionView.bounds.width / 2
         return ASSizeRangeMake(CGSize(width: x, height: x), CGSize(width: x, height: x))
@@ -100,7 +100,7 @@ extension PlaylistSelectorController : ASCollectionViewDataSource {
         return playlistDataSource.allItems.count
     }
 }
-extension PlaylistSelectorController : ASCollectionViewDelegate {
+extension PlaylistSelectorController : ASCollectionDelegate {
     func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
         return false
     }

@@ -15,7 +15,7 @@ class TrackSearchDataSource : WCLAsyncTableViewDataSource {
     
     var nextAction : (()->Void)?
     
-    override func tableView(tableView: ASTableView!, nodeForRowAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = SynncTrackNode()
         if let data = self.data[indexPath.item] as? SynncTrack {
             node.configureForTrack(data)
@@ -109,7 +109,7 @@ class TrackStatusButton : ASDisplayNode {
         let a = buttonStatusAnimationProgress
         self.buttonStatusAnimationProgress = a
     }
-    override init!() {
+        override init() {
         super.init()
         
         line1 = ASDisplayNode()
@@ -134,7 +134,7 @@ class TrackStatusButton : ASDisplayNode {
         line2.position.x = self.calculatedSize.width / 2
         line2.position.y = self.calculatedSize.height / 2
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStaticLayoutSpec(children: [line1, line2])
     }
 }
@@ -216,7 +216,7 @@ class SynncTrackNode : ASCellNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.artistNameNode = ASTextNode()
@@ -262,7 +262,7 @@ class SynncTrackNode : ASCellNode {
         self.selectedSeperatorNode.frame = CGRectMake(42.5, self.calculatedSize.height - 1, self.calculatedSize.width - 42.5, 1)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         

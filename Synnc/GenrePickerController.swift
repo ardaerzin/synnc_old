@@ -75,7 +75,7 @@ class GenrePicker : WCLPopupViewController {
     }
 }
 
-extension GenrePicker : ASCollectionViewDataSource {
+extension GenrePicker : ASCollectionDataSource {
     func collectionView(collectionView: ASCollectionView!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
         let x = (collectionView.bounds.width - 5 - 10) / 2
         return ASSizeRangeMake(CGSize(width: x, height: 0), CGSize(width: x, height: 300))
@@ -94,7 +94,7 @@ extension GenrePicker : ASCollectionViewDataSource {
         return genresDataSource.allItems.count
     }
 }
-extension GenrePicker : ASCollectionViewDelegate {
+extension GenrePicker : ASCollectionDelegate {
     func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
         return false
     }
@@ -105,7 +105,7 @@ extension GenrePicker : ASCollectionViewDelegate {
             self.selectedGenres.removeAtIndex(ind)
         }
     }
-    func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let genre = genresDataSource.allItems[indexPath.item]
         let ind = self.selectedGenres.indexOf(genre)
         if ind == nil {
@@ -118,14 +118,15 @@ extension GenrePicker : ASCollectionViewDelegate {
         //            node.isSelected = true
         //        }
     }
-    func collectionView(collectionView: UICollectionView!, shouldSelectItemAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
-    func collectionView(collectionView: ASCollectionView!, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath!) {
+    func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
         let genre = genresDataSource.allItems[indexPath.item]
+        // dodowarningsoru isareti koydum 3 satir alta
         if let ind = self.selectedGenres.indexOf(genre) {
             self.node.genreCollection.view.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-            if let node = self.node.genreCollection.view.nodeForItemAtIndexPath(indexPath) {
+            if let node = self.node?.genreCollection.view.nodeForItemAtIndexPath(indexPath) {
                 node.selected = true
             }
             
@@ -174,7 +175,7 @@ class GenrePickerNode : ASDisplayNode {
     var genreCollection : ASCollectionNode!
     var buttonHolder : GenreButtonHolderNode!
     
-    override init!() {
+        override init() {
         super.init()
 
         let layout = UICollectionViewFlowLayout()
@@ -198,7 +199,7 @@ class GenrePickerNode : ASDisplayNode {
         self.addSubnode(buttonHolder)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [genreCollection, buttonHolder])
     }
@@ -209,7 +210,7 @@ class GenreButtonHolderNode : ASDisplayNode {
     var noButton : ButtonNode!
     var line : ASDisplayNode!
     
-    override init!() {
+        override init() {
         super.init()
     
         let paragraphAtrributes = NSMutableParagraphStyle()
@@ -219,17 +220,17 @@ class GenreButtonHolderNode : ASDisplayNode {
         line.backgroundColor = UIColor(red: 83/255, green: 83/255, blue: 83/255, alpha: 1)
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        yesButton.setAttributedTitle(NSAttributedString(string: "Yes Please", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASButtonStateNormal)
+        yesButton.setAttributedTitle(NSAttributedString(string: "Yes Please", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         
         noButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
-        noButton.setAttributedTitle(NSAttributedString(string: "Nope", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASButtonStateNormal)
+        noButton.setAttributedTitle(NSAttributedString(string: "Nope", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         
         self.addSubnode(line)
         self.addSubnode(noButton)
         self.addSubnode(yesButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         yesButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width / 2), ASRelativeDimension(type: .Points, value: 50))
         noButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width / 2), ASRelativeDimension(type: .Points, value: 50))
         

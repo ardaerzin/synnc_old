@@ -131,8 +131,8 @@ class StreamCreateController : NSObject {
             if let img = assets.first {
                 
                 img.fetchFullScreenImageWithCompleteBlock {
-                    i in
-                    if let img = i {
+                    image, info in
+                    if let img = image {
                         self.selectedImage = img
                         self.delegate?.updatedData()
                     }

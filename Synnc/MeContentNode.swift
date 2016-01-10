@@ -18,7 +18,7 @@ class MeContentNode : ASScrollNode {
     
     var topHeaderNode : UserHeaderInfoNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.topHeaderNode = UserHeaderInfoNode()
@@ -32,7 +32,7 @@ class MeContentNode : ASScrollNode {
         self.view.contentSize = CGSizeMake(UIScreen.mainScreen().bounds.width, 1500 - UIScreen.mainScreen().bounds.width)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
@@ -88,7 +88,7 @@ class UserHeaderInfoNode : ASDisplayNode {
             let height = 1/UIScreen.mainScreen().scale
             self.bottomBorder.frame = CGRectMake(0, self.calculatedSize.height - height , self.calculatedSize.width, height)
         }
-        override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+        override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
             return ASStackLayoutSpec(direction: .Vertical, spacing: 6, justifyContent: .Center, alignItems: .Center, children: [self.countNode, self.titleNode])
         }
         
@@ -98,7 +98,7 @@ class UserHeaderInfoNode : ASDisplayNode {
         }
     }
     
-    override init!() {
+        override init() {
         super.init()
         
         self.alignSelf = .Stretch
@@ -133,7 +133,7 @@ class UserHeaderInfoNode : ASDisplayNode {
         
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [followersSection, ASStaticLayoutSpec(children: [ spacer1]), followingSection, ASStaticLayoutSpec(children: [ spacer2]), playlistsSection])
     }
 }

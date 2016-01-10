@@ -15,7 +15,7 @@ class ASMaterialTextField : ASEditableTextNode {
 
     var placeholderLabel : ASTextNode!
     
-    override init!() {
+        override init() {
         super.init()
     
         placeholderLabel = ASTextNode()
@@ -29,10 +29,12 @@ class ASMaterialTextField : ASEditableTextNode {
     func setPlaceholder(placeholderStr : NSAttributedString){
         self.placeholderLabel.attributedString = placeholderStr
     }
-    override func calculateLayoutThatFits(constrainedSize: ASSizeRange) -> ASLayout! {
-        return nil
+    override func calculateLayoutThatFits(constrainedSize: ASSizeRange) -> ASLayout {
+        // return nil
+        // dodowarning
+        return ASLayout()
     }
-//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
 //        return ASStaticLayoutSpec(children: [self.placeholderLabel])
 //    }
 }

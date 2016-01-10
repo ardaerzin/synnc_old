@@ -40,7 +40,7 @@ class StreamViewNode : ParallaxNode {
         self.chatbar.position.y = self.calculatedSize.height + self.chatbar.calculatedSize.height/2
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
         return ASStaticLayoutSpec(children: [x, chatNode, chatbar])
     }

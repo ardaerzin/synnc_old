@@ -20,7 +20,7 @@ class NavigationHolderNode : ASDisplayNode {
     var headerNode : HeaderNode!
     var scrollNode : TabbarContentScroller!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.headerNode = HeaderNode()
@@ -36,7 +36,7 @@ class NavigationHolderNode : ASDisplayNode {
         self.addSubnode(self.scrollNode)
         self.addSubnode(self.headerNode)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         self.headerNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width, 130))
         return ASStaticLayoutSpec(children: [self.headerNode, self.scrollNode])
     }

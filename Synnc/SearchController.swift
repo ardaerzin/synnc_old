@@ -50,7 +50,7 @@ class SearchController : TabItemController {
             if _iconItem == nil {
                 let item = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
                 item.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(34, 34))
-                item.setImage(UIImage(named: "settings"), forState: ASButtonStateNormal)
+                item.setImage(UIImage(named: "settings"), forState: ASControlState.Normal)
                 _iconItem = item
             }
             return _iconItem

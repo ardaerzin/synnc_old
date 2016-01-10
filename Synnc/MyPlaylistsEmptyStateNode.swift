@@ -27,7 +27,7 @@ class MyPlaylistsEmptyStateNode : ASDisplayNode {
     var mainTextNode : ASTextNode!
     var subTextNode : ASTextNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         mainTextNode = ASTextNode()
@@ -54,7 +54,7 @@ class MyPlaylistsEmptyStateNode : ASDisplayNode {
         
         subTextNode.attributedString = c
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let headerSpacer = ASLayoutSpec()
         headerSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 130)
         

@@ -19,7 +19,7 @@ class SettingsNode : ASDisplayNode {
     
     let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 60/255, green: 60/255, blue: 60/255, alpha: 1), NSKernAttributeName : -0.1]
     
-    override init!() {
+        override init() {
         super.init()
         
         self.headerNode = ASTextNode()
@@ -29,7 +29,7 @@ class SettingsNode : ASDisplayNode {
         
         self.closeButton = ButtonNode(normalColor: .clearColor(), selectedColor: .clearColor())
         self.closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
-        self.closeButton.setImage(UIImage(named: "close")?.resizeImage(usingWidth: 12), forState: ASButtonStateNormal)
+        self.closeButton.setImage(UIImage(named: "close")?.resizeImage(usingWidth: 12), forState: ASControlState.Normal)
         self.closeButton.alpha = 0.6
         
         self.separator = ASDisplayNode()
@@ -48,7 +48,7 @@ class SettingsNode : ASDisplayNode {
         self.addSubnode(self.contentNode)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
         buttonSpec.spacingAfter = 18
@@ -73,7 +73,7 @@ class SettingsContentNode : ASScrollNode {
     var disconnectSection : DisconnectSectionNode!
     var endLine : ASDisplayNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.sourcesSection = SettingsSourcesNode()
@@ -106,7 +106,7 @@ class SettingsContentNode : ASScrollNode {
         self.view.contentSize = CGSizeMake(calculatedSize.width, self.endLine.calculatedSize.height / 2 + self.endLine.position.y)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
@@ -138,18 +138,18 @@ class DisconnectSectionNode : SettingsSectionNode {
     
     var disconnectButton : ButtonNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.disconnectButton = ButtonNode()
-        self.disconnectButton.setAttributedTitle(NSAttributedString(string: "Disconnect :(", attributes: self.subtitleAttributes), forState: ASButtonStateNormal)
+        self.disconnectButton.setAttributedTitle(NSAttributedString(string: "Disconnect :(", attributes: self.subtitleAttributes), forState: ASControlState.Normal)
         
         self.alignSelf = .Stretch
         
         self.addSubnode(self.disconnectButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let disconnectStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [self.disconnectButton])
         disconnectStack.alignSelf = .Stretch
         
@@ -161,7 +161,7 @@ class FeedbackSectionNode : SettingsSectionNode {
     
     var giveFeedbackButton : ButtonNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.title = ASTextNode()
@@ -170,7 +170,7 @@ class FeedbackSectionNode : SettingsSectionNode {
         self.title.attributedString = NSAttributedString(string: "Feedback", attributes: titleAttributes)
         
         self.giveFeedbackButton = ButtonNode()
-        self.giveFeedbackButton.setAttributedTitle(NSAttributedString(string: "Tell Us What You Think", attributes: self.subtitleAttributes), forState: ASButtonStateNormal)
+        self.giveFeedbackButton.setAttributedTitle(NSAttributedString(string: "Tell Us What You Think", attributes: self.subtitleAttributes), forState: ASControlState.Normal)
         
         self.alignSelf = .Stretch
         
@@ -178,7 +178,7 @@ class FeedbackSectionNode : SettingsSectionNode {
         self.addSubnode(self.giveFeedbackButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let feedbackStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [self.giveFeedbackButton])
         feedbackStack.alignSelf = .Stretch
         
@@ -193,7 +193,7 @@ class AboutNode : SettingsSectionNode {
     var termsAndConditionsButton : ButtonNode!
     var librariesButton : ButtonNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.title = ASTextNode()
@@ -202,13 +202,13 @@ class AboutNode : SettingsSectionNode {
         self.title.attributedString = NSAttributedString(string: "About", attributes: titleAttributes)
         
         self.aboutUsButton = ButtonNode()
-        self.aboutUsButton.setAttributedTitle(NSAttributedString(string: "About Us", attributes: self.subtitleAttributes), forState: ASButtonStateNormal)
+        self.aboutUsButton.setAttributedTitle(NSAttributedString(string: "About Us", attributes: self.subtitleAttributes), forState: ASControlState.Normal)
         
         self.termsAndConditionsButton = ButtonNode()
-        self.termsAndConditionsButton.setAttributedTitle(NSAttributedString(string: "Terms and Conditions", attributes: self.subtitleAttributes), forState: ASButtonStateNormal)
+        self.termsAndConditionsButton.setAttributedTitle(NSAttributedString(string: "Terms and Conditions", attributes: self.subtitleAttributes), forState: ASControlState.Normal)
         
         self.librariesButton = ButtonNode()
-        self.librariesButton.setAttributedTitle(NSAttributedString(string: "Libraries", attributes: self.subtitleAttributes), forState: ASButtonStateNormal)
+        self.librariesButton.setAttributedTitle(NSAttributedString(string: "Libraries", attributes: self.subtitleAttributes), forState: ASControlState.Normal)
         
         self.alignSelf = .Stretch
         
@@ -218,7 +218,7 @@ class AboutNode : SettingsSectionNode {
         self.addSubnode(self.librariesButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let aboutUsStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [self.aboutUsButton])
         aboutUsStack.alignSelf = .Stretch
@@ -247,7 +247,7 @@ class NotificationsNode : SettingsSectionNode {
     var myStreamNotificationSubtitle : ASTextNode!
     var myStreamNotificationCheckbox : BFPaperCheckbox!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.title = ASTextNode()
@@ -315,7 +315,7 @@ class NotificationsNode : SettingsSectionNode {
         self.myStreamNotificationCheckbox.center = CGPointMake(self.calculatedSize.width - 10, self.myStreamNotificationSubtitle.position.y)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let followsStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [self.followsNotificationSubtitle])
         followsStack.alignSelf = .Stretch
@@ -339,7 +339,7 @@ class SecurityPrivacyNode : SettingsSectionNode {
     var privateModeSubtitle : ASTextNode!
     var privateModeCheckbox : BFPaperCheckbox!
     
-    override init!() {
+        override init() {
         super.init()
         
         self.title = ASTextNode()
@@ -375,7 +375,7 @@ class SecurityPrivacyNode : SettingsSectionNode {
         super.layout()
         self.privateModeCheckbox.center = CGPointMake(self.calculatedSize.width - 10, self.privateModeSubtitle.position.y)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let passwordStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [self.passwordSubtitle])
         passwordStack.spacingAfter = 12
@@ -400,7 +400,7 @@ class SettingsSourcesNode : SettingsSectionNode {
     
     var sources : [String] = ["Soundcloud", "Spotify", "YouTube", "Grooveshark", "Googleplay"]
     
-    override init!() {
+        override init() {
         super.init()
         
         self.title = ASTextNode()
@@ -427,7 +427,7 @@ class SettingsSourcesNode : SettingsSectionNode {
         self.addSubnode(self.title)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let buttonStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Start, alignItems: .Start, children: self.sourceButtons)
         
         buttonStack.alignSelf = .Stretch

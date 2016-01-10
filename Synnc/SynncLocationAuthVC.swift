@@ -69,7 +69,7 @@ class LocationAuthNode : ASDisplayNode {
     var yesButton : ButtonNode!
     var noButton : ButtonNode!
     
-    override init!() {
+        override init() {
         super.init()
         self.backgroundColor = UIColor.whiteColor()
         
@@ -88,10 +88,10 @@ class LocationAuthNode : ASDisplayNode {
         imageNode.image = UIImage(named: "location-icon")
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        yesButton.setAttributedTitle(NSAttributedString(string: "Yes Please", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASButtonStateNormal)
+        yesButton.setAttributedTitle(NSAttributedString(string: "Yes Please", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         
         noButton = ButtonNode()
-        noButton.setAttributedTitle(NSAttributedString(string: "Nope", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASButtonStateNormal)
+        noButton.setAttributedTitle(NSAttributedString(string: "Nope", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         
         self.addSubnode(imageNode)
         self.addSubnode(messageNode)
@@ -99,7 +99,7 @@ class LocationAuthNode : ASDisplayNode {
         self.addSubnode(yesButton)
         self.addSubnode(noButton)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer1 = ASLayoutSpec()
         spacer1.flexGrow = true
         let spacer2 = ASLayoutSpec()

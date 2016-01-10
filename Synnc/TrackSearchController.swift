@@ -135,7 +135,7 @@ extension TrackSearchController : ASTableViewDelegate {
         }
     }
 }
-extension TrackSearchController : ASCollectionViewDelegate {
+extension TrackSearchController : ASCollectionDelegate {
     func shouldBatchFetchForTableView(tableView: ASTableView!) -> Bool {
         return true
     }

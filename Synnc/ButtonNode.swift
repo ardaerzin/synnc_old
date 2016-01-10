@@ -155,7 +155,7 @@ class ButtonNode : ASButtonNode {
         }
     }
     
-    var selected : Bool = false {
+    override var selected : Bool {
         didSet {
             self.changedSelected()
         }
@@ -169,7 +169,7 @@ class ButtonNode : ASButtonNode {
         
         self.backgroundColor = normalColor
     }
-//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
 //        
 //        let spacer = ASLayoutSpec()
 //        spacer.flexGrow = true
@@ -195,17 +195,18 @@ class ButtonNode : ASButtonNode {
 //        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [x])
 //        return a
 //    }
-    override func touchesBegan(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
         scaleAnimation.toValue = 1
         self.backgroundAnimation.toValue = self.selectedBgColor
     }
-    override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         super.touchesCancelled(touches, withEvent: event)
         scaleAnimation.toValue = 0
         self.backgroundAnimation.toValue = self.selected ? self.selectedBgColor : self.normalBgColor
     }
-    override func touchesEnded(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesEnded(touches, withEvent: event)
         scaleAnimation.toValue = 0
         self.backgroundAnimation.toValue = self.selected ? self.selectedBgColor : self.normalBgColor

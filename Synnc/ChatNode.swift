@@ -23,7 +23,7 @@ protocol ChatNodeDelegate {
 class ChatTableHolder : ASDisplayNode {
     var chatCollection : WCLTableNode!
     
-    override init!() {
+        override init() {
         super.init()
         
         chatCollection = WCLTableNode(style: .Plain)
@@ -42,7 +42,7 @@ class ChatTableHolder : ASDisplayNode {
 //        headerView.backgroundColor = UIColor.redColor()
 //        self.chatCollection.view.tableHeaderView = UIView(frame: UIScreen.mainScreen().bounds)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [chatCollection])
     }
 }
@@ -99,7 +99,7 @@ class ChatNode : ASDisplayNode {
     }
     var delegate : ChatNodeDelegate?
     
-    override init!() {
+        override init() {
         super.init()
         self.backgroundColor = UIColor.whiteColor()
         headerNode = ChatHeaderNode()
@@ -115,11 +115,11 @@ class ChatNode : ASDisplayNode {
         
         self.clipsToBounds = true
     }
-    override func touchesBegan(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
 //        self.delegate?.hideKeyboard()
         super.touchesBegan(touches, withEvent: event)
     }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var spacer = ASLayoutSpec()
         spacer.flexBasis = ASRelativeDimension(type: .Points, value: 44)
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerNode, collectionHolder, spacer])
@@ -130,21 +130,21 @@ class ChatHeaderNode : StreamTitleNode {
     
     var closeButton : ButtonNode!
     
-    override init!() {
+        override init() {
         super.init()
         self.sourcesNode.alpha = 0
         
         self.backgroundColor = UIColor.whiteColor()
         
         closeButton = ButtonNode()
-        closeButton.setImage(UIImage(named : "close"), forState: ASButtonStateNormal)
+        closeButton.setImage(UIImage(named : "close"), forState: ASControlState.Normal)
         closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(32, 32))
         closeButton.imageNode.preferredFrameSize = CGSizeMake(12, 12)
         
         self.addSubnode(closeButton)
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
         buttonSpec.spacingAfter = 20
         

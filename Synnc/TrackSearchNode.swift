@@ -48,8 +48,8 @@ class SourceButton : ButtonNode {
         let normalImage = UIImage(named: source.rawValue.lowercaseString + "_inactive")!
         let selectedImage = UIImage(named: source.rawValue.lowercaseString + "_active")!
         
-        setImage(normalImage, forState: ASButtonStateNormal)
-        setImage(selectedImage, forState: ASButtonStateHighlighted)
+        setImage(normalImage, forState: ASControlState.Normal)
+        setImage(selectedImage, forState: ASControlState.Highlighted)
         
         self.normalImage = normalImage
         self.selectedImage = selectedImage
@@ -61,7 +61,7 @@ class SourceButton : ButtonNode {
         super.changedSelected()
         
         let img = self.selected ? self.selectedImage : self.normalImage
-        self.setImage(img, forState: ASButtonStateNormal)
+        self.setImage(img, forState: ASControlState.Normal)
     }
 }
 
@@ -92,7 +92,7 @@ class SourceSelectionNode : ASDisplayNode {
         self.backgroundColor = UIColor.whiteColor()
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Center, alignItems: .Center, children: self.sourceButtons)
         
         return ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [ self.titleNode, a])
@@ -114,7 +114,7 @@ class TrackSearchNode : ASDisplayNode {
     var seperator1 : ASDisplayNode!
     var seperator2 : ASDisplayNode!
     
-    override init!() {
+        override init() {
         super.init()
         self.clipsToBounds = true
         
@@ -127,15 +127,15 @@ class TrackSearchNode : ASDisplayNode {
         self.coverNode.backgroundColor = UIColor.whiteColor()
         
         self.sourceOptionsButton = ButtonNode()
-        self.sourceOptionsButton.setImage(UIImage(named: "soundcloud_active"), forState: ASButtonStateNormal)
+        self.sourceOptionsButton.setImage(UIImage(named: "soundcloud_active"), forState: ASControlState.Normal)
         self.sourceOptionsButton.imageNode.preferredFrameSize = CGSizeMake(20, 20)
         self.sourceOptionsButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 40, height: 40))
         self.sourceOptionsButton.imageNode.contentMode = .Center
         self.sourceOptionsButton.addTarget(self, action: Selector("toggleSourceSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.closeButton = ButtonNode()
-        self.closeButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
-        self.closeButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASButtonStateNormal)
+//        self.closeButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
+        self.closeButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASControlState.Normal)
         self.closeButton.imageNode.preferredFrameSize = CGSizeMake(15, 15)
         self.closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 40, height: 40))
         self.closeButton.imageNode.contentMode = .Center
@@ -212,7 +212,7 @@ class TrackSearchNode : ASDisplayNode {
         coverNode.layer.frame = CGRectMake(0, 0, self.calculatedSize.width, self.seperator1.position.y - (self.seperator1.calculatedSize.height / 2))
     }
     
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec! {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         self.inputNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (40*2) - 10 - 10), ASRelativeDimension(type: .Points, value: 30))
         
@@ -290,7 +290,7 @@ class TrackSearchNode : ASDisplayNode {
 }
 
 extension TrackSearchNode {
-    override func touchesBegan(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
         self.inputNode.resignFirstResponder()
     }

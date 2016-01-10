@@ -80,7 +80,7 @@ class StreamsFeedController : TabSubsectionController {
         //        }
     }
 }
-extension StreamsFeedController : ASCollectionViewDelegate {
+extension StreamsFeedController : ASCollectionDelegate {
     func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
         return true
     }
