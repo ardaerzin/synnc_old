@@ -103,10 +103,7 @@ class StreamCreateController : NSObject {
         self.playlistSelector.delegate = self
         
         self.backgroundNode.editing = true
-        
-        self.backgroundNode.imageSelector.addTarget(self, action: Selector("imageSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        
-//        self.backgroundNode.imageNode.addTarget(self, action: Selector("imageSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.backgroundNode.imageNode.addTarget(self, action: Selector("imageSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.backgroundNode.infoNode.genreToggle.addTarget(self, action: Selector("genreSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.backgroundNode.infoNode.startStreamButton.addTarget(self, action: Selector("createStreamAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.backgroundNode.infoNode.locationToggle.addTarget(self, action: Selector("toggleLocation:"), forControlEvents: ASControlNodeEvent.TouchUpInside)

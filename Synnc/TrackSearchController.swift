@@ -117,17 +117,17 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
 }
 
 extension TrackSearchController : ASTableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             self.delegate?.didSelectTrack(data)
         }
     }
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView!, didDeselectRowAtIndexPath indexPath: NSIndexPath!) {
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             self.delegate?.didDeselectTrack(data)
         }
     }
-    func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: ASTableView!, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath!) {
         Async.background {
             if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where self.delegate!.hasSong(data) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
@@ -136,21 +136,21 @@ extension TrackSearchController : ASTableViewDelegate {
     }
 }
 extension TrackSearchController : ASCollectionDelegate {
-    func shouldBatchFetchForTableView(tableView: ASTableView) -> Bool {
+    func shouldBatchFetchForTableView(tableView: ASTableView!) -> Bool {
         return true
     }
-    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
+    func tableView(tableView: ASTableView!, willBeginBatchFetchWithContext context: ASBatchContext!) {
         self.tracksManager.batchContext = context
         self.tracksDataSource.loadMore()
     }
-    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
+    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
         return true
     }
-    func collectionView(collectionView: ASCollectionView, willBeginBatchFetchWithContext context: ASBatchContext) {
+    func collectionView(collectionView: ASCollectionView!, willBeginBatchFetchWithContext context: ASBatchContext!) {
         self.artistsManager.batchContext = context
         self.artistsDataSource.loadMore()
     }
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
         if let artist = self.artistsDataSource.dataAtIndex(indexPath.item) as? SynncArtist {
             if let s = self.selectedArtist where s.source == artist.source && s.id == artist.id {
                 self.selectedArtist = nil
@@ -161,7 +161,7 @@ extension TrackSearchController : ASCollectionDelegate {
             artistSearch()
         }
     }
-    func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(collectionView: ASCollectionView!, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath!) {
         Async.background {
             if let data = self.artistsDataSource.dataAtIndex(indexPath.item) as? SynncArtist, let selected = self.selectedArtist {
                 if data.source == selected.source && data.id == selected.id {

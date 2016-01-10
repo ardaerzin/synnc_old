@@ -57,7 +57,6 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
         if let scrollView = self.view as? UIScrollView {
             scrollView.delegate = self
             scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
-            scrollView.delaysContentTouches = false
         }
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -115,7 +114,6 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
         }
         
         self.backgroundNode.position.y = (self.backgroundNode.calculatedSize.height / 2) - bgScalePosition - a
-        self.backgroundNode.updateScrollPositions(position)
     }
     
     override func layout() {

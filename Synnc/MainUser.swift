@@ -12,11 +12,9 @@ import Socket_IO_Client_Swift
 import FBSDKCoreKit
 import SwiftyJSON
 import WCLUtilities
-import Cloudinary
 
 class MainUser : WCLUser {
     
-    var avatarId : String!
     var joinedUsers : [String] = []
     
     convenience init(socket: SocketIOClient) {
@@ -99,21 +97,4 @@ class MainUser : WCLUser {
         }
     }
     
-    override func avatarURL(type: WCLUserLoginType, frame: CGRect, scale: CGFloat) -> NSURL? {
-        if let imgId = self.avatarId {
-            let transformation = CLTransformation()
-            
-            transformation.width = frame.width * UIScreen.mainScreen().scale
-            transformation.height = frame.height * UIScreen.mainScreen().scale
-            transformation.crop = "fill"
-            
-            if let x = _cloudinary.url(imgId, options: ["transformation" : transformation]), let url = NSURL(string: x) {
-                return url
-            } else {
-                return nil
-            }
-        } else {
-            return super.avatarURL(type, frame: frame, scale: scale)
-        }
-    }
 }

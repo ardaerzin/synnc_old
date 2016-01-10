@@ -984,7 +984,7 @@
 			name = StreamRelated;
 			sourceTree = "<group>";
 		};
-		472CB2FB1C41BDC000F82523 /* Images */ = {
+		472CB2FB1C41BDC000F82523 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
 				472CB2FC1C41BDC000F82523 /* accounts-large.png */,
@@ -1210,8 +1210,7 @@
 				472CB3D81C41BDC100F82523 /* youtube_inactive@2x.png */,
 				472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */,
 			);
-			name = Images;
-			path = ../Assets;
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		4777050D1C3CAAF7007089D0 /* NHNetworkTime */ = {
@@ -1242,6 +1241,7 @@
 		47A4E6701C0CAE6100354EA8 = {
 			isa = PBXGroup;
 			children = (
+				472CB2FB1C41BDC000F82523 /* Assets */,
 				47A4E67B1C0CAE6100354EA8 /* Synnc */,
 				47A4E6901C0CAE6200354EA8 /* SynncTests */,
 				47A4E69B1C0CAE6200354EA8 /* SynncUITests */,
@@ -1309,7 +1309,6 @@
 		47A4E6AA1C0CAEDC00354EA8 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				472CB2FB1C41BDC000F82523 /* Images */,
 				4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */,
 				47A4E6B81C0CC6E100354EA8 /* Futura */,
 				4704DDB91C15EE3300B40118 /* ubuntu */,

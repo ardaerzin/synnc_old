@@ -272,6 +272,6 @@ extension StreamViewController : ParallaxContentScrollerDelegate {
             scroller.view.panGestureRecognizer.enabled = true
         }
         
-//        self.screenNode.mainScrollNode.backgroundNode.updateScrollPositions(position)
+        self.screenNode.mainScrollNode.backgroundNode.updateScrollPositions(position)
     }
 }
