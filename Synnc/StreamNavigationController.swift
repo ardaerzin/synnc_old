@@ -66,8 +66,6 @@ class StreamNavigationController : UINavigationController {
         self.view.addGestureRecognizer(panRecognizer)
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBarHidden = true
-        
-//        self.pushViewController(StreamViewController(stream: nil), animated: false)
     }
     
     func displayMyStream() {
@@ -77,7 +75,6 @@ class StreamNavigationController : UINavigationController {
             if SharedPlaylistDataSource.allItems.isEmpty {
                 if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab as? TabItem {
 //                    where item.identifier != rvc.displayItem.identifier  {
-                
                     WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", sound: nil, fireDate: nil, showLocalNotification: false, object: item, id: nil))
                 }
                 return

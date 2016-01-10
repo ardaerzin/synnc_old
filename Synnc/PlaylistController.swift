@@ -83,13 +83,12 @@ class PlaylistController : ASViewController, WildAnimated {
     }
     
     override func prefersStatusBarHidden() -> Bool {
-        return true
+        let x = true
+        UIApplication.sharedApplication().statusBarHidden = x
+        return x
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-//        if let rvc = self.rootViewController {
-//            rvc.displayStatusBar = false
-//        }
     }
     
     var streamButton : ButtonNode!
