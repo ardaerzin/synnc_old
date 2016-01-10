@@ -68,14 +68,12 @@ class FirstLoginPopupNode : ASDisplayNode {
     override func fetchData() {
         super.fetchData()
         
-        print("self.imageNode.bounds", self.imageNode.calculatedSize)
         if let u = Synnc.sharedInstance.user, let url = u.avatarURL(WCLUserLoginType(rawValue: u.provider)!, frame: CGRect(origin: CGPointZero, size: self.imageNode.calculatedSize), scale: UIScreen.mainScreen().scale) {
             self.imageNode.URL = url
             let paragraphAtrributes = NSMutableParagraphStyle()
             paragraphAtrributes.alignment = .Center
 //            print("username:", user.username)
             if let name = u.username {
-                print("FOUND USERNAME", u)
                 messageNode.attributedString = NSAttributedString(string: "@"+name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 20)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
             }
         }
@@ -89,14 +87,12 @@ class FirstLoginPopupNode : ASDisplayNode {
         
         messageNode = ASTextNode()
         messageNode.alignSelf = .Stretch
-//        messageNode.attributedString = NSAttributedString(string: "Synnc Your Location", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 22)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
         infoNode = ASTextNode()
         infoNode.alignSelf = .Stretch
         infoNode.attributedString = NSAttributedString(string: "Welcome To Synnc. If you don't like your username or photo, you can edit them from the profile section.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
         imageNode = ASNetworkImageNode(webImage: ())
-//        imageNode.image = UIImage(named: "location-icon")
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         yesButton.setAttributedTitle(NSAttributedString(string: "Go To Profile", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
