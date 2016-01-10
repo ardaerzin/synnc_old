@@ -16,9 +16,8 @@ import Cloudinary
 
 class MainUser : WCLUser {
     
-    
-    var joinedUsers : [String] = []
     var avatarId : String!
+    var joinedUsers : [String] = []
     
     convenience init(socket: SocketIOClient) {
         self.init(alternatives: [
