@@ -236,7 +236,7 @@ class SynncTrackNode : ASCellNode {
         self.addSubnode(self.trackNameNode)
         self.addSubnode(self.artistNameNode)
         self.addSubnode(self.iconNode)
-        self.addSubnode(self.sourceNode)
+//        self.addSubnode(self.sourceNode)
         
         self.addSubnode(self.selectedSeperatorNode)
         self.selectionStyle = .None

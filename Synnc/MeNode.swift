@@ -13,11 +13,24 @@ import pop
 import SpinKit
 import WCLUIKit
 import WCLUserManager
+import Shimmer
 
 class MeNode : ParallaxNode {
     
-    var mainTextNode : ASTextNode!
-    var subTextNode : ASEditableTextNode!
+    var fullnameNode : ASTextNode!
+    var usernameNode : MyTextNode!
+    var usernameShimmer : FBShimmeringView!
+    
+    var editing : Bool = false {
+        didSet {
+            if editing != oldValue {
+                
+                self.usernameNode.userInteractionEnabled = editing
+                self.usernameShimmer.shimmering = editing
+                self.mainScrollNode.backgroundNode.editing = editing
+            }
+        }
+    }
     
     var imageNode : ASNetworkImageNode! {
         get {
@@ -59,39 +72,44 @@ class MeNode : ParallaxNode {
         
         self.headerNode.buttons = self.buttons
         
-        mainTextNode = ASTextNode()
+        fullnameNode = ASTextNode()
         
         
         
-        subTextNode = ASEditableTextNode()
-        subTextNode.returnKeyType = UIReturnKeyType.Done
-        subTextNode.userInteractionEnabled = false
-        subTextNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.26)]
+        usernameNode = MyTextNode()
+        usernameNode.returnKeyType = UIReturnKeyType.Done
+        usernameNode.userInteractionEnabled = false
+        usernameNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.26)]
         
+        self.usernameShimmer = FBShimmeringView()
+        self.usernameShimmer.contentView = self.usernameNode.view
         
-        self.addSubnode(mainTextNode)
-        self.addSubnode(subTextNode)
+        self.addSubnode(fullnameNode)
+        self.view.addSubview(self.usernameShimmer)
+//        self.addSubnode(usernameNode)
     }
     
     func updateForUser(user : WCLUser) {
         if let name = user.name {
-            mainTextNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
-            subTextNode.attributedText = NSAttributedString(string: "@username", attributes: (subTextNode.typingAttributes as [String : AnyObject]!))
+            fullnameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
+            usernameNode.attributedText = NSAttributedString(string: "@username", attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
         }
     }
     
     override func layout() {
         super.layout()
         
-        mainTextNode.position.x = (mainTextNode.calculatedSize.width / 2) + 20
-        mainTextNode.position.y = (mainTextNode.calculatedSize.height / 2) + 50
+        fullnameNode.position.x = (fullnameNode.calculatedSize.width / 2) + 20
+        fullnameNode.position.y = (fullnameNode.calculatedSize.height / 2) + 50
         
-        subTextNode.position.x = (subTextNode.calculatedSize.width / 2) + 20
-        subTextNode.position.y = (mainTextNode.position.y + (mainTextNode.calculatedSize.height / 2)) + 10 + (subTextNode.calculatedSize.height / 2)
+        usernameShimmer.frame = CGRect(origin: CGPointMake(20, (fullnameNode.position.y + (fullnameNode.calculatedSize.height / 2)) + 10), size: self.usernameNode.calculatedSize)
+//        usernameNode.position.x = (usernameNode.calculatedSize.width / 2) + 20
+//        usernameNode.position.y = (fullnameNode.position.y + (fullnameNode.calculatedSize.height / 2)) + 10 + (usernameNode.calculatedSize.height / 2)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
-        return ASStaticLayoutSpec(children: [x, mainTextNode, subTextNode])
+        usernameNode.sizeRange = ASRelativeSizeRangeMake(ASRelativeSize(width: ASRelativeDimension(type: .Points, value: 0), height: ASRelativeDimension(type: .Points, value: 21)), ASRelativeSize(width: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 40), height: ASRelativeDimension(type: .Points, value: 21)))
+        return ASStaticLayoutSpec(children: [x, fullnameNode, usernameNode])
     }
 }

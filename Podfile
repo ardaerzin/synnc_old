@@ -29,6 +29,7 @@ pod 'DeviceKit'
 pod 'DKImagePickerController'
 pod 'WebASDKImageManager'
 pod 'BFPaperCheckbox'
+pod 'Shimmer'
 
 end
 

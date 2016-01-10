@@ -19,7 +19,7 @@ class ParallaxBackgroundScrollNode : ASDisplayNode {
     var imageGradientNode : ASImageNode!
 
     
-        override init() {
+    override init() {
         super.init()
 //        self.view.scrollEnabled = false
         
@@ -31,7 +31,7 @@ class ParallaxBackgroundScrollNode : ASDisplayNode {
         imageNode.backgroundColor = UIColor.whiteColor()
         
         imageGradientNode = ASImageNode()
-        
+            
         self.addSubnode(self.imageNode)
         self.addSubnode(self.imageGradientNode)
         
@@ -68,8 +68,32 @@ class ParallaxBackgroundNode : ASScrollNode {
             return self.scrollNode.imageGradientNode
         }
     }
+    var imageSelector : ButtonNode!
+    var editing : Bool = false {
+        didSet {
+            if editing != oldValue {
+                enableSelectionAnimation.toValue = editing ? 1 : 0
+            }
+        }
+    }
+    var enableSelectionAnimation : POPBasicAnimation! {
+        get {
+            if let anim = self.imageSelector.pop_animationForKey("enableSelectionAnimation") as? POPBasicAnimation {
+                return anim
+            } else {
+                let anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+                anim.completionBlock = {
+                    a, finished in
+                    self.imageSelector.userInteractionEnabled = self.editing
+                    self.imageSelector.enabled = self.editing
+                }
+                self.imageSelector.pop_addAnimation(anim, forKey: "enableSelectionAnimation")
+                return anim
+            }
+        }
+    }
     
-        override init() {
+    override init() {
         super.init()
         
         scrollNode = ParallaxBackgroundScrollNode()
@@ -82,14 +106,37 @@ class ParallaxBackgroundNode : ASScrollNode {
         self.shadowOpacity = 1
         self.shadowRadius = 5
         
+        self.view.delaysContentTouches = false
+        
+        imageSelector = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        imageSelector.setImage(UIImage(named: "camera-large")?.resizeImage(usingWidth: 20), forState: ASControlState.Normal)
+        imageSelector.minScale = 1
+        imageSelector.enabled = false
+        imageSelector.userInteractionEnabled = false
+        imageSelector.alpha = 0
+        
+        imageSelector.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50, 50))
+        
         self.addSubnode(scrollNode)
+        self.addSubnode(imageSelector)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(constrainedSize.max)
-        return ASStaticLayoutSpec(children: [self.scrollNode])
+        return ASStaticLayoutSpec(children: [self.scrollNode, imageSelector])
+    }
+    
+    override func layout() {
+        super.layout()
+        
+        self.imageSelector.position.x = self.calculatedSize.width - (self.imageSelector.calculatedSize.width / 2)
+        self.imageSelector.position.y = self.calculatedSize.height - (self.imageSelector.calculatedSize.height / 2)
     }
     
     func updateScrollPositions(position: CGFloat){
-        
+        if position < 0 {
+            POPLayerSetTranslationY(self.imageSelector.layer, -position/2)
+        } else {
+            POPLayerSetTranslationY(self.imageSelector.layer, 0)
+        }
     }
 }
