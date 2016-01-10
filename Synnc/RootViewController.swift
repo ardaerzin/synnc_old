@@ -151,6 +151,11 @@ extension RootViewController {
 // MARK: - TabbarDelegate
 extension RootViewController : TabbarDelegate {
     func willSetTabItem(tabbar: TabNode!, item: TabItem) -> Bool {
+        
+        if item.identifier == self.displayItem.identifier {
+            return false
+        }
+        
         if item.identifier == "MyStreamController" {
             
             Synnc.sharedInstance.streamNavigationController.displayMyStream()
