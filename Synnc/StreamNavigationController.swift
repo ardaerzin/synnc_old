@@ -12,6 +12,7 @@ import pop
 import WCLUtilities
 import WCLUIKit
 import AsyncDisplayKit
+import WCLNotificationManager
 
 class StreamNavigationController : UINavigationController {
     var initialTouchTopWindowPosition : CGFloat = 0
@@ -66,7 +67,24 @@ class StreamNavigationController : UINavigationController {
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBarHidden = true
         
-        self.pushViewController(StreamViewController(stream: nil), animated: false)
+//        self.pushViewController(StreamViewController(stream: nil), animated: false)
+    }
+    
+    func displayMyStream() {
+        if let us = Synnc.sharedInstance.streamManager.userStream {
+            self.displayStream(us)
+        } else {
+            if SharedPlaylistDataSource.allItems.isEmpty {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab as? TabItem {
+//                    where item.identifier != rvc.displayItem.identifier  {
+                
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", sound: nil, fireDate: nil, showLocalNotification: false, object: item, id: nil))
+                }
+                return
+            }
+            self.pushViewController(StreamViewController(stream: nil), animated: false)
+            self.display()
+        }
     }
     
     func displayStream(stream : Stream){

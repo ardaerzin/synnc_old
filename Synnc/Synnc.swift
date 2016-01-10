@@ -20,6 +20,7 @@ import WCLUtilities
 import CoreLocation
 import WCLPopupManager
 import AsyncDisplayKit
+import WCLNotificationManager
 
 extension UIColor {
     class func SynncColor() -> UIColor {
@@ -116,6 +117,8 @@ class Synnc : UIResponder, UIApplicationDelegate {
             print("normal date:", normalDate, "network date:", networkDate, "diff is:", diff)
         })
         
+        WCLNotificationManager.sharedInstance().delegate = self
+        
         return true
     }
     
@@ -157,6 +160,23 @@ class Synnc : UIResponder, UIApplicationDelegate {
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 }
+
+extension Synnc : WCLNotificationManagerDelegate {
+    func notificationManager(manager: WCLNotificationManager, didTapInappNotification notification: WCLNotificationView) {
+        if let info = notification.info {
+            switch info.defaultActionName {
+            case "OpenTab" :
+                if let rvc = self.window?.rootViewController as? RootViewController {
+                    rvc.willSetTabItem(rvc.screenNode.tabbar, item: info.object as! TabItem)
+                }
+                break
+            default:
+                return
+            }
+        }
+    }
+}
+
 extension Synnc {
     func initSocket(urlStr : String) -> SocketIOClient {
         let x = SocketIOClient(socketURL: urlStr, options: [.Reconnects(false), .ForceWebsockets(true)])
@@ -194,9 +214,7 @@ extension Synnc {
     }
     
     func goToProfile(sender : ButtonNode!) {
-        print("go to user profile now")
         if let rvc = self.window?.rootViewController as? RootViewController {
-            print("rvc", rvc)
             rvc.willSetTabItem(rvc.screenNode.tabbar, item: rvc.meTab)
         }
     }

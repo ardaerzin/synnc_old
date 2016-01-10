@@ -48,17 +48,6 @@ class TabControllerNode : ASDisplayNode {
         tabbar.flexBasis = ASRelativeDimension(type: .Points, value: 50)
         
         contentHolder = ASDisplayNode()
-//        contentHolder.backgroundColor = UIColor.redColor()
-        
-//        headerNode = HeaderNode()
-//        headerNode.flexBasis = ASRelativeDimension(type: .Points, value: 130)
-        
-//        navigationNode = NavigationHolderNode()
-//        navigationNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-//        scrollNode = TabbarContentScroller()
-//        scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-//        scrollNode.backgroundColor = UIColor.whiteColor()
-//        scrollNode.delegate = self
 //
 //        self.headerNode.subSectionArea.delegate = self.scrollNode
         

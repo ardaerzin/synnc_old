@@ -152,8 +152,10 @@ extension RootViewController {
 extension RootViewController : TabbarDelegate {
     func willSetTabItem(tabbar: TabNode!, item: TabItem) -> Bool {
         if item.identifier == "MyStreamController" {
-            Synnc.sharedInstance.streamNavigationController.display()
+            
+            Synnc.sharedInstance.streamNavigationController.displayMyStream()
             return false
+            
         } else {
             if let vc = self.displayItem as? TabItemController, let nvc = vc.navController {
                 nvc.willMoveToParentViewController(nil)
@@ -166,11 +168,6 @@ extension RootViewController : TabbarDelegate {
         }
     }
     func didSetTabItem(tabbar: TabNode!, item: TabItem) {
-        
-//        if let rvc = self.rootViewController {
-//            rvc.displayStatusBar = true
-//        }
-        
         if let vc = item as? TabItemController, let rvc = self.rootViewController {
             let nvc = vc.navController
             self.addChildViewController(nvc)
