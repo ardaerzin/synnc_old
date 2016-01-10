@@ -15,6 +15,7 @@ import WCLUtilities
 
 class MainUser : WCLUser {
     
+    var generatedUsername : Bool = false
     var joinedUsers : [String] = []
     
     convenience init(socket: SocketIOClient) {

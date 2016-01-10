@@ -203,11 +203,12 @@ extension Synnc {
 extension Synnc {
     func userProfileInfoChanged(notification: NSNotification) {
         if self.user._id != nil {
-            let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), user: self.user)
             
-            x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-            WCLPopupManager.sharedInstance.newPopup(x)
-            
+            if self.user.generatedUsername {
+                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), user: self.user)
+                x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+                WCLPopupManager.sharedInstance.newPopup(x)
+            }
             StreamManager.sharedInstance.updateUserFeed()
             SynncPlaylist.socketSync(self.socket, inStack: nil, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
         }
