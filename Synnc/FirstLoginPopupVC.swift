@@ -10,6 +10,7 @@ import Foundation
 import WCLPopupManager
 import AsyncDisplayKit
 import WCLUserManager
+import SwiftyJSON
 
 class FirstLoginPopupVC : WCLPopupViewController {
     var node : FirstLoginPopupNode!
@@ -52,6 +53,11 @@ class FirstLoginPopupVC : WCLPopupViewController {
     func dismissLocationAccess(sender : ButtonNode) {
         self.closeView(true)
     }
+    override func closeView(animated: Bool) {
+        super.closeView(animated)
+        
+        Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "generatedUsername" : false])
+    }
 }
 
 class FirstLoginPopupNode : ASDisplayNode {
@@ -72,7 +78,6 @@ class FirstLoginPopupNode : ASDisplayNode {
             self.imageNode.URL = url
             let paragraphAtrributes = NSMutableParagraphStyle()
             paragraphAtrributes.alignment = .Center
-//            print("username:", user.username)
             if let name = u.username {
                 messageNode.attributedString = NSAttributedString(string: "@"+name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 20)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
             }
