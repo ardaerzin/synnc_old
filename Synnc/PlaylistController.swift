@@ -19,6 +19,7 @@ import WCLPopupManager
 import DKImagePickerController
 import AssetsLibrary
 import Cloudinary
+import Shimmer
 
 class PlaylistController : ASViewController, WildAnimated {
     
@@ -35,9 +36,17 @@ class PlaylistController : ASViewController, WildAnimated {
     override var editing : Bool {
         didSet {
             if editing != oldValue {
-                self.screenNode.playlistTitleNode.userInteractionEnabled = editing
-                self.screenNode.imageNode.userInteractionEnabled = editing
-                self.screenNode.imageNode.enabled = editing
+                
+                self.screenNode.editing = editing
+                
+//                self.screenNode.playlistTitleNode.userInteractionEnabled = editing
+//                
+//                self.screenNode.titleShimmer.shimmeringHighlightLength = 0.7
+//                self.screenNode.titleShimmer.shimmeringPauseDuration = 0
+//                
+//                self.screenNode.titleShimmer.shimmering = editing
+//                self.screenNode.imageNode.userInteractionEnabled = editing
+//                self.screenNode.imageNode.enabled = editing
             }
         }
     }
@@ -119,7 +128,7 @@ class PlaylistController : ASViewController, WildAnimated {
         self.screenNode.tracksTable.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
         
         node.playlistTitleNode.delegate = self
-        node.imageNode.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        (node.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.addSongsButton.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.editButton.addTarget(self, action: Selector("toggleEditMode:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.headerNode.closeButton.addTarget(self, action: Selector("closeAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
@@ -309,14 +318,19 @@ extension PlaylistController {
             assets in
             if let img = assets.first {
             
-                img.fetchFullScreenImageWithCompleteBlock {
+                img.fetchOriginalImageWithCompleteBlock {
                     image, info in
-                    if let img = image {
-                        self.editedImage = img
-                        self.screenNode.imageNode.image = self.editedImage
+                    if let i = image {
+                        
+                        self.editedImage = i
+                        self.screenNode.fetchData()
                     }
                 }
             }
+            
+//            if let parent = self.parentViewController as? StreamViewController {
+            self.screenNode.mainScrollNode.scrollViewDidScroll(self.screenNode.mainScrollNode.view)
+//            }
         }
         self.parentViewController?.presentViewController(imagePicker, animated: true) {}
     }

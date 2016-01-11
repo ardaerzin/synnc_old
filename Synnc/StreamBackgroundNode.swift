@@ -15,6 +15,7 @@ import AsyncDisplayKit
 import Cloudinary
 import WCLLocationManager
 import WCLNotificationManager
+import Shimmer
 
 enum StreamBackgroundNodeState : Int {
     case Create = -1
@@ -25,6 +26,7 @@ enum StreamBackgroundNodeState : Int {
 
 class StreamInfoNode : ASDisplayNode {
     
+    var titleShimmer : FBShimmeringView!
     var playingIcon : AnimatedLogoNode!
     var streamTitle : ASEditableTextNode!
     var startStreamButton : ButtonNode!
@@ -108,14 +110,23 @@ class StreamInfoNode : ASDisplayNode {
         }
     }
     
-        override init() {
+    override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
+        let x = super.hitTest(point, withEvent: event)
+        if x == self.view {
+            return nil
+        } else {
+            return x
+        }
+    }
+    
+    override init() {
         super.init()
         
         trackAttributes[NSParagraphStyleAttributeName] = paragraphAttributes
         
         artistTitle = ASTextNode()
         artistTitle.maximumNumberOfLines = 1
-        
+            
         trackTitle = ASTextNode()
         trackTitle.spacingAfter = 5
         trackTitle.alignSelf = .Stretch
@@ -143,6 +154,9 @@ class StreamInfoNode : ASDisplayNode {
         streamTitle.returnKeyType = UIReturnKeyType.Done
         streamTitle.attributedPlaceholderText = NSAttributedString(string: "Enter Stream Name", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 28)!, NSForegroundColorAttributeName : UIColor(red: 230/255, green: 228/255, blue: 228/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : self.paragraphAttributes])
         streamTitle.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 28)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSParagraphStyleAttributeName : self.paragraphAttributes, NSKernAttributeName : 0.3]
+        
+        titleShimmer = FBShimmeringView()
+        titleShimmer.contentView = streamTitle.view
         
         startStreamButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         startStreamButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
@@ -195,6 +209,8 @@ class StreamInfoNode : ASDisplayNode {
     }
     override func layout() {
         super.layout()
+        
+        titleShimmer.frame = self.bounds
         
         let h = (streamTitle.calculatedSize.height + self.startStreamButton.calculatedSize.height + 41) / 2
         streamTitle.position = CGPointMake(self.calculatedSize.width / 2, self.calculatedSize.height / 2 - h)
@@ -292,7 +308,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             }
         }
     }
-    var editing : Bool = false {
+    override var editing : Bool {
         didSet {
             if editing != oldValue {
                 self.updateEditingState()
@@ -479,8 +495,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     }
     
     func updateEditingState(){
-        self.imageNode.userInteractionEnabled = editing
-        self.imageNode.enabled = editing
         self.infoNode.streamTitle.userInteractionEnabled = editing
         self.infoNode.locationToggle.enabled = editing
         self.infoNode.locationToggle.userInteractionEnabled = editing
@@ -488,6 +502,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         self.infoNode.startStreamButton.userInteractionEnabled = editing
         self.infoNode.genreToggle.enabled = editing
         self.infoNode.genreToggle.userInteractionEnabled = editing
+        self.infoNode.titleShimmer.shimmering = editing
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
