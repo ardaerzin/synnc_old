@@ -181,9 +181,10 @@ class StreamNavigationController : UINavigationController {
     }
     func hide(){
         self.animation.toValue = 1
+        var status : Bool = false
         if let rvc = self.rootViewController, let tabitem = rvc.displayItem as? TabItemController {
-            rvc.displayStatusBar = !tabitem.prefersStatusBarHidden()
+            status = !tabitem.prefersStatusBarHidden()
         }
-        UIApplication.sharedApplication().statusBarHidden = false
+        UIApplication.sharedApplication().statusBarHidden = !status
     }
 }

@@ -10,8 +10,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistNode.swift"
-<<<<<<< Updated upstream
-<<<<<<< HEAD
             timestampString = "474148266.190005"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -19,24 +17,6 @@
             endingLineNumber = "243"
             landmarkName = "invalidateCalculatedLayout()"
             landmarkType = "5">
-=======
-            timestampString = "474140271.999392"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
-            landmarkName = "PlaylistNode"
-            landmarkType = "3">
->>>>>>> master
-=======
-            timestampString = "474148266.190005"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "243"
-            endingLineNumber = "243"
-            landmarkName = "invalidateCalculatedLayout()"
-            landmarkType = "5">
->>>>>>> Stashed changes
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -87,10 +67,6 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
@@ -107,10 +83,5 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
-<<<<<<< Updated upstream
-=======
->>>>>>> master
-=======
->>>>>>> Stashed changes
    </Breakpoints>
 </Bucket>

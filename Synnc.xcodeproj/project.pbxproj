@@ -385,7 +385,6 @@
 		47EBDF8A1C1BD8A80075CF0B /* SynncTrack_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF871C1BD8A80075CF0B /* SynncTrack_old.swift */; };
 		47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */; };
 		47EBDF911C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8F1C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld */; };
-		47EBDF961C1BDD480075CF0B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EBDF951C1BDD480075CF0B /* Spotify.framework */; };
 		47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */; };
 		47EBDF9A1C1BE1470075CF0B /* SynncArtist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF991C1BE1470075CF0B /* SynncArtist.swift */; };
 		47EBDF9D1C1BE18B0075CF0B /* SynncTrack+Soundcloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF9C1C1BE18B0075CF0B /* SynncTrack+Soundcloud.swift */; };
@@ -809,7 +808,6 @@
 		47EBDF871C1BD8A80075CF0B /* SynncTrack_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncTrack_old.swift; sourceTree = "<group>"; };
 		47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Playlist+Synnc.swift"; sourceTree = "<group>"; };
 		47EBDF901C1BDC0A0075CF0B /* SynncDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SynncDataModel.xcdatamodel; sourceTree = "<group>"; };
-		47EBDF951C1BDD480075CF0B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		47EBDF991C1BE1470075CF0B /* SynncArtist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncArtist.swift; sourceTree = "<group>"; };
 		47EBDF9C1C1BE18B0075CF0B /* SynncTrack+Soundcloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncTrack+Soundcloud.swift"; sourceTree = "<group>"; };
@@ -833,7 +831,6 @@
 			files = (
 				47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */,
 				47A902871C41FFD8005CA4EB /* FBSDKCoreKit.framework in Frameworks */,
-				47EBDF961C1BDD480075CF0B /* Spotify.framework in Frameworks */,
 				154D0398DDA70CB48785F728 /* Pods_Synnc.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1276,7 +1273,6 @@
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
 				4777050D1C3CAAF7007089D0 /* NHNetworkTime */,
 				4728F94D1C34D13D00B427EA /* StreamRelated */,
-				47EBDF941C1BDD390075CF0B /* Spotify SDK */,
 				47EBDF841C1BD89D0075CF0B /* Data Model */,
 				47EBDF831C1BD8860075CF0B /* User Related */,
 				4712B63E1C12867A00C49522 /* Views */,
@@ -1626,14 +1622,6 @@
 				47EBDF8F1C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld */,
 			);
 			name = "Data Model";
-			sourceTree = "<group>";
-		};
-		47EBDF941C1BDD390075CF0B /* Spotify SDK */ = {
-			isa = PBXGroup;
-			children = (
-				47EBDF951C1BDD480075CF0B /* Spotify.framework */,
-			);
-			name = "Spotify SDK";
 			sourceTree = "<group>";
 		};
 		47EBDF9B1C1BE1770075CF0B /* Song */ = {
@@ -2486,7 +2474,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
-					/Users/doguhano/Documents/FacebookSDK,
 					"$(inherited)",
 					"$(PROJECT_DIR)/Synnc",
 					/Users/ardaerzin/Documents/FacebookSDK,
@@ -2594,7 +2581,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
-					/Users/doguhano/Documents/FacebookSDK,
 					"$(inherited)",
 					"$(PROJECT_DIR)/Synnc",
 					/Users/ardaerzin/Documents/FacebookSDK,

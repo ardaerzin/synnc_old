@@ -16,18 +16,15 @@ import Cloudinary
 
 class MainUser : WCLUser {
     
-<<<<<<< HEAD
     var avatarId : String!
-=======
     var generatedUsername : Bool = false
->>>>>>> master
     var joinedUsers : [String] = []
     
     convenience init(socket: SocketIOClient) {
         self.init(alternatives: [
             .Facebook : [.withSession, .authServer],
             .Twitter : [.withSession, .authServer],
-            .Spotify : [.withSession],
+//            .Spotify : [.withSession],
             .Soundcloud : [.withSession]
         ])
         self.withSocket(socket)

@@ -92,7 +92,8 @@ class SynncTrack: Serializable {
         case .Soundcloud:
             id = soundcloudIdFromData(data)
         case .Spotify:
-            id = spotifyIdFromData(data)
+//            id = spotifyIdFromData(data)
+            break
         default:
             return ""
         }
@@ -121,22 +122,12 @@ class SynncTrack: Serializable {
     }
     
     class func create(data: AnyObject, source : SynncExternalSource) -> SynncTrack {
-//        let filtered = SynncTrackStore.sharedInstance.tracks.filter({
-//            track in
-//            
-//            return track.source == source.rawValue && track.song_id == id(fromData: data, type : source)
-//        })
-//        
-//        if let item = filtered.first {
-//            return item
-//        }
-        
         let track = SynncTrack()
-        
         
         switch source {
         case .Spotify:
-            track.createSpotifySong(data)
+//            track.createSpotifySong(data)
+            break
         case .Soundcloud:
             track.createSoundcloudSong(data)
         default:

@@ -84,12 +84,12 @@ class Synnc : UIResponder, UIApplicationDelegate {
         self.locationManager.delegate = self
         self.locationManager.initLocationManager()
         
-        SPTAuth.defaultInstance().sessionUserDefaultsKey = "SynncSPT"
-        SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
-        SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://ivory-yes.codio.io:9500/refresh")
-        SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://ivory-yes.codio.io:9500/swap")
-        SPTAuth.defaultInstance().redirectURL = NSURL(string: "Synnc://callback")
-        SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserReadPrivateScope, SPTAuthStreamingScope]
+//        SPTAuth.defaultInstance().sessionUserDefaultsKey = "SynncSPT"
+//        SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
+//        SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://ivory-yes.codio.io:9500/refresh")
+//        SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://ivory-yes.codio.io:9500/swap")
+//        SPTAuth.defaultInstance().redirectURL = NSURL(string: "Synnc://callback")
+//        SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserReadPrivateScope, SPTAuthStreamingScope]
         
         WildDataManager.sharedInstance().setCoreDataStack(dbName: "SynncDB", modelName: "SynncDataModel", bundle: nil, iCloudSync: false)
         
@@ -145,18 +145,18 @@ class Synnc : UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        let authCallback : SPTAuthCallback = {
-            (err, session) in
-            
-            if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
-                u.sptAuthenticationStatus(session, error: err)
-            }
-        }
+//        let authCallback : SPTAuthCallback = {
+//            (err, session) in
+//            
+//            if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
+//                u.sptAuthenticationStatus(session, error: err)
+//            }
+//        }
         
-        if SPTAuth.defaultInstance().canHandleURL(url) {
-            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
-            return true
-        }
+//        if SPTAuth.defaultInstance().canHandleURL(url) {
+//            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
+//            return true
+//        }
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 }

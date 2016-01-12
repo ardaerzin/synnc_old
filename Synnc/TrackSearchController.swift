@@ -198,23 +198,21 @@ extension TrackSearchController {
         let types : [EntityType] = [.Track, .Artist]
         
         for type in types {
-            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
-                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
-                    if let sptshit = data as? SPTListPage {
-                        if sptshit.items != nil {
-                            self.processResults(str, source: .Spotify, entity: type, dataArr: sptshit.items)
-                        }
-                    }
-                    switch type {
-                    case .Track:
-//                        self.tracksTable.hideLoadingView()
-                        break
-                    case .Artist:
-//                        self.usersCollection.hideLoadingView()
-                        break
-                    }
-                }
-            }
+//            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
+//                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
+//                    if let sptshit = data as? SPTListPage {
+//                        if sptshit.items != nil {
+//                            self.processResults(str, source: .Spotify, entity: type, dataArr: sptshit.items)
+//                        }
+//                    }
+//                    switch type {
+//                    case .Track:
+//                        break
+//                    case .Artist:
+//                        break
+//                    }
+//                }
+//            }
         }
     }
     func searchSoundcloud(str: String, timeStamp: NSDate){

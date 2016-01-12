@@ -5,5 +5,4 @@
 #import "JJMaterialTextfield.h"
 #import "WCLScrollNode.h"
 #import "WCLTableNode.h"
-#import <Spotify/Spotify.h>
 #import "NHNetworkTime.h"
