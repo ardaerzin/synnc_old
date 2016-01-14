@@ -20,7 +20,6 @@ class PlaylistTableCell : ASCellNode {
     
     var trackNameNode : ASTextNode!
     var artistNameNode : ASTextNode!
-//    var iconNode : TrackStatusButton!
     var sourceNode : ASImageNode!
     
     var selectedSeperatorNode : ASDisplayNode!
@@ -39,7 +38,7 @@ class PlaylistTableCell : ASCellNode {
         }
     }
     
-        override init() {
+    override init() {
         super.init()
         
         self.artistNameNode = ASTextNode()

@@ -36,7 +36,7 @@ class TabSubsectionController : ASViewController {
         a.backgroundColor = UIColor.whiteColor()
         self.screenNode = a
     }
-        override init(node: ASDisplayNode!) {
+    override init(node: ASDisplayNode) {
         super.init(node: node)
         self.screenNode = node
     }
@@ -61,7 +61,6 @@ class TabNavigationController : UINavigationController, UINavigationControllerDe
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-//        fatalError("init(coder:) has not been implemented")
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -167,7 +166,7 @@ class TabItemController : ASViewController, TabItem {
         self.screenNode = a
         self.automaticallyAdjustsScrollViewInsets = false
     }
-        override init(node: ASDisplayNode!) {
+    override init(node: ASDisplayNode) {
         super.init(node: node)
         self.screenNode = node
         self.automaticallyAdjustsScrollViewInsets = false
@@ -192,7 +191,7 @@ extension TabItemController : TabbarContentScrollerDelegate {
     func didScrollToRatio(ratio: CGFloat) {
         if let nn = self.screenNode as? NavigationHolderNode {
             let subsection = nn.headerNode.subSectionArea
-            if let min = subsection.minX {
+            if let _ = subsection.minX {
                 let a = POPTransition(ratio, startValue: subsection.minX, endValue: subsection.maxX)
                 subsection.currentIndicatorPosition = a
             }
@@ -207,9 +206,7 @@ extension TabItemController : TabbarContentScrollerDelegate {
     func beganScrolling() {
         if let nn = self.screenNode as? NavigationHolderNode {
             nn.headerNode.subSectionArea.pop_removeAnimationForKey("indicatorPositionAnimation")
-//                .subSectionArea.selectedSubsectionIndex = index
         }
-//        self.headerNode.subSectionArea.pop_removeAnimationForKey("indicatorPositionAnimation")
     }
 }
 @objc protocol TabItem {

@@ -76,29 +76,28 @@ class GenrePicker : WCLPopupViewController {
 }
 
 extension GenrePicker : ASCollectionDataSource {
-    func collectionView(collectionView: ASCollectionView!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
+    func collectionView(collectionView: ASCollectionView, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> ASSizeRange {
         let x = (collectionView.bounds.width - 5 - 10) / 2
         return ASSizeRangeMake(CGSize(width: x, height: 0), CGSize(width: x, height: 300))
     }
-    func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = GenreCellNode()
         let item = genresDataSource.allItems[indexPath.row]
         node.configure(item)
         return node
     }
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView!) -> Int {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
-    func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
-        print("NUMBER OF ITEMS", genresDataSource.allItems.count)
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return genresDataSource.allItems.count
     }
 }
 extension GenrePicker : ASCollectionDelegate {
-    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
+    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
         return false
     }
-    func collectionView(collectionView: UICollectionView!, didDeselectItemAtIndexPath indexPath: NSIndexPath!) {
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         let genre = genresDataSource.allItems[indexPath.item]
         
         if let ind = self.selectedGenres.indexOf(genre) {
@@ -111,12 +110,6 @@ extension GenrePicker : ASCollectionDelegate {
         if ind == nil {
             self.selectedGenres.append(genre)
         }
-        
-        //        self.selectedPlaylist = playlist
-        //        self.delegate?.didSelectPlaylist(playlist)
-        //        if let node = (collectionView as! ASCollectionView).nodeForItemAtIndexPath(indexPath) as? PlaylistCellNode {
-        //            node.isSelected = true
-        //        }
     }
     func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
@@ -124,7 +117,7 @@ extension GenrePicker : ASCollectionDelegate {
     func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
         let genre = genresDataSource.allItems[indexPath.item]
         // dodowarningsoru isareti koydum 3 satir alta
-        if let ind = self.selectedGenres.indexOf(genre) {
+        if let _ = self.selectedGenres.indexOf(genre) {
             self.node.genreCollection.view.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .None)
             if let node = self.node?.genreCollection.view.nodeForItemAtIndexPath(indexPath) {
                 node.selected = true

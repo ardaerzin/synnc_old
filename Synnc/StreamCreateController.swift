@@ -209,7 +209,7 @@ class StreamCreateController : NSObject {
             return
         }
         
-        if let p = self.parentController as? StreamViewController, let parent = p.parentViewController as? StreamNavigationController {
+        if let p = self.parentController as? StreamViewController {
             if let s = p.screenNode.mainScrollNode.view, let z = p.screenNode {
                 s.scrollEnabled = false
                 loadingNode = StreamLoadingNode()
@@ -237,6 +237,7 @@ class StreamCreateController : NSObject {
                 if let err = errorString {
                     if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
                         WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Please try to create your stream once again", title: "Couldn't Upload Stream Image", sound: nil, fireDate: nil, showLocalNotification: false, object: nil, id: nil))
+                        print(err)
                     }
                     self.backgroundNode.editing = true
                 } else {
@@ -325,7 +326,7 @@ extension StreamCreateController : PlaylistSelectorDelegate {
 }
 
 extension StreamCreateController : ASEditableTextNodeDelegate {
-    func editableTextNode(editableTextNode: ASEditableTextNode!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if let _ = text.rangeOfString("\n") {
             editableTextNode.resignFirstResponder()
             return false

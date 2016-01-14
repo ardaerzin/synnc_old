@@ -22,7 +22,7 @@ class ListenerCellNode : ASCellNode {
     
     var imageURL : NSURL!
     
-        override init() {
+    override init() {
         super.init()
         
         imageNode = ASNetworkImageNode(webImage: ())

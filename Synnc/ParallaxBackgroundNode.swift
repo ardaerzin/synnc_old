@@ -102,9 +102,9 @@ class ParallaxBackgroundNode : ASScrollNode {
         self.clipsToBounds = false
         
         self.shadowColor = UIColor.blackColor().CGColor
-        self.shadowOffset = CGSizeMake(0, 2)
-        self.shadowOpacity = 1
-        self.shadowRadius = 5
+        self.shadowOffset = CGSizeMake(0, 1)
+        self.shadowOpacity = 0.5
+        self.shadowRadius = 2
         
         self.view.delaysContentTouches = false
         

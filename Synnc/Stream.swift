@@ -53,7 +53,6 @@ class Stream : Serializable {
     var user: WCLUser!
     var userid: String!
     var city : NSString!
-    //    var last_update: NSDate!
     dynamic var currentSongIndex : NSNumber! = 0
     var info : String = ""
     dynamic var playlist : SynncPlaylist!
@@ -71,12 +70,6 @@ class Stream : Serializable {
     }
     dynamic var songIds : [NSNumber] = []
     var users : [WCLUser] = []
-    
-    //    class var keys : [String] {
-    //        get {
-    //            return Stream.propertyNames(Stream)
-    //        }
-    //    }
     internal func keys() -> [String] {
         return self.propertyNames(Stream)
     }
@@ -134,7 +127,6 @@ class Stream : Serializable {
             keys.append(key as! String)
             self.setValue(value, forKey: key as! String)
         }
-        print(self.delegate)
         self.delegate?.updatedStreamLocally?(self, changedKeys : keys)
     }
     
@@ -152,7 +144,7 @@ class Stream : Serializable {
         
         var prop = properties == nil ? self.propertyNames(Stream) : properties!
         
-        var userInd, usersInd, playlistInd, genresInd, delegateInd : Int?
+        var userInd, usersInd, playlistInd, genresInd : Int?
         
         if let ind = prop.indexOf("__v") {
             prop.removeAtIndex(ind)
@@ -171,7 +163,6 @@ class Stream : Serializable {
             prop.removeAtIndex(gInd)
         }
         if let dInd = prop.indexOf("delegate") {
-            delegateInd = dInd
             prop.removeAtIndex(dInd)
         }
         if let usInd = prop.indexOf("users") {
@@ -341,9 +332,6 @@ class Stream : Serializable {
         }
         
         return []
-        
-        
-        //        return keys
     }
     
 }

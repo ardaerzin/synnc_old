@@ -16,7 +16,7 @@ import Cloudinary
 
 class MainUser : WCLUser {
     
-    var avatarId : String!
+//    var avatarId : String!
     var generatedUsername : Bool = false
     var joinedUsers : [String] = []
     
@@ -48,7 +48,6 @@ class MainUser : WCLUser {
         
         super.didChangeFollowings(followingNew: added, followingNoMore: removed)
         for user in added {
-            print(user._id)
             self.joinUserRoom(user._id, callback: nil)
         }
         for user in removed {
@@ -100,21 +99,21 @@ class MainUser : WCLUser {
         }
     }
     
-    override func avatarURL(type: WCLUserLoginType, frame: CGRect, scale: CGFloat) -> NSURL? {
-        if let imgId = self.avatarId {
-            let transformation = CLTransformation()
-            
-            transformation.width = frame.width * UIScreen.mainScreen().scale
-            transformation.height = frame.height * UIScreen.mainScreen().scale
-            transformation.crop = "fill"
-            
-            if let x = _cloudinary.url(imgId, options: ["transformation" : transformation]), let url = NSURL(string: x) {
-                return url
-            } else {
-                return nil
-            }
-        } else {
-            return super.avatarURL(type, frame: frame, scale: scale)
-        }
-    }
+//    override func avatarURL(type: WCLUserLoginType, frame: CGRect, scale: CGFloat) -> NSURL? {
+//        if let imgId = self.avatarId {
+//            let transformation = CLTransformation()
+//            
+//            transformation.width = frame.width * UIScreen.mainScreen().scale
+//            transformation.height = frame.height * UIScreen.mainScreen().scale
+//            transformation.crop = "fill"
+//            
+//            if let x = _cloudinary.url(imgId, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+//                return url
+//            } else {
+//                return nil
+//            }
+//        } else {
+//            return super.avatarURL(type, frame: frame, scale: scale)
+//        }
+//    }
 }

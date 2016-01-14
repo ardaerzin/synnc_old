@@ -38,57 +38,12 @@ class ChatTableHolder : ASDisplayNode {
         self.chatCollection.view.separatorStyle = UITableViewCellSeparatorStyle.None
         self.chatCollection.view.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
         self.chatCollection.view.tableFooterView = UIView(frame: CGRectZero)
-//        let headerView = UIView()
-//        headerView.backgroundColor = UIColor.redColor()
-//        self.chatCollection.view.tableHeaderView = UIView(frame: UIScreen.mainScreen().bounds)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [chatCollection])
     }
 }
 class ChatNode : ASDisplayNode {
-    
-//    var initialTouchTopWindowPosition : CGFloat = 0
-//    var transitionProgress : CGFloat! = 0 {
-//        didSet {
-//            print(self.view.bounds.height)
-//            let transition = POPTransition(transitionProgress, startValue: -self.view.bounds.height, endValue: 0)
-//            POPLayerSetTranslationY(self.view.layer, transition)
-//        }
-//    }
-//    var animatableProperty : POPAnimatableProperty!  {
-//        get {
-//            let x = POPAnimatableProperty.propertyWithName("inc.stamp.pk.property.window.progress", initializer: {
-//                
-//                prop in
-//                
-//                prop.readBlock = {
-//                    obj, values in
-//                    values[0] = (obj as! ChatNode).transitionProgress
-//                }
-//                prop.writeBlock = {
-//                    obj, values in
-//                    (obj as! ChatNode).transitionProgress = values[0]
-//                }
-//                prop.threshold = 0.01
-//            }) as! POPAnimatableProperty
-//            
-//            return x
-//        }
-//    }
-//    var animation : POPSpringAnimation!  {
-//        get {
-//            if let x = self.pop_animationForKey("inc.stamp.pk.window.progress") as? POPSpringAnimation {
-//                return x
-//            } else {
-//                let x = POPSpringAnimation()
-//                x.property = self.animatableProperty
-//                self.pop_addAnimation(x, forKey: "inc.stamp.pk.window.progress")
-//                return x
-//            }
-//        }
-//    }
-    
     
     var headerNode : ChatHeaderNode!
     var collectionHolder : ChatTableHolder!
@@ -116,11 +71,10 @@ class ChatNode : ASDisplayNode {
         self.clipsToBounds = true
     }
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-//        self.delegate?.hideKeyboard()
         super.touchesBegan(touches, withEvent: event)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        var spacer = ASLayoutSpec()
+        let spacer = ASLayoutSpec()
         spacer.flexBasis = ASRelativeDimension(type: .Points, value: 44)
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerNode, collectionHolder, spacer])
     }

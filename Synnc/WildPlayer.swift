@@ -75,15 +75,9 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
         didSet{
             if currentIndex != oldValue && self.stream != nil {
                 if self.stream != nil && self.stream === StreamManager.sharedInstance.userStream {
-//                    var dict = ["currentSongIndex" : currentIndex]
-//                    self.stream!.fromJSON(JSON(dict))
-                    
-//                    self.delegate?.streamer?(self, updatedPlaylistIndex: currentIndex)
-                    
                     if self.stream == Synnc.sharedInstance.streamManager.userStream {
                         self.stream?.update(["currentSongIndex" : currentIndex])
                     }
-                    print("delegate", self.delegate)
                     self.delegate?.streamer?(self, updatedPlaylistIndex: currentIndex)
                 }
             }

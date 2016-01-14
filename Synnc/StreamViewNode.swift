@@ -20,12 +20,12 @@ import WCLUserManager
 class StreamViewNode : ParallaxNode {
     var chatbar : ChatBarNode!
     var chatNode : ASDisplayNode!
-    var contentNode : StreamContentNode = StreamContentNode()
+    var contentNode : StreamContentNode!
     
-    init(chatNode : ASDisplayNode, chatbar : ChatBarNode) {
+    init(chatNode : ASDisplayNode, chatbar : ChatBarNode, content : StreamContentNode) {
         let bgNode = StreamBackgroundNode()
-        contentNode.backgroundColor = UIColor.whiteColor()
-        super.init(backgroundNode: bgNode, contentNode: self.contentNode)
+        super.init(backgroundNode: bgNode, contentNode: content)
+        self.contentNode = content
         self.chatbar = chatbar
         self.chatNode = chatNode
         self.chatNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
@@ -55,8 +55,8 @@ class StreamViewNode : ParallaxNode {
             
             self.mainScrollNode.setNeedsLayout()
         } else if let st = stream {
-            if let cInd = st.currentSongIndex as? Int {
-                let track = st.playlist.songs[cInd]
+            if let cInd = st.currentSongIndex {
+                let track = st.playlist.songs[cInd as Int]
                 if let bg = self.mainScrollNode.backgroundNode as? StreamBackgroundNode {
                     bg.updateForTrack(track)
                 }

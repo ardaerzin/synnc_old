@@ -73,8 +73,7 @@ class StreamNavigationController : UINavigationController {
             self.displayStream(us)
         } else {
             if SharedPlaylistDataSource.allItems.isEmpty {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab as? TabItem {
-//                    where item.identifier != rvc.displayItem.identifier  {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {
                     WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", sound: nil, fireDate: nil, showLocalNotification: false, object: item, id: nil))
                 }
                 return
@@ -88,15 +87,6 @@ class StreamNavigationController : UINavigationController {
         self.pushViewController(StreamViewController(stream: stream), animated: false)
         self.display()
     }
-    
-//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-//        super.init(nibName: nil, bundle: nil)
-//    }
-//    init(){
-//        panRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handlePanRecognizer:"))
-//        self.view.addGestureRecognizer(panRecognizer)
-//    }
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -116,11 +106,7 @@ class StreamNavigationController : UINavigationController {
     override func willMoveToParentViewController(parent: UIViewController?) {
         super.willMoveToParentViewController(parent)
         
-        if let p = parent {
-            self.view.frame = UIScreen.mainScreen().bounds
-        }
-        
-//        self.transitionProgress = 1
+        self.view.frame = UIScreen.mainScreen().bounds
     }
     func beginPan(recognizer : UIPanGestureRecognizer){
         initialTouchTopWindowPosition = self.view.frame.origin.y
@@ -134,11 +120,9 @@ class StreamNavigationController : UINavigationController {
         let translation = recognizer.translationInView(UIApplication.sharedApplication().windows.first!)
         
         let yPosition = translation.y
-//            + initialTouchTopWindowPosition
         let x = yPosition / UIScreen.mainScreen().bounds.height
         
-        var y = x
-        
+        let y = x
 //        if x < 0 {
 //            y = x/8
 //        } else {

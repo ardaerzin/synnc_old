@@ -54,7 +54,7 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
     override func didLoad() {
         super.didLoad()
         
-        if let scrollView = self.view as? UIScrollView {
+        if let scrollView = self.view {
             scrollView.delegate = self
             scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
             scrollView.delaysContentTouches = false

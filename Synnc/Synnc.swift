@@ -20,6 +20,8 @@ import WCLUtilities
 import CoreLocation
 import WCLPopupManager
 import AsyncDisplayKit
+import WCLUserManager
+
 import WCLNotificationManager
 
 extension UIColor {
@@ -72,6 +74,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         Fabric.with([Twitter.sharedInstance()])
         
         self.socket = initSocket("https://silver-sister.codio.io:9500")
+        WCLUserManager.sharedInstance().configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -189,8 +192,6 @@ extension Synnc {
             [weak self]
             (data, ack) in
             
-            print("SOCKET CONNECTED")
-            
             if self == nil {
                 return
             }
@@ -230,13 +231,6 @@ extension Synnc : WCLLocationManagerDelegate {
     }
     func locationManager(manager: WCLLocationManager, changedAuthStatus newStatus: Int) {
         switch newStatus {
-        case -1 :
-//            Async.main {
-//                self.locationManager.requestLocationPermission(self.locationAuthController())
-//            }
-            break
-        case 0:
-            break
         case 1:
             locationManager.initGPSTracking()
             break
@@ -248,17 +242,6 @@ extension Synnc : WCLLocationManagerDelegate {
     func locationAuthController() -> SynncLocationAuthVC {
         let x = SynncLocationAuthVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
         return x
-//        let lc = TrackSearchController()
-//        lc.delegate = self
-//        
-//        let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
-//        let x = WCLPopupViewController(nibName: nil, bundle: nil, options: opts, size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
-//        x.addChildViewController(lc)
-//        lc.view.frame = x.view.bounds
-//        x.view.addSubview(lc.view)
-//        lc.didMoveToParentViewController(x)
-//        
-//        WCLPopupManager.sharedInstance.newPopup(x)
     }
 }
 

@@ -41,19 +41,19 @@ class StreamInfoNode : ASDisplayNode {
     var titleSizeHeight : CGFloat! {
         didSet {
             if let old = oldValue where titleSizeHeight != old {
-                print("did change title height")
                 self.titleOffset = titleSizeHeight - old
             }
         }
     }
-    var titleOffset : CGFloat! = 0 {
-        didSet {
-            if titleOffset != oldValue {
-                print("did set titleOffset")
-            }
-            print("did set title offset")
-        }
-    }
+    var titleOffset : CGFloat! = 0
+//        {
+//        didSet {
+//            if titleOffset != oldValue {
+//                print("did set titleOffset")
+//            }
+//            print("did set title offset")
+//        }
+//    }
     
     var paragraphAttributes : NSMutableParagraphStyle = {
         let x = NSMutableParagraphStyle()
@@ -104,7 +104,6 @@ class StreamInfoNode : ASDisplayNode {
             self.trackTitle.alpha = trackUpdateAnimationProgress
             if let x = self.supernode as? StreamBackgroundNode, let z = x.animationAlphaValues[self.artistTitle] {
                 let a = min(z,trackUpdateAnimationProgress)
-//                print(z)
                 self.artistTitle.alpha = a
             }
         }
@@ -126,8 +125,10 @@ class StreamInfoNode : ASDisplayNode {
         
         artistTitle = ASTextNode()
         artistTitle.maximumNumberOfLines = 1
-            
+        artistTitle.alpha = 0
+        
         trackTitle = ASTextNode()
+        trackTitle.alpha = 0
         trackTitle.spacingAfter = 5
         trackTitle.alignSelf = .Stretch
         trackTitle.maximumNumberOfLines = 2
@@ -139,8 +140,8 @@ class StreamInfoNode : ASDisplayNode {
         
         
         streamStatusButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
-//        streamStatusButton.setAttributedTitle(NSAttributedString(string: "STOP STREAMING", attributes: buttonAttributes), forState: ASControlState.Normal)
         streamStatusButton.cornerRadius = 3
+        streamStatusButton.alpha = 0
         
         addToFavoritesButton = ButtonNode()
         addToFavoritesButton.cornerRadius = 3
@@ -151,6 +152,7 @@ class StreamInfoNode : ASDisplayNode {
         addToFavoritesButton.alpha = 0
         
         streamTitle = ASEditableTextNode()
+        streamTitle.alpha = 0
         streamTitle.returnKeyType = UIReturnKeyType.Done
         streamTitle.attributedPlaceholderText = NSAttributedString(string: "Enter Stream Name", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 28)!, NSForegroundColorAttributeName : UIColor(red: 230/255, green: 228/255, blue: 228/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : self.paragraphAttributes])
         streamTitle.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 28)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSParagraphStyleAttributeName : self.paragraphAttributes, NSKernAttributeName : 0.3]
@@ -160,6 +162,7 @@ class StreamInfoNode : ASDisplayNode {
         
         startStreamButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         startStreamButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
+        startStreamButton.alpha = 0
         startStreamButton.cornerRadius = 3
         startStreamButton.setAttributedTitle(NSAttributedString(string: "START STREAMING", attributes: buttonAttributes), forState: ASControlState.Normal)
         
@@ -168,7 +171,10 @@ class StreamInfoNode : ASDisplayNode {
         playingIcon.alpha = 0
         
         genreToggle = TitleColorButton(normalTitleString: "PICK GENRE(S)", selectedTitleString: "", attributes: self.genreAttributes, normalColor: UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1), selectedColor: UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1))
+        genreToggle.alpha = 0
+        
         locationToggle = TitleColorButton(normalTitleString: "SHOW LOCATION", selectedTitleString: "SECTOOR", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 18)!, NSKernAttributeName : 0.3], normalColor: UIColor.whiteColor(), selectedColor: UIColor.whiteColor())
+        locationToggle.alpha = 0
         
         self.addSubnode(trackTitle)
         self.addSubnode(artistTitle)
@@ -198,7 +204,6 @@ class StreamInfoNode : ASDisplayNode {
             self.artistTitle.attributedString = NSAttributedString(string: str, attributes: self.artistAttributes)
             self.setNeedsLayout()
             
-            print("sex",self.supernode)
             if let x = self.supernode as? StreamBackgroundNode {
                 x.updateScrollPositions(x.scrollPosition)
             }
@@ -216,7 +221,6 @@ class StreamInfoNode : ASDisplayNode {
         streamTitle.position = CGPointMake(self.calculatedSize.width / 2, self.calculatedSize.height / 2 - h)
         startStreamButton.position = CGPointMake(self.calculatedSize.width / 2, self.calculatedSize.height / 2 + h)
         
-        let h2 = self.trackTitle.calculatedSize.height + self.artistTitle.calculatedSize.height + 26 + self.streamStatusButton.calculatedSize.height + 20 + self.addToFavoritesButton.calculatedSize.height
         locationToggle.position = CGPointMake((locationToggle.calculatedSize.width / 2) + 23, (calculatedSize.height) - 37 - locationToggle.calculatedSize.height / 2)
         genreToggle.position = CGPointMake((genreToggle.calculatedSize.width / 2) + 23, (calculatedSize.height) - 19 - genreToggle.calculatedSize.height / 2)
         
@@ -260,13 +264,14 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     var animationAlphaValues : [NSObject : CGFloat] = [NSObject : CGFloat]()
     
     var scrollPosition : CGFloat = 0
-    var trackTitlePositionY : CGFloat! {
-        didSet {
-            if oldValue != nil && trackTitlePositionY != oldValue {
-                print("trackTitle position y has changed")
-            }
-        }
-    }
+    var trackTitlePositionY : CGFloat!
+//        {
+//        didSet {
+//            if oldValue != nil && trackTitlePositionY != oldValue {
+//                print("trackTitle position y has changed")
+//            }
+//        }
+//    }
     var trackTranslationY : CGFloat = 0
     
     
@@ -294,7 +299,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                 }
                 
                 self.infoNode.streamStatusButton.selected = playingState
-                print("playing state changed")
             }
         }
     }
@@ -353,19 +357,17 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             }
         }
     }
-    var stateAnimationProgress : CGFloat = -2 {
+    var stateAnimationProgress : CGFloat = 1 {
         didSet {
             
             self.infoNode.trackTitle.alpha = stateAnimationProgress
             self.infoNode.artistTitle.alpha = stateAnimationProgress
             
-            print(stateAnimationProgress-1)
             self.infoNode.addToFavoritesButton.alpha = (stateAnimationProgress-1)
             
             self.infoNode.streamTitle.alpha = -stateAnimationProgress + 1
             self.infoNode.startStreamButton.alpha = -stateAnimationProgress
             
-            print("!*!*!*!**!*!", fabs(stateAnimationProgress))
             animationAlphaValues[infoNode.genreToggle] = fabs(stateAnimationProgress)
             animationAlphaValues[infoNode.locationToggle] = fabs(stateAnimationProgress)
             animationAlphaValues[infoNode.streamStatusButton] = stateAnimationProgress
@@ -381,10 +383,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                 self.infoNode.locationToggle.alpha = fabs(stateAnimationProgress)
                 self.infoNode.genreToggle.alpha = fabs(stateAnimationProgress)
             }
-//            self.infoNode.locationToggle.alpha = fabs(stateAnimationProgress)
-//            self.infoNode.genreToggle.alpha = fabs(stateAnimationProgress)
-            
-            
             self.infoNode.streamStatusButton.alpha = stateAnimationProgress
         }
     }
@@ -528,7 +526,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             self.infoNode.locationToggle.alpha = min( 1 - min(0.5,percentage)*2, locationAnimVal)
         }
         if let genreAnimVal = animationAlphaValues[infoNode.genreToggle] {
-//            print("shit", min( 1 - min(0.5,percentage)*2, genreAnimVal))
             self.infoNode.genreToggle.alpha = min( 1 - min(0.5,percentage)*2, genreAnimVal)
         }
         
@@ -607,8 +604,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
 
             let favbutton = self.infoNode.addToFavoritesButton
             let favbuttonLimit = trackTitleLimit + trackT.calculatedSize.height / 2 + 20 + favbutton.calculatedSize.height / 2
-            print("limit:", favbuttonLimit)
-//            let d = (position + (position / 3))
             if e <= (favbutton.position.y - favbuttonLimit) && percentage < 1 {
                 POPLayerSetTranslationY(favbutton.layer, position/3)
             } else if e <= (favbutton.position.y - favbuttonLimit) && percentage >= 1 {
@@ -636,17 +631,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                     POPLayerSetTranslationY(streambutton.layer, position/3 + z + delta)
                 }
             }
-            
-//            let trackT = self.trackTitle
-//            print("LAYOUT SHIT", trackT.calculatedSize.height)
-//            let trackTitleLimit = trackT.calculatedSize.height / 2 + 20
-//            if moveShit <= (trackT.position.y - trackTitleLimit) {
-//                POPLayerSetTranslationY(favbutton.layer, 0)
-//            } else {
-//                let z = moveShit - (trackT.position.y - trackTitleLimit)
-//                print(z + delta)
-//                POPLayerSetTranslationY(trackT.layer, z + delta)
-//            }
             
         }
     }

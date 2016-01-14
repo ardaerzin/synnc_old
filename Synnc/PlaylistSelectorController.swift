@@ -24,13 +24,24 @@ class PlaylistSelectorController : TabSubsectionController {
     
     var selectedIndexPath : NSIndexPath! {
         didSet {
-//            if selectedIndexPath != oldValue {
-//            print("did change selected indexpath")
+            
+            if let sip = selectedIndexPath, let ov = oldValue where sip == ov {
+                return
+            }
+            
+            if selectedIndexPath == nil {
+                if let oldIp = oldValue, let oldNode = (self.screenNode.view as! ASCollectionView).nodeForItemAtIndexPath(oldIp) as? SelectablePlaylistCellNode {
+                    oldNode.isSelected = false
+                }
+                return
+            }
+            
             selectedPlaylist = playlistDataSource.allItems[selectedIndexPath.item]
-            if let node = (self.screenNode.view as! ASCollectionView).nodeForItemAtIndexPath(selectedIndexPath) as? PlaylistCellNode {
+            
+            if let node = (self.screenNode.view as! ASCollectionView).nodeForItemAtIndexPath(selectedIndexPath) as? SelectablePlaylistCellNode {
                 node.isSelected = true
             }
-            if let oldIp = oldValue, let oldNode = (self.screenNode.view as! ASCollectionView).nodeForItemAtIndexPath(oldIp) as? PlaylistCellNode {
+            if let oldIp = oldValue, let oldNode = (self.screenNode.view as! ASCollectionView).nodeForItemAtIndexPath(oldIp) as? SelectablePlaylistCellNode {
                 oldNode.isSelected = false
             }
         }
@@ -83,67 +94,38 @@ class PlaylistSelectorController : TabSubsectionController {
 }
 
 extension PlaylistSelectorController : ASCollectionDataSource {
-    func collectionView(collectionView: ASCollectionView!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
+    func collectionView(collectionView: ASCollectionView, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> ASSizeRange {
         let x = collectionView.bounds.width / 2
         return ASSizeRangeMake(CGSize(width: x, height: x), CGSize(width: x, height: x))
     }
-    func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
-        let node = PlaylistCellNode()
+    func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
+        let node = SelectablePlaylistCellNode()
         let item = playlistDataSource.allItems[indexPath.row]
         node.configureForPlaylist(item)
         return node
     }
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView!) -> Int {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
-    func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return playlistDataSource.allItems.count
     }
 }
 extension PlaylistSelectorController : ASCollectionDelegate {
-    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
+    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
         return false
     }
-    func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
-//        let playlist = playlistDataSource.allItems[indexPath.item]
-        self.selectedIndexPath = indexPath
-        
-//        self.selectedPlaylist = playlist
-//        self.delegate?.didSelectPlaylist(playlist)
-//        if let node = (collectionView as! ASCollectionView).nodeForItemAtIndexPath(indexPath) as? PlaylistCellNode {
-//            node.isSelected = true
-//        }
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
+        self.selectedIndexPath = nil
     }
-    func collectionView(collectionView: ASCollectionView!, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath!) {
-////        let item = playlistDataSource.allItems[indexPath.row]
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        self.selectedIndexPath = indexPath
+    }
+    func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
         if indexPath.item == 0 && self.selectedPlaylist == nil {
             self.selectedIndexPath = indexPath
             collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         }
-        
-//        if let sp = self.selectedIndexPath where indexPath == sp {
-//            
-//        } else {
-//            
-//        }
-//        
-//        if indexPath == self.selectedIndexPath {
-//            if let node = collectionView.nodeForItemAtIndexPath(indexPath) as? PlaylistCellNode {
-//                node.isSelected = true
-//            }
-//            else {
-//                node.isSelected = false
-//            }
-//        }
-////            collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
-////        } else {
-////            collectionView.deselectItemAtIndexPath(indexPath, animated: false)
-////            if let node = collectionView.nodeForItemAtIndexPath(indexPath) as? PlaylistCellNode {
-////                node.isSelected = false
-////                node.selected = false
-////                print(node)
-////            }
-////        }
     }
 }
 

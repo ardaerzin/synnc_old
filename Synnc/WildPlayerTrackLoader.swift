@@ -47,48 +47,9 @@ class WildPlayerTrackManager {
             }
         }
         
-//        var pSet = Set(prevURLs)
-//        var newURLs : [String] = stream.songIds.map({
-//            return (WildSoundCloud.sharedInstance().streamURL(forTrackId: $0))!.absoluteString!
-//        })
-//        var cIndex = player.currentIndex
-//        var prevItem : AVPlayerItem!
-//        for (index,url) in enumerate(newURLs) {
-//            
-//            if index >= cIndex {
-//                if let oldInd = find(prevURLs, url) {
-//                    //yuklenmis asset
-//                    var item : AVPlayerItem!
-//                    var assetArr = (self.player.items() as! [AVPlayerItem]).filter({
-//                        ($0.asset as! AVURLAsset).URL!.absoluteString! == url
-//                    })
-//                    if assetArr.count > 0 && (oldInd != (index-cIndex)) {
-//                        item = assetArr[0]
-//                        self.dequeueItem(item)
-//                        self.queueItem(item)
-//                    }
-//                } else {
-//                    // yuklenmemis asset. yeni yarat
-//                    var item = newItem(str: url)
-//                    self.queueItem(item)
-//                }
-//            } else {
-//                if let oldInd = find(prevURLs, url) {
-//                    self.dequeueItem(prevItemsArr[oldInd])
-//                    prevURLs = getPlayerQueueUrls()
-//                }
-//            }
-//            
-//        }
-        
         isLoadingTrackData = false
     }
     func newItem(song song: SynncTrack, index: Int) -> WildPlayerItem? {
-        if let url = song.streamUrl {
-            
-        } else {
-            print("YOKH")
-        }
         if let url = NSURL(string: song.streamUrl) {
             return newItem(url: url, index: index)
         }
@@ -116,7 +77,6 @@ class WildPlayerTrackManager {
         if item == nil {
             return
         }
-//        println(self.player)
         self.player.insertItem(item!, afterItem: nil)
     }
     func dequeueItem(avItem: AVPlayerItem){

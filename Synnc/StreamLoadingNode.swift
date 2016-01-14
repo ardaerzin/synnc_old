@@ -42,11 +42,6 @@ class StreamLoadingNode : ASDisplayNode {
         titleNode.position.y = (self.calculatedSize.height / 2)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [titleNode])
         return ASStaticLayoutSpec(children: [animationNode, titleNode])
-        
-//        return ASStaticLayoutSpec(children: [animationNode])
-//            ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [animationNode]), titleNode])
     }
 }

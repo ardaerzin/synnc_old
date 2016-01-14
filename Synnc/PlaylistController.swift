@@ -120,10 +120,10 @@ class PlaylistController : ASViewController, WildAnimated {
             isNewPlaylist = true
             self.editing = true
             self.screenNode.editButton.selected = true
+            self.screenNode.playlist = self.playlist
         } else {
             self.playlist = playlist
         }
-//        self.screenNode.playlist = self.playlist
         
         self.screenNode.tracksTable.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
         
@@ -157,30 +157,30 @@ class PlaylistController : ASViewController, WildAnimated {
     }
 }
 extension PlaylistController : ASTableViewDataSource {
-    func tableView(tableView: ASTableView!, nodeForRowAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
+    func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let track = self.playlist.songs[indexPath.item]
         let node = PlaylistTableCell()
         node.configureForTrack(track)
         node.backgroundColor = UIColor.whiteColor()
         return node
     }
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.playlist.songs.count
     }
-    func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
-    func tableView(tableView: UITableView!, canMoveRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
-    func tableView(tableView: UITableView!, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return false
     }
-    func tableView(tableView: UITableView!, moveRowAtIndexPath sourceIndexPath: NSIndexPath!, toIndexPath destinationIndexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         self.playlist.moveSong(sourceIndexPath, toIndexPath: destinationIndexPath)
         self.playlist.save()
     }
-    func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return tableView.editing
     }
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -206,7 +206,7 @@ extension PlaylistController : ASTableViewDataSource {
 }
 extension PlaylistController : ASTableViewDelegate {
     
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("did select song")
     }
     
@@ -241,14 +241,14 @@ extension PlaylistController : ParallaxNodeDelegate {
 }
 
 extension PlaylistController : ASEditableTextNodeDelegate {
-    func editableTextNode(editableTextNode: ASEditableTextNode!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if let _ = text.rangeOfString("\n") {
             editableTextNode.resignFirstResponder()
             return false
         }
         return true
     }
-    func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode!) {
+    func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode) {
         let str = editableTextNode.textView.text
         self.editedTitle = str
     }
@@ -256,9 +256,6 @@ extension PlaylistController : ASEditableTextNodeDelegate {
 extension PlaylistController {
     func closeAction(sender: ButtonNode) {
         self.navigationController?.popViewControllerAnimated(true)
-//        if let rvc = self.rootViewController {
-//            rvc.displayStatusBar = true
-//        }
         
         if isNewPlaylist {
             let vals = self.playlist.changedValues().keys
@@ -266,8 +263,6 @@ extension PlaylistController {
                 print("DELETE")
             }
         }
-        
-//        self.displayAnimation.toValue = 0
     }
     func toggleEditMode(sender : ButtonNode) {
         self.editing = !self.editing
@@ -284,15 +279,13 @@ extension PlaylistController {
                 let a = CLTransformation()
                 a.angle = "exif"
                 Synnc.sharedInstance.imageUploader.upload(data, options: ["transformation" : a], withCompletion: {
-                    [unowned self]
-                    
+//                    [unowned self]
                     (successResult, errorString, code, context)  in
                     
                     if let err = errorString {
                         print("err with upload", err)
                     } else {
-                        print(successResult)
-                        if let url = successResult["secure_url"] as? String, let publicId = successResult["public_id"] as? String, let v = successResult["version"] as? NSNumber, let format =  successResult["format"] as? String{
+                        if let publicId = successResult["public_id"] as? String, let v = successResult["version"] as? NSNumber, let format =  successResult["format"] as? String{
                             
                             let id = "image/upload/v\(v)/\(publicId).\(format)"
                             
@@ -301,7 +294,7 @@ extension PlaylistController {
                         }
                     }
                     
-                }, andProgress: nil)
+                    }, andProgress: nil)
             }
 
             self.playlist.save()
@@ -312,6 +305,7 @@ extension PlaylistController {
     func imageTap(sender : ButtonNode){
         imagePicker = SynncImagePicker()
         imagePicker.assetType = .AllPhotos
+        imagePicker.maxSelectableCount = 1
         imagePicker.showsEmptyAlbums = false
         imagePicker.showsCancelButton = true
         imagePicker.didSelectAssets = {
@@ -328,9 +322,7 @@ extension PlaylistController {
                 }
             }
             
-//            if let parent = self.parentViewController as? StreamViewController {
             self.screenNode.mainScrollNode.scrollViewDidScroll(self.screenNode.mainScrollNode.view)
-//            }
         }
         self.parentViewController?.presentViewController(imagePicker, animated: true) {}
     }

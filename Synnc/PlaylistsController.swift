@@ -49,7 +49,7 @@ class PlaylistsController : TabItemController {
                 let item = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
                 item.imageNode.contentMode = UIViewContentMode.ScaleAspectFit
                 item.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(34, 34))
-                item.setImage(UIImage(named: "add_playlist")?.resizeImage(usingWidth: 20), forState: ASControlState.Normal)
+                item.setImage(UIImage(named: "addPlaylist"), forState: ASControlState.Normal)
                 item.addTarget(self.myPlaylistsController, action: Selector("newPlaylistAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
                 
                 _iconItem = item

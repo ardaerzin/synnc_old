@@ -100,7 +100,6 @@ class SynncTrack: Serializable {
         return id
     }
     class func source(fromData data: JSON) -> SynncExternalSource? {
-        var source : SynncExternalSource!
         if let srcStr = data["source"].string, let src = SynncExternalSource(rawValue: srcStr) {
             return src
         } else {

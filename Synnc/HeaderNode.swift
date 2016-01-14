@@ -87,11 +87,10 @@ class HeaderNode : ASDisplayNode {
     var selectedItem : TabItem! {
         didSet {
             if selectedItem.identifier != oldValue.identifier {
-//                self.updateForItem(selectedItem)
             }
         }
     }
-        override init() {
+    override init() {
         super.init()
         self.alignSelf = .Stretch
         
@@ -116,6 +115,16 @@ class HeaderNode : ASDisplayNode {
         self.addSubnode(separator)
         
         self.backgroundColor = UIColor.whiteColor()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didSetActiveStream:"), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func didSetActiveStream(notification : NSNotification!) {
+        if let _ = notification.object as? Stream {
+            self.nowPlayingIcon.startAnimation()
+        } else {
+            self.nowPlayingIcon.stopAnimation()
+        }
     }
 
     override func layout() {
@@ -133,7 +142,7 @@ class HeaderNode : ASDisplayNode {
     
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
-        self.nowPlayingIcon.startAnimation()
+//        self.nowPlayingIcon.startAnimation()
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let statusSpacer = ASLayoutSpec()

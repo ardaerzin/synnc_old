@@ -20,8 +20,8 @@ class PopController : ASViewController {
         super.init(node: node)
         self.screenNode = node
     }
-        override init(node: ASDisplayNode!) {
-        super.init(node: node)
+    override init(node: ASDisplayNode) {
+       super.init(node: node)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

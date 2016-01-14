@@ -67,39 +67,21 @@ class StreamsFeedController : TabSubsectionController {
         //        self.dataSource = streamManager.streams.sort({ $0.users.count > $1.users.count})
     }
     func updatedFeed(notification: NSNotification) {
-        print("updated feed")
         self.dataSource.refresh = true
         self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
-        
-        //        Async.main {
-//        Async.background {
-//            self.updateDataSource()
-//        }
-        //            print(StreamManager.sharedInstance.userFeed)
-        //            self.streamsCollectionView.reloadData()
-        //        }
     }
 }
 extension StreamsFeedController : ASCollectionDelegate {
-    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView!) -> Bool {
+    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
         return true
     }
-    func collectionView(collectionView: ASCollectionView!, willBeginBatchFetchWithContext context: ASBatchContext!) {
+    func collectionView(collectionView: ASCollectionView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.collectionManager.batchContext = context
     }
-    func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
-        
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         if let stream = self.dataSource.data[indexPath.item] as? Stream {
-            print("did select Item", stream)
             Synnc.sharedInstance.streamNavigationController.displayStream(stream)
         }
-//        Synnc.sharedInstance.streamNavigationController.display()
-        
-//        Synnc.sharedInstance.streamNavigationController.display()
-//        if let rvc = self.rootViewController {
-//            rvc.
-//        }
-        
     }
 }
 extension StreamsFeedController : WCLAsyncCollectionViewDataSourceDelegate {

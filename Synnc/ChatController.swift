@@ -99,29 +99,13 @@ class ChatController : ASViewController {
     }
     var activeState : Bool = false {
         didSet {
-//            if activeState != oldValue {
-                self.stateAnimation.toValue = activeState ? 0 : 1
-                print("did change active state")
+            self.stateAnimation.toValue = activeState ? 0 : 1
             if !activeState {
                 self.chatbar.textNode.resignFirstResponder()
             }
-//            else {
-//                self.screenNode.chatCollection.view.panGestureRecognizer.enabled = true
-//            }
-//            }
         }
     }
     
-    var enabledAnimation : POPBasicAnimation {
-        if let anim = self.chatbar.pop_animationForKey("enabledStateAnimation") as? POPBasicAnimation{
-            return anim
-        } else {
-            let x = POPBasicAnimation(propertyNamed: kPOPLayerTranslationY)
-            x.duration = 0.3
-            self.chatbar.pop_addAnimation(x, forKey: "enabledStateAnimation")
-            return x
-        }
-    }
     var dataSource : ChatRoomDataSource! {
         get {
             if let streamId = self.id {
@@ -135,7 +119,7 @@ class ChatController : ASViewController {
     var isEnabled : Bool = false {
         didSet {
             if isEnabled != oldValue {
-                enabledAnimation.toValue = isEnabled ? -self.chatbar.calculatedSize.height : 0
+                self.chatbar.state = isEnabled
                 if isEnabled {
                     let dataSource = ChatManager.sharedInstance().getChatDataForStream(self.id)
                     dataSource.delegate = self
@@ -181,34 +165,21 @@ class ChatController : ASViewController {
         
     }
     func beginPan(recognizer : UIPanGestureRecognizer){
-        print(self.view.frame)
         initialTouchTopWindowPosition = self.view.frame.origin.y
         self.pop_removeAnimationForKey("inc.stamp.pk.window.progress")
     }
-    //    override func didMoveToParentViewController(parent: UIViewController?) {
-    //        super.didMoveToParentViewController(parent)
-    //        self.transitionProgress = 1
-    //    }
     func updatePan(recognizer : UIPanGestureRecognizer){
         let translation = recognizer.translationInView(UIApplication.sharedApplication().windows.first!)
         
         let yPosition = translation.y
         //            + initialTouchTopWindowPosition
         let x = yPosition / UIScreen.mainScreen().bounds.height
-        
         let y = x
-        print("update pan", y)
-        //        if x < 0 {
-        //            y = x/8
-        //        } else {
-        //        }
         self.stateAnimationProgress = y
     }
     func endPan(recognizer : UIPanGestureRecognizer){
-        print("end pan")
         let v = recognizer.velocityInView(UIApplication.sharedApplication().windows.first!).y / UIScreen.mainScreen().bounds.height
         if self.stateAnimationProgress >  0.5 {
-            
             if v < -2 {
                 self.stateAnimation.velocity = v
                 self.display()
@@ -224,22 +195,13 @@ class ChatController : ASViewController {
                 self.stateAnimation.velocity = v
                 self.display()
             }
-            
         }
     }
     func display(){
         self.activeState = true
-        //
-        //        if let rvc = self.rootViewController {
-        //            statusbarDisplay = rvc.displayStatusBar
-        //            rvc.displayStatusBar = false
-        //        }
     }
     func hide(sender : ButtonNode? = nil){
         self.activeState = false
-        //        if let rvc = self.rootViewController, let tabitem = rvc.displayItem as? TabItemController {
-        //            rvc.displayStatusBar = !tabitem.prefersStatusBarHidden()
-        //        }
     }
     
     
@@ -259,16 +221,11 @@ class ChatController : ASViewController {
         } else {
             isDisplayed = true
         }
-        
-        print("keyboard will change frame", a.finalFrame)
-        
-        
         let translation = isDisplayed ? -CGRectGetHeight(a.finalFrame) - self.chatbar.calculatedSize.height : isEnabled ? -self.chatbar.calculatedSize.height : 0
         POPLayerSetTranslationY(self.chatbar.layer, translation)
         POPLayerSetTranslationY(self.screenNode.collectionHolder.layer, isDisplayed ? -CGRectGetHeight(a.finalFrame) : 0)
     }
     
-//    var headerHeight : CGFloat!
     var msgStr : String! = ""
     
     func configure(stream: Stream) {
@@ -296,10 +253,7 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
                 let ind = table.numberOfRowsInSection(0) - 1
                 if ind >= 0 {
                     let ip = NSIndexPath(forItem: table.numberOfRowsInSection(0) - 1, inSection: 0)
-//                    table.beginUpdates()
                     self.updateHeaderSize(ip)
-                    
-//                    table.endUpdates()
                 }
             }
         })
@@ -312,7 +266,6 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
                 let ip = NSIndexPath(forItem: ind, inSection: 0)
                 if let node = self.screenNode.chatCollection.view.nodeForRowAtIndexPath(ip) as? ChatItemNode {
                     h += node.frame.height
-                    //                    return max(0, tableView.frame.height - (node.frame.height + node.frame.origin.y) )
                 }
             }
             headerHeight = max(0, table.frame.height - h)
@@ -332,26 +285,14 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
     
 }
 extension ChatController : UIGestureRecognizerDelegate {
-//    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        if gestureRecognizer == self.panRecognizer && otherGestureRecognizer == self.screenNode.chatCollection.view.panGestureRecognizer {
-//            print("SECTOOOR")
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer == self.screenNode.chatCollection.view.panGestureRecognizer {
             return true
         }
         return false
     }
-//    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-//        return false
-//    }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == self.panRecognizer && otherGestureRecognizer == self.screenNode.chatCollection.view.panGestureRecognizer {
-            print("SECTOOOR")
             return true
         } else {
             return false
@@ -359,19 +300,19 @@ extension ChatController : UIGestureRecognizerDelegate {
     }
 }
 extension ChatController : ASTableViewDelegate {
-    func shouldBatchFetchForTableView(tableView: ASTableView!) -> Bool {
+    func shouldBatchFetchForTableView(tableView: ASTableView) -> Bool {
         return true
     }
-    func tableView(tableView: ASTableView!, willBeginBatchFetchWithContext context: ASBatchContext!) {
+    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.manager.batchContext = context
     }
-    func tableView(tableView: UITableView!, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if headerHeight == nil {
             headerHeight = tableView.frame.height
         }
         return headerHeight
     }
-    func tableView(tableView: UITableView!, viewForHeaderInSection section: Int) -> UIView! {
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if tableHeader == nil {
             tableHeader = UIView()
         }
@@ -380,10 +321,10 @@ extension ChatController : ASTableViewDelegate {
     
     var scrollAnim : POPBasicAnimation {
         get {
-            if let anim = self.screenNode.chatCollection.view.pop_removeAnimationForKey("scrollAnim") as? POPBasicAnimation {
+            if let anim = self.screenNode.chatCollection.view.pop_animationForKey("scrollAnim") as? POPBasicAnimation {
                 return anim
             } else {
-                var anim = POPBasicAnimation(propertyNamed: kPOPTableViewContentOffset)
+                let anim = POPBasicAnimation(propertyNamed: kPOPTableViewContentOffset)
                 anim.completionBlock = {
                     anim, finished in
                     self.screenNode.chatCollection.view.panGestureRecognizer.enabled = true
@@ -396,29 +337,16 @@ extension ChatController : ASTableViewDelegate {
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        print("did scroll")
-        
         if scrollView == self.screenNode.chatCollection.view {
             let yPos = scrollView.contentOffset.y
             if yPos < -50 {
-                print("sex")
-                if let x = self.screenNode.chatCollection.view as? WCLTableView {
+                if let x = self.screenNode.chatCollection.view {
                     x.programaticScrollEnabled = false
                     
                     scrollView.panGestureRecognizer.enabled = false
                     self.scrollAnim.toValue = NSValue(CGPoint: CGPointMake(0, 0))
                     x.programaticScrollEnabled = true
                 }
-//                scrollView.panGestureRecognizer.enabled = false
-//                var anim = POPBasicAnimation(propertyNamed: kPOPTableViewContentOffset)
-//                anim.completionBlock = {
-//                    anim, finished in
-//                    self.screenNode.chatCollection.view.panGestureRecognizer.enabled = true
-//                    self.screenNode.chatCollection.view.pop_removeAnimationForKey("scrollAnim")
-//                }
-//                self.screenNode.chatCollection.view.pop_addAnimation(anim, forKey: "scrollAnim")
-//                self.scrollAnim.toValue = NSValue(CGPoint: CGPointMake(0, 0))
-//                x.programaticScrollEnabled = false
             }
         }
     }
@@ -430,13 +358,11 @@ extension ChatController : ChatNodeDelegate {
     }
 }
 extension ChatController : ASEditableTextNodeDelegate {
-    func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode!) {
-        print("did begin editing")
+    func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode) {
         self.activeState = true
     }
-    func editableTextNode(editableTextNode: ASEditableTextNode!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if let _ = text.rangeOfString("\n") {
-            print("did hit send", self.msgStr)
             editableTextNode.resignFirstResponder()
             self.newMessage(nil)
             return false
@@ -452,6 +378,58 @@ extension ChatController : ASEditableTextNodeDelegate {
 
 
 class ChatBarNode : ASDisplayNode {
+    
+    var stateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("stateAnimationProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! ChatBarNode).stateAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! ChatBarNode).stateAnimationProgress = values[0]
+                }
+                prop.threshold = 0.001
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var stateAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("stateAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    self.pop_removeAnimationForKey("stateAnimation")
+                }
+                x.springBounciness = 0
+                x.property = self.stateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "stateAnimation")
+                return x
+            }
+        }
+    }
+    var stateAnimationProgress : CGFloat = 1 {
+        didSet {
+            let trans = POPTransition(stateAnimationProgress, startValue: -self.calculatedSize.height, endValue: 0)
+            POPLayerSetTranslationY(self.layer, trans)
+        }
+    }
+    var state : Bool = false {
+        didSet {
+            if state != oldValue {
+                stateAnimation.toValue = state ? 0 : 1
+            }
+        }
+    }
+    
     
     var textNode : ASEditableTextNode!
     var sendButton : ButtonNode!

@@ -12,17 +12,7 @@ import AsyncDisplayKit
 import Cloudinary
 import pop
 
-class PlaylistCellNode : ASCellNode {
-    var imageNode : ASNetworkImageNode!
-    var nameNode : ASTextNode!
-    var trackCountNode : ASTextNode!
-    var imageId : String!
-    
-    var isSelected : Bool = false {
-        didSet {
-            self.cellStateAnimation.toValue = isSelected ? 1 : 0
-        }
-    }
+class SelectablePlaylistCellNode : PlaylistCellNode {
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
         let a = self.cellStateAnimationProgress
@@ -30,7 +20,25 @@ class PlaylistCellNode : ASCellNode {
     }
     var cellStateAnimationProgress : CGFloat = 0 {
         didSet {
-            self.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(cellStateAnimationProgress)
+            self.alpha = POPTransition(cellStateAnimationProgress, startValue: 0.5, endValue: 1)
+            
+            let c = UIColor.SynncColor()
+            let c_rgb = c.rgb()!
+            
+            let r = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: CGFloat(c_rgb.red))
+            let g = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: CGFloat(c_rgb.green))
+            let b = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: CGFloat(c_rgb.blue))
+            
+            let tr = POPTransition(cellStateAnimationProgress, startValue: 125, endValue: CGFloat(c_rgb.red))
+            let tg = POPTransition(cellStateAnimationProgress, startValue: 125, endValue: CGFloat(c_rgb.green))
+            let tb = POPTransition(cellStateAnimationProgress, startValue: 125, endValue: CGFloat(c_rgb.blue))
+            
+            
+            self.nameNode.attributedString = NSAttributedString(string: self.nameNode.attributedString!.string, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)])
+            self.trackCountNode.attributedString = NSAttributedString(string: self.trackCountNode.attributedString!.string, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor(red: tr/255, green: tg/255, blue: tb/255, alpha: 0.41)])
+            
+//            UIColor(red: 87/255, green: 87/255, blue: 87/255, alpha: 1)
+//            self.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(cellStateAnimationProgress)
         }
     }
     var cellStateAnimatableProperty : POPAnimatableProperty {
@@ -41,11 +49,11 @@ class PlaylistCellNode : ASCellNode {
                 
                 prop.readBlock = {
                     obj, values in
-                    values[0] = (obj as! PlaylistCellNode).cellStateAnimationProgress
+                    values[0] = (obj as! SelectablePlaylistCellNode).cellStateAnimationProgress
                 }
                 prop.writeBlock = {
                     obj, values in
-                    (obj as! PlaylistCellNode).cellStateAnimationProgress = values[0]
+                    (obj as! SelectablePlaylistCellNode).cellStateAnimationProgress = values[0]
                 }
                 prop.threshold = 0.001
             }) as! POPAnimatableProperty
@@ -72,6 +80,19 @@ class PlaylistCellNode : ASCellNode {
         }
     }
     
+    var isSelected : Bool = false {
+        didSet {
+            self.cellStateAnimation.toValue = isSelected ? 1 : 0
+        }
+    }
+}
+
+class PlaylistCellNode : ASCellNode {
+    var imageNode : ASNetworkImageNode!
+    var nameNode : ASTextNode!
+    var trackCountNode : ASTextNode!
+    var imageId : String!
+    
     override func fetchData() {
         super.fetchData()
         
@@ -82,10 +103,9 @@ class PlaylistCellNode : ASCellNode {
         
         if let id = self.imageId, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             self.imageNode.URL = url
-            print(url)
         }
     }
-        override init() {
+    override init() {
         super.init()
         
         self.imageNode = ASNetworkImageNode(webImage: ())

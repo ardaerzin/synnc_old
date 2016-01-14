@@ -33,16 +33,11 @@ extension SynncTrack {
         
         var u = json["user"]
         if u.null == nil {
-            // Soundcloud only has 1 artist, which is the user
             let artist = SynncArtist.create(u.object, source: .Soundcloud)
             self.artists = [artist]
         }
         if let artwork = json["artwork_url"].string {
             self.artwork_url = WildSoundCloud.appendAccessToken(artwork)
-        }
-        if let url = json["stream_url"].string {
-            let urlString = WildSoundCloud.appendAccessToken(url)
-//            self.streamUrl = urlString
         }
     }
 }

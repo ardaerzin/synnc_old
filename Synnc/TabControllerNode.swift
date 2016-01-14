@@ -70,9 +70,6 @@ class TabControllerNode : ASDisplayNode {
         spacer.flexGrow = true
         
         self.contentHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        
-        let subsectionCount = item != nil ? item.subsections.count : 0
-//        self.scrollNode.view.contentSize = CGSizeMake(constrainedSize.max.width * CGFloat(subsectionCount), constrainedSize.max.height)
         return ASStaticLayoutSpec(children: [self.tabbar, self.contentHolder])
     }
 }

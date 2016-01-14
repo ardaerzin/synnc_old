@@ -573,11 +573,7 @@ class BackgroundNode : ASDisplayNode {
     var logoHolder : AnimatedLogoNode!
     var titleNode : ASTextNode!
     
-    deinit {
-//        print("deinit background node")
-    }
-    
-        override init() {
+    override init() {
         super.init()
         
         self.logoHolder = AnimatedLogoNode(barCount: 15)

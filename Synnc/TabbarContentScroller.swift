@@ -97,15 +97,13 @@ class TabbarContentScroller : ASScrollNode {
         }
         self.pages = []
         
-        for (index,ss) in item.subsections.enumerate() {
-            if let vc = ss as? TabSubsectionController {
-                controller.addChildViewController(vc)
-                let a = vc.screenNode
-                vc.view.frame.size = self.view.bounds.size
-                self.addSubnode(a)
-                self.pages.append(a)
-                vc.didMoveToParentViewController(controller)
-            }
+        for (_,vc) in item.subsections.enumerate() {
+            controller.addChildViewController(vc)
+            let a = vc.screenNode
+            vc.view.frame.size = self.view.bounds.size
+            self.addSubnode(a)
+            self.pages.append(a)
+            vc.didMoveToParentViewController(controller)
         }
         self.currentIndex = item.selectedIndex
     }

@@ -277,9 +277,6 @@
 		475286E41C37372300731008 /* WCLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 475286E31C37372300731008 /* WCLScrollNode.m */; };
 		475286E61C3737D900731008 /* WCLScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286E51C3737D900731008 /* WCLScrollView.swift */; };
 		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
-		477705161C3CAAF7007089D0 /* NHNetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4777050F1C3CAAF7007089D0 /* NHNetAssociation.m */; };
-		477705171C3CAAF7007089D0 /* NHNetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 477705111C3CAAF7007089D0 /* NHNetworkClock.m */; };
-		477705181C3CAAF7007089D0 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 477705151C3CAAF7007089D0 /* NSDate+NetworkClock.m */; };
 		4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705191C3DB7E9007089D0 /* StreamContentNode.swift */; };
 		4777051C1C3DC581007089D0 /* StreamViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777051B1C3DC581007089D0 /* StreamViewNode.swift */; };
 		4777051E1C3DC5EA007089D0 /* ListenerCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */; };
@@ -349,6 +346,12 @@
 		47B37B871C2F169B001CC6D2 /* TitleColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B861C2F169B001CC6D2 /* TitleColorButton.swift */; };
 		47B37B891C2F21D1001CC6D2 /* PlaylistNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B881C2F21D1001CC6D2 /* PlaylistNode.swift */; };
 		47B37B8B1C2F791C001CC6D2 /* MeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B8A1C2F791C001CC6D2 /* MeNode.swift */; };
+		47B899BA1C459EE0007C2B7F /* addPlaylist.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B71C459EE0007C2B7F /* addPlaylist.png */; };
+		47B899BB1C459EE0007C2B7F /* addPlaylist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */; };
+		47B899BC1C459EE0007C2B7F /* addPlaylist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */; };
+		47B899C61C485421007C2B7F /* NHNetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 47B899BF1C485421007C2B7F /* NHNetAssociation.m */; };
+		47B899C71C485421007C2B7F /* NHNetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 47B899C11C485421007C2B7F /* NHNetworkClock.m */; };
+		47B899C81C485421007C2B7F /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 47B899C51C485421007C2B7F /* NSDate+NetworkClock.m */; };
 		47C8F97C1C1CCA8A00333492 /* PlaylistsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8F97B1C1CCA8A00333492 /* PlaylistsDataSource.swift */; };
 		47C8F97E1C1CCF8B00333492 /* MyPlaylistsEmptyStateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8F97D1C1CCF8B00333492 /* MyPlaylistsEmptyStateNode.swift */; };
 		47C8F9811C1CD03900333492 /* MyPlaylistsNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8F9801C1CD03900333492 /* MyPlaylistsNode.swift */; };
@@ -689,14 +692,6 @@
 		475286E31C37372300731008 /* WCLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLScrollNode.m; sourceTree = "<group>"; };
 		475286E51C3737D900731008 /* WCLScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCLScrollView.swift; sourceTree = "<group>"; };
 		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
-		4777050E1C3CAAF7007089D0 /* NHNetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetAssociation.h; sourceTree = "<group>"; };
-		4777050F1C3CAAF7007089D0 /* NHNetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NHNetAssociation.m; sourceTree = "<group>"; };
-		477705101C3CAAF7007089D0 /* NHNetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetworkClock.h; sourceTree = "<group>"; };
-		477705111C3CAAF7007089D0 /* NHNetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NHNetworkClock.m; sourceTree = "<group>"; };
-		477705121C3CAAF7007089D0 /* NHNetworkTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetworkTime.h; sourceTree = "<group>"; };
-		477705131C3CAAF7007089D0 /* NHNTLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNTLog.h; sourceTree = "<group>"; };
-		477705141C3CAAF7007089D0 /* NSDate+NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NetworkClock.h"; sourceTree = "<group>"; };
-		477705151C3CAAF7007089D0 /* NSDate+NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NetworkClock.m"; sourceTree = "<group>"; };
 		477705191C3DB7E9007089D0 /* StreamContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamContentNode.swift; sourceTree = "<group>"; };
 		4777051B1C3DC581007089D0 /* StreamViewNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewNode.swift; sourceTree = "<group>"; };
 		4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListenerCellNode.swift; sourceTree = "<group>"; };
@@ -772,6 +767,17 @@
 		47B37B861C2F169B001CC6D2 /* TitleColorButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleColorButton.swift; sourceTree = "<group>"; };
 		47B37B881C2F21D1001CC6D2 /* PlaylistNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistNode.swift; sourceTree = "<group>"; };
 		47B37B8A1C2F791C001CC6D2 /* MeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeNode.swift; sourceTree = "<group>"; };
+		47B899B71C459EE0007C2B7F /* addPlaylist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPlaylist.png; sourceTree = "<group>"; };
+		47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@2x.png"; sourceTree = "<group>"; };
+		47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@3x.png"; sourceTree = "<group>"; };
+		47B899BE1C485421007C2B7F /* NHNetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetAssociation.h; sourceTree = "<group>"; };
+		47B899BF1C485421007C2B7F /* NHNetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NHNetAssociation.m; sourceTree = "<group>"; };
+		47B899C01C485421007C2B7F /* NHNetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetworkClock.h; sourceTree = "<group>"; };
+		47B899C11C485421007C2B7F /* NHNetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NHNetworkClock.m; sourceTree = "<group>"; };
+		47B899C21C485421007C2B7F /* NHNetworkTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetworkTime.h; sourceTree = "<group>"; };
+		47B899C31C485421007C2B7F /* NHNTLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNTLog.h; sourceTree = "<group>"; };
+		47B899C41C485421007C2B7F /* NSDate+NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NetworkClock.h"; sourceTree = "<group>"; };
+		47B899C51C485421007C2B7F /* NSDate+NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NetworkClock.m"; sourceTree = "<group>"; };
 		47C8F97B1C1CCA8A00333492 /* PlaylistsDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistsDataSource.swift; sourceTree = "<group>"; };
 		47C8F97D1C1CCF8B00333492 /* MyPlaylistsEmptyStateNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPlaylistsEmptyStateNode.swift; sourceTree = "<group>"; };
 		47C8F9801C1CD03900333492 /* MyPlaylistsNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPlaylistsNode.swift; sourceTree = "<group>"; };
@@ -984,6 +990,9 @@
 		472CB2FB1C41BDC000F82523 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				47B899B71C459EE0007C2B7F /* addPlaylist.png */,
+				47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */,
+				47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */,
 				472CB2FC1C41BDC000F82523 /* accounts-large.png */,
 				472CB2FD1C41BDC000F82523 /* accounts-large@2x.png */,
 				472CB2FE1C41BDC000F82523 /* accounts-large@3x.png */,
@@ -1211,21 +1220,6 @@
 			path = ../Assets;
 			sourceTree = "<group>";
 		};
-		4777050D1C3CAAF7007089D0 /* NHNetworkTime */ = {
-			isa = PBXGroup;
-			children = (
-				4777050E1C3CAAF7007089D0 /* NHNetAssociation.h */,
-				4777050F1C3CAAF7007089D0 /* NHNetAssociation.m */,
-				477705101C3CAAF7007089D0 /* NHNetworkClock.h */,
-				477705111C3CAAF7007089D0 /* NHNetworkClock.m */,
-				477705121C3CAAF7007089D0 /* NHNetworkTime.h */,
-				477705131C3CAAF7007089D0 /* NHNTLog.h */,
-				477705141C3CAAF7007089D0 /* NSDate+NetworkClock.h */,
-				477705151C3CAAF7007089D0 /* NSDate+NetworkClock.m */,
-			);
-			path = NHNetworkTime;
-			sourceTree = "<group>";
-		};
 		4777052A1C3EB62D007089D0 /* StreamsFeed */ = {
 			isa = PBXGroup;
 			children = (
@@ -1261,6 +1255,7 @@
 		47A4E67B1C0CAE6100354EA8 /* Synnc */ = {
 			isa = PBXGroup;
 			children = (
+				47B899BD1C485421007C2B7F /* NHNetworkTime */,
 				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
 				4712B63A1C11149800C49522 /* Utilities.swift */,
 				47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */,
@@ -1271,7 +1266,6 @@
 				472CB2F71C413FF900F82523 /* WCLTableNode.m */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
-				4777050D1C3CAAF7007089D0 /* NHNetworkTime */,
 				4728F94D1C34D13D00B427EA /* StreamRelated */,
 				47EBDF841C1BD89D0075CF0B /* Data Model */,
 				47EBDF831C1BD8860075CF0B /* User Related */,
@@ -1457,6 +1451,21 @@
 				47B37B841C2F159F001CC6D2 /* ParallaxContentNode.swift */,
 			);
 			name = ParallaxNode;
+			sourceTree = "<group>";
+		};
+		47B899BD1C485421007C2B7F /* NHNetworkTime */ = {
+			isa = PBXGroup;
+			children = (
+				47B899BE1C485421007C2B7F /* NHNetAssociation.h */,
+				47B899BF1C485421007C2B7F /* NHNetAssociation.m */,
+				47B899C01C485421007C2B7F /* NHNetworkClock.h */,
+				47B899C11C485421007C2B7F /* NHNetworkClock.m */,
+				47B899C21C485421007C2B7F /* NHNetworkTime.h */,
+				47B899C31C485421007C2B7F /* NHNTLog.h */,
+				47B899C41C485421007C2B7F /* NSDate+NetworkClock.h */,
+				47B899C51C485421007C2B7F /* NSDate+NetworkClock.m */,
+			);
+			path = NHNetworkTime;
 			sourceTree = "<group>";
 		};
 		47C8F97A1C1CA25100333492 /* Playlist */ = {
@@ -1854,6 +1863,7 @@
 				472CB4911C41BDC100F82523 /* spotify_active.png in Resources */,
 				472CB4601C41BDC100F82523 /* play@3x.png in Resources */,
 				472CB4391C41BDC100F82523 /* library-music@3x.png in Resources */,
+				47B899BA1C459EE0007C2B7F /* addPlaylist.png in Resources */,
 				472CB4761C41BDC100F82523 /* search_icon.png in Resources */,
 				472CB42E1C41BDC100F82523 /* Home.png in Resources */,
 				472CB4B61C41BDC100F82523 /* youtube_inactive@2x.png in Resources */,
@@ -1871,6 +1881,7 @@
 				472CB43A1C41BDC100F82523 /* location-icon.png in Resources */,
 				47A4E6B71C0CB83E00354EA8 /* SoundcloudApp.plist in Resources */,
 				472CB3FE1C41BDC100F82523 /* chevron-down.png in Resources */,
+				47B899BC1C459EE0007C2B7F /* addPlaylist@3x.png in Resources */,
 				472CB3E41C41BDC100F82523 /* add_playlist@2x.png in Resources */,
 				472CB3F21C41BDC100F82523 /* check-mark-medium-white.png in Resources */,
 				472CB3DA1C41BDC100F82523 /* accounts-large.png in Resources */,
@@ -2040,6 +2051,7 @@
 				47A4E6F11C0CC6E100354EA8 /* FuturaBookMas.ttf in Resources */,
 				472CB3E71C41BDC100F82523 /* calendar@2x.png in Resources */,
 				472CB3F81C41BDC100F82523 /* checkbox-circle-outline.png in Resources */,
+				47B899BB1C459EE0007C2B7F /* addPlaylist@2x.png in Resources */,
 				472CB4351C41BDC100F82523 /* imageGradient@2x.png in Resources */,
 				47A4E6EF1C0CC6E100354EA8 /* FuturaBoldMas.ttf in Resources */,
 				47A4E6F51C0CC6E100354EA8 /* FuturaHeaMas.ttf in Resources */,
@@ -2239,6 +2251,7 @@
 				4728F94A1C34494000B427EA /* WildUser+SpotifyUser.swift in Sources */,
 				4728F9471C343AD600B427EA /* SettingsNode.swift in Sources */,
 				47B37B7A1C2F044E001CC6D2 /* WildTransitioning.swift in Sources */,
+				47B899C61C485421007C2B7F /* NHNetAssociation.m in Sources */,
 				471834271C18893C005C9533 /* SubsectionSelectorNode.swift in Sources */,
 				4728F9401C3194B200B427EA /* PopoverNode.swift in Sources */,
 				4718343E1C1B3DDD005C9533 /* MeController.swift in Sources */,
@@ -2274,7 +2287,6 @@
 				47D763701C39FEBF008E0334 /* StreamLoadingNode.swift in Sources */,
 				47EBDF801C1BBBEB0075CF0B /* StreamsFeedController.swift in Sources */,
 				47EBDF7C1C1BBBD30075CF0B /* SearchUsersController.swift in Sources */,
-				477705161C3CAAF7007089D0 /* NHNetAssociation.m in Sources */,
 				47EBDF9A1C1BE1470075CF0B /* SynncArtist.swift in Sources */,
 				4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */,
 				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
@@ -2287,6 +2299,7 @@
 				47C8F9A51C261AE400333492 /* PlaylistTableCell.swift in Sources */,
 				477705201C3DC8E5007089D0 /* StreamUsersDataSource.swift in Sources */,
 				47C8F9A01C243BC900333492 /* PlaylistCellNode.swift in Sources */,
+				47B899C81C485421007C2B7F /* NSDate+NetworkClock.m in Sources */,
 				4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */,
 				471834231C187F59005C9533 /* HeaderNode.swift in Sources */,
 				477705221C3DF4F6007089D0 /* ChatController.swift in Sources */,
@@ -2312,7 +2325,6 @@
 				47C8F97C1C1CCA8A00333492 /* PlaylistsDataSource.swift in Sources */,
 				475286E61C3737D900731008 /* WCLScrollView.swift in Sources */,
 				4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */,
-				477705181C3CAAF7007089D0 /* NSDate+NetworkClock.m in Sources */,
 				47A4E7091C0D0BB600354EA8 /* ButtonNode.swift in Sources */,
 				471834291C199AEF005C9533 /* TabbarContentScroller.swift in Sources */,
 				47EBDF881C1BD8A80075CF0B /* Genre.swift in Sources */,
@@ -2323,10 +2335,10 @@
 				4728F9451C31D37300B427EA /* InboxItemNode.swift in Sources */,
 				4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */,
 				475286DB1C359E1900731008 /* StreamManager.swift in Sources */,
-				477705171C3CAAF7007089D0 /* NHNetworkClock.m in Sources */,
 				475286DD1C35A22E00731008 /* StreamViewController.swift in Sources */,
 				4777051C1C3DC581007089D0 /* StreamViewNode.swift in Sources */,
 				47C8F9901C20555B00333492 /* SynncTrack.swift in Sources */,
+				47B899C71C485421007C2B7F /* NHNetworkClock.m in Sources */,
 				47D763781C3A283B008E0334 /* PlayerSyncManager.swift in Sources */,
 				4786A6141C28A12100E1D03E /* TrackTransformer.swift in Sources */,
 			);
@@ -2397,10 +2409,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					/Users/ardaerzin/Documents/FacebookSDK,
-					/Users/doguhano/Documents/FacebookSDK,
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Documents/FacebookSDK";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2446,10 +2455,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					/Users/ardaerzin/Documents/FacebookSDK,
-					/Users/doguhano/Documents/FacebookSDK,
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Documents/FacebookSDK";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2473,10 +2479,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Synnc",
-					/Users/ardaerzin/Documents/FacebookSDK,
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Synnc/Info.plist;
@@ -2583,7 +2589,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Synnc",
-					/Users/ardaerzin/Documents/FacebookSDK,
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Synnc/Info.plist;

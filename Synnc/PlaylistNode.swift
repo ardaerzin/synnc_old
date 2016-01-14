@@ -70,8 +70,11 @@ class PlaylistNode : ParallaxNode {
     
     func updateTrackCount(){
         var countString : String = "0 Tracks"
+        
         if let p = self.playlist {
             countString = "\(p.songs.count) Tracks"
+        } else {
+            print("YOKH PLAYLIST")
         }
         countTextNode.attributedString = NSAttributedString(string: countString, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.26)])
         self.setNeedsLayout()
@@ -120,7 +123,6 @@ class PlaylistNode : ParallaxNode {
         self.imageNode.enabled = false
         
         self.view.addSubview(self.titleShimmer)
-//        self.addSubnode(playlistTitleNode)
         self.addSubnode(countTextNode)
     }
     

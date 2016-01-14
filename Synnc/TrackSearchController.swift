@@ -102,7 +102,7 @@ class TrackSearchController : ASViewController {
 }
 
 extension TrackSearchController : ASEditableTextNodeDelegate {
-    func editableTextNode(editableTextNode: ASEditableTextNode!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         
         if let _ = text.rangeOfString("\n") {
             return false
@@ -195,9 +195,9 @@ extension TrackSearchController {
     
     func searchSpotify(str: String, timeStamp: NSDate) {
         
-        let types : [EntityType] = [.Track, .Artist]
+//        let types : [EntityType] = [.Track, .Artist]
         
-        for type in types {
+//        for type in types {
 //            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
 //                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
 //                    if let sptshit = data as? SPTListPage {
@@ -213,7 +213,7 @@ extension TrackSearchController {
 //                    }
 //                }
 //            }
-        }
+//        }
     }
     func searchSoundcloud(str: String, timeStamp: NSDate){
         if str == "" {

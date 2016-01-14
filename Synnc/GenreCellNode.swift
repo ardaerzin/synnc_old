@@ -19,7 +19,6 @@ class GenreCellNode : ASCellNode {
             let r = POPTransition(cellStateAnimationProgress, startValue: CGFloat(UIColor.SynncColor().rgb()!.red), endValue: CGFloat(UIColor.whiteColor().rgb()!.red))
             let g = POPTransition(cellStateAnimationProgress, startValue: CGFloat(UIColor.SynncColor().rgb()!.green), endValue: CGFloat(UIColor.whiteColor().rgb()!.green))
             let b = POPTransition(cellStateAnimationProgress, startValue: CGFloat(UIColor.SynncColor().rgb()!.blue), endValue: CGFloat(UIColor.whiteColor().rgb()!.blue))
-            let attr = genreTitleNode.attributedString
             self.titleAttributes[NSForegroundColorAttributeName] = UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)
             
             self.genreTitleNode.attributedString = NSAttributedString(string: self.genreTitleNode.attributedString!.string, attributes: self.titleAttributes)

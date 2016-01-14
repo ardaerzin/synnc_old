@@ -126,8 +126,8 @@ class InboxItemNode : ASCellNode {
         self.addSubnode(readIndicator)
     }
     func configureForNotification(notification : SynncNotification) {
-        var mutableStr : NSMutableAttributedString = NSMutableAttributedString(string: notification.msg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 1)])
-            (mutableStr.string as! NSString)
+        let mutableStr : NSMutableAttributedString = NSMutableAttributedString(string: notification.msg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 1)])
+            (mutableStr.string as NSString)
         let range = (mutableStr.string as NSString).rangeOfString("((?:^|\\s)(?:@){1}[0-9a-zA-Z_]{1,15})", options: .RegularExpressionSearch)
         if range.length > 0 {
             mutableStr.addAttributes([NSForegroundColorAttributeName : UIColor.SynncColor()], range: range)
@@ -146,8 +146,6 @@ class InboxItemNode : ASCellNode {
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [msgNode, timeStampNode])
         a.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (31 + 50))
         a.spacingBefore = 31
-        
-//        a.spacingAfter = 10
         
         let b = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [a, ASStaticLayoutSpec(children: [readIndicator])])
         return b

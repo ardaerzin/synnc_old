@@ -131,7 +131,7 @@ class AnimatedLogoNode : ASDisplayNode {
         }
     }
     func stopAnimation() {
-        for (index,bar) in bars.enumerate() {
+        for bar in bars {
             bar.isAnimating = false
         }
 

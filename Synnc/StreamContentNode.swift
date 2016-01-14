@@ -64,20 +64,20 @@ class StreamContentNode : ASScrollNode {
     
     
     var headerNode : StreamTitleNode!
-    var connectedUsersNode : StreamListenersNode!
+    var connectedUsersNode : StreamUsersNode!
     
     override func layoutDidFinish() {
         super.layoutDidFinish()
         self.view.contentSize = CGSizeMake(self.calculatedSize.width, headerNode.calculatedSize.height)
     }
-        override init() {
+    init(usersNode : StreamUsersNode) {
         super.init()
         
         headerNode = StreamTitleNode()
         headerNode.alignSelf = .Stretch
         headerNode.spacingBefore = 20
         
-        connectedUsersNode = StreamListenersNode()
+        connectedUsersNode = usersNode
         connectedUsersNode.alignSelf = .Stretch
         
         self.addSubnode(headerNode)
@@ -178,68 +178,4 @@ class StreamSourcesNode : ASDisplayNode {
         return ASStackLayoutSpec(direction: .Horizontal, spacing: 7, justifyContent: .End, alignItems: .End, children: specs)
     }
     
-}
-
-class StreamListenersNode : ASDisplayNode {
-    
-    var listenersCollection : ASCollectionNode!
-    var titleNode : ASTextNode!
-    var data : [AnyObject] = []
-    var noListenersText : ASTextNode!
-    
-    var emptyState : Bool = true {
-        didSet {
-            if emptyState != oldValue {
-                print("didSet empty state:", emptyState)
-                emptyStateAnimation.toValue = emptyState ? 1 : 0
-            }
-        }
-    }
-    var emptyStateAnimation : POPBasicAnimation {
-        get {
-            if let anim = self.noListenersText.pop_animationForKey("emptyStateAnimation") {
-                return anim as! POPBasicAnimation
-            } else {
-                let x = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-                x.duration = 0.3
-                self.noListenersText.pop_addAnimation(x, forKey: "emptyStateAnimation")
-                return x
-            }
-        }
-    }
-        override init() {
-        super.init()
-    
-        titleNode = ASTextNode()
-        titleNode.attributedString = NSAttributedString(string: "People Connected:", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 124/255, green: 124/255, blue: 124/255, alpha: 1), NSKernAttributeName : -0.1])
-        
-        noListenersText = ASTextNode()
-        noListenersText.attributedString = NSAttributedString(string: "Share your stream and get listeners", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 124/255, green: 124/255, blue: 124/255, alpha: 1), NSKernAttributeName : -0.1])
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .Horizontal
-//        layout.minimumLineSpacing = 0
-//        layout.minimumInteritemSpacing = 0
-//        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        listenersCollection = ASCollectionNode(collectionViewLayout: layout)
-        listenersCollection.alignSelf = .Stretch
-        listenersCollection.flexBasis = ASRelativeDimension(type: .Points, value: 40)
-        
-        
-        self.addSubnode(titleNode)
-        self.addSubnode(listenersCollection)
-        self.addSubnode(noListenersText)
-    }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let overlaySpec = ASOverlayLayoutSpec(child: self.listenersCollection, overlay: ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: noListenersText))
-        overlaySpec.alignSelf = .Stretch
-        overlaySpec.flexBasis = ASRelativeDimension(type: .Points, value: 40)
-        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Start, alignItems: .Start, children: [self.titleNode, overlaySpec])
-        
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25), child: vStack)
-    }
-    
-    func update(stream: Stream) {
-        self.data = stream.users
-    }
 }

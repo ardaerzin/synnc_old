@@ -35,14 +35,17 @@ class StreamViewController : ASViewController {
         self.chatController.configure(stream)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("updatedStream:"), name: "UpdatedStream", object: stream)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("setActiveStream:"), name: "DidSetActiveStream", object: stream)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("checkActiveStream:"), name: "DidSetActiveStream", object: stream)
         
+        self.checkActiveStream(nil)
     }
+    
     var createController : StreamCreateController!
     
     init(stream : Stream?){
         let chatController = ChatController()
-        let node = StreamViewNode(chatNode: chatController.node, chatbar : chatController.chatbar)
+        let node = StreamViewNode(chatNode: chatController.node, chatbar : chatController.chatbar, content: StreamContentNode(usersNode: listenersController.screenNode))
+        
         super.init(node: node)
         self.chatController = chatController
         node.delegate = self
@@ -66,6 +69,9 @@ class StreamViewController : ASViewController {
             node.updateForState(createController)
         } else {
             node.updateForState(stream: stream)
+            self.updateUsers(stream!)
+//            StreamManager.sharedInstance.player.delegate = self
+            
             self.configure(stream!)
         }
         
@@ -79,10 +85,14 @@ class StreamViewController : ASViewController {
         }
     }
     func toggleStreamStatus(sender : TitleColorButton){
-        print("toggle stream status")
+        if sender.selected {
+            return
+        }
         StreamManager.sharedInstance.joinStream(self.stream!) {
             success in
-            print("Zbaaam", success)
+            if success {
+//                StreamManager.sharedInstance.player.delegate = self
+            }
         }
     }
     override func viewDidLoad() {
@@ -166,12 +176,9 @@ extension StreamViewController : StreamerDelegate {
 //        print("STREAMER: Updated Preview Position:", position)
     }
     func streamer(streamer: WildPlayer!, updatedRate rate: Float) {
-        
         if let bg = self.screenNode.mainScrollNode.backgroundNode as? StreamBackgroundNode {
             bg.playingState = rate == 1 ? true : false
         }
-        
-//        print("STREAMER: Updated Rate:",rate)
     }
     func streamer(streamer: WildPlayer!, updatedPreviewStatus status: Bool) {
 //        print("STREAMER: Updated Preview Status:", status)
@@ -184,10 +191,18 @@ extension StreamViewController : StreamerDelegate {
     }
 }
 extension StreamViewController : StreamCreateControllerDelegate {
-    func setActiveStream(notification: NSNotification){
-        if let s = self.stream, let st = notification.object as? Stream where s == st {
+    func checkActiveStream(notification: NSNotification!){
+        if let s = self.stream, let st = StreamManager.sharedInstance.activeStream where s == st {
+            (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).state = StreamBackgroundNodeState.Play
             self.chatController.isEnabled = true
+            
+            StreamManager.sharedInstance.player.delegate = self
+            
+            if let bg = self.screenNode.mainScrollNode.backgroundNode as? StreamBackgroundNode {
+                bg.playingState = StreamManager.sharedInstance.player.rate == 1 ? true : false
+            }
         } else {
+            (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).state = StreamBackgroundNodeState.ReadyToPlay
             self.chatController.isEnabled = false
         }
     }
@@ -195,27 +210,25 @@ extension StreamViewController : StreamCreateControllerDelegate {
         if let keys = notification.userInfo?["updatedKeys"] as? [String]{
             Async.main {
                 if let stream = notification.object as? Stream {
-                    if let uind = keys.indexOf("users") {
-                        print("updated users", stream.users)
-                        self.listenersController.update(stream.users)
-                        self.screenNode.contentNode.connectedUsersNode.emptyState = stream.users.isEmpty
+                    if let _ = keys.indexOf("users") {
+                        self.updateUsers(stream)
                     }
-                    if let tind = keys.indexOf("currentSongIndex"), let ind = stream.currentSongIndex as? Int where stream != StreamManager.sharedInstance.activeStream {
-                        print("updated current song index for non active stream")
-                        let song = stream.playlist.songs[ind]
-                        if let bg = self.screenNode.mainScrollNode.backgroundNode as? StreamBackgroundNode {
-                            bg.updateForTrack(song)
-                        }
-                        
+                    if let _ = keys.indexOf("currentSongIndex") {
+                        self.updateTrack(stream)
                     }
                 }
-//                if (self.stream == RadioHunt.streamManager.userStream && keys.indexOf("status") != nil) || (self.stream == RadioHunt.streamManager.activeStream && keys.indexOf("users") != nil) {
-//                    self.updateStatusUI()
-//                }
-//                if keys.indexOf("playlist") != nil || keys.indexOf("currentSongIndex") != nil {
-//                    self.reloadSongUI()
-//                }
-//                self.infoPager.reload(keys)
+            }
+        }
+    }
+    internal func updateUsers(stream : Stream){
+        self.listenersController.update(stream)
+        self.screenNode.contentNode.connectedUsersNode.emptyState = stream.users.isEmpty
+    }
+    internal func updateTrack(stream : Stream){
+        if let ind = stream.currentSongIndex {
+            let song = stream.playlist.songs[ind as Int]
+            if let bg = self.screenNode.mainScrollNode.backgroundNode as? StreamBackgroundNode {
+                bg.updateForTrack(song)
             }
         }
     }
@@ -225,7 +238,6 @@ extension StreamViewController : StreamCreateControllerDelegate {
         self.stream = stream
         if StreamManager.canSetActiveStream(self.stream!) {
             if self.stream == StreamManager.sharedInstance.userStream {
-                StreamManager.sharedInstance.player.delegate = self
                 StreamManager.setActiveStream(self.stream!)
                 StreamManager.playStream(self.stream!)
             }
@@ -258,20 +270,18 @@ extension StreamViewController : UIGestureRecognizerDelegate {
 }
 extension StreamViewController : ParallaxContentScrollerDelegate {
     func scrollViewDidScroll(scroller: ParallaxContentScroller, position: CGFloat) {
-        if let p = self.parentViewController as? StreamNavigationController where position <= -50 {
+        if let _ = self.parentViewController as? StreamNavigationController where position <= -50 {
             if let s = scroller.view {
                 s.programaticScrollEnabled = false
                 scroller.view.panGestureRecognizer.enabled = false
                 s.programaticScrollEnabled = true
 
-                var animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
+                let animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
                 scroller.view.pop_addAnimation(animation, forKey: "offsetAnim")
                 animation.toValue = NSValue(CGPoint: CGPoint(x: 0, y: 0))
             }
         } else {
             scroller.view.panGestureRecognizer.enabled = true
         }
-        
-//        self.screenNode.mainScrollNode.backgroundNode.updateScrollPositions(position)
     }
 }

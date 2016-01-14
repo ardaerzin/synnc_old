@@ -212,9 +212,10 @@ extension MeController {
 
 extension MeController {
     func tryUserUpdate() {
-        if let newUsername = self.editedUsername {
+        
+//        if let newUsername = self.editedUsername {
 //            Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "username" : newUsername])
-        }
+//        }
         
         if let newImage = self.editedImage {
             Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)

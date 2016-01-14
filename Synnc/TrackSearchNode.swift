@@ -45,7 +45,6 @@ class SourceButton : ButtonNode {
         
         super.init()
         self.source = source
-        print(source.rawValue)
         let normalImage = UIImage(named: source.rawValue.lowercaseString + "_inactive")!
         let selectedImage = UIImage(named: source.rawValue.lowercaseString + "_active")!
         

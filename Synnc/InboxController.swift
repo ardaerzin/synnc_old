@@ -33,7 +33,7 @@ class InboxDataSource : WCLAsyncTableViewDataSource {
     }
     
     func loadData(){
-        var data = [
+        let data = [
             SynncNotification(msg: "I arrived in America's @airport with clothings, US dollars, and a jar of gypsy tears to protect me from AIDS."),
             SynncNotification(msg: "I arrived in America's @airport with clothings, US dollars, and a jar of gypsy tears to protect me from AIDS."),
             SynncNotification(msg: "I arrived in America's airport with clothings, US dollars, and a jar of gypsy tears to protect me from AIDS."),
@@ -80,11 +80,11 @@ extension InboxController : WCLAsyncTableViewDataSourceDelegate {
     }
 }
 extension InboxController : ASTableViewDelegate {
-    func tableView(tableView: ASTableView!, willBeginBatchFetchWithContext context: ASBatchContext!) {
+    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.inboxManager.batchContext = context
         self.dataSource.loadData()
     }
-    func shouldBatchFetchForTableView(tableView: ASTableView!) -> Bool {
+    func shouldBatchFetchForTableView(tableView: ASTableView) -> Bool {
         return true
     }
 }

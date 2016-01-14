@@ -12,7 +12,7 @@ import AsyncDisplayKit
 import Cloudinary
 
 class StreamFeedDataSource : WCLAsyncCollectionViewDataSource {
-    override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode {
+    override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = StreamFeedNode()
         if let stream = self.data[indexPath.item] as? Stream {
             node.configure(stream)
@@ -47,11 +47,6 @@ class StreamFeedNode : ASCellNode {
         self.addSubnode(imageNode)
         self.addSubnode(streamInfoNode)
         self.addSubnode(genresNode)
-        
-//        titleNode = ASTextNode()
-//        titleNode.attributedString = NSAttributedString(string: "SEX", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
-//        
-//        self.addSubnode(titleNode)
     }
     
     override func fetchData() {
@@ -95,7 +90,6 @@ class StreamFeedNode : ASCellNode {
     override func layout() {
         super.layout()
         
-        print(self.imageNode.calculatedSize, self.genresNode.calculatedSize)
         self.genresNode.position.y = self.imageNode.calculatedSize.height - 5 - self.genresNode.calculatedSize.height / 2
         self.genresNode.position.x = self.imageNode.calculatedSize.width - 5 - self.genresNode.calculatedSize.width / 2 + 25
     }

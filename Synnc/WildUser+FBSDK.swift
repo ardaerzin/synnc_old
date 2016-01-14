@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bolts
 import FBSDKCoreKit
 import FBSDKLoginKit
 import WCLUtilities
