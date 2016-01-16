@@ -64,13 +64,13 @@ class StreamContentNode : ASScrollNode {
     
     
     var headerNode : StreamTitleNode!
-    var connectedUsersNode : StreamUsersNode!
+    var connectedUsersNode : StreamListenersNode!
     
     override func layoutDidFinish() {
         super.layoutDidFinish()
-        self.view.contentSize = CGSizeMake(self.calculatedSize.width, headerNode.calculatedSize.height)
+        self.view.contentSize = CGSizeMake(self.calculatedSize.width, self.calculatedSize.height)
     }
-    init(usersNode : StreamUsersNode) {
+    init(usersNode : StreamListenersNode) {
         super.init()
         
         headerNode = StreamTitleNode()

@@ -18,10 +18,7 @@ import WCLLocationManager
 import WCLNotificationManager
 
 protocol StreamCreateControllerDelegate {
-    func resetScrollPosition()
     func updatedData()
-    func updatedImage(image : UIImage!)
-    func updatedPlaylist(playlist : SynncPlaylist!)
     func createdStream(stream : Stream)
 }
 
@@ -67,9 +64,6 @@ class StreamCreateController : NSObject {
     var displayAnimationProgress : CGFloat = 1 {
         didSet {
             self.contentNode.alpha = displayAnimationProgress
-//            self.backgroundNode.startStreamButton.alpha = displayAnimationProgress
-//            self.backgroundNode.locationToggle.alpha = displayAnimationProgress
-//            self.backgroundNode.genreToggle.alpha = displayAnimationProgress
         }
     }
     
@@ -99,20 +93,15 @@ class StreamCreateController : NSObject {
     init(backgroundNode : StreamBackgroundNode!){
         super.init()
         self.backgroundNode = backgroundNode
-        backgroundNode.state = .Create
         self.playlistSelector.delegate = self
-        
         self.backgroundNode.editing = true
         
         self.backgroundNode.imageSelector.addTarget(self, action: Selector("imageSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        
-//        self.backgroundNode.imageNode.addTarget(self, action: Selector("imageSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.backgroundNode.infoNode.genreToggle.addTarget(self, action: Selector("genreSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.backgroundNode.infoNode.startStreamButton.addTarget(self, action: Selector("createStreamAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.backgroundNode.infoNode.locationToggle.addTarget(self, action: Selector("toggleLocation:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.backgroundNode.infoNode.streamTitle.delegate = self
-        
         self.tempStream = Stream(user: Synnc.sharedInstance.user)
     }
     
@@ -177,7 +166,6 @@ class StreamCreateController : NSObject {
             
         case 1 :
             
-//            sender.selected = !sender.selected
             if !sender.selected {
                 self.getAddress()
             } else {
@@ -217,7 +205,26 @@ class StreamCreateController : NSObject {
                 let spec = loadingNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(z.calculatedSize.width, 0), CGSizeMake(z.calculatedSize.width, 200)))
                 loadingNode.view.frame = CGRect(origin: CGPointMake(z.calculatedSize.width / 2 - (spec.size.width / 2), (z.calculatedSize.height + z.calculatedSize.width) / 2 - (spec.size.height / 2)), size: spec.size)
                 
-                self.delegate?.resetScrollPosition()
+                if let x = self.parentController as? StreamViewController {
+                    
+                    x.screenNode.mainScrollNode.view.programaticScrollEnabled = false
+                    x.screenNode.mainScrollNode.view.panGestureRecognizer.enabled = false
+                    x.screenNode.mainScrollNode.view.programaticScrollEnabled = true
+                    
+                    let animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
+                    animation.completionBlock = {
+                        anim, finished in
+                        
+                        if finished {
+                            x.screenNode.mainScrollNode.view.programaticScrollEnabled = false
+                            x.screenNode.mainScrollNode.view.panGestureRecognizer.enabled = true
+                            x.screenNode.mainScrollNode.view.programaticScrollEnabled = true
+                        }
+                    }
+                    x.screenNode.mainScrollNode.view.pop_addAnimation(animation, forKey: "offsetAnim")
+                    animation.toValue = NSValue(CGPoint: CGPoint(x: 0, y: 0))
+                }
+                
                 self.backgroundNode.editing = false
                 self.backgroundNode.state = .Hidden
                 self.displayAnimation.toValue = 0

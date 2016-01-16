@@ -11,6 +11,9 @@ import AsyncDisplayKit
 import pop
 import WCLUIKit
 
+protocol PopoverNodeDelegate {
+    func hideWithTouch()
+}
 class PopoverNode : ASDisplayNode {
     
     let arrowWidth: CGFloat = 20
@@ -29,9 +32,23 @@ class PopoverNode : ASDisplayNode {
     
     
     var initialPosition : CGPoint!
-    
+    var topMargin : CGFloat = 0
     var arrowNode : ASImageNode!
     var contentHolder : PopoverContentHolderNode!
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+        self.delegate?.hideWithTouch()
+    }
+//    override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
+//        let s = super.hitTest(point, withEvent : event)
+//        print(s)
+//        if s == self.view {
+//            self.delegate?.hideWithTouch()
+//            return nil
+//        }
+//        return s
+//    }
     
     var arrowAnimatableProperty : POPAnimatableProperty {
         get {
@@ -72,7 +89,6 @@ class PopoverNode : ASDisplayNode {
     }
     var arrowAnimationProgress : CGFloat = 0 {
         didSet {
-            print(arrowAnimationProgress)
 //            print(arrowAnimationProgress)
 //            let x = POPProgress(arrowAnimationProgress, startValue: 0, endValue: self.arrowDiff)
 //            let z = POPTransition(x, startValue: 0, endValue: self.arrowDiff)
@@ -128,21 +144,37 @@ class PopoverNode : ASDisplayNode {
             let shit = POPTransition(displayAnimationProgress, startValue: -self.calculatedSize.height / 2, endValue: 0)
             POPLayerSetScaleXY(self.layer, CGPointMake(displayAnimationProgress, displayAnimationProgress))
             POPLayerSetTranslationXY(self.layer, CGPointMake(za, shit))
+            
+            
+//            let maxDiff = (self.arrowPosition.x - self.position.x)
+//            let za = POPTransition(displayAnimationProgress, startValue: maxDiff, endValue: 0)
+//            
+//            let shit = POPTransition(displayAnimationProgress, startValue: (-self.supernode!.calculatedSize.height/2 - 20) - (self.calculatedSize.height/2), endValue: self.topMargin - self.position.y)
+//            print(displayAnimationProgress, self.position.y)
+//            POPLayerSetScaleXY(self.layer, CGPointMake(displayAnimationProgress, displayAnimationProgress))
+//            POPLayerSetTranslationXY(self.layer, CGPointMake(za, shit))
         }
     }
     
-    override init(){
+    var delegate : PopoverNodeDelegate?
+    
+    init(delegate : PopoverNodeDelegate?){
         super.init()
+        
+        
+        
+        self.delegate = delegate
         
         arrowNode = ASImageNode()
         arrowNode.preferredFrameSize = CGSizeMake(20, 10)
         
         self.contentHolder = PopoverContentHolderNode()
-        self.contentHolder.flexGrow = true
+//        self.contentHolder.flexGrow = true
         self.contentHolder.alignSelf = .Stretch
-        self.contentHolder.backgroundColor = UIColor.whiteColor()
+        self.contentHolder.backgroundColor = UIColor.clearColor()
         
         self.backgroundColor = UIColor.clearColor()
+//            .blackColor().colorWithAlphaComponent(0.3)
         
         self.addSubnode(arrowNode)
         self.addSubnode(contentHolder)
@@ -166,7 +198,7 @@ class PopoverNode : ASDisplayNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [arrowNode]), contentHolder])
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [arrowNode]), contentHolder])
     }
     
     func setContent(node : ASDisplayNode?){
@@ -180,6 +212,11 @@ class PopoverContentHolderNode : ASDisplayNode {
     var contentNode : ASDisplayNode! {
         didSet {
             if contentNode != nil {
+                contentNode.layer.shadowColor = UIColor.blackColor().CGColor
+                contentNode.layer.shadowOffset = CGSize(width: 0,height: 2)
+                contentNode.layer.shadowOpacity = 0.5
+                contentNode.layer.shadowRadius = 2
+                
                 self.addSubnode(contentNode)
             }
         }
@@ -189,10 +226,10 @@ class PopoverContentHolderNode : ASDisplayNode {
         if contentNode != nil {
             
 //            contentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-            self.contentNode.flexGrow = true
+//            self.contentNode.flexGrow = true
             self.contentNode.alignSelf = .Stretch
             
-            return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.contentNode])
+            return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [self.contentNode])
 //                ASStaticLayoutSpec(children: [contentNode])
         }
         return ASLayoutSpec()

@@ -21,6 +21,14 @@
 		4704DDCF1C1732A000B40118 /* AnimatedLogoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */; };
 		4704DDD11C17A9DA00B40118 /* TabControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4704DDD01C17A9DA00B40118 /* TabControllerNode.swift */; };
 		4704DDD31C17AC1900B40118 /* TabNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4704DDD21C17AC1900B40118 /* TabNode.swift */; };
+		470F8C041C48806D00624F0F /* StreamListenersNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C031C48806D00624F0F /* StreamListenersNode.swift */; };
+		470F8C061C4880D200624F0F /* StreamListenersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C051C4880D200624F0F /* StreamListenersController.swift */; };
+		470F8C091C48825000624F0F /* ChatTableManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C081C48825000624F0F /* ChatTableManager.swift */; };
+		470F8C0B1C48A5E200624F0F /* StreamBackgroundInfoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C0A1C48A5E200624F0F /* StreamBackgroundInfoNode.swift */; };
+		470F8C0F1C4985AB00624F0F /* ShareController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C0E1C4985AB00624F0F /* ShareController.swift */; };
+		470F8C111C4985DD00624F0F /* ShareNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C101C4985DD00624F0F /* ShareNode.swift */; };
+		470F8C151C49B20700624F0F /* StopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C141C49B20700624F0F /* StopController.swift */; };
+		470F8C171C49B20D00624F0F /* StopControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C161C49B20D00624F0F /* StopControllerNode.swift */; };
 		4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */; };
 		4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6301C0F594700C49522 /* JJMaterialTextfield.m */; };
 		4712B6331C0FAA3B00C49522 /* LoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */; };
@@ -432,6 +440,14 @@
 		4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedLogoNode.swift; sourceTree = "<group>"; };
 		4704DDD01C17A9DA00B40118 /* TabControllerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabControllerNode.swift; sourceTree = "<group>"; };
 		4704DDD21C17AC1900B40118 /* TabNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabNode.swift; sourceTree = "<group>"; };
+		470F8C031C48806D00624F0F /* StreamListenersNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamListenersNode.swift; sourceTree = "<group>"; };
+		470F8C051C4880D200624F0F /* StreamListenersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamListenersController.swift; sourceTree = "<group>"; };
+		470F8C081C48825000624F0F /* ChatTableManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableManager.swift; sourceTree = "<group>"; };
+		470F8C0A1C48A5E200624F0F /* StreamBackgroundInfoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamBackgroundInfoNode.swift; sourceTree = "<group>"; };
+		470F8C0E1C4985AB00624F0F /* ShareController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareController.swift; sourceTree = "<group>"; };
+		470F8C101C4985DD00624F0F /* ShareNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareNode.swift; sourceTree = "<group>"; };
+		470F8C141C49B20700624F0F /* StopController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StopController.swift; sourceTree = "<group>"; };
+		470F8C161C49B20D00624F0F /* StopControllerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StopControllerNode.swift; sourceTree = "<group>"; };
 		4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASMaterialTextField.swift; sourceTree = "<group>"; };
 		4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Synnc-Bridging-Header.h"; sourceTree = "<group>"; };
 		4712B62F1C0F594700C49522 /* JJMaterialTextfield.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJMaterialTextfield.h; sourceTree = "<group>"; };
@@ -877,6 +893,42 @@
 			path = ubuntu;
 			sourceTree = "<group>";
 		};
+		470F8C071C48817E00624F0F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				470F8C031C48806D00624F0F /* StreamListenersNode.swift */,
+				4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */,
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
+		470F8C0D1C49859F00624F0F /* Share Controller */ = {
+			isa = PBXGroup;
+			children = (
+				470F8C0E1C4985AB00624F0F /* ShareController.swift */,
+				470F8C101C4985DD00624F0F /* ShareNode.swift */,
+			);
+			name = "Share Controller";
+			sourceTree = "<group>";
+		};
+		470F8C131C49B1F700624F0F /* Stop Controller */ = {
+			isa = PBXGroup;
+			children = (
+				470F8C141C49B20700624F0F /* StopController.swift */,
+				470F8C161C49B20D00624F0F /* StopControllerNode.swift */,
+			);
+			name = "Stop Controller";
+			sourceTree = "<group>";
+		};
+		470F8C181C49DCFD00624F0F /* PopoverController */ = {
+			isa = PBXGroup;
+			children = (
+				4728F93F1C3194B200B427EA /* PopoverNode.swift */,
+				4728F9411C3199E200B427EA /* PopoverController.swift */,
+			);
+			name = PopoverController;
+			sourceTree = "<group>";
+		};
 		4712B62B1C0F58BD00C49522 /* MaterialTextField */ = {
 			isa = PBXGroup;
 			children = (
@@ -1314,6 +1366,7 @@
 		47A4E6AB1C0CB42800354EA8 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				470F8C181C49DCFD00624F0F /* PopoverController */,
 				47C8F9831C1D13EB00333492 /* PlaylistController */,
 				47D7637E1C3B06A4008E0334 /* GenrePicker */,
 				47C8F9A11C2451AE00333492 /* ImagePicker */,
@@ -1436,8 +1489,6 @@
 				47B37B861C2F169B001CC6D2 /* TitleColorButton.swift */,
 				47178C1F1C2AFA8E00735D21 /* MiniHeaderNode.swift */,
 				4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */,
-				4728F93F1C3194B200B427EA /* PopoverNode.swift */,
-				4728F9411C3199E200B427EA /* PopoverController.swift */,
 			);
 			name = Nodes;
 			sourceTree = "<group>";
@@ -1466,6 +1517,49 @@
 				47B899C51C485421007C2B7F /* NSDate+NetworkClock.m */,
 			);
 			path = NHNetworkTime;
+			sourceTree = "<group>";
+		};
+		47B899C91C4866B1007C2B7F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				4777051B1C3DC581007089D0 /* StreamViewNode.swift */,
+				477705191C3DB7E9007089D0 /* StreamContentNode.swift */,
+				47D7636D1C38B55F008E0334 /* StreamBackgroundNode.swift */,
+				470F8C0A1C48A5E200624F0F /* StreamBackgroundInfoNode.swift */,
+				47B899CA1C4867D7007C2B7F /* SubControllers */,
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
+		47B899CA1C4867D7007C2B7F /* SubControllers */ = {
+			isa = PBXGroup;
+			children = (
+				470F8C131C49B1F700624F0F /* Stop Controller */,
+				470F8C0D1C49859F00624F0F /* Share Controller */,
+				47B899CC1C486800007C2B7F /* Listeners Controller */,
+				47B899CB1C4867E3007C2B7F /* Chat Controller */,
+			);
+			name = SubControllers;
+			sourceTree = "<group>";
+		};
+		47B899CB1C4867E3007C2B7F /* Chat Controller */ = {
+			isa = PBXGroup;
+			children = (
+				477705211C3DF4F6007089D0 /* ChatController.swift */,
+				470F8C081C48825000624F0F /* ChatTableManager.swift */,
+				477705231C3E00ED007089D0 /* ChatNode.swift */,
+			);
+			name = "Chat Controller";
+			sourceTree = "<group>";
+		};
+		47B899CC1C486800007C2B7F /* Listeners Controller */ = {
+			isa = PBXGroup;
+			children = (
+				470F8C051C4880D200624F0F /* StreamListenersController.swift */,
+				4777051F1C3DC8E5007089D0 /* StreamUsersDataSource.swift */,
+				470F8C071C48817E00624F0F /* Nodes */,
+			);
+			name = "Listeners Controller";
 			sourceTree = "<group>";
 		};
 		47C8F97A1C1CA25100333492 /* Playlist */ = {
@@ -1531,13 +1625,7 @@
 			isa = PBXGroup;
 			children = (
 				475286DC1C35A22E00731008 /* StreamViewController.swift */,
-				4777051F1C3DC8E5007089D0 /* StreamUsersDataSource.swift */,
-				4777051B1C3DC581007089D0 /* StreamViewNode.swift */,
-				477705191C3DB7E9007089D0 /* StreamContentNode.swift */,
-				4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */,
-				477705211C3DF4F6007089D0 /* ChatController.swift */,
-				477705231C3E00ED007089D0 /* ChatNode.swift */,
-				47D7636D1C38B55F008E0334 /* StreamBackgroundNode.swift */,
+				47B899C91C4866B1007C2B7F /* Nodes */,
 			);
 			name = StreamViewController;
 			sourceTree = "<group>";
@@ -2250,6 +2338,7 @@
 				47B37B851C2F159F001CC6D2 /* ParallaxContentNode.swift in Sources */,
 				4728F94A1C34494000B427EA /* WildUser+SpotifyUser.swift in Sources */,
 				4728F9471C343AD600B427EA /* SettingsNode.swift in Sources */,
+				470F8C061C4880D200624F0F /* StreamListenersController.swift in Sources */,
 				47B37B7A1C2F044E001CC6D2 /* WildTransitioning.swift in Sources */,
 				47B899C61C485421007C2B7F /* NHNetAssociation.m in Sources */,
 				471834271C18893C005C9533 /* SubsectionSelectorNode.swift in Sources */,
@@ -2273,6 +2362,7 @@
 				4728F9421C3199E200B427EA /* PopoverController.swift in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
 				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
+				470F8C0B1C48A5E200624F0F /* StreamBackgroundInfoNode.swift in Sources */,
 				472CB2FA1C416EC100F82523 /* FirstLoginPopupVC.swift in Sources */,
 				47D763841C3B10E2008E0334 /* GenreCellNode.swift in Sources */,
 				47B37B7C1C2F05FE001CC6D2 /* PlaylistAnimatior.swift in Sources */,
@@ -2287,6 +2377,7 @@
 				47D763701C39FEBF008E0334 /* StreamLoadingNode.swift in Sources */,
 				47EBDF801C1BBBEB0075CF0B /* StreamsFeedController.swift in Sources */,
 				47EBDF7C1C1BBBD30075CF0B /* SearchUsersController.swift in Sources */,
+				470F8C0F1C4985AB00624F0F /* ShareController.swift in Sources */,
 				47EBDF9A1C1BE1470075CF0B /* SynncArtist.swift in Sources */,
 				4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */,
 				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
@@ -2296,15 +2387,19 @@
 				47B37B7E1C2F150A001CC6D2 /* ParallaxNode.swift in Sources */,
 				47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */,
 				47EBDFA61C1C8A110075CF0B /* SynncArtist+Spotify.swift in Sources */,
+				470F8C111C4985DD00624F0F /* ShareNode.swift in Sources */,
 				47C8F9A51C261AE400333492 /* PlaylistTableCell.swift in Sources */,
 				477705201C3DC8E5007089D0 /* StreamUsersDataSource.swift in Sources */,
 				47C8F9A01C243BC900333492 /* PlaylistCellNode.swift in Sources */,
+				470F8C151C49B20700624F0F /* StopController.swift in Sources */,
 				47B899C81C485421007C2B7F /* NSDate+NetworkClock.m in Sources */,
 				4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */,
+				470F8C091C48825000624F0F /* ChatTableManager.swift in Sources */,
 				471834231C187F59005C9533 /* HeaderNode.swift in Sources */,
 				477705221C3DF4F6007089D0 /* ChatController.swift in Sources */,
 				47D7637B1C3A283B008E0334 /* WildPlayerItem.swift in Sources */,
 				47B37B891C2F21D1001CC6D2 /* PlaylistNode.swift in Sources */,
+				470F8C171C49B20D00624F0F /* StopControllerNode.swift in Sources */,
 				477705241C3E00ED007089D0 /* ChatNode.swift in Sources */,
 				4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */,
 				475286E41C37372300731008 /* WCLScrollNode.m in Sources */,
@@ -2313,6 +2408,7 @@
 				47B37B781C2D9779001CC6D2 /* TabItemNode.swift in Sources */,
 				47A4E6B51C0CB6D100354EA8 /* LoginNode.swift in Sources */,
 				47B37B8B1C2F791C001CC6D2 /* MeNode.swift in Sources */,
+				470F8C041C48806D00624F0F /* StreamListenersNode.swift in Sources */,
 				47D7637C1C3A283B008E0334 /* WildPlayerTrackLoader.swift in Sources */,
 				47A4E6AF1C0CB46B00354EA8 /* RootViewController.swift in Sources */,
 				936DB9741C41C5690069ACDA /* WildUser+FBSDK.swift in Sources */,

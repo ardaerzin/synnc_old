@@ -11,13 +11,19 @@ import AsyncDisplayKit
 import pop
 import WCLUIKit
 
+protocol PopControllerDelegate {
+    func hidePopController()
+}
+
 class PopController : ASViewController {
+    var delegate : PopControllerDelegate?
     var screenNode : PopoverNode!
     var displayed : Bool = false
     
     init(){
-        let node = PopoverNode()
+        let node = PopoverNode(delegate: nil)
         super.init(node: node)
+        node.delegate = self
         self.screenNode = node
     }
     override init(node: ASDisplayNode) {
@@ -29,7 +35,6 @@ class PopController : ASViewController {
     
     func setContent(controller : PopContentController){
         if let current = self.childViewControllers.first {
-            
             current.willMoveToParentViewController(nil)
             self.screenNode.setContent(nil)
             current.removeFromParentViewController()
@@ -40,8 +45,29 @@ class PopController : ASViewController {
         self.screenNode.setContent(controller.screenNode)
         controller.didMoveToParentViewController(self)
     }
+    
+    func hidePopover(){
+        self.screenNode.displayAnimation.completionBlock = {
+            [weak self]
+            anim, finished in
+            self?.willMoveToParentViewController(nil)
+            self?.screenNode.removeFromSupernode()
+            self?.removeFromParentViewController()
+            self?.screenNode.pop_removeAnimationForKey("displayAnimation")
+        }
+        
+        self.screenNode.displayAnimation.toValue = 0
+        self.displayed = false
+    }
+}
+
+extension PopController : PopoverNodeDelegate {
+    func hideWithTouch() {
+        self.delegate?.hidePopController()
+    }
 }
 
 class PopContentController : ASViewController {
     var screenNode : ASDisplayNode!
+    var topMargin : CGFloat = 0
 }

@@ -98,8 +98,11 @@ class InboxNode : ASDisplayNode {
     
     let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 60/255, green: 60/255, blue: 60/255, alpha: 1), NSKernAttributeName : -0.1]
     
-        override init() {
+    override init() {
+    
         super.init()
+        
+        self.backgroundColor = UIColor.whiteColor()
         
         self.headerNode = ASTextNode()
         self.headerNode.attributedString = NSAttributedString(string: "Inbox", attributes: self.attributes)
@@ -117,9 +120,9 @@ class InboxNode : ASDisplayNode {
         self.separator.backgroundColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1)
         
         self.inboxTable = ASTableNode(style: UITableViewStyle.Plain)
-        self.inboxTable.alignSelf = .Stretch
+//        self.inboxTable.alignSelf = .Stretch
         self.inboxTable.view.leadingScreensForBatching = 1
-        self.inboxTable.flexGrow = true
+//        self.inboxTable.flexGrow = true
         
         self.addSubnode(self.headerNode)
         self.addSubnode(self.closeButton)
@@ -148,7 +151,11 @@ class InboxNode : ASDisplayNode {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
-        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerSpec, separator, inboxTable])
+        if constrainedSize.max.height.isFinite {
+            inboxTable.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - 65))
+        }
+        
+        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, ASStaticLayoutSpec(children: [inboxTable])])
         
         return x
     }

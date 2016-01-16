@@ -166,6 +166,34 @@ extension StreamManager {
     //        }
     //    }
     
+    func stopStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
+        if stream != self.activeStream {
+            return
+        }
+        
+        Synnc.sharedInstance.socket.emitWithAck("Stream:stop", stream.o_id)(timeoutAfter: 0) {
+            [weak self]
+            data in
+            
+            if self == nil {
+                return
+            }
+            
+            if !data.isEmpty {
+                if stream == self?.activeStream {
+                    let a = self?.activeStream
+                    self?.activeStream = nil
+                    self?.player.resetPlayer()
+                    let json = JSON(data)
+                    a?.fromJSON(json)
+                }
+                completion?(status: true)
+            } else {
+                completion?(status: false)
+            }
+        }
+    }
+    
     func joinStream(stream: Stream, completion : ((status: Bool) -> Void)? ) {
         Synnc.sharedInstance.socket.emitWithAck("Stream:join", stream.o_id)(timeoutAfter: 0) {
             
@@ -198,7 +226,6 @@ extension StreamManager {
                 result in
                 Synnc.sharedInstance.socket.emitWithAck("Stream:create", result) (timeoutAfter: 0) {
                     ack in
-                    print("create result:", result)
                     if let data = ack.first {
                         let json = JSON(data)
                         self.userStream?.fromJSON(json)

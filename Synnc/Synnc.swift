@@ -160,6 +160,8 @@ class Synnc : UIResponder, UIApplicationDelegate {
 //            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
 //            return true
 //        }
+        
+        print("open url", url.absoluteString)
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 }

@@ -19,8 +19,10 @@ class SettingsNode : ASDisplayNode {
     
     let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 60/255, green: 60/255, blue: 60/255, alpha: 1), NSKernAttributeName : -0.1]
     
-        override init() {
+    override init() {
         super.init()
+        
+        self.backgroundColor = UIColor.whiteColor()
         
         self.headerNode = ASTextNode()
         self.headerNode.attributedString = NSAttributedString(string: "Settings", attributes: self.attributes)
@@ -57,9 +59,12 @@ class SettingsNode : ASDisplayNode {
         headerSpec.flexBasis = ASRelativeDimension(type: .Points, value: 50)
         headerSpec.alignSelf = .Stretch
         
-        contentNode.flexBasis = ASRelativeDimension(type: .Points, value: self.view.bounds.height - (50 + 10 + 1/UIScreen.mainScreen().scale) )
+        if constrainedSize.max.height.isFinite {
+            contentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - (50 + 10 + 1/UIScreen.mainScreen().scale) ))
+        }
+//        contentNode.flexBasis = ASRelativeDimension(type: .Points, value: self.view.bounds.height - (50 + 10 + 1/UIScreen.mainScreen().scale) )
         
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, contentNode])
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, ASStaticLayoutSpec(children: [contentNode])])
     }
 }
 

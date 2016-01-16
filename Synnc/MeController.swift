@@ -175,6 +175,12 @@ extension MeController {
         
         if sender.selected {
             
+            self.popContentController.setContent(contentController)
+            let x = contentController.screenNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(self.view.frame.width, 0), CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30)))
+            var s = x.size
+            s.height += 20
+//            print(c.screenNode.calculatedSize, x.size)
+            
             if !self.popContentController.displayed {
                 self.addChildViewController(self.popContentController)
                 if self.popContentController.view.frame == CGRectZero {
@@ -190,7 +196,7 @@ extension MeController {
                 self.popContentController.displayed = true
             }
             
-            self.popContentController.setContent(contentController)
+//            self.popContentController.setContent(contentController)
             
         } else {
             hidePopover()
