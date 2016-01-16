@@ -21,6 +21,76 @@ class StreamViewNode : ParallaxNode {
     var chatbar : ChatBarNode!
     var chatNode : ASDisplayNode!
     var contentNode : StreamContentNode!
+    var state : StreamVCState = .Hidden {
+        didSet {
+            if state != oldValue {
+                if state.rawValue >= StreamVCState.Play.rawValue {
+                    buttonUpdateAnimation.toValue = 1
+                } else {
+                    buttonUpdateAnimation.toValue = 0
+                }
+            }
+        }
+    }
+    
+    var buttonUpdateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("stateAnimationProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! StreamViewNode).buttonUpdateAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! StreamViewNode).buttonUpdateAnimationProgress = values[0]
+                }
+                prop.threshold = 0.001
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var buttonUpdateAnimation : POPBasicAnimation {
+        get {
+            if let anim = self.pop_animationForKey("buttonUpdateAnimation") as? POPBasicAnimation {
+                return anim
+            } else {
+                let x = POPBasicAnimation()
+                x.duration = 0.2
+                x.property = self.buttonUpdateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "buttonUpdateAnimation")
+                return x
+            }
+        }
+    }
+    var buttonUpdateAnimationProgress : CGFloat = 0 {
+        didSet {
+            self.shareStreamButton.alpha = buttonUpdateAnimationProgress
+            self.stopStreamButton.alpha = buttonUpdateAnimationProgress
+        }
+    }
+    
+    lazy var shareStreamButton : TitleColorButton = {
+        var a = TitleColorButton(normalTitleString: "SHARE", selectedTitleString: "SHARE", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
+        return a
+    }()
+    lazy var stopStreamButton : TitleColorButton = {
+        var a = TitleColorButton(normalTitleString: "STOP STREAM", selectedTitleString: "STOP STREAM", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
+        return a
+    }()
+    lazy var editButton : TitleColorButton = {
+        var a = TitleColorButton(normalTitleString: "EDIT", selectedTitleString: "SAVE", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
+        return a
+    }()
+    
+    var buttons : [ButtonNode] {
+        get {
+            return [stopStreamButton, shareStreamButton, editButton]
+        }
+    }
     
     init(chatNode : ASDisplayNode, chatbar : ChatBarNode, content : StreamContentNode) {
         let bgNode = StreamBackgroundNode()
@@ -30,8 +100,12 @@ class StreamViewNode : ParallaxNode {
         self.chatNode = chatNode
         self.chatNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
+        self.headerNode.buttons = buttons
         self.addSubnode(self.chatNode)
         self.addSubnode(chatbar)
+        
+        shareStreamButton.alpha = 0
+        stopStreamButton.alpha = 0
     }
     
     override func layout() {

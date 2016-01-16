@@ -17,34 +17,6 @@ import WCLLocationManager
 import WCLNotificationManager
 import WCLUserManager
 
-class ChatTableManager : WCLTableViewManager {
-    override func performUpdates(tableView: ASTableView, updates: WCLListSourceUpdaterResult, animated: Bool, completion: ((Bool) -> Void)? = nil) {
-        Async.main {
-            
-            tableView.beginUpdates()
-            
-            if !updates.addedIndexPaths.isEmpty {
-                tableView.insertRowsAtIndexPaths(updates.addedIndexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
-            }
-            if !updates.removedIndexPaths.isEmpty {
-                tableView.deleteRowsAtIndexPaths(updates.removedIndexPaths, withRowAnimation: .Fade)
-            }
-            if !updates.movedIndexPaths.isEmpty {
-                for item in updates.movedIndexPaths {
-                    tableView.moveRowAtIndexPath(item.fromIndexPath, toIndexPath: item.toIndexPath)
-                }
-            }
-            
-            tableView.endUpdatesAnimated(true, completion: {
-                status in
-                self.finishUpdates()
-                completion?(status)
-            })
-            
-        }
-    }
-}
-
 class ChatController : ASViewController {
     
     var initialTouchTopWindowPosition : CGFloat = 0
@@ -149,6 +121,8 @@ class ChatController : ASViewController {
         screenNode.delegate = self
         self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hide:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.chatbar.sendButton.addTarget(self, action: Selector("newMessage:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.chatbar.textNode.delegate = self
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillChangeFrame:"), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     func handlePanRecognizer(recognizer: UIPanGestureRecognizer){

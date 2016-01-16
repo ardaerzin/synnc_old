@@ -17,250 +17,9 @@ import WCLLocationManager
 import WCLNotificationManager
 import Shimmer
 
-enum StreamBackgroundNodeState : Int {
-    case Create = -1
-    case ReadyToPlay = 1
-    case Play = 2
-    case Hidden = 0
-}
-
-class StreamInfoNode : ASDisplayNode {
-    
-    var titleShimmer : FBShimmeringView!
-    var playingIcon : AnimatedLogoNode!
-    var streamTitle : ASEditableTextNode!
-    var startStreamButton : ButtonNode!
-    var locationToggle : TitleColorButton!
-    var genreToggle : TitleColorButton!
-    
-    var streamStatusButton : TitleColorButton!
-    var addToFavoritesButton : ButtonNode!
-    var trackTitle : ASTextNode!
-    var artistTitle : ASTextNode!
-    
-    var titleSizeHeight : CGFloat! {
-        didSet {
-            if let old = oldValue where titleSizeHeight != old {
-                self.titleOffset = titleSizeHeight - old
-            }
-        }
-    }
-    var titleOffset : CGFloat! = 0
-//        {
-//        didSet {
-//            if titleOffset != oldValue {
-//                print("did set titleOffset")
-//            }
-//            print("did set title offset")
-//        }
-//    }
-    
-    var paragraphAttributes : NSMutableParagraphStyle = {
-        let x = NSMutableParagraphStyle()
-        x.alignment = .Center
-        return x
-        }()
-    
-    var trackAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 36)!, NSForegroundColorAttributeName : UIColor(red: 230/255, green: 228/255, blue: 228/255, alpha: 1), NSKernAttributeName : 0.4]
-    var artistAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size : 14)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 0.7), NSKernAttributeName : 0.2]
-    var buttonAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size : 10)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1)]
-    var genreAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size : 10)!, NSForegroundColorAttributeName : UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1), NSKernAttributeName : 1.1]
-    
-    var trackUpdateAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("stateAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! StreamInfoNode).trackUpdateAnimationProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! StreamInfoNode).trackUpdateAnimationProgress = values[0]
-                }
-                prop.threshold = 0.001
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var trackUpdateAnimation : POPSpringAnimation {
-        get {
-            if let anim = self.pop_animationForKey("trackUpdateAnimation") {
-                return anim as! POPSpringAnimation
-            } else {
-                let x = POPSpringAnimation()
-                x.springBounciness = 0
-                x.property = self.trackUpdateAnimatableProperty
-                self.pop_addAnimation(x, forKey: "trackUpdateAnimation")
-                return x
-            }
-        }
-    }
-    var trackUpdateAnimationProgress : CGFloat = 1 {
-        didSet {
-            self.trackTitle.alpha = trackUpdateAnimationProgress
-            if let x = self.supernode as? StreamBackgroundNode, let z = x.animationAlphaValues[self.artistTitle] {
-                let a = min(z,trackUpdateAnimationProgress)
-                self.artistTitle.alpha = a
-            }
-        }
-    }
-    
-    override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
-        let x = super.hitTest(point, withEvent: event)
-        if x == self.view {
-            return nil
-        } else {
-            return x
-        }
-    }
-    
-    override init() {
-        super.init()
-        
-        trackAttributes[NSParagraphStyleAttributeName] = paragraphAttributes
-        
-        artistTitle = ASTextNode()
-        artistTitle.maximumNumberOfLines = 1
-        artistTitle.alpha = 0
-        
-        trackTitle = ASTextNode()
-        trackTitle.alpha = 0
-        trackTitle.spacingAfter = 5
-        trackTitle.alignSelf = .Stretch
-        trackTitle.maximumNumberOfLines = 2
-        
-        streamStatusButton = TitleColorButton(normalTitleString: "START STREAMING", selectedTitleString: "STOP STREAMING", attributes: buttonAttributes, normalColor: .whiteColor(), selectedColor: .whiteColor())
-        streamStatusButton.backgroundColor = UIColor.SynncColor()
-        streamStatusButton.normalBgColor = UIColor.SynncColor()
-        streamStatusButton.selectedBgColor = UIColor.SynncColor()
-        
-        
-        streamStatusButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
-        streamStatusButton.cornerRadius = 3
-        streamStatusButton.alpha = 0
-        
-        addToFavoritesButton = ButtonNode()
-        addToFavoritesButton.cornerRadius = 3
-        addToFavoritesButton.borderColor = UIColor.whiteColor().CGColor
-        addToFavoritesButton.borderWidth = 1
-        addToFavoritesButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
-        addToFavoritesButton.setAttributedTitle(NSAttributedString(string: "ADD TO FAVORITES", attributes: buttonAttributes), forState: ASControlState.Normal)
-        addToFavoritesButton.alpha = 0
-        
-        streamTitle = ASEditableTextNode()
-        streamTitle.alpha = 0
-        streamTitle.returnKeyType = UIReturnKeyType.Done
-        streamTitle.attributedPlaceholderText = NSAttributedString(string: "Enter Stream Name", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 28)!, NSForegroundColorAttributeName : UIColor(red: 230/255, green: 228/255, blue: 228/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : self.paragraphAttributes])
-        streamTitle.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 28)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSParagraphStyleAttributeName : self.paragraphAttributes, NSKernAttributeName : 0.3]
-        
-        titleShimmer = FBShimmeringView()
-        titleShimmer.contentView = streamTitle.view
-        
-        startStreamButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        startStreamButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
-        startStreamButton.alpha = 0
-        startStreamButton.cornerRadius = 3
-        startStreamButton.setAttributedTitle(NSAttributedString(string: "START STREAMING", attributes: buttonAttributes), forState: ASControlState.Normal)
-        
-        playingIcon = AnimatedLogoNode(barCount: 5)
-        playingIcon.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(30, 35))
-        playingIcon.alpha = 0
-        
-        genreToggle = TitleColorButton(normalTitleString: "PICK GENRE(S)", selectedTitleString: "", attributes: self.genreAttributes, normalColor: UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1), selectedColor: UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1))
-        genreToggle.alpha = 0
-        
-        locationToggle = TitleColorButton(normalTitleString: "SHOW LOCATION", selectedTitleString: "SECTOOR", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 18)!, NSKernAttributeName : 0.3], normalColor: UIColor.whiteColor(), selectedColor: UIColor.whiteColor())
-        locationToggle.alpha = 0
-        
-        self.addSubnode(trackTitle)
-        self.addSubnode(artistTitle)
-        self.addSubnode(streamStatusButton)
-        self.addSubnode(addToFavoritesButton)
-        
-        self.addSubnode(streamTitle)
-        self.addSubnode(startStreamButton)
-        self.addSubnode(locationToggle)
-        self.addSubnode(genreToggle)
-        self.addSubnode(playingIcon)
-    }
-    
-    func updateForTrack(track : SynncTrack) {
-        var str = ""
-        for (index,artist) in track.artists.enumerate() {
-            if index == 0 {
-                str += artist.name
-            } else {
-                str += (" / " + artist.name)
-            }
-        }
-        
-        self.trackUpdateAnimation.completionBlock = {
-            anim, finished in
-            self.trackTitle.attributedString = NSAttributedString(string: track.name, attributes: self.trackAttributes)
-            self.artistTitle.attributedString = NSAttributedString(string: str, attributes: self.artistAttributes)
-            self.setNeedsLayout()
-            
-            if let x = self.supernode as? StreamBackgroundNode {
-                x.updateScrollPositions(x.scrollPosition)
-            }
-            self.trackUpdateAnimation.toValue = 1
-        }
-        
-        self.trackUpdateAnimation.toValue = 0
-    }
-    override func layout() {
-        super.layout()
-        
-        titleShimmer.frame = self.bounds
-        
-        let h = (streamTitle.calculatedSize.height + self.startStreamButton.calculatedSize.height + 41) / 2
-        streamTitle.position = CGPointMake(self.calculatedSize.width / 2, self.calculatedSize.height / 2 - h)
-        startStreamButton.position = CGPointMake(self.calculatedSize.width / 2, self.calculatedSize.height / 2 + h)
-        
-        locationToggle.position = CGPointMake((locationToggle.calculatedSize.width / 2) + 23, (calculatedSize.height) - 37 - locationToggle.calculatedSize.height / 2)
-        genreToggle.position = CGPointMake((genreToggle.calculatedSize.width / 2) + 23, (calculatedSize.height) - 19 - genreToggle.calculatedSize.height / 2)
-        
-        
-        self.streamStatusButton.position.x = self.calculatedSize.width / 2
-        self.streamStatusButton.position.y = self.calculatedSize.height / 2 + self.streamStatusButton.calculatedSize.height / 2 + 20
-        
-        self.addToFavoritesButton.position.x = self.calculatedSize.width / 2
-        self.addToFavoritesButton.position.y = self.streamStatusButton.position.y + self.streamStatusButton.calculatedSize.height / 2 + self.addToFavoritesButton.calculatedSize.height / 2 + 20
-        
-        self.trackTitle.position.x = self.calculatedSize.width / 2
-        self.trackTitle.position.y = self.calculatedSize.height / 2 - 60 - self.artistTitle.calculatedSize.height / 2
-        
-        self.artistTitle.position.x = self.calculatedSize.width / 2
-        self.artistTitle.position.y = self.trackTitle.position.y + self.trackTitle.calculatedSize.height / 2 + self.artistTitle.calculatedSize.height / 2 + 5
-        
-        
-        let z1 = (self.trackTitle.position.y - self.trackTitle.calculatedSize.height / 2) + (self.artistTitle.position.y + self.artistTitle.calculatedSize.height / 2)
-        
-        self.playingIcon.position.x = self.calculatedSize.width - (self.playingIcon.calculatedSize.width / 2)
-        self.playingIcon.position.y = z1 / 2
-
-    }
-    
-    override func layoutDidFinish() {
-        super.layoutDidFinish()
-        titleSizeHeight = self.trackTitle.calculatedSize.height
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let statusButtonSpec = ASStaticLayoutSpec(children: [streamStatusButton])
-        statusButtonSpec.spacingAfter = 20
-        self.trackTitle.sizeRange = ASRelativeSizeRangeMake(ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 0)), ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 100)))
-        
-        return ASStaticLayoutSpec(children: [streamTitle, startStreamButton, locationToggle, genreToggle, streamStatusButton, addToFavoritesButton, trackTitle, artistTitle, playingIcon])
-    }
-}
 class StreamBackgroundNode : ParallaxBackgroundNode {
     
-    var infoNode : StreamInfoNode!
+    var infoNode : StreamBackgroundInfoNode!
     var animationAlphaValues : [NSObject : CGFloat] = [NSObject : CGFloat]()
     
     var scrollPosition : CGFloat = 0
@@ -302,13 +61,17 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             }
         }
     }
-    var state : StreamBackgroundNodeState! {
+    var state : StreamVCState = .Hidden {
         didSet {
             if state != oldValue {
-                if let old = oldValue {
-                    self.stateAnimation.fromValue = old.rawValue
-                }
+//                print("did set state:", state.rawValue)
+//                self.stateAnimation.fromValue = oldValue.rawValue
                 self.stateAnimation.toValue = state.rawValue
+                if state == StreamVCState.Syncing {
+                    self.infoNode.syncShimmer.shimmering = true
+                } else {
+                    self.infoNode.syncShimmer.shimmering = false
+                }
             }
         }
     }
@@ -340,17 +103,18 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             return x
         }
     }
-    var stateAnimation : POPBasicAnimation {
+    var stateAnimation : POPSpringAnimation {
         get {
-            if let anim = self.pop_animationForKey("stateAnimation") {
-                return anim as! POPBasicAnimation
+            if let anim = self.pop_animationForKey("stateAnimation") as? POPSpringAnimation{
+                return anim
             } else {
-                let x = POPBasicAnimation()
+                let x = POPSpringAnimation()
                 x.completionBlock = {
                     anim, finished in
                     self.pop_removeAnimationForKey("stateAnimation")
                 }
-                x.duration = 0.5
+//                x.duration = 2
+                x.springBounciness = 0
                 x.property = self.stateAnimatableProperty
                 self.pop_addAnimation(x, forKey: "stateAnimation")
                 return x
@@ -359,33 +123,134 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     }
     var stateAnimationProgress : CGFloat = 1 {
         didSet {
+        
+            self.infoNode.trackTitle.alpha = max(stateAnimationProgress - 1, 1)
+//            self.infoNode.artistTitle.alpha = max(stateAnimationProgress - 1,1)
             
-            self.infoNode.trackTitle.alpha = stateAnimationProgress
-            self.infoNode.artistTitle.alpha = stateAnimationProgress
+//            animationAlphaValues[infoNode.trackTitle] = max(stateAnimationProgress - 1, 1)
+//            animationAlphaValues[infoNode.artistTitle] = max(stateAnimationProgress - 1, 1)
+
+            self.infoNode.addToFavoritesButton.alpha = stateAnimationProgress - 2
+//                (stateAnimationProgress-1)
             
-            self.infoNode.addToFavoritesButton.alpha = (stateAnimationProgress-1)
             
             self.infoNode.streamTitle.alpha = -stateAnimationProgress + 1
             self.infoNode.startStreamButton.alpha = -stateAnimationProgress
             
-            animationAlphaValues[infoNode.genreToggle] = fabs(stateAnimationProgress)
-            animationAlphaValues[infoNode.locationToggle] = fabs(stateAnimationProgress)
-            animationAlphaValues[infoNode.streamStatusButton] = stateAnimationProgress
             
+            self.artistLabel_animationAlpha = max(stateAnimationProgress - 1, 1)
+            self.genreToggle_animationAlpha = fabs(stateAnimationProgress)
+            self.locationToggle_animationAlpha = fabs(stateAnimationProgress)
+            
+//            animationAlphaValues[infoNode.genreToggle] = fabs(stateAnimationProgress)
+//            animationAlphaValues[infoNode.locationToggle] = fabs(stateAnimationProgress)
+            
+            var startButtonAlpha : CGFloat = 0
+            if state.rawValue <= 1 {
+                startButtonAlpha = stateAnimationProgress
+            } else {
+                let y = POPTransition(abs(stateAnimationProgress - 1), startValue: 1, endValue: 0)
+                if let x = animationAlphaValues[infoNode.streamStatusButton] {
+                    if y < x {
+                        startButtonAlpha = y
+                    } else {
+                        startButtonAlpha = x
+                    }
+                } else {
+                    startButtonAlpha = y
+                }
+//                let y = POPTransition(abs(stateAnimationProgress - 1), startValue: 1, endValue: 0)
+//                if y < x {
+//                    startButtonAlpha = y
+//                } else {
+//                    startButtonAlpha = x!
+//                }
+            }
+            animationAlphaValues[infoNode.streamStatusButton] = startButtonAlpha
+            self.infoNode.streamStatusButton.alpha = startButtonAlpha
             
             if self.scrollPosition > 0 {
                 let limit : CGFloat = self.calculatedSize.width - 150
                 let percentage = scrollPosition/limit
                 
-                self.infoNode.locationToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.locationToggle]!)
-                self.infoNode.genreToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.genreToggle]!)
+//                self.infoNode.locationToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.locationToggle]!)
+//                self.infoNode.genreToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.genreToggle]!)
             } else {
-                self.infoNode.locationToggle.alpha = fabs(stateAnimationProgress)
-                self.infoNode.genreToggle.alpha = fabs(stateAnimationProgress)
+//                self.infoNode.locationToggle.alpha = fabs(stateAnimationProgress)
+//                self.infoNode.genreToggle.alpha = fabs(stateAnimationProgress)
             }
-            self.infoNode.streamStatusButton.alpha = stateAnimationProgress
         }
     }
+    
+    
+    var locationToggle_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            locationToggle_alpha = locationToggle_alphaMultiplier * locationToggle_animationAlpha
+        }
+    }
+    var genreToggle_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            genreToggle_alpha = genreToggle_alphaMultiplier * genreToggle_animationAlpha
+        }
+    }
+    
+    var locationToggle_animationAlpha : CGFloat! = 1 {
+        didSet {
+            locationToggle_alpha = locationToggle_alphaMultiplier * locationToggle_animationAlpha
+        }
+    }
+    var genreToggle_animationAlpha : CGFloat! = 1 {
+        didSet {
+            genreToggle_alpha = genreToggle_alphaMultiplier * genreToggle_animationAlpha
+        }
+    }
+    
+    var locationToggle_alpha : CGFloat! = 1 {
+        didSet {
+            self.infoNode.locationToggle.alpha = locationToggle_alpha
+        }
+    }
+    var genreToggle_alpha : CGFloat! = 1 {
+        didSet {
+            self.infoNode.genreToggle.alpha = genreToggle_alpha
+        }
+    }
+    
+    
+    var statusButton_animationAlpha : CGFloat! = 1 {
+        didSet {
+            statusButton_alpha = statusButton_alphaMultiplier * statusButton_animationAlpha
+        }
+    }
+    var statusButton_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            statusButton_alpha = statusButton_alphaMultiplier * statusButton_animationAlpha
+        }
+    }
+    var statusButton_alpha : CGFloat! = 1 {
+        didSet {
+//            locationToggle_alpha = locationToggle_alphaMultiplier * locationToggle_animationAlpha
+        }
+    }
+    
+    
+    var artistLabel_animationAlpha : CGFloat! = 1 {
+        didSet {
+            artistLabel_alpha = artistLabel_alphaMultiplier * artistLabel_animationAlpha
+        }
+    }
+    var artistLabel_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            artistLabel_alpha = artistLabel_alphaMultiplier * artistLabel_animationAlpha
+        }
+    }
+    var artistLabel_alpha : CGFloat! = 1 {
+        didSet {
+            self.infoNode.artistTitle.alpha = artistLabel_animationAlpha * artistLabel_alphaMultiplier
+        }
+    }
+    
+    
     var locationUpdateAnimation : POPBasicAnimation! {
         get {
             if let anim = self.infoNode.locationToggle.pop_animationForKey("locationUpdateAnimation") {
@@ -411,11 +276,11 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         }
     }
     
-        override init() {
+    override init() {
         super.init()
 
         self.view.delaysContentTouches = false
-        self.infoNode = StreamInfoNode()
+        self.infoNode = StreamBackgroundInfoNode()
         
         self.addSubnode(self.infoNode)
         
@@ -517,17 +382,13 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         var delta : CGFloat = 0
         let limit : CGFloat = self.calculatedSize.width - 150
         delta = -max(0,position - limit)
-    
-        let moveShit = position + (-position / 2)
         
+        let moveShit = position + (-position / 2)
         let percentage = position/limit
         
-        if let locationAnimVal = animationAlphaValues[infoNode.locationToggle] {
-            self.infoNode.locationToggle.alpha = min( 1 - min(0.5,percentage)*2, locationAnimVal)
-        }
-        if let genreAnimVal = animationAlphaValues[infoNode.genreToggle] {
-            self.infoNode.genreToggle.alpha = min( 1 - min(0.5,percentage)*2, genreAnimVal)
-        }
+        self.locationToggle_alphaMultiplier = 1 - min(0.5,percentage)*2
+        self.genreToggle_alphaMultiplier = 1 - min(0.5,percentage)*2
+        self.genreToggle_alphaMultiplier = 1 - min(0.5,percentage)*2
         
         let title = self.infoNode.streamTitle
         let a = (position + (-position / 2))
@@ -560,16 +421,13 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                 POPLayerSetTranslationY(button.layer, position/3 + z + delta)
             }
         }
-       
-        if self.state == .Play {
-            if let statusAnimVal = animationAlphaValues[self.infoNode.streamStatusButton] {
-                self.infoNode.streamStatusButton.alpha = min( 1 - min(0.5,percentage)*2, statusAnimVal)
-                self.infoNode.artistTitle.alpha = min( 1 - min(0.5,percentage)*2, statusAnimVal)
-                animationAlphaValues[self.infoNode.artistTitle] = self.infoNode.artistTitle.alpha
-            }
+        
+        if self.state == .ReadyToPlay || self.state == .Play || self.state == .Syncing {
+            
+            self.artistLabel_alphaMultiplier = 1 - min(0.5,percentage)*2
             
             let trackT = self.infoNode.trackTitle
-            let trackTitleLimit = trackT.calculatedSize.height / 2 + 20
+            let trackTitleLimit = trackT.calculatedSize.height / 2 + 25
             let e = (position + (-position / 3))
             if e <= (trackT.position.y - trackTitleLimit) && percentage < 1 {
                 POPLayerSetTranslationY(trackT.layer, position/3)
@@ -586,7 +444,10 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                     POPLayerSetTranslationY(self.infoNode.playingIcon.layer, position/3 + z + delta)
                 }
             }
-
+            let s = POPTransition(percentage, startValue: 1, endValue: 0.75)
+            POPLayerSetScaleXY(trackT.layer, CGPointMake(s,s))
+//            print(percentage)
+            
             let artistT = self.infoNode.artistTitle
             let artistTitleLimit = trackTitleLimit + trackT.calculatedSize.height / 2 + 5 + artistT.calculatedSize.height / 2
             if e <= (artistT.position.y - artistTitleLimit) && percentage < 1 {
@@ -601,9 +462,9 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                     POPLayerSetTranslationY(artistT.layer, position/3 + z + delta)
                 }
             }
-
+            
             let favbutton = self.infoNode.addToFavoritesButton
-            let favbuttonLimit = trackTitleLimit + trackT.calculatedSize.height / 2 + 20 + favbutton.calculatedSize.height / 2
+            let favbuttonLimit = min(trackTitleLimit + trackT.calculatedSize.height / 2 + 30 + artistT.calculatedSize.height / 2, 150 - favbutton.calculatedSize.height / 2 - 10)
             if e <= (favbutton.position.y - favbuttonLimit) && percentage < 1 {
                 POPLayerSetTranslationY(favbutton.layer, position/3)
             } else if e <= (favbutton.position.y - favbuttonLimit) && percentage >= 1 {
@@ -618,7 +479,8 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             }
             
             let streambutton = self.infoNode.streamStatusButton
-            let streambuttonLimit = favbuttonLimit - 20 - favbutton.calculatedSize.height / 2 - streambutton.calculatedSize.height / 2
+            let streambuttonLimit = 150 - (streambutton.calculatedSize.height / 2 + 10)
+//                - 20 - favbutton.calculatedSize.height / 2 - streambutton.calculatedSize.height / 2
             if e <= (streambutton.position.y - streambuttonLimit) && percentage < 1 {
                 POPLayerSetTranslationY(streambutton.layer, position/3)
             } else if e <= (streambutton.position.y - streambuttonLimit) && percentage >= 1 {

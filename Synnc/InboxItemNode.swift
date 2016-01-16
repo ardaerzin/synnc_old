@@ -14,7 +14,7 @@ import pop
 class NotifcationReadIndicator : ASDisplayNode {
     var indicator : ASDisplayNode!
     
-        override init() {
+    override init() {
         super.init()
         
         self.indicator = ASDisplayNode()
