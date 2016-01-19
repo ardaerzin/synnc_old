@@ -313,23 +313,10 @@ class SpinnerNode : ASDisplayNode {
         msgNode.attributedString = NSAttributedString(string: "Rolling a joint..", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
         msgNode.spacingBefore = 20
         
-        userImageNode = ASNetworkImageNode()
+        userImageNode = ASNetworkImageNode(webImage: ())
         userImageNode.alpha = 0
         userImageNode.preferredFrameSize = CGSizeMake(75, 75)
-//        userImageNode.imageModificationBlock = {
-//            [unowned self]
-//            img in
-//            UIGraphicsBeginImageContextWithOptions(img.size, false, UIScreen.mainScreen().scale);
-//            let rect = CGRectMake(0,0,img.size.width, img.size.height)
-//            UIBezierPath(roundedRect: rect, cornerRadius: img.size.width / 2).addClip()
-//            (img).drawInRect(rect)
-//            
-//            let circleimg = UIGraphicsGetImageFromCurrentImageContext();
-//            UIGraphicsEndImageContext();
-//            
-//            self.imageDisplayAnimation.toValue = 1
-//            return circleimg
-//        }
+        userImageNode.cornerRadius = 3
         
         userLoginMsgNode = ASTextNode()
         userLoginMsgNode.spacingBefore = 20
@@ -347,8 +334,10 @@ class SpinnerNode : ASDisplayNode {
         let a = user.provider
         if let url = user.userExtension(WCLUserLoginType(rawValue: a)!)?.avatarUrl(userImageNode.bounds, scale: UIScreen.mainScreen().scale) {
             self.userImageNode.URL = url
+            self.imageDisplayAnimation.toValue = 1
         }
         userLoginMsgNode.attributedString = NSAttributedString(string: "Welcome back, \(user.name)", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
+        self.fetchData()
         self.setNeedsLayout()
     }
     override func didLoad() {
@@ -374,7 +363,6 @@ class FormNode : ASDisplayNode {
     var formHolder : LSFormNode!
     
     deinit {
-//        print("deinit form node")
         self.spinnerNode = nil
     }
     
