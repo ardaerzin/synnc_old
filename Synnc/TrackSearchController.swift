@@ -16,6 +16,7 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 import WCLSoundCloudKit
+import WCLPopupManager
 
 enum EntityType : String {
     case Artist = "artist"
@@ -28,29 +29,11 @@ protocol TrackSearchControllerDelegate {
     func didDeselectTrack(song: SynncTrack)
 }
 
-extension TrackSearchController : WCLAsyncTableViewDataSourceDelegate {
-    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
-        self.tracksManager.performUpdates(self.screenNode.tracksTable.view, updates: updatedItems, animated: true)
-    }
-}
-extension TrackSearchController : WCLAsyncCollectionViewDataSourceDelegate {
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
-        let bounds = self.screenNode.artistsCollection.view.bounds
-        let h = bounds.height
-        
-        return (min: CGSizeMake(100,h), max: CGSizeMake(100,h))
-    }
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
-        self.artistsManager.performUpdates(self.screenNode.artistsCollection.view, updates: updatedData, animated: true, completion: nil)
-    }
-}
-
-class TrackSearchController : ASViewController {
+class TrackSearchController : WCLPopupViewController {
     
     var queryString_artists : String = ""
     var queryString_tracks : String = ""
     
-//    var needsRefresh : Bool = false
     var screenNode : TrackSearchNode!
     var previous_trackSearchTimestamp : NSDate! = NSDate()
     var previous_userSearchTimestamp : NSDate! = NSDate()
@@ -69,23 +52,21 @@ class TrackSearchController : ASViewController {
         }
     }
     var selectedArtist : SynncArtist?
-//    var selectedUserCellIndex : NSIndexPath! {
-//        didSet {
-////            if selectedUserCellIndex != nil {
-////                self.searchInputField.resignFirstResponder()
-////                self.dataSource.artistSearchMode = true
-////            } else {
-////                self.dataSource.artistSearchMode = false
-////            }
-//        }
-//    }
     
-    init(){
-        let node = TrackSearchNode()
-        super.init(node: node)
+    init(size: CGSize) {
+        let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
+        super.init(nibName: nil, bundle: nil, size: size)
+        self.animationOptions = opts
+        self.configureView()
+    }
+    override func loadView() {
+        super.loadView()
         
-        self.screenNode = node
+        
+        self.screenNode = TrackSearchNode()
+        
         self.screenNode.inputNode.delegate = self
+        self.screenNode.closeButton.addTarget(self, action: Selector("closeTrackSearch:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.screenNode.artistsCollection.view.asyncDataSource = artistsDataSource
         self.screenNode.artistsCollection.view.asyncDelegate = self
@@ -95,9 +76,23 @@ class TrackSearchController : ASViewController {
         
         artistsDataSource.delegate = self
         tracksDataSource.delegate = self
+        
+        self.view.addSubnode(self.screenNode)
+        self.screenNode.view.frame = CGRect(origin: CGPointZero, size: self.size)
+        
+    }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        if let n = self.screenNode {
+            n.measureWithSizeRange(ASSizeRangeMake(self.view.frame.size, self.view.frame.size))
+        }
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func closeTrackSearch(sender : ButtonNode) {
+        self.closeView(true)
     }
 }
 
@@ -289,5 +284,22 @@ extension TrackSearchController {
                 }
             })
         }
+    }
+}
+
+extension TrackSearchController : WCLAsyncTableViewDataSourceDelegate {
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
+        self.tracksManager.performUpdates(self.screenNode.tracksTable.view, updates: updatedItems, animated: true)
+    }
+}
+extension TrackSearchController : WCLAsyncCollectionViewDataSourceDelegate {
+    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
+        let bounds = self.screenNode.artistsCollection.view.bounds
+        let h = bounds.height
+        
+        return (min: CGSizeMake(100,h), max: CGSizeMake(100,h))
+    }
+    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
+        self.artistsManager.performUpdates(self.screenNode.artistsCollection.view, updates: updatedData, animated: true, completion: nil)
     }
 }

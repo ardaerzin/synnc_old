@@ -116,15 +116,8 @@ class AnimatedLogoNode : ASDisplayNode {
                 
             }
         }
-        
-        let tapRecog = UITapGestureRecognizer(target: self, action: Selector("didTap:"))
-        self.view.addGestureRecognizer(tapRecog)
     }
     
-    func didTap(sender : AnimatedLogoNode!){
-        print("did tap")
-        self.stopAnimation()
-    }
     var isAnimating : Bool = false
     
     func getAnimationSeed() -> [CGFloat] {
