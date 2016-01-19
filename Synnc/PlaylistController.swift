@@ -329,17 +329,16 @@ extension PlaylistController {
 }
 extension PlaylistController {
     func displayTrackSearch(sender : ASButtonNode) {
-        let lc = TrackSearchController()
+        let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
         lc.delegate = self
         
-        let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
-        let x = WCLPopupViewController(nibName: nil, bundle: nil, options: opts, size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
-        x.addChildViewController(lc)
-        lc.view.frame = x.view.bounds
-        x.view.addSubview(lc.view)
-        lc.didMoveToParentViewController(x)
+//        let x = WCLPopupViewController(nibName: nil, bundle: nil, options: opts, size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
+//        x.addChildViewController(lc)
+//        lc.view.frame = x.view.bounds
+//        x.view.addSubview(lc.view)
+//        lc.didMoveToParentViewController(x)
         
-        WCLPopupManager.sharedInstance.newPopup(x)
+        WCLPopupManager.sharedInstance.newPopup(lc)
     }
 }
 
