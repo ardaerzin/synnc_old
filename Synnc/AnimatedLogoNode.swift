@@ -63,13 +63,17 @@ class BarNode : ASDisplayNode {
     }
     var seed : CGFloat = 0 {
         didSet {
-            self.calculateNextSeed(seed)
             self.animation.completionBlock = {
                 anim, finished in
+                self.calculateNextSeed(self.seed)
                 if self.isAnimating && self.seed != 0 {
                     self.seed = self.nextSeed
                 } else {
-                    self.pop_removeAnimationForKey("scaleAnimation")
+                    if self.seed != -1 {
+                        self.seed = self.nextSeed
+                    } else {
+                        self.pop_removeAnimationForKey("scaleAnimation")
+                    }
                 }
             }
             self.animation.toValue = seed
@@ -77,9 +81,8 @@ class BarNode : ASDisplayNode {
     }
     var nextSeed : CGFloat = 0
     func calculateNextSeed(currentSeed : CGFloat){
-        self.nextSeed = isAnimating ? CGFloat(Float(arc4random()) / Float(UINT32_MAX)) : 0
+        self.nextSeed = isAnimating ? CGFloat(Float(arc4random()) / Float(UINT32_MAX)) : -1
     }
-    
     override func didLoad() {
         super.didLoad()
         self.progress = 0
@@ -113,6 +116,14 @@ class AnimatedLogoNode : ASDisplayNode {
                 
             }
         }
+        
+        let tapRecog = UITapGestureRecognizer(target: self, action: Selector("didTap:"))
+        self.view.addGestureRecognizer(tapRecog)
+    }
+    
+    func didTap(sender : AnimatedLogoNode!){
+        print("did tap")
+        self.stopAnimation()
     }
     var isAnimating : Bool = false
     
@@ -134,7 +145,6 @@ class AnimatedLogoNode : ASDisplayNode {
         for bar in bars {
             bar.isAnimating = false
         }
-
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
