@@ -14,9 +14,9 @@ import WCLUtilities
 class ChatTableManager : WCLTableViewManager {
     override func performUpdates(tableView: ASTableView, updates: WCLListSourceUpdaterResult, animated: Bool, completion: ((Bool) -> Void)? = nil) {       
         Async.main {
-            
+
             tableView.beginUpdates()
-            
+
             if !updates.addedIndexPaths.isEmpty {
                 tableView.insertRowsAtIndexPaths(updates.addedIndexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
             }
@@ -28,13 +28,13 @@ class ChatTableManager : WCLTableViewManager {
                     tableView.moveRowAtIndexPath(item.fromIndexPath, toIndexPath: item.toIndexPath)
                 }
             }
-            
+        
             tableView.endUpdatesAnimated(true, completion: {
                 status in
                 self.finishUpdates()
                 completion?(status)
             })
-            
+
         }
     }
 }

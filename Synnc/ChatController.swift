@@ -97,6 +97,7 @@ class ChatController : ASViewController {
                     dataSource.delegate = self
                     dataSource.dataSourceLocked = false
                     self.screenNode.chatCollection.view.asyncDataSource = dataSource
+                    self.screenNode.chatCollection.view.reloadData()
                 }
             }
         }
@@ -219,9 +220,10 @@ class ChatController : ASViewController {
 extension ChatController : WCLAsyncTableViewDataSourceDelegate {
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
         
+        print("updated chat items:", updatedItems)
         self.manager.performUpdates(self.screenNode.chatCollection.view, updates: updatedItems, animated: true, completion: {
             status in
-            
+        
             if status {
                 let table = self.screenNode.chatCollection.view
                 let ind = table.numberOfRowsInSection(0) - 1
@@ -232,6 +234,8 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
             }
         })
     }
+    
+    
     func updateHeaderSize(indexPath : NSIndexPath){
         let table = self.screenNode.chatCollection.view
         if let ds = self.dataSource where ds.data.count > 0 {
@@ -254,7 +258,6 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
                 table.endUpdates()
             } )
         }
-
     }
     
 }
