@@ -125,14 +125,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         didSet {
         
             self.infoNode.trackTitle.alpha = max(stateAnimationProgress - 1, 1)
-//            self.infoNode.artistTitle.alpha = max(stateAnimationProgress - 1,1)
-            
-//            animationAlphaValues[infoNode.trackTitle] = max(stateAnimationProgress - 1, 1)
-//            animationAlphaValues[infoNode.artistTitle] = max(stateAnimationProgress - 1, 1)
-
-            self.infoNode.addToFavoritesButton.alpha = stateAnimationProgress - 2
-//                (stateAnimationProgress-1)
-            
+            self.infoNode.addToFavoritesButton.alpha = stateAnimationProgress - 1
             
             self.infoNode.streamTitle.alpha = -stateAnimationProgress + 1
             self.infoNode.startStreamButton.alpha = -stateAnimationProgress
@@ -141,9 +134,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             self.artistLabel_animationAlpha = max(stateAnimationProgress - 1, 1)
             self.genreToggle_animationAlpha = fabs(stateAnimationProgress)
             self.locationToggle_animationAlpha = fabs(stateAnimationProgress)
-            
-//            animationAlphaValues[infoNode.genreToggle] = fabs(stateAnimationProgress)
-//            animationAlphaValues[infoNode.locationToggle] = fabs(stateAnimationProgress)
             
             var startButtonAlpha : CGFloat = 0
             if state.rawValue <= 1 {
@@ -159,26 +149,9 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                 } else {
                     startButtonAlpha = y
                 }
-//                let y = POPTransition(abs(stateAnimationProgress - 1), startValue: 1, endValue: 0)
-//                if y < x {
-//                    startButtonAlpha = y
-//                } else {
-//                    startButtonAlpha = x!
-//                }
             }
             animationAlphaValues[infoNode.streamStatusButton] = startButtonAlpha
-            self.infoNode.streamStatusButton.alpha = startButtonAlpha
-            
-            if self.scrollPosition > 0 {
-//                let limit : CGFloat = self.calculatedSize.width - 150
-//                let percentage = scrollPosition/limit
-                
-//                self.infoNode.locationToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.locationToggle]!)
-//                self.infoNode.genreToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.genreToggle]!)
-            } else {
-//                self.infoNode.locationToggle.alpha = fabs(stateAnimationProgress)
-//                self.infoNode.genreToggle.alpha = fabs(stateAnimationProgress)
-            }
+            self.infoNode.streamStatusButton.alpha = startButtonAlpha    
         }
     }
     

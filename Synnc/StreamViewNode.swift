@@ -24,7 +24,7 @@ class StreamViewNode : ParallaxNode {
     var state : StreamVCState = .Hidden {
         didSet {
             if state != oldValue {
-                if state.rawValue >= StreamVCState.Play.rawValue {
+                if state.rawValue >= StreamVCState.Syncing.rawValue {
                     buttonUpdateAnimation.toValue = 1
                 } else {
                     buttonUpdateAnimation.toValue = 0

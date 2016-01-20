@@ -170,7 +170,7 @@ class StreamViewController : ASViewController {
     }
     
     func updatedState(state : StreamVCState) {
-        self.chatController.isEnabled = state.rawValue >= StreamVCState.Play.rawValue
+        self.chatController.isEnabled = state.rawValue >= StreamVCState.Syncing.rawValue
         (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).state = state
         self.screenNode.state = state
         
@@ -210,9 +210,12 @@ extension StreamViewController {
                 }
             }
         } else {
+            self.state = .Syncing
             StreamManager.sharedInstance.joinStream(self.stream!) {
                 success in
                 if success {
+                    print("JOINED")
+                    print("!*!*!*!*!**!*!*!*!*!*!*!*!*!**!")
                     //                StreamManager.sharedInstance.player.delegate = self
                 }
             }

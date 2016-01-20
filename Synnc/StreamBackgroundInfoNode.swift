@@ -92,7 +92,6 @@ class StreamBackgroundInfoNode : ASDisplayNode {
             self.trackTitle.alpha = trackUpdateAnimationProgress
             if let x = self.supernode as? StreamBackgroundNode, let z = x.animationAlphaValues[self.artistTitle] {
                 let a = min(z,trackUpdateAnimationProgress)
-//                print(a)
                 self.artistTitle.alpha = a
             }
         }
