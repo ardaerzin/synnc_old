@@ -60,9 +60,8 @@ class SettingsNode : ASDisplayNode {
         headerSpec.alignSelf = .Stretch
         
         if constrainedSize.max.height.isFinite {
-            contentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - (50 + 10 + 1/UIScreen.mainScreen().scale) ))
+            contentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - (50 + 1/UIScreen.mainScreen().scale) ))
         }
-//        contentNode.flexBasis = ASRelativeDimension(type: .Points, value: self.view.bounds.height - (50 + 10 + 1/UIScreen.mainScreen().scale) )
         
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, ASStaticLayoutSpec(children: [contentNode])])
     }
@@ -96,7 +95,6 @@ class SettingsContentNode : ASScrollNode {
         self.view.delaysContentTouches = false
         
         self.addSubnode(self.sourcesSection)
-//        self.addSubnode(self.securitySection)
         self.addSubnode(self.notificationsSection)
         self.addSubnode(self.aboutSection)
         self.addSubnode(self.feedbackSection)
