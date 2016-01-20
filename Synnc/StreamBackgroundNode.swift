@@ -170,8 +170,8 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             self.infoNode.streamStatusButton.alpha = startButtonAlpha
             
             if self.scrollPosition > 0 {
-                let limit : CGFloat = self.calculatedSize.width - 150
-                let percentage = scrollPosition/limit
+//                let limit : CGFloat = self.calculatedSize.width - 150
+//                let percentage = scrollPosition/limit
                 
 //                self.infoNode.locationToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.locationToggle]!)
 //                self.infoNode.genreToggle.alpha = min( 1 - min(0.5,percentage)*2, animationAlphaValues[infoNode.genreToggle]!)

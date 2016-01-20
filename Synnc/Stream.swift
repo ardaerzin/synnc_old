@@ -237,10 +237,10 @@ class Stream : Serializable {
                         var user : WCLUser!
                         
                         if let id = item["_id"].string {
-                            if let u = WCLUserManager.sharedInstance().findUser(id) {
+                            if let u = WCLUserManager.sharedInstance.findUser(id) {
                                 user = u
                             } else {
-                                user = WCLUserManager.sharedInstance().newUser(fromJSON: item)
+                                user = WCLUserManager.sharedInstance.newUser(fromJSON: item)
                             }
                         }
                         usersArr.append(user)
@@ -279,10 +279,10 @@ class Stream : Serializable {
                     let json = JSON(userInfo)
                     var user : WCLUser!
                     if let id = json["_id"].string {
-                        if let u = WCLUserManager.sharedInstance().findUser(id) {
+                        if let u = WCLUserManager.sharedInstance.findUser(id) {
                             user = u
                         } else {
-                            user = WCLUserManager.sharedInstance().newUser(fromJSON: json)
+                            user = WCLUserManager.sharedInstance.newUser(fromJSON: json)
                         }
                     }
                     

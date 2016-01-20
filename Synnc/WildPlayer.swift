@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 import MediaPlayer
 import WCLUtilities
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import WCLSoundCloudKit
 
 @objc protocol StreamerDelegate {

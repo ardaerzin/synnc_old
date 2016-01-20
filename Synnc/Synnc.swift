@@ -8,7 +8,7 @@
 
 import UIKit
 import FBSDKCoreKit
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import TwitterKit
 import Fabric
 import DeviceKit
@@ -74,7 +74,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         Fabric.with([Twitter.sharedInstance()])
         
         self.socket = initSocket("https://silver-sister.codio.io:9500")
-        WCLUserManager.sharedInstance().configure(self.socket, cloudinaryInstance : _cloudinary)
+        WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

@@ -8,7 +8,7 @@
 
 import Foundation
 import WCLUserManager
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import FBSDKCoreKit
 import SwiftyJSON
 import WCLUtilities
@@ -57,7 +57,7 @@ class MainUser : WCLUser {
     
     func leaveUserRoom(id : String, callback : ((status:Bool)->Void)?){
         if self.joinedUsers.indexOf(id) == nil {
-            WCLUserManager.sharedInstance().socket.emitWithAck("user:leave", id)(timeoutAfter: 0) {
+            WCLUserManager.sharedInstance.socket.emitWithAck("user:leave", id)(timeoutAfter: 0) {
                 ack in
                 guard let status = ack.first as? Bool else {
                     callback?(status: false)
@@ -74,7 +74,7 @@ class MainUser : WCLUser {
     }
     func joinUserRoom(id : String, callback : ((status:Bool)->Void)?){
         if self.joinedUsers.indexOf(id) == nil {
-            WCLUserManager.sharedInstance().socket.emitWithAck("user:join", id)(timeoutAfter: 0) {
+            WCLUserManager.sharedInstance.socket.emitWithAck("user:join", id)(timeoutAfter: 0) {
                 ack in
                 guard let status = ack.first as? Bool else {
                     callback?(status: false)

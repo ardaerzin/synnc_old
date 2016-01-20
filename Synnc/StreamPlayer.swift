@@ -14,7 +14,7 @@ import WCLSoundCloudKit
 import CoreMedia
 import UIKit
 import SDWebImage
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 
 class StreamPlayer : WildPlayer {
     

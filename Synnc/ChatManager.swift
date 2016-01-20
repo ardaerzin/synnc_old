@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import WCLUtilities
 import WCLUserManager
 import SwiftyJSON
@@ -296,7 +296,7 @@ class ChatManager : NSObject {
         
         let dataSource = chatData[item.stream_id]!
         
-        if let user = WCLUserManager.sharedInstance().findUser(item.user_id) {
+        if let user = WCLUserManager.sharedInstance.findUser(item.user_id) {
             
             item.user = user
             dataSource.pushItem(item, completion : {
@@ -315,7 +315,7 @@ class ChatManager : NSObject {
 //            chatData[item.stream_id]!.insert(item, atIndex: newIndex)
 //            delegate?.chatManager?(self, messageReceived: item, atIndex: newIndex)
         } else {
-            WCLUserManager.sharedInstance().findUser(item.user_id, cb: { (user) -> Void in
+            WCLUserManager.sharedInstance.findUser(item.user_id, cb: { (user) -> Void in
                 item.user = user
                 dataSource.pushItem(item, completion : {
 //                    Async.main {

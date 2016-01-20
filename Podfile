@@ -11,7 +11,6 @@ pod 'pop'
 pod 'WCLPopupManager'
 pod 'WCLUIKit'
 pod 'WCLUserManager/Core'
-pod 'WCLUserManager/SocketUser’
 pod 'WCLUserManager/SoundcloudUser’
 pod 'WCLNotificationManager’
 pod 'SpinKit'
@@ -27,7 +26,7 @@ pod 'TwitterKit'
 pod 'TwitterCore'
 pod 'DeviceKit'
 pod 'DKImagePickerController'
-pod 'WebASDKImageManager'
+pod 'WebASDKImageManager', :git => 'https://github.com/ide/WebASDKImageManager.git', :branch => 'master'
 pod 'BFPaperCheckbox'
 pod 'Shimmer'
 
