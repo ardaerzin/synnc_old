@@ -47,7 +47,6 @@ class ChatRoomDataSource : WCLAsyncTableViewDataSource {
             if var chatData = newData as? [ChatItem] where !newData.isEmpty {
                 chatData.sortInPlace { $0.timestamp.compare($1.timestamp) == NSComparisonResult.OrderedAscending }
                 //                if !self.dataSourceLocked {
-                print("za", newData)
                 super.processPendingData(oldData, newData: chatData)
                 //                }
             }
@@ -81,17 +80,7 @@ class ChatRoomDataSource : WCLAsyncTableViewDataSource {
 //        var a = self.pendingData
 //        a.append(item)
         
-        print("push item")
         self.pendingData = [item]
-        
-//        print("push item")
-//        if let _ = data.indexOf(item) {
-//            return
-//        }
-//        Async.background {
-//            self.data.sortInPlace { $0.timestamp.compare($1.timestamp) == NSComparisonResult.OrderedAscending }
-//            completion?()
-//        }
         
     }
     
@@ -135,8 +124,6 @@ class ChatItemNode : ASCellNode {
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let imageSpec = ASStaticLayoutSpec(children: [self.imageNode])
         imageSpec.spacingBefore = 20
-        
-        print("constrainedSize", constrainedSize.max)
         
         timeNode.flexBasis = ASRelativeDimension(type: .Points, value: 36)
         self.textNode.flexBasis = ASRelativeDimension(type: .Points, value: max(0,constrainedSize.max.width - 40 - 36 - 10 - 10 - 20 - 6))

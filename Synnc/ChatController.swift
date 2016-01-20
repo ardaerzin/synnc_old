@@ -220,7 +220,6 @@ class ChatController : ASViewController {
 extension ChatController : WCLAsyncTableViewDataSourceDelegate {
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
         
-        print("updated chat items:", updatedItems)
         self.manager.performUpdates(self.screenNode.chatCollection.view, updates: updatedItems, animated: true, completion: {
             status in
         
