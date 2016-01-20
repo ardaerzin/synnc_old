@@ -20,13 +20,7 @@ class ImportPlaylistsController : TabSubsectionController {
     override var _title : String! {
         return "Import Playlists"
     }
-    override init(){
-        let a = ASDisplayNode()
-        super.init(node: a)
-        a.backgroundColor = UIColor.greenColor()
-        self.screenNode = a
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override var _publicIdentifier : String! {
+        return "Import Playlists"
     }
 }

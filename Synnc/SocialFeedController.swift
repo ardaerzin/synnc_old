@@ -12,4 +12,7 @@ class SocialFeedController : TabSubsectionController {
     override var _title : String! {
         return "Social"
     }
+    override var _publicIdentifier : String! {
+        return "Social Feeds"
+    }
 }

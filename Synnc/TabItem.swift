@@ -15,40 +15,6 @@ import pop
 import SpinKit
 import WCLUserManager
 
-class TabSubsectionController : ASViewController {
-    
-    var screenNode : ASDisplayNode!
-    internal var _title : String! {
-        get {
-            return "Subsection"
-        }
-    }
-    override var title : String! {
-        get {
-            return _title
-        }
-        set {
-        }
-    }
-    init(){
-        let a = ASDisplayNode()
-        super.init(node: a)
-        a.backgroundColor = UIColor.whiteColor()
-        self.screenNode = a
-    }
-    override init(node: ASDisplayNode) {
-        super.init(node: node)
-        self.screenNode = node
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-}
-
 class TabNavigationController : UINavigationController, UINavigationControllerDelegate {
 
     override init(rootViewController: UIViewController) {

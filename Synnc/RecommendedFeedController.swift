@@ -12,4 +12,7 @@ class RecommendedFeedController : TabSubsectionController {
     override var _title : String! {
         return "Recommended"
     }
+    override var _publicIdentifier : String! {
+        return "Recommended by Synnc"
+    }
 }
