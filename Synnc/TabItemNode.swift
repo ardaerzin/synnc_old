@@ -28,7 +28,6 @@ class NavigationHolderNode : ASDisplayNode {
         scrollNode = TabbarContentScroller()
         scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         scrollNode.backgroundColor = UIColor.whiteColor()
-//        scrollNode.delegate = self
         
         self.headerNode.subSectionArea.delegate = self.scrollNode
         self.scrollNode.backgroundColor = UIColor.whiteColor()
@@ -40,15 +39,4 @@ class NavigationHolderNode : ASDisplayNode {
         self.headerNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width, 130))
         return ASStaticLayoutSpec(children: [self.headerNode, self.scrollNode])
     }
-//    override func hitTest(point: CGPoint, withEvent event: UIEvent!) -> UIView! {
-//        
-//        if let ht = super.hitTest(point, withEvent: event) {
-//            if ht == self.view {
-//                return nil
-//            } else {
-//                return ht
-//            }
-//        }
-//        return nil
-//    }
 }
