@@ -76,6 +76,10 @@ extension SettingsController {
 extension SettingsController {
     func toggleSoundcloudLogin(sender : SourceButton) {
         if !sender.selected {
+            if let u = Synnc.sharedInstance.user.soundcloud {
+                let rect = CGRectInset(UIScreen.mainScreen().bounds, 25, 100)
+                u.setLoginViewController(SynncSCLoginController(size: rect.size))
+            }
             Synnc.sharedInstance.user.socialLogin(.Soundcloud)
         } else {
             Synnc.sharedInstance.user.socialLogout(.Soundcloud)
