@@ -280,6 +280,7 @@
 		472CB4B71C41BDC100F82523 /* youtube_inactive@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */; };
 		47354E361C4F37A900A5F03E /* ControllerNotAvailableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */; };
 		47354E381C4F3E7F00A5F03E /* TabSubsectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E371C4F3E7F00A5F03E /* TabSubsectionController.swift */; };
+		47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */; };
 		475286D91C35989400731008 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286D81C35989400731008 /* Stream.swift */; };
 		475286DB1C359E1900731008 /* StreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DA1C359E1900731008 /* StreamManager.swift */; };
 		475286DD1C35A22E00731008 /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DC1C35A22E00731008 /* StreamViewController.swift */; };
@@ -704,6 +705,7 @@
 		472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_inactive@3x.png"; sourceTree = "<group>"; };
 		47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerNotAvailableNode.swift; sourceTree = "<group>"; };
 		47354E371C4F3E7F00A5F03E /* TabSubsectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabSubsectionController.swift; sourceTree = "<group>"; };
+		47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncSCLoginController.swift; sourceTree = "<group>"; };
 		475286D81C35989400731008 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
 		475286DA1C359E1900731008 /* StreamManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamManager.swift; sourceTree = "<group>"; };
 		475286DC1C35A22E00731008 /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
@@ -1285,6 +1287,14 @@
 			name = "Tab Item";
 			sourceTree = "<group>";
 		};
+		47354E3E1C50E5E900A5F03E /* SoundCloud Login Controller */ = {
+			isa = PBXGroup;
+			children = (
+				47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */,
+			);
+			name = "SoundCloud Login Controller";
+			sourceTree = "<group>";
+		};
 		4777052A1C3EB62D007089D0 /* StreamsFeed */ = {
 			isa = PBXGroup;
 			children = (
@@ -1379,6 +1389,7 @@
 		47A4E6AB1C0CB42800354EA8 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				47354E3E1C50E5E900A5F03E /* SoundCloud Login Controller */,
 				47354E3A1C4F3EA600A5F03E /* Tab Item */,
 				470F8C181C49DCFD00624F0F /* PopoverController */,
 				47C8F9831C1D13EB00333492 /* PlaylistController */,
@@ -2427,6 +2438,7 @@
 				470F8C041C48806D00624F0F /* StreamListenersNode.swift in Sources */,
 				47D7637C1C3A283B008E0334 /* WildPlayerTrackLoader.swift in Sources */,
 				47A4E6AF1C0CB46B00354EA8 /* RootViewController.swift in Sources */,
+				47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */,
 				936DB9741C41C5690069ACDA /* WildUser+FBSDK.swift in Sources */,
 				47EBDF9F1C1BE1990075CF0B /* SynncTrack+Spotify.swift in Sources */,
 				4704DDD31C17AC1900B40118 /* TabNode.swift in Sources */,
