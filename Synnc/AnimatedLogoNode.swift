@@ -55,7 +55,7 @@ class BarNode : ASDisplayNode {
     var isAnimating : Bool = false
     var progress : CGFloat = 0 {
         didSet {
-            let xScale = POPTransition(progress, startValue: isAnimating ? 0.2 : 0, endValue: 1)
+            let xScale = max(0,POPTransition(progress, startValue: isAnimating ? 0.2 : 0, endValue: 1))
             let z = self.bounds.width * (1-xScale)
             POPLayerSetTranslationX(self.layer, z/2)
             POPLayerSetScaleX(self.layer, xScale)
