@@ -36,17 +36,9 @@ class PlaylistController : ASViewController, WildAnimated {
     override var editing : Bool {
         didSet {
             if editing != oldValue {
-                
-                self.screenNode.editing = editing
-                
-//                self.screenNode.playlistTitleNode.userInteractionEnabled = editing
-//                
-//                self.screenNode.titleShimmer.shimmeringHighlightLength = 0.7
-//                self.screenNode.titleShimmer.shimmeringPauseDuration = 0
-//                
-//                self.screenNode.titleShimmer.shimmering = editing
-//                self.screenNode.imageNode.userInteractionEnabled = editing
-//                self.screenNode.imageNode.enabled = editing
+                if self.playlist != SharedPlaylistDataSource.findUserFavoritesPlaylist() {
+                    self.screenNode.editing = editing
+                }
             }
         }
     }
@@ -96,9 +88,6 @@ class PlaylistController : ASViewController, WildAnimated {
         UIApplication.sharedApplication().statusBarHidden = x
         return x
     }
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-    }
     
     var streamButton : ButtonNode!
     var editButton : ButtonNode!
@@ -123,6 +112,9 @@ class PlaylistController : ASViewController, WildAnimated {
             self.screenNode.playlist = self.playlist
         } else {
             self.playlist = playlist
+            if self.playlist == SharedPlaylistDataSource.findUserFavoritesPlaylist() {
+                self.screenNode.addSongsButton.hidden = true
+            }
         }
         
         self.screenNode.tracksTable.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
@@ -339,6 +331,13 @@ extension PlaylistController {
 //        lc.didMoveToParentViewController(x)
         
         WCLPopupManager.sharedInstance.newPopup(lc)
+    }
+}
+
+extension PlaylistController {
+    func updatedPlaylist(){
+        self.screenNode.tracksTable.view.reloadData()
+//        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
 }
 

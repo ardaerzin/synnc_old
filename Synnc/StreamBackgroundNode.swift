@@ -125,7 +125,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         didSet {
         
             self.infoNode.trackTitle.alpha = max(stateAnimationProgress - 1, 1)
-            self.infoNode.addToFavoritesButton.alpha = stateAnimationProgress - 1
+            self.addToFavs_animationAlpha = stateAnimationProgress - 1
             
             self.infoNode.streamTitle.alpha = -stateAnimationProgress + 1
             self.infoNode.startStreamButton.alpha = -stateAnimationProgress
@@ -220,6 +220,22 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     var artistLabel_alpha : CGFloat! = 1 {
         didSet {
             self.infoNode.artistTitle.alpha = artistLabel_animationAlpha * artistLabel_alphaMultiplier
+        }
+    }
+    
+    var addToFavs_animationAlpha : CGFloat! = 1 {
+        didSet {
+            addToFavs_alpha = addToFavs_alphaMultiplier * addToFavs_animationAlpha
+        }
+    }
+    var addToFavs_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            addToFavs_alpha = addToFavs_alphaMultiplier * addToFavs_animationAlpha
+        }
+    }
+    var addToFavs_alpha : CGFloat! = 1 {
+        didSet {
+            self.infoNode.addToFavoritesButton.alpha = addToFavs_alphaMultiplier * addToFavs_animationAlpha
         }
     }
     

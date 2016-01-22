@@ -118,11 +118,30 @@ extension SynncPlaylist {
                         let json = JSON(data)
                         self.parseFromJSON(self.managedObjectContext!, json: json)
                         self.save()
+                        
+                        if let cb = self.socketCallback {
+                            cb(playlist: self)
+                        }
                     }
                 }
             }
         }
         
+    }
+    
+    override func propertyNames() -> [String] {
+        var x = super.propertyNames()
+        if let ind = x.indexOf("delegate") {
+            x.removeAtIndex(ind)
+        }
+        if let ind = x.indexOf("needsNotifySocket") {
+            x.removeAtIndex(ind)
+        }
+        if let ind = x.indexOf("socketCallback") {
+            x.removeAtIndex(ind)
+        }
+        
+        return x
     }
     
     override func willSave() {

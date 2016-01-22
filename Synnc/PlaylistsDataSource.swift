@@ -130,6 +130,45 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
     }
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
     }
+    
+    func getUserFavoritesPlaylist(completionHandler : (playlist: SynncPlaylist?) -> Void){
+        var plist : SynncPlaylist?
+        
+        if let p = self.findUserFavoritesPlaylist() {
+            completionHandler(playlist: p)
+        } else {
+            plist = self.createUserFavoritesPlaylist()
+            
+            plist!.socketCallback = {
+                p in
+                
+                Synnc.sharedInstance.user.favPlaylistId = p.id!
+                Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "favPlaylistId" : p.id!])
+                completionHandler(playlist: p)
+                
+            }
+            plist!.save()
+        }
+    }
+    func findUserFavoritesPlaylist() -> SynncPlaylist? {
+        if let id = Synnc.sharedInstance.user.favPlaylistId {
+            let a = allItems.filter {
+                playlist in
+                return playlist.id == id
+            }
+            return a.first
+        } else {
+            return nil
+        }
+    }
+    func createUserFavoritesPlaylist() -> SynncPlaylist {
+        
+        let plist = SynncPlaylist.create(inContext: Synnc.sharedInstance.moc) as! SynncPlaylist
+        plist.user = Synnc.sharedInstance.user._id
+        plist.name = "Favorited"
+        
+        return plist
+    }
 }
 let SharedPlaylistDataSource : PlaylistsDataSource = {
     return PlaylistsDataSource()

@@ -19,6 +19,8 @@ import DeviceKit
 class MyPlaylistsController : TabSubsectionController {
 
     var selectedPlaylist : SynncPlaylist!
+    var playlistController : PlaylistController!
+    
     override var _title : String! {
         return "My Playlists"
     }
@@ -52,7 +54,8 @@ class MyPlaylistsController : TabSubsectionController {
 
 extension MyPlaylistsController {
     func displayPlaylist(playlist: SynncPlaylist?){
-        self.navigationController?.pushViewController(PlaylistController(playlist: playlist), animated: true)
+        self.playlistController = PlaylistController(playlist: playlist)
+        self.navigationController?.pushViewController(self.playlistController, animated: true)
     }
     func newPlaylistAction(sender : ButtonNode){
         self.displayPlaylist(nil)
@@ -121,6 +124,10 @@ extension MyPlaylistsController : PlaylistsDataSourceDelegate {
             (self.screenNode as! MyPlaylistsNode).emptyState = true
         } else {
             (self.screenNode as! MyPlaylistsNode).emptyState = false
+        }
+        
+        if let x = self.playlistController {
+            x.updatedPlaylist()
         }
     }
 }

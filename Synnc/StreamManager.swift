@@ -424,6 +424,10 @@ extension StreamManager {
             (dataArr, ack) in
             if let data = dataArr.first {
                 let json = JSON(data)
+                if let _ = json.null {
+                    return
+                }
+                
                 for item in json.array! {
                     let id = item["_id"].string
                     let oldStream = self.findStream(id)

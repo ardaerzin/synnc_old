@@ -38,13 +38,7 @@ class PlaylistNode : ParallaxNode {
                 
                 self.titleShimmer.shimmering = editing
                 self.mainScrollNode.backgroundNode.editing = editing
-                
-                
-//                (self.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.enabled = editing
-//                (self.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.userInteractionEnabled = editing
-                
-//                self.imageNode.userInteractionEnabled = editing
-//                self.imageNode.enabled = editing
+            
             }
         }
     }

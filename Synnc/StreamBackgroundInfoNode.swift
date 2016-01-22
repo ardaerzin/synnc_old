@@ -90,9 +90,12 @@ class StreamBackgroundInfoNode : ASDisplayNode {
     var trackUpdateAnimationProgress : CGFloat = 1 {
         didSet {
             self.trackTitle.alpha = trackUpdateAnimationProgress
+            
+           
             if let x = self.supernode as? StreamBackgroundNode, let z = x.animationAlphaValues[self.artistTitle] {
                 let a = min(z,trackUpdateAnimationProgress)
                 self.artistTitle.alpha = a
+                x.addToFavs_alphaMultiplier = trackUpdateAnimationProgress
             }
         }
     }
@@ -137,6 +140,8 @@ class StreamBackgroundInfoNode : ASDisplayNode {
         addToFavoritesButton.borderWidth = 1
         addToFavoritesButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
         addToFavoritesButton.setAttributedTitle(NSAttributedString(string: "ADD TO FAVORITES", attributes: buttonAttributes), forState: ASControlState.Normal)
+        addToFavoritesButton.setAttributedTitle(NSAttributedString(string: "REMOVE FROM FAVORITES", attributes: buttonAttributes), forState: ASControlState.Selected)
+        
         addToFavoritesButton.alpha = 0
         
         streamTitle = ASEditableTextNode()
@@ -194,6 +199,12 @@ class StreamBackgroundInfoNode : ASDisplayNode {
             self.trackTitle.attributedString = NSAttributedString(string: track.name, attributes: self.trackAttributes)
             self.artistTitle.attributedString = NSAttributedString(string: str, attributes: self.artistAttributes)
             self.setNeedsLayout()
+        
+            if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {
+                self.addToFavoritesButton.selected = true
+            } else {
+                self.addToFavoritesButton.selected = false
+            }
             
             if let x = self.supernode as? StreamBackgroundNode {
                 x.updateScrollPositions(x.scrollPosition)

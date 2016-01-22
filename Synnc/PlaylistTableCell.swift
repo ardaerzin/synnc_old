@@ -108,7 +108,8 @@ class PlaylistTableCell : ASCellNode {
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [trackNameNode, bottomLine, seperatorNode])
         a.alignSelf = .Stretch
         a.spacingBefore = 25
-        a.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 25)
+        
+        a.flexBasis = ASRelativeDimension(type: .Points, value: max(0,constrainedSize.max.width - 25))
         let b = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [a])
         return b
     }
