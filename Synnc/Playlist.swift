@@ -34,6 +34,7 @@ class SynncPlaylist: NSManagedObject {
     
     var delegate : PlaylistDelegate?
     var needsNotifySocket : Bool = false
+    var socketCallback : ((playlist : SynncPlaylist) -> Void)?
     
     /// Computed Properties
     var currentIndex : Int = 0 {

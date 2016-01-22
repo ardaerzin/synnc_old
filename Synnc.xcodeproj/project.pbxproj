@@ -297,7 +297,6 @@
 		477705261C3EB020007089D0 /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705251C3EB020007089D0 /* ChatManager.swift */; };
 		477705291C3EB628007089D0 /* StreamsFeedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705281C3EB628007089D0 /* StreamsFeedNode.swift */; };
 		4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777052B1C3EBAF7007089D0 /* StreamFeedDataSource.swift */; };
-		4786A6141C28A12100E1D03E /* TrackTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786A6131C28A12100E1D03E /* TrackTransformer.swift */; };
 		47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* Synnc.swift */; };
 		47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6831C0CAE6100354EA8 /* Assets.xcassets */; };
 		47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */; };
@@ -396,7 +395,6 @@
 		47EBDF821C1BBBF50075CF0B /* RecommendedFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF811C1BBBF50075CF0B /* RecommendedFeedController.swift */; };
 		47EBDF881C1BD8A80075CF0B /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF851C1BD8A80075CF0B /* Genre.swift */; };
 		47EBDF891C1BD8A80075CF0B /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF861C1BD8A80075CF0B /* Playlist.swift */; };
-		47EBDF8A1C1BD8A80075CF0B /* SynncTrack_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF871C1BD8A80075CF0B /* SynncTrack_old.swift */; };
 		47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */; };
 		47EBDF911C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8F1C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld */; };
 		47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */; };
@@ -723,7 +721,6 @@
 		477705251C3EB020007089D0 /* ChatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 		477705281C3EB628007089D0 /* StreamsFeedNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedNode.swift; sourceTree = "<group>"; };
 		4777052B1C3EBAF7007089D0 /* StreamFeedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamFeedDataSource.swift; sourceTree = "<group>"; };
-		4786A6131C28A12100E1D03E /* TrackTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTransformer.swift; sourceTree = "<group>"; };
 		47A4E6791C0CAE6100354EA8 /* Synnc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synnc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A4E67C1C0CAE6100354EA8 /* Synnc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Synnc.swift; sourceTree = "<group>"; };
 		47A4E6831C0CAE6100354EA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -833,7 +830,6 @@
 		47EBDF811C1BBBF50075CF0B /* RecommendedFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecommendedFeedController.swift; sourceTree = "<group>"; };
 		47EBDF851C1BD8A80075CF0B /* Genre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
 		47EBDF861C1BD8A80075CF0B /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
-		47EBDF871C1BD8A80075CF0B /* SynncTrack_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncTrack_old.swift; sourceTree = "<group>"; };
 		47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Playlist+Synnc.swift"; sourceTree = "<group>"; };
 		47EBDF901C1BDC0A0075CF0B /* SynncDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SynncDataModel.xcdatamodel; sourceTree = "<group>"; };
 		47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1590,7 +1586,6 @@
 		47C8F97A1C1CA25100333492 /* Playlist */ = {
 			isa = PBXGroup;
 			children = (
-				4786A6131C28A12100E1D03E /* TrackTransformer.swift */,
 				47EBDF861C1BD8A80075CF0B /* Playlist.swift */,
 				47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */,
 			);
@@ -1726,8 +1721,8 @@
 		47EBDF831C1BD8860075CF0B /* User Related */ = {
 			isa = PBXGroup;
 			children = (
-				936DB9731C41C5690069ACDA /* WildUser+FBSDK.swift */,
 				47A4E6B01C0CB4D600354EA8 /* MainUser.swift */,
+				936DB9731C41C5690069ACDA /* WildUser+FBSDK.swift */,
 				4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */,
 				4728F9491C34494000B427EA /* WildUser+SpotifyUser.swift */,
 			);
@@ -1749,7 +1744,6 @@
 		47EBDF9B1C1BE1770075CF0B /* Song */ = {
 			isa = PBXGroup;
 			children = (
-				47EBDF871C1BD8A80075CF0B /* SynncTrack_old.swift */,
 				47C8F98F1C20555B00333492 /* SynncTrack.swift */,
 				47EBDF9C1C1BE18B0075CF0B /* SynncTrack+Soundcloud.swift */,
 				47EBDF9E1C1BE1990075CF0B /* SynncTrack+Spotify.swift */,
@@ -2454,7 +2448,6 @@
 				47EBDF881C1BD8A80075CF0B /* Genre.swift in Sources */,
 				47EBDF9D1C1BE18B0075CF0B /* SynncTrack+Soundcloud.swift in Sources */,
 				47EBDFA41C1C8A060075CF0B /* SynncArtist+Soundcloud.swift in Sources */,
-				47EBDF8A1C1BD8A80075CF0B /* SynncTrack_old.swift in Sources */,
 				4728F93E1C31933A00B427EA /* SettingsController.swift in Sources */,
 				4728F9451C31D37300B427EA /* InboxItemNode.swift in Sources */,
 				4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */,
@@ -2464,7 +2457,6 @@
 				47C8F9901C20555B00333492 /* SynncTrack.swift in Sources */,
 				47B899C71C485421007C2B7F /* NHNetworkClock.m in Sources */,
 				47D763781C3A283B008E0334 /* PlayerSyncManager.swift in Sources */,
-				4786A6141C28A12100E1D03E /* TrackTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

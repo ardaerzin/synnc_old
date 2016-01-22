@@ -19,6 +19,7 @@ class MainUser : WCLUser {
 //    var avatarId : String!
     var generatedUsername : Bool = false
     var joinedUsers : [String] = []
+    var favPlaylistId : String!
     
     convenience init(socket: SocketIOClient) {
         self.init(alternatives: [
@@ -97,6 +98,11 @@ class MainUser : WCLUser {
         if self.status {
             self.syncFollowed()
         }
+    }
+    
+    override func updateUserInfo(info: JSON) {
+        super.updateUserInfo(info)
+        print(self.favPlaylistId)
     }
     
 //    override func avatarURL(type: WCLUserLoginType, frame: CGRect, scale: CGFloat) -> NSURL? {

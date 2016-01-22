@@ -123,6 +123,7 @@ class StreamViewController : ASViewController {
         self.configure(self.stream)
         self.updateUsers(stream)
         
+        (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).infoNode.addToFavoritesButton.addTarget(self, action: Selector("addSongToFavorites:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hideAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.editButton.addTarget(self, action: Selector("editStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.shareStreamButton.addTarget(self, action: Selector("shareStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
@@ -234,6 +235,34 @@ extension StreamViewController {
     
     func editStream(sender : ButtonNode) {
         
+    }
+    
+    func addSongToFavorites(sender : ButtonNode){
+        
+        guard let st = self.stream, let ind = st.currentSongIndex else {
+            return
+        }
+        
+        sender.selected = !sender.selected
+        let song = st.playlist.songs[ind as Int]
+        
+        if sender.selected {
+            SharedPlaylistDataSource.getUserFavoritesPlaylist() {
+                playlist in
+                
+                if let plist = playlist {
+                    plist.addSongs([song])
+                    plist.save()
+                }
+            }
+        } else {
+            print("remove song")
+            
+            if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let favInd = plist.indexOf(song) {
+                plist.removeSong(atIndexPath: NSIndexPath(forItem: favInd, inSection: 0))
+                plist.save()
+            }
+        }
     }
 }
 
