@@ -40,16 +40,6 @@ class PopoverNode : ASDisplayNode {
         super.touchesBegan(touches, withEvent: event)
         self.delegate?.hideWithTouch()
     }
-//    override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
-//        let s = super.hitTest(point, withEvent : event)
-//        print(s)
-//        if s == self.view {
-//            self.delegate?.hideWithTouch()
-//            return nil
-//        }
-//        return s
-//    }
-    
     var arrowAnimatableProperty : POPAnimatableProperty {
         get {
             let x = POPAnimatableProperty.propertyWithName("arrowAnimationProperty", initializer: {
@@ -89,11 +79,6 @@ class PopoverNode : ASDisplayNode {
     }
     var arrowAnimationProgress : CGFloat = 0 {
         didSet {
-//            print(arrowAnimationProgress)
-//            let x = POPProgress(arrowAnimationProgress, startValue: 0, endValue: self.arrowDiff)
-//            let z = POPTransition(x, startValue: 0, endValue: self.arrowDiff)
-//            print(z)
-            
             POPLayerSetTranslationX(self.arrowNode.layer, arrowAnimationProgress)
         }
     }
@@ -144,15 +129,6 @@ class PopoverNode : ASDisplayNode {
             let shit = POPTransition(displayAnimationProgress, startValue: -self.calculatedSize.height / 2, endValue: 0)
             POPLayerSetScaleXY(self.layer, CGPointMake(displayAnimationProgress, displayAnimationProgress))
             POPLayerSetTranslationXY(self.layer, CGPointMake(za, shit))
-            
-            
-//            let maxDiff = (self.arrowPosition.x - self.position.x)
-//            let za = POPTransition(displayAnimationProgress, startValue: maxDiff, endValue: 0)
-//            
-//            let shit = POPTransition(displayAnimationProgress, startValue: (-self.supernode!.calculatedSize.height/2 - 20) - (self.calculatedSize.height/2), endValue: self.topMargin - self.position.y)
-//            print(displayAnimationProgress, self.position.y)
-//            POPLayerSetScaleXY(self.layer, CGPointMake(displayAnimationProgress, displayAnimationProgress))
-//            POPLayerSetTranslationXY(self.layer, CGPointMake(za, shit))
         }
     }
     
@@ -169,12 +145,11 @@ class PopoverNode : ASDisplayNode {
         arrowNode.preferredFrameSize = CGSizeMake(20, 10)
         
         self.contentHolder = PopoverContentHolderNode()
-//        self.contentHolder.flexGrow = true
+        self.contentHolder.flexGrow = true
         self.contentHolder.alignSelf = .Stretch
         self.contentHolder.backgroundColor = UIColor.clearColor()
         
         self.backgroundColor = UIColor.clearColor()
-//            .blackColor().colorWithAlphaComponent(0.3)
         
         self.addSubnode(arrowNode)
         self.addSubnode(contentHolder)
@@ -186,7 +161,6 @@ class PopoverNode : ASDisplayNode {
     }
     override func layout() {
         super.layout()
-        self.supernode?.calculatedSize
         
         if let sn = self.supernode {
             self.position.y = sn.calculatedSize.height / 2 - 10

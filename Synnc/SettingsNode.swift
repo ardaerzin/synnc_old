@@ -53,7 +53,7 @@ class SettingsNode : ASDisplayNode {
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
-        buttonSpec.spacingAfter = 18
+        buttonSpec.spacingAfter = 10
         
         let headerSpec = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.headerNode, buttonSpec])
         headerSpec.flexBasis = ASRelativeDimension(type: .Points, value: 50)

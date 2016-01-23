@@ -485,7 +485,7 @@ extension StreamViewController {
             }
             
         } else {
-            self.popContentController.hidePopover()
+            self.popContentController.hidePopover(nil)
 //            hidePopover()
         }
     }

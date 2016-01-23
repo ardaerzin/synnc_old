@@ -144,7 +144,7 @@ class InboxItemNode : ASCellNode {
         spacer2.flexGrow = true
         
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [msgNode, timeStampNode])
-        a.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (31 + 50))
+        a.flexBasis = ASRelativeDimension(type: .Points, value: max(0,constrainedSize.max.width - (31 + 50)))
         a.spacingBefore = 31
         
         let b = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [a, ASStaticLayoutSpec(children: [readIndicator])])
