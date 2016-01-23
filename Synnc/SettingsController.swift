@@ -15,6 +15,9 @@ class SettingsController : PopContentController {
     init(user : MainUser){
         let node = SettingsNode()
         super.init(node: node)
+        
+        node.closeButton.addTarget(self, action: Selector("hideController:"), forControlEvents: .TouchUpInside)
+        
         self.screenNode = node
     }
     

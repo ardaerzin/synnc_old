@@ -46,7 +46,7 @@ class PopController : ASViewController {
         controller.didMoveToParentViewController(self)
     }
     
-    func hidePopover(){
+    func hidePopover(sender: AnyObject!){
         self.screenNode.displayAnimation.completionBlock = {
             [weak self]
             anim, finished in
@@ -65,9 +65,4 @@ extension PopController : PopoverNodeDelegate {
     func hideWithTouch() {
         self.delegate?.hidePopController()
     }
-}
-
-class PopContentController : ASViewController {
-    var screenNode : ASDisplayNode!
-    var topMargin : CGFloat = 0
 }

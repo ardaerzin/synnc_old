@@ -61,7 +61,7 @@ class InboxController : PopContentController {
         
         node.inboxTable.view.asyncDataSource = dataSource
         node.inboxTable.view.asyncDelegate = self
-        
+        node.closeButton.addTarget(self, action: Selector("hideController:"), forControlEvents: .TouchUpInside)
         self.dataSource.delegate = self
     }
 
@@ -96,6 +96,7 @@ class InboxNode : ASDisplayNode {
     var inboxTable : ASTableNode!
     var closeButton : ButtonNode!
     
+    
     let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 60/255, green: 60/255, blue: 60/255, alpha: 1), NSKernAttributeName : -0.1]
     
     override init() {
@@ -120,9 +121,7 @@ class InboxNode : ASDisplayNode {
         self.separator.backgroundColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1)
         
         self.inboxTable = ASTableNode(style: UITableViewStyle.Plain)
-//        self.inboxTable.alignSelf = .Stretch
         self.inboxTable.view.leadingScreensForBatching = 1
-//        self.inboxTable.flexGrow = true
         
         self.addSubnode(self.headerNode)
         self.addSubnode(self.closeButton)
@@ -142,7 +141,7 @@ class InboxNode : ASDisplayNode {
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
-        buttonSpec.spacingAfter = 18
+        buttonSpec.spacingAfter = 10
         
         let headerSpec = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.headerNode, buttonSpec])
         headerSpec.flexBasis = ASRelativeDimension(type: .Points, value: 50)
@@ -151,8 +150,8 @@ class InboxNode : ASDisplayNode {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
-        if constrainedSize.max.height.isFinite {
-            inboxTable.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - 65))
+        if let s = self.supernode {
+            inboxTable.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: max(0, s.calculatedSize.height - (50 + 1/UIScreen.mainScreen().scale))))
         }
         
         let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, ASStaticLayoutSpec(children: [inboxTable])])

@@ -121,6 +121,7 @@ class MeController : TabItemController {
         get {
             if _popContentController == nil {
                 _popContentController = PopController()
+                _popContentController.delegate = self
             }
             return _popContentController
         }
@@ -162,7 +163,7 @@ extension MeController {
         togglePopover(sender, contentController: self.inboxController)
     }
     
-    func togglePopover(sender : ButtonNode, contentController : PopContentController){
+    func togglePopover(sender : ButtonNode, contentController : PopContentController!){
         if sender.selected {
             if let selected = selectedPopoverButton where selected != sender {
                 selected.selected = false
@@ -179,11 +180,10 @@ extension MeController {
             let x = contentController.screenNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(self.view.frame.width, 0), CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30)))
             var s = x.size
             s.height += 20
-//            print(c.screenNode.calculatedSize, x.size)
-            
             if !self.popContentController.displayed {
                 self.addChildViewController(self.popContentController)
                 if self.popContentController.view.frame == CGRectZero {
+                    print(CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30))
                     self.popContentController.view.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
                 }
                 self.popContentController.screenNode.displayAnimation.completionBlock = {
@@ -195,11 +195,8 @@ extension MeController {
                 self.popContentController.screenNode.displayAnimation.toValue = 1
                 self.popContentController.displayed = true
             }
-            
-//            self.popContentController.setContent(contentController)
-            
         } else {
-            hidePopover()
+            self.popContentController.hidePopover(nil)
         }
     }
     
@@ -276,5 +273,14 @@ extension MeController {
                 menode.updateForUser(Synnc.sharedInstance.user)
             }
         
+    }
+}
+
+extension MeController : PopControllerDelegate {
+    func hidePopController() {
+        selectedPopoverButton.selected = false
+        self.togglePopover(self.selectedPopoverButton, contentController: nil)
+        //        self.selectedPopoverButton.selected = false
+        //        self.selectedPopoverButton = nil
     }
 }
