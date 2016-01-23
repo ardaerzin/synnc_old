@@ -28,8 +28,14 @@ class TabNavigationController : UINavigationController, UINavigationControllerDe
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    override func loadView() {
+        super.loadView()
+        
+        self.view.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.automaticallyAdjustsScrollViewInsets = false
         self.delegate = self
     }
     func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
