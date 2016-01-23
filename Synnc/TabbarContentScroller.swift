@@ -108,7 +108,7 @@ class TabbarContentScroller : ASScrollNode {
         self.currentIndex = item.selectedIndex
     }
     
-        override init() {
+    override init() {
         super.init()
     }
     

@@ -34,11 +34,7 @@ class TabControllerNode : ASDisplayNode {
     
     var tabbar : TabNode!
     var contentHolder : ASDisplayNode!
-    
-//    var headerNode : HeaderNode!
-//    var scrollNode : TabbarContentScroller!
-//    var navigationNode : NavigationHolderNode!
-    
+
     var item: TabItem!
     
     init(items: [TabItem]) {
@@ -48,14 +44,8 @@ class TabControllerNode : ASDisplayNode {
         tabbar.flexBasis = ASRelativeDimension(type: .Points, value: 50)
         
         contentHolder = ASDisplayNode()
-//
-//        self.headerNode.subSectionArea.delegate = self.scrollNode
         
         self.backgroundColor = UIColor.whiteColor()
-        
-//        self.addSubnode(scrollNode)
-//        self.addSubnode(headerNode)
-//        self.addSubnode(navigationNode)
         
         self.addSubnode(contentHolder)
         self.addSubnode(tabbar)
@@ -73,23 +63,3 @@ class TabControllerNode : ASDisplayNode {
         return ASStaticLayoutSpec(children: [self.tabbar, self.contentHolder])
     }
 }
-
-//extension TabControllerNode : TabbarContentScrollerDelegate {
-//    func didScrollToRatio(ratio: CGFloat) {
-//        let subsection = self.headerNode.subSectionArea
-//        let a = POPTransition(ratio, startValue: subsection.minX, endValue: subsection.maxX)
-//        subsection.currentIndicatorPosition = a
-//    }
-//    func didChangeCurrentIndex(index: Int) {
-//        self.item.selectedIndex = index
-//        self.headerNode.subSectionArea.selectedSubsectionIndex = index
-//    }
-//    func updateForItem(item: TabItem){
-//        self.headerNode.updateForItem(item)
-////        self.scrollNode.updateForItem(item)
-//        didChangeCurrentIndex(item.selectedIndex)
-//    }
-//    func beganScrolling() {
-//        self.headerNode.subSectionArea.pop_removeAnimationForKey("indicatorPositionAnimation")
-//    }
-//}

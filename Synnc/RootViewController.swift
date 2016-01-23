@@ -72,6 +72,8 @@ class RootViewController : ASViewController {
         
         let node = TabControllerNode(items: controllers)
         super.init(node: node)
+        self.automaticallyAdjustsScrollViewInsets = false
+        
         self.screenNode = node
     }
     required init?(coder aDecoder: NSCoder) {
@@ -79,6 +81,8 @@ class RootViewController : ASViewController {
     }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        print("DID APPEAR:", self.view.frame)
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -175,11 +179,17 @@ extension RootViewController : TabbarDelegate {
     func didSetTabItem(tabbar: TabNode!, item: TabItem) {
         if let vc = item as? TabItemController, let rvc = self.rootViewController {
             let nvc = vc.navController
+            
             self.addChildViewController(nvc)
-            nvc.view.frame.size = self.view.bounds.size
+            nvc.view.frame = UIScreen.mainScreen().bounds
+
             self.screenNode.contentHolder.view.addSubview(nvc.view)
             nvc.didMoveToParentViewController(self)
             self.displayItem = item
+            
+            vc.screenNode.setNeedsLayout()
+            nvc.setNeedsStatusBarAppearanceUpdate()
+            nvc.view.setNeedsLayout()
             
             rvc.displayStatusBar = !vc.prefersStatusBarHidden()
         }

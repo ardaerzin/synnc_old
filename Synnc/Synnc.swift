@@ -100,6 +100,8 @@ class Synnc : UIResponder, UIApplicationDelegate {
         self.user = MainUser(socket: self.socket)
         
         //Notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("willChangeStatusBarFrame:"), name: UIApplicationWillChangeStatusBarFrameNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didChangeStatusBarFrame:"), name: UIApplicationDidChangeStatusBarFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         
         //Initialize rootViewController for main window
@@ -123,6 +125,13 @@ class Synnc : UIResponder, UIApplicationDelegate {
         WCLNotificationManager.sharedInstance().delegate = self
         
         return true
+    }
+    
+    func willChangeStatusBarFrame(notification : NSNotification!){
+        print("willChangeStatusBarFrame")
+    }
+    func didChangeStatusBarFrame(notification : NSNotification!){
+        print("didChangeStatusBarFrame")
     }
     
     func applicationWillResignActive(application: UIApplication) {
