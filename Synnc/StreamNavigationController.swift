@@ -59,18 +59,27 @@ class StreamNavigationController : UINavigationController {
     var windowBounds : CGRect!
     var tapRecognizer : UITapGestureRecognizer!
     var panRecognizer : UIPanGestureRecognizer!
-
+    var userStreamController : StreamViewController!
     init(){
         super.init(nibName: nil, bundle: nil)
         panRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handlePanRecognizer:"))
         self.view.addGestureRecognizer(panRecognizer)
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBarHidden = true
+        
+        self.pushViewController(UIViewController(), animated: false)
     }
     
     func displayMyStream() {
         if let us = Synnc.sharedInstance.streamManager.userStream {
-            self.displayStream(us)
+            if userStreamController == nil {
+                userStreamController = StreamViewController(stream: us)
+            }
+            if let _ = self.viewControllers.indexOf(userStreamController) {
+                self.popToViewController(userStreamController, animated: false)
+            } else {
+                self.pushViewController(userStreamController, animated: false)
+            }
         } else {
             if SharedPlaylistDataSource.allItems.isEmpty {
                 if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {
@@ -78,11 +87,23 @@ class StreamNavigationController : UINavigationController {
                 }
                 return
             }
-            self.pushViewController(StreamViewController(stream: nil), animated: false)
+            if userStreamController == nil {
+                userStreamController = StreamViewController(stream: nil)
+            }
+            if let _ = self.viewControllers.indexOf(userStreamController) {
+                self.popToViewController(userStreamController, animated: false)
+            } else {
+                self.pushViewController(userStreamController, animated: false)
+            }
             self.display()
         }
     }
-    
+    func displayActiveStream(sender: AnyObject!){
+        if let x = StreamManager.sharedInstance.activeStream {
+            self.pushViewController(StreamViewController(stream: x), animated: false)
+            self.display()
+        }
+    }
     func displayStream(stream : Stream){
         self.pushViewController(StreamViewController(stream: stream), animated: false)
         self.display()
@@ -108,6 +129,7 @@ class StreamNavigationController : UINavigationController {
         
         self.view.frame = UIScreen.mainScreen().bounds
     }
+    
     func beginPan(recognizer : UIPanGestureRecognizer){
         initialTouchTopWindowPosition = self.view.frame.origin.y
         self.pop_removeAnimationForKey("inc.stamp.pk.window.progress")
@@ -155,6 +177,7 @@ class StreamNavigationController : UINavigationController {
     
     var statusbarDisplay : Bool = true
     func display(){
+        self.animation.completionBlock = nil
         self.animation.toValue = 0
         
         if let rvc = self.rootViewController {
@@ -164,6 +187,24 @@ class StreamNavigationController : UINavigationController {
         UIApplication.sharedApplication().statusBarHidden = true
     }
     func hide(){
+        self.animation.completionBlock = {
+            anim, finished in
+                    
+            if let controller = self.viewControllers.last as? StreamViewController {
+            
+                if controller.stream == nil || controller.stream != StreamManager.sharedInstance.activeStream || controller.stream != StreamManager.sharedInstance.userStream {
+                    if controller != self.userStreamController {
+                        self.popViewControllerAnimated(false)
+                    }
+                }
+                
+//                print(controller.stream)
+//                print(StreamManager.sharedInstance.activeStream)
+//                || controller.stream != StreamManager.sharedInstance.userStream  {
+//                print("delete this", controller)
+            }
+        }
+        
         self.animation.toValue = 1
         var status : Bool = false
         if let rvc = self.rootViewController, let tabitem = rvc.displayItem as? TabItemController {

@@ -181,6 +181,7 @@ class StreamCreateController : NSObject {
     func getAddress(){
         let location = WCLLocationManager.sharedInstance().getCurrentLocation()
         WCLLocationManager.sharedInstance().gpsManager.reverseGeocodeLocationUsingGoogleWithCoordinates(location, callback: { (address, error) -> Void in
+            print(address)
             if let ad = address {
                 self.streamCity = (ad.locality as String).uppercaseString
                 

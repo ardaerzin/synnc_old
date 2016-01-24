@@ -99,6 +99,7 @@ class HeaderNode : ASDisplayNode {
         
         self.nowPlayingIcon = AnimatedLogoNode(barCount: 5)
         nowPlayingIcon.preferredFrameSize = CGSizeMake(40, 34)
+        nowPlayingIcon.addTarget(self, action: Selector("displayActiveStream:") , forControlEvents: .TouchUpInside)
         
         self.subSectionArea = SubsectionSelectorNode()
         
@@ -117,6 +118,10 @@ class HeaderNode : ASDisplayNode {
         self.backgroundColor = UIColor.whiteColor()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didSetActiveStream:"), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func displayActiveStream(sender: AnimatedLogoNode) {
+        Synnc.sharedInstance.streamNavigationController.displayActiveStream(nil)
     }
     
     func didSetActiveStream(notification : NSNotification!) {

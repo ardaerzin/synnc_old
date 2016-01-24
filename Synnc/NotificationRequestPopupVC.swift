@@ -13,11 +13,13 @@ import WCLUserManager
 import SwiftyJSON
 import WCLNotificationManager
 
-class FirstLoginPopupVC : WCLPopupViewController {
-    var node : FirstLoginPopupNode!
+class NotificationRequestPopupVC : WCLPopupViewController {
+    var node : NotificationRequestPopupNode!
     var callback : ((status : Bool) -> Void)?
+    
     init(size: CGSize) {
         super.init(nibName: nil, bundle: nil, size: size)
+        //        self.user = user
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
         self.view.layer.cornerRadius = 5
         self.view.clipsToBounds = true
@@ -27,12 +29,12 @@ class FirstLoginPopupVC : WCLPopupViewController {
     }
     override func loadView() {
         super.loadView()
-        let n = FirstLoginPopupNode()
+        let n = NotificationRequestPopupNode()
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.yesButton.addTarget(self, action: Selector("requestNotification:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.noButton.addTarget(self, action: Selector("dismissNotificationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
@@ -50,19 +52,20 @@ class FirstLoginPopupVC : WCLPopupViewController {
         super.viewDidLayoutSubviews()
         self.node.fetchData()
     }
-    func dismissLocationAccess(sender : ButtonNode) {
+    func requestNotification(sender : ButtonNode){
+        WCLNotificationManager.sharedInstance().settingsManager.requestNotificationPermissions()
+        self.closeView(true)
+    }
+    func dismissNotificationAccess(sender : ButtonNode) {
         self.closeView(true)
     }
     override func closeView(animated: Bool) {
         super.closeView(animated)
-        
-        Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "generatedUsername" : false])
-        
     }
     
 }
 
-class FirstLoginPopupNode : ASDisplayNode {
+class NotificationRequestPopupNode : ASDisplayNode {
     
     var messageNode : ASTextNode!
     var imageNode : ASNetworkImageNode!
@@ -76,14 +79,12 @@ class FirstLoginPopupNode : ASDisplayNode {
     override func fetchData() {
         super.fetchData()
         
-        if let u = Synnc.sharedInstance.user, let url = u.avatarURL(WCLUserLoginType(rawValue: u.provider)!, frame: CGRect(origin: CGPointZero, size: self.imageNode.calculatedSize), scale: UIScreen.mainScreen().scale) {
-            self.imageNode.URL = url
-            let paragraphAtrributes = NSMutableParagraphStyle()
-            paragraphAtrributes.alignment = .Center
-            if let name = u.username {
-                messageNode.attributedString = NSAttributedString(string: "@"+name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 20)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
-            }
-        }
+        let primaryIconsDictionary = NSBundle.mainBundle().infoDictionary?["CFBundleIcons"]?["CFBundlePrimaryIcon"] as? NSDictionary
+        let iconFiles = primaryIconsDictionary!["CFBundleIconFiles"] as! NSArray
+        let lastIcon = iconFiles.lastObject as! NSString //last seems to be largest, use first for smallest
+        let theIcon = UIImage(named: lastIcon as String)
+        
+        self.imageNode.image = theIcon
     }
     
     override init() {
@@ -95,18 +96,21 @@ class FirstLoginPopupNode : ASDisplayNode {
         
         messageNode = ASTextNode()
         messageNode.alignSelf = .Stretch
+        messageNode.attributedString = NSAttributedString(string: "Synnc wants to send you notifications", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 20)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
         infoNode = ASTextNode()
         infoNode.alignSelf = .Stretch
-        infoNode.attributedString = NSAttributedString(string: "Welcome To Synnc. If you don't like your username or photo, you can edit them from the profile section.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
+        infoNode.attributedString = NSAttributedString(string: "With notifications, you will stay in touch with your followers and get the latest news.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
         imageNode = ASNetworkImageNode(webImage: ())
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        yesButton.setAttributedTitle(NSAttributedString(string: "Go To Profile", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        yesButton.setAttributedTitle(NSAttributedString(string: "Sure", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        yesButton.minScale = 1
         
         noButton = ButtonNode()
-        noButton.setAttributedTitle(NSAttributedString(string: "Skip", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        noButton.setAttributedTitle(NSAttributedString(string: "Later", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        noButton.minScale = 1
         
         self.addSubnode(imageNode)
         self.addSubnode(messageNode)
