@@ -102,7 +102,6 @@ class MainUser : WCLUser {
     
     override func updateUserInfo(info: JSON) {
         super.updateUserInfo(info)
-        print(self.favPlaylistId)
     }
     
 //    override func avatarURL(type: WCLUserLoginType, frame: CGRect, scale: CGFloat) -> NSURL? {

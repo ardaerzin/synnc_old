@@ -183,10 +183,16 @@ extension StreamManager {
                 if stream == self?.activeStream {
                     let a = self?.activeStream
                     self?.activeStream = nil
+                    if stream == self?.userStream {
+                        self?.userStream = nil
+                    }
                     self?.player.resetPlayer()
                     let json = JSON(data)
                     a?.fromJSON(json)
                 }
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("EndedActiveStream", object: stream, userInfo: nil)
+                
                 completion?(status: true)
             } else {
                 completion?(status: false)
@@ -409,12 +415,22 @@ extension StreamManager {
                 if oldStream != nil {
                     oldStream!.fromJSON(json)
                 } else {
-                    let newStream = Stream(json: json, delegate: self)
-                    if $.find(self.streams, callback: {$0 == newStream}) == nil {
-                        self.streams.append(newStream)
-                    }
-                    let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
-                    NSNotificationCenter.defaultCenter().postNotification(notification)
+                    
+                    self.findOrCreateFromData([json], completionBlock: {
+                        streams in
+                        
+                        let newStream = streams.first!
+                        
+                        if $.find(self.userFeed, callback: {$0 == newStream}) == nil {
+                            self.userFeed.append(newStream)
+                        }
+                        if $.find(self.streams, callback: {$0 == newStream}) == nil {
+                            self.streams.append(newStream)
+                        }
+                        let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
+                        NSNotificationCenter.defaultCenter().postNotification(notification)
+                    })
+                    
                 }
             }
         }

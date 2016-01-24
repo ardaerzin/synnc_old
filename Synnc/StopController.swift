@@ -12,7 +12,7 @@ import BFPaperCheckbox
 
 class StopController : PopContentController {
     
-    var stream : Stream?
+//    var stream : Stream?
     
     init(){
         let node = StopControllerNode()
@@ -36,17 +36,25 @@ extension StopController {
         }
     }
     func yesAction(sender: ButtonNode) {
-        print("yes action")
-        guard let s = self.stream else {
-            return
+//        guard let s = self.stream else {
+//            return
+//        }
+//        
+        if let streamController = self.parentViewController?.parentViewController as? StreamViewController {
+            if let p = self.parentViewController as? PopController {
+                p.hideWithTouch()
+            }
+            streamController.endOfPlaylist(nil)
         }
-        StreamManager.sharedInstance.stopStream(s) {
-            status in
-            
-            print("done stopping", status)
-        }
-        if let p = self.parentViewController as? PopController {
-            p.hideWithTouch()
-        }
+        
+//        StreamManager.sharedInstance.stopStream(s) {
+//            status in
+//            
+//            print(self.parentViewController, self.parentViewController?.parentViewController)
+//            print("done stopping", status)
+//        }
+//        if let p = self.parentViewController as? PopController {
+//            p.hideWithTouch()
+//        }
     }
 }

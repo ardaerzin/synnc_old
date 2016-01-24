@@ -11,6 +11,8 @@ import UIKit
 import AsyncDisplayKit
 import pop
 import WCLUIKit
+import WCLNotificationManager
+import WCLPopupManager
 
 extension UIViewController {
     var rootViewController : RootViewController? {
@@ -149,6 +151,11 @@ extension RootViewController {
         self.loginController.willMoveToParentViewController(nil)
         self.loginController.removeFromParentViewController()
         self.loginController = nil
+        
+        if !WCLNotificationManager.sharedInstance().settingsManager.isAllowed {
+            let x = NotificationRequestPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+            WCLPopupManager.sharedInstance.newPopup(x)
+        }
     }
 }
 

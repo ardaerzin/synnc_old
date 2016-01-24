@@ -33,6 +33,9 @@ class StreamBackgroundInfoNode : ASDisplayNode {
     var trackTitle : ASTextNode!
     var artistTitle : ASTextNode!
     
+    var closeButton : ButtonNode!
+    var endTitle : ASTextNode!
+    
     var titleSizeHeight : CGFloat! {
         didSet {
             if let old = oldValue where titleSizeHeight != old {
@@ -129,6 +132,21 @@ class StreamBackgroundInfoNode : ASDisplayNode {
         streamStatusButton.normalBgColor = UIColor.SynncColor()
         streamStatusButton.selectedBgColor = UIColor.SynncColor()
         
+        endTitle = ASTextNode()
+        endTitle.alpha = 0
+        endTitle.spacingAfter = 5
+        endTitle.alignSelf = .Stretch
+        endTitle.maximumNumberOfLines = 2
+        endTitle.attributedString = NSAttributedString(string: "End of Stream", attributes: self.trackAttributes)
+        endTitle.alpha = 0
+//        endTitle.backgroundColor = UIColor.redColor()
+        
+        closeButton = TitleColorButton(normalTitleString: "DISMISS VIEW", selectedTitleString: "DISMISS VIEW", attributes: buttonAttributes, normalColor: .whiteColor(), selectedColor: .whiteColor())
+        closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
+        closeButton.alpha = 0
+        closeButton.backgroundColor = UIColor.SynncColor()
+        closeButton.normalBgColor = UIColor.SynncColor()
+        closeButton.selectedBgColor = UIColor.SynncColor()
         
         streamStatusButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(162, 35))
         streamStatusButton.cornerRadius = 3
@@ -182,6 +200,9 @@ class StreamBackgroundInfoNode : ASDisplayNode {
         self.addSubnode(locationToggle)
         self.addSubnode(genreToggle)
         self.addSubnode(playingIcon)
+        
+        self.addSubnode(endTitle)
+        self.addSubnode(closeButton)
     }
     
     func updateForTrack(track : SynncTrack) {
@@ -247,6 +268,11 @@ class StreamBackgroundInfoNode : ASDisplayNode {
         self.playingIcon.position.x = self.calculatedSize.width - (self.playingIcon.calculatedSize.width / 2)
         self.playingIcon.position.y = z1 / 2
         
+        self.endTitle.position.x = self.calculatedSize.width / 2
+        self.endTitle.position.y = self.trackTitle.position.y
+        
+        self.closeButton.position.x = self.calculatedSize.width / 2
+        self.closeButton.position.y = self.addToFavoritesButton.position.y
     }
     
     override func layoutDidFinish() {
@@ -258,7 +284,8 @@ class StreamBackgroundInfoNode : ASDisplayNode {
         let statusButtonSpec = ASStaticLayoutSpec(children: [streamStatusButton])
         statusButtonSpec.spacingAfter = 20
         self.trackTitle.sizeRange = ASRelativeSizeRangeMake(ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 0)), ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 100)))
+        self.endTitle.sizeRange = ASRelativeSizeRangeMake(ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 0)), ASRelativeSizeMake(ASRelativeDimension(type: .Percent, value: 0.8), ASRelativeDimension(type: .Points, value: 100)))
         
-        return ASStaticLayoutSpec(children: [streamTitle, startStreamButton, locationToggle, genreToggle, streamStatusButton, addToFavoritesButton, trackTitle, artistTitle, playingIcon])
+        return ASStaticLayoutSpec(children: [streamTitle, startStreamButton, locationToggle, genreToggle, streamStatusButton, addToFavoritesButton, trackTitle, artistTitle, playingIcon, endTitle, closeButton])
     }
 }

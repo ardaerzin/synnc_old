@@ -24,7 +24,7 @@ class StreamViewNode : ParallaxNode {
     var state : StreamVCState = .Hidden {
         didSet {
             if state != oldValue {
-                if state.rawValue >= StreamVCState.Syncing.rawValue {
+                if state.rawValue >= StreamVCState.Syncing.rawValue && state.rawValue < StreamVCState.Finished.rawValue {
                     buttonUpdateAnimation.toValue = 1
                 } else {
                     buttonUpdateAnimation.toValue = 0
@@ -92,7 +92,7 @@ class StreamViewNode : ParallaxNode {
         }
     }
     
-    init(chatNode : ASDisplayNode, chatbar : ChatBarNode, content : StreamContentNode) {
+    init(chatNode : ASDisplayNode?, chatbar : ChatBarNode?, content : StreamContentNode) {
         let bgNode = StreamBackgroundNode()
         super.init(backgroundNode: bgNode, contentNode: content)
         self.contentNode = content
@@ -102,7 +102,7 @@ class StreamViewNode : ParallaxNode {
         
         self.headerNode.buttons = buttons
         self.addSubnode(self.chatNode)
-        self.addSubnode(chatbar)
+        self.addSubnode(self.chatbar)
         
         shareStreamButton.alpha = 0
         stopStreamButton.alpha = 0
@@ -110,13 +110,19 @@ class StreamViewNode : ParallaxNode {
     
     override func layout() {
         super.layout()
-        self.chatNode.position.y = self.calculatedSize.height / 2 + self.chatNode.calculatedSize.height
-        self.chatbar.position.y = self.calculatedSize.height + self.chatbar.calculatedSize.height/2
+        if let _ = self.chatNode {
+            self.chatNode.position.y = self.calculatedSize.height / 2 + self.chatNode.calculatedSize.height
+            self.chatbar.position.y = self.calculatedSize.height + self.chatbar.calculatedSize.height/2
+        }
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
-        return ASStaticLayoutSpec(children: [x, chatNode, chatbar])
+        if let _ = chatNode {
+            return ASStaticLayoutSpec(children: [x, chatNode, chatbar])
+        } else {
+            return ASStaticLayoutSpec(children: [x])
+        }
     }
     
     func updateForState(createController : StreamCreateController? = nil, stream : Stream? = nil){

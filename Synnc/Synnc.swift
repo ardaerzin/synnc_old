@@ -33,6 +33,9 @@ extension UIColor {
 @UIApplicationMain
 class Synnc : UIResponder, UIApplicationDelegate {
     
+    var bgTime : NSTimer!
+    var backgroundTask : UIBackgroundTaskIdentifier!
+    
     lazy var streamNavigationController : StreamNavigationController! = {
         if let rvc = self.window?.rootViewController as? RootViewController {
             let a = StreamNavigationController()
@@ -73,7 +76,9 @@ class Synnc : UIResponder, UIApplicationDelegate {
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Twitter.sharedInstance()])
         
-        self.socket = initSocket("https://silver-sister.codio.io:9500")
+//        self.socket = initSocket("http://synnc.live")
+//        self.socket = initSocket("https://silver-sister.codio.io:9500")
+        self.socket = initSocket("https://synnc.herokuapp.com")
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
@@ -122,8 +127,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
             print("normal date:", normalDate, "network date:", networkDate, "diff is:", diff)
         })
         
-        WCLNotificationManager.sharedInstance().delegate = self
-        
         return true
     }
     
@@ -142,7 +145,61 @@ class Synnc : UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        print("SHIET")
+        bgTime = NSTimer.scheduledTimerWithTimeInterval(1.0,
+            target: self,
+            selector: "timerMethod:",
+            userInfo: nil,
+            repeats: true)
+        
+        backgroundTask =
+            UIApplication.sharedApplication().beginBackgroundTaskWithName("task1",
+                expirationHandler: {[weak self] in
+                    self!.endBackgroundTask()
+                })
+        
+//        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler {
+//            [unowned self] in
+//            print("end background task now")
+//            self.endBackgroundTask()
+//        }
+//        assert(backgroundTask != UIBackgroundTaskInvalid)
     }
+    
+    func endBackgroundTask(){
+        
+        let mainQueue = dispatch_get_main_queue()
+        
+        dispatch_async(mainQueue, {[weak self] in
+            if let timer = self!.bgTime{
+                timer.invalidate()
+                self!.bgTime = nil
+                UIApplication.sharedApplication().endBackgroundTask(
+                    self!.backgroundTask)
+                self!.backgroundTask = UIBackgroundTaskInvalid
+            }
+            })
+    }
+    func timerMethod(sender: NSTimer){
+        
+        let backgroundTimeRemaining =
+        UIApplication.sharedApplication().backgroundTimeRemaining
+        
+        if backgroundTimeRemaining == DBL_MAX{
+            print("Background Time Remaining = Undetermined")
+        } else {
+            print("Background Time Remaining = " +
+                "\(backgroundTimeRemaining) Seconds")
+        }
+        
+    }
+    
+//    func endBackgroundTask() {
+//        NSLog("Background task ended.")
+//        UIApplication.sharedApplication().endBackgroundTask(backgroundTask)
+//        backgroundTask = UIBackgroundTaskInvalid
+//    }
     
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -193,7 +250,7 @@ extension Synnc : WCLNotificationManagerDelegate {
 
 extension Synnc {
     func initSocket(urlStr : String) -> SocketIOClient {
-        let x = SocketIOClient(socketURL: urlStr, options: [.Reconnects(false), .ForceWebsockets(true)])
+        let x = SocketIOClient(socketURL: urlStr, options: [.Reconnects(true), .ForceWebsockets(true)])
         x.on("connect", callback: connectCallback)
         x.connect()
         return x
@@ -217,7 +274,7 @@ extension Synnc {
         if self.user._id != nil {
             
             if self.user.generatedUsername {
-                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), user: self.user)
+                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
                 x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
                 WCLPopupManager.sharedInstance.newPopup(x)
             }

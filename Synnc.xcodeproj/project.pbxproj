@@ -282,6 +282,8 @@
 		47354E381C4F3E7F00A5F03E /* TabSubsectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E371C4F3E7F00A5F03E /* TabSubsectionController.swift */; };
 		47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */; };
 		4740A5911C52EF0D00C767EE /* PopContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4740A5901C52EF0D00C767EE /* PopContentController.swift */; };
+		4740A5931C543E6F00C767EE /* NotificationRequestPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */; };
+		4740A5951C544A6300C767EE /* StreamEndPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */; };
 		475286D91C35989400731008 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286D81C35989400731008 /* Stream.swift */; };
 		475286DB1C359E1900731008 /* StreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DA1C359E1900731008 /* StreamManager.swift */; };
 		475286DD1C35A22E00731008 /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DC1C35A22E00731008 /* StreamViewController.swift */; };
@@ -706,6 +708,8 @@
 		47354E371C4F3E7F00A5F03E /* TabSubsectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabSubsectionController.swift; sourceTree = "<group>"; };
 		47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncSCLoginController.swift; sourceTree = "<group>"; };
 		4740A5901C52EF0D00C767EE /* PopContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopContentController.swift; sourceTree = "<group>"; };
+		4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationRequestPopupVC.swift; sourceTree = "<group>"; };
+		4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamEndPopupVC.swift; sourceTree = "<group>"; };
 		475286D81C35989400731008 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
 		475286DA1C359E1900731008 /* StreamManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamManager.swift; sourceTree = "<group>"; };
 		475286DC1C35A22E00731008 /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
@@ -1340,6 +1344,8 @@
 				472CB2F71C413FF900F82523 /* WCLTableNode.m */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
+				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
+				4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */,
 				4728F94D1C34D13D00B427EA /* StreamRelated */,
 				47EBDF841C1BD89D0075CF0B /* Data Model */,
 				47EBDF831C1BD8860075CF0B /* User Related */,
@@ -1546,8 +1552,8 @@
 		47B899C91C4866B1007C2B7F /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
-				4777051B1C3DC581007089D0 /* StreamViewNode.swift */,
 				477705191C3DB7E9007089D0 /* StreamContentNode.swift */,
+				4777051B1C3DC581007089D0 /* StreamViewNode.swift */,
 				47D7636D1C38B55F008E0334 /* StreamBackgroundNode.swift */,
 				470F8C0A1C48A5E200624F0F /* StreamBackgroundInfoNode.swift */,
 			);
@@ -2406,6 +2412,8 @@
 				4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */,
 				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
 				47D7636E1C38B55F008E0334 /* StreamBackgroundNode.swift in Sources */,
+				4740A5951C544A6300C767EE /* StreamEndPopupVC.swift in Sources */,
+				4740A5931C543E6F00C767EE /* NotificationRequestPopupVC.swift in Sources */,
 				475286D91C35989400731008 /* Stream.swift in Sources */,
 				47EBDF821C1BBBF50075CF0B /* RecommendedFeedController.swift in Sources */,
 				47B37B7E1C2F150A001CC6D2 /* ParallaxNode.swift in Sources */,

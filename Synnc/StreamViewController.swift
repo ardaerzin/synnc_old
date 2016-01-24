@@ -22,6 +22,7 @@ enum StreamVCState : Int {
     case ReadyToPlay = 1
     case Syncing = 2
     case Play = 3
+    case Finished = 4
     case Hidden = 0
 }
 
@@ -51,7 +52,6 @@ class StreamViewController : ASViewController {
         get {
             if _stopController == nil {
                 _stopController = StopController()
-                _stopController.stream = self.stream
             }
             return _stopController
         }
@@ -97,33 +97,42 @@ class StreamViewController : ASViewController {
         }
     }
     
+    deinit {
+        print("deinit stream view controller")
+    }
+    
     init(stream : Stream?){
         screenNode = StreamViewNode(chatNode: chatController.screenNode, chatbar : chatController.chatbar, content: StreamContentNode(usersNode: listenersController.screenNode))
         super.init(node: screenNode)
         screenNode.delegate = self
+        
         self.addChildViewController(chatController)
         chatController.didMoveToParentViewController(self)
-        
+
         self.automaticallyAdjustsScrollViewInsets = false
         self.stream = stream
         self.screenNode.mainScrollNode.delegate = self
-        
+
         if let bg = self.screenNode.mainScrollNode.backgroundNode as? StreamBackgroundNode {
             bg.infoNode.streamStatusButton.addTarget(self, action: Selector("toggleStreamStatus:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         }
+        
         if self.stream == nil {
             
             createController = StreamCreateController(backgroundNode: screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode)
             createController.parentController = self
             createController.delegate = self
             createController.contentNode.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
-           
+            
         }
-        
+
         self.configure(self.stream)
         self.updateUsers(stream)
-        
+
         (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).infoNode.addToFavoritesButton.addTarget(self, action: Selector("addSongToFavorites:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).infoNode.closeButton.addTarget(self, action: Selector("dismissStreamView:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        
+        
         self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hideAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.editButton.addTarget(self, action: Selector("editStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.shareStreamButton.addTarget(self, action: Selector("shareStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
@@ -131,6 +140,7 @@ class StreamViewController : ASViewController {
         
         self.screenNode.contentNode.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
     }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -139,6 +149,27 @@ class StreamViewController : ASViewController {
         super.willMoveToParentViewController(parent)
         if let p = parent as? StreamNavigationController {
             p.panRecognizer.delegate = self
+        } else if parent == nil {
+            StreamManager.sharedInstance.player.delegate = nil
+
+            if let p = self.navigationController as? StreamNavigationController {
+                p.panRecognizer.delegate = nil
+            }
+            if let x = _popContentController {
+                x.delegate = nil
+            }
+            if let x = self.createController {
+                x.delegate = nil
+                x.parentController = nil
+                x.contentNode.view.removeObserver(self, forKeyPath: "contentSize")
+                self.createController = nil
+            }
+
+            self.screenNode.contentNode.view.removeObserver(self, forKeyPath: "contentSize")
+            
+            NSNotificationCenter.defaultCenter().removeObserver(self)
+            screenNode.delegate = nil
+            self.screenNode.mainScrollNode.delegate = nil
         }
     }
     
@@ -154,6 +185,7 @@ class StreamViewController : ASViewController {
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("updatedStream:"), name: "UpdatedStream", object: stream)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("checkActiveStream:"), name: "DidSetActiveStream", object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("endedActiveStream:"), name: "EndedActiveStream", object: nil)
             
             self.checkActiveStream(nil)
         }
@@ -186,10 +218,15 @@ class StreamViewController : ASViewController {
             }
         }
     }
+
+
 }
 
 // MARK: - Button Targets
 extension StreamViewController {
+    func dismissStreamView(sender : ButtonNode){
+        self.hideAction(sender)
+    }
     func hideAction(sender : ButtonNode) {
         if let nvc = self.navigationController as? StreamNavigationController {
             nvc.hide()
@@ -266,6 +303,7 @@ extension StreamViewController {
     }
 }
 
+
 // MARK: - ParallaxNodeDelegate
 extension StreamViewController : ParallaxNodeDelegate {
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -314,6 +352,7 @@ extension StreamViewController : ParallaxNodeDelegate {
         return "PICTINT"
     }
 }
+
 extension StreamViewController : StreamerDelegate {
     func streamer(streamer: WildPlayer!, isSyncing syncing: Bool) {
         self.state = syncing ? .Syncing : ((self.isActiveController! && streamer.isPlaying) ? .Play : .ReadyToPlay)
@@ -327,6 +366,14 @@ extension StreamViewController : StreamerDelegate {
     }
     func streamer(streamer: WildPlayer!, updatedRate rate: Float) {
         self.updatedState(self.state)
+    }
+    func endOfPlaylist(streamer: WildPlayer!) {
+        if let s = self.stream {
+//            StreamManager.sharedInstance.stopStream(s) {
+//                stopped in
+//                self.state = .Finished
+//            }
+        }
     }
 }
 
@@ -349,6 +396,9 @@ extension StreamViewController : StreamCreateControllerDelegate {
 
 // MARK: - Notifications and update functions
 extension StreamViewController {
+    func endedActiveStream(notification: NSNotification!){
+        self.state = .Finished
+    }
     func checkActiveStream(notification: NSNotification!){
         if let s = self.stream, let st = StreamManager.sharedInstance.activeStream where s == st {
             self.isActiveController = true
@@ -431,16 +481,6 @@ extension StreamViewController {
 //        self.editing = !self.editing
 //        sender.selected = self.editing
     }
-    func toggleSettings(sender : ButtonNode) {
-        sender.selected = !sender.selected
-        togglePopover(sender, contentController: nil)
-//            self.settingsController)
-    }
-    func toggleInbox(sender : ButtonNode){
-        sender.selected = !sender.selected
-        togglePopover(sender, contentController: nil)
-    }
-    
     func togglePopover(sender : ButtonNode, contentController : PopContentController!){
         if sender.selected {
             if let selected = selectedPopoverButton where selected != sender {
@@ -467,15 +507,11 @@ extension StreamViewController {
                     self.addChildViewController(self.popContentController)
                     if self.popContentController.view.frame == CGRectZero {
                         self.popContentController.view.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
-//                            CGRect(origin: CGPointZero, size: s)
-//                            CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
                     }
                     self.popContentController.screenNode.displayAnimation.completionBlock = {
                         anim, finished in
                         self.popContentController.screenNode.pop_removeAnimationForKey("displayAnimation")
                     }
-                    
-//                    self.screenNoe.addSubnode(
                     self.screenNode.addSubnode(self.popContentController.screenNode)
                     
                     self.popContentController.didMoveToParentViewController(self)
@@ -486,7 +522,6 @@ extension StreamViewController {
             
         } else {
             self.popContentController.hidePopover(nil)
-//            hidePopover()
         }
     }
     
@@ -496,7 +531,5 @@ extension StreamViewController : PopControllerDelegate {
     func hidePopController() {
         selectedPopoverButton.selected = false
         self.togglePopover(self.selectedPopoverButton, contentController: nil)
-//        self.selectedPopoverButton.selected = false
-//        self.selectedPopoverButton = nil
     }
 }

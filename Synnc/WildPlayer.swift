@@ -12,6 +12,8 @@ import MediaPlayer
 import WCLUtilities
 import SocketIOClientSwift
 import WCLSoundCloudKit
+import WCLNotificationManager
+import WCLPopupManager
 
 @objc protocol StreamerDelegate {
     optional func streamer(streamer : WildPlayer!, updatedToTime: CGFloat)
@@ -92,7 +94,19 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
         willSet {
             if newValue && newValue != endOfPlaylist {
                 //                self.player.pause()
-                //                self.delegate?.endOfPlaylist?(self)
+                print("ended stream", self.stream)
+                
+                self.delegate?.endOfPlaylist?(self)
+                if newValue {
+                    
+                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You have reached the end of your stream", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                    }
+
+                    if let s = self.stream {
+                        StreamManager.sharedInstance.stopStream(self.stream!, completion: nil)
+                    }
+                }
             }
         }
     }

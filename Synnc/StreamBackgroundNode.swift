@@ -136,9 +136,10 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             self.locationToggle_animationAlpha = fabs(stateAnimationProgress)
             
             var startButtonAlpha : CGFloat = 0
+            
             if state.rawValue <= 1 {
                 startButtonAlpha = stateAnimationProgress
-            } else {
+            } else if state.rawValue < 4 {
                 let y = POPTransition(abs(stateAnimationProgress - 1), startValue: 1, endValue: 0)
                 if let x = animationAlphaValues[infoNode.streamStatusButton] {
                     if y < x {
@@ -149,6 +150,18 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                 } else {
                     startButtonAlpha = y
                 }
+            
+            } else {
+                
+                self.infoNode.trackTitle.alpha = 4 - stateAnimationProgress
+                self.addToFavs_animationAlpha = 4 - stateAnimationProgress
+                
+                self.artistLabel_animationAlpha = 4 - stateAnimationProgress
+                self.genreToggle_animationAlpha = 4 - stateAnimationProgress
+                self.locationToggle_animationAlpha = 4 - stateAnimationProgress
+            
+                self.streamEndTitle_animationAlpha = stateAnimationProgress - 3
+                self.closeButton_animationAlpha = stateAnimationProgress - 3
             }
             animationAlphaValues[infoNode.streamStatusButton] = startButtonAlpha
             self.infoNode.streamStatusButton.alpha = startButtonAlpha    
@@ -236,6 +249,38 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     var addToFavs_alpha : CGFloat! = 1 {
         didSet {
             self.infoNode.addToFavoritesButton.alpha = addToFavs_alphaMultiplier * addToFavs_animationAlpha
+        }
+    }
+    
+    var streamEndTitle_animationAlpha : CGFloat! = 1 {
+        didSet {
+            streamEndTitle_alpha = streamEndTitle_alphaMultiplier * streamEndTitle_animationAlpha
+        }
+    }
+    var streamEndTitle_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            streamEndTitle_alpha = streamEndTitle_alphaMultiplier * streamEndTitle_animationAlpha
+        }
+    }
+    var streamEndTitle_alpha : CGFloat! = 1 {
+        didSet {
+            self.infoNode.endTitle.alpha = streamEndTitle_alpha
+        }
+    }
+    
+    var closeButton_animationAlpha : CGFloat! = 1 {
+        didSet {
+            closeButton_alpha = closeButton_alphaMultiplier * closeButton_animationAlpha
+        }
+    }
+    var closeButton_alphaMultiplier : CGFloat! = 1 {
+        didSet {
+            closeButton_alpha = closeButton_alphaMultiplier * closeButton_animationAlpha
+        }
+    }
+    var closeButton_alpha : CGFloat! = 1 {
+        didSet {
+            self.infoNode.closeButton.alpha = closeButton_alpha
         }
     }
     
@@ -411,7 +456,7 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             }
         }
         
-        if self.state == .ReadyToPlay || self.state == .Play || self.state == .Syncing {
+        if self.state == .ReadyToPlay || self.state == .Play || self.state == .Syncing || state == .Finished {
             
             self.artistLabel_alphaMultiplier = 1 - min(0.5,percentage)*2
             
@@ -421,9 +466,11 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             if e <= (trackT.position.y - trackTitleLimit) && percentage < 1 {
                 POPLayerSetTranslationY(trackT.layer, position/3)
                 POPLayerSetTranslationY(self.infoNode.playingIcon.layer, position/3)
+                POPLayerSetTranslationY(self.infoNode.endTitle.layer, position/3)
             } else if e <= (trackT.position.y - trackTitleLimit) && percentage >= 1 {
                 POPLayerSetTranslationY(trackT.layer, limit - e)
                 POPLayerSetTranslationY(self.infoNode.playingIcon.layer, limit - e)
+                POPLayerSetTranslationY(self.infoNode.endTitle.layer, limit - e)
             } else {
                 let pos = (limit - (limit/3))
                 let b = pos < (trackT.position.y - trackTitleLimit)
@@ -431,11 +478,11 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
                     let z = e - (trackT.position.y - trackTitleLimit)
                     POPLayerSetTranslationY(trackT.layer, position/3 + z + delta)
                     POPLayerSetTranslationY(self.infoNode.playingIcon.layer, position/3 + z + delta)
+                    POPLayerSetTranslationY(self.infoNode.endTitle.layer, position/3 + z + delta)
                 }
             }
             let s = POPTransition(percentage, startValue: 1, endValue: 0.75)
             POPLayerSetScaleXY(trackT.layer, CGPointMake(s,s))
-//            print(percentage)
             
             let artistT = self.infoNode.artistTitle
             let artistTitleLimit = trackTitleLimit + trackT.calculatedSize.height / 2 + 5 + artistT.calculatedSize.height / 2
@@ -456,20 +503,22 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
             let favbuttonLimit = min(trackTitleLimit + trackT.calculatedSize.height / 2 + 30 + artistT.calculatedSize.height / 2, 150 - favbutton.calculatedSize.height / 2 - 10)
             if e <= (favbutton.position.y - favbuttonLimit) && percentage < 1 {
                 POPLayerSetTranslationY(favbutton.layer, position/3)
+                POPLayerSetTranslationY(self.infoNode.closeButton.layer, position/3)
             } else if e <= (favbutton.position.y - favbuttonLimit) && percentage >= 1 {
                 POPLayerSetTranslationY(favbutton.layer, limit - e)
+                POPLayerSetTranslationY(self.infoNode.closeButton.layer, limit - e)
             } else {
                 let pos = (limit - (limit/3))
                 let b = pos < (favbutton.position.y - favbuttonLimit)
                 if !b {
                     let z = e - (favbutton.position.y - favbuttonLimit)
                     POPLayerSetTranslationY(favbutton.layer, position/3 + z + delta)
+                    POPLayerSetTranslationY(self.infoNode.closeButton.layer, position/3 + z + delta)
                 }
             }
             
             let streambutton = self.infoNode.streamStatusButton
             let streambuttonLimit = 150 - (streambutton.calculatedSize.height / 2 + 10)
-//                - 20 - favbutton.calculatedSize.height / 2 - streambutton.calculatedSize.height / 2
             if e <= (streambutton.position.y - streambuttonLimit) && percentage < 1 {
                 POPLayerSetTranslationY(streambutton.layer, position/3)
             } else if e <= (streambutton.position.y - streambuttonLimit) && percentage >= 1 {

@@ -89,7 +89,7 @@ class BarNode : ASDisplayNode {
     }
 }
 
-class AnimatedLogoNode : ASDisplayNode {
+class AnimatedLogoNode : ASButtonNode {
     
     var bars : [BarNode] = []
     var spacers : [ASLayoutSpec] = []
