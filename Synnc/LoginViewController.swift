@@ -89,18 +89,25 @@ extension LoginViewController {
         Synnc.sharedInstance.user.socialLogin(.Facebook)
     }
     func displaySignupForm(sender : ASButtonNode) {
-        self.screenNode.formNode.formDisplayStatus = true
-        self.screenNode.formNode.formHolder.state = .Signup
+        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+        }
+//        self.screenNode.formNode.formDisplayStatus = true
+//        self.screenNode.formNode.formHolder.state = .Signup
     }
     func loginWithTwitter(sender : AnyObject){
         Synnc.sharedInstance.user.socialLogin(.Twitter)
     }
     
     func switchForm(sender : ASButtonNode){
-        let a = self.screenNode.formNode.formSwitcher.targetForm
-        self.screenNode.formNode.formDisplayStatus = true
-        self.screenNode.formNode.formHolder.state = self.screenNode.formNode.formSwitcher.targetForm
-        self.screenNode.formNode.formSwitcher.targetForm = a == .Login ? .Signup : .Login
+        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+        }
+        
+//        let a = self.screenNode.formNode.formSwitcher.targetForm
+//        self.screenNode.formNode.formDisplayStatus = true
+//        self.screenNode.formNode.formHolder.state = self.screenNode.formNode.formSwitcher.targetForm
+//        self.screenNode.formNode.formSwitcher.targetForm = a == .Login ? .Signup : .Login
     }
     func closeFormView(sender : ASButtonNode) {
         self.screenNode.formNode.formHolder.state = FormNodeState.None

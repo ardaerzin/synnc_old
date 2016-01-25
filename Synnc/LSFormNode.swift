@@ -314,12 +314,13 @@ class LSFormNode : ASDisplayNode {
     func setTitleStrings() {
         
         let titleMsg = self.state == .Login ? "HI AGAIN" : "JOIN US"
-        let subtitleMsg = self.state == .Login ? "GOT SOME WEED?" : "WE HAVE FREE COOKIES!"
+        let subtitleMsg = self.state == .Login ? "ARE YOU READY TO SYNNC?" : "WE HAVE FREE COOKIES!"
         
         self.titleNode.attributedString = NSAttributedString(string: titleMsg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 2.57])
         self.greetingMsgNode.attributedString = NSAttributedString(string: subtitleMsg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 106/255, green: 104/255, blue: 104/255, alpha: 1), NSKernAttributeName : 2.57])
     }
-        override init() {
+    
+    override init() {
         super.init()
         
         self.titleNode = ASTextNode()

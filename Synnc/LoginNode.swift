@@ -303,14 +303,14 @@ class SpinnerNode : ASDisplayNode {
         }
     }
     
-        override init() {
+    override init() {
         super.init()
         
         self.spinnerHolder = ASDisplayNode()
         self.spinnerHolder.preferredFrameSize = CGSizeMake(75, 75)
         
         msgNode = ASTextNode()
-        msgNode.attributedString = NSAttributedString(string: "Rolling a joint..", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
+        msgNode.attributedString = NSAttributedString(string: "Logging you in..", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
         msgNode.spacingBefore = 20
         
         userImageNode = ASNetworkImageNode(webImage: ())
