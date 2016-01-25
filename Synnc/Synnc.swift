@@ -76,8 +76,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Twitter.sharedInstance()])
         
-//        self.socket = initSocket("http://synnc.live")
-//        self.socket = initSocket("https://silver-sister.codio.io:9500")
         self.socket = initSocket("https://synnc.herokuapp.com")
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }

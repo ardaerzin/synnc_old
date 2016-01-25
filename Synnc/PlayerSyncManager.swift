@@ -36,6 +36,7 @@ class WildPlayerSyncManager {
     func timeUpdateHandler() -> NormalCallback {
         return {
             (dataArr, ack) in
+            print("received time update")
             if let data = dataArr.first {
                 let json = JSON(data)
                 if json["stream_id"].string == self.player.stream?.o_id && self.player.stream != Synnc.sharedInstance.streamManager.userStream {
@@ -60,6 +61,7 @@ class WildPlayerSyncManager {
             socket.emitWithAck("Stream:timeUpdate", dict)(timeoutAfter: 0) {
                 data in
             }
+            
         }
         
     }

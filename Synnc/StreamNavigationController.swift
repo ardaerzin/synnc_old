@@ -80,6 +80,7 @@ class StreamNavigationController : UINavigationController {
             } else {
                 self.pushViewController(userStreamController, animated: false)
             }
+            self.display()
         } else {
             if SharedPlaylistDataSource.allItems.isEmpty {
                 if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {

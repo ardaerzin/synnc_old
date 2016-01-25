@@ -27,35 +27,101 @@ import Dollar
     
 }
 
+
+typealias StreamSaveBatch = (data : [JSON], completionHandler : ((streams : [Stream])->Void)?)
+
 class BatchStreamSaver {
     
-    var savedStreams : [Stream] = []
-    var completionBlock : ((streams : [Stream])->Void)?
-    init(streamsData data: [JSON], completionBlock : ((streams : [Stream])->Void)?) {
-        self.completionBlock = completionBlock
-        
-        self.saveOne(data)
-    }
-    
-    func saveOne(var batch : [JSON]){
-        
-        if let data = batch.first {
-            let _ = Stream(json: data, delegate: StreamManager.sharedInstance, completionBlock: {
-                stream in
-                
-                StreamManager.sharedInstance.streams.append(stream)
-                self.savedStreams.append(stream)
-                
-                batch.removeFirst()
-                if batch.isEmpty {
-                    self.completionBlock?(streams: self.savedStreams)
-                } else {
-                    self.saveOne(batch)
-                }
-            })
+    var isLocked : Bool = false
+    var batches : [StreamSaveBatch] = [] {
+        didSet {
+            if let batch = batches.first where !isLocked {
+                self.isLocked = true
+                self.saveBatch(batch)
+            }
         }
     }
+    var savedStreams : [Stream] = []
+    class var sharedInstance : BatchStreamSaver {
+        get {
+            return _batchSaver
+        }
+    }
+    init() {
+        
+    }
+    
+    func saveBatch(var batch : StreamSaveBatch){
+        if let data = batch.data.first {
+            
+            if let id = data["_id"].string {
+                if let str = StreamManager.sharedInstance.findStream(id) {
+                    
+                    str.fromJSON(data, callback: {
+                        stream in
+                        
+                        self.savedStreams.append(stream)
+                        batch.data.removeFirst()
+                        
+                        if batch.data.isEmpty {
+                            batch.completionHandler?(streams: self.savedStreams)
+                            self.savedStreams.removeAll()
+                            
+                            self.isLocked = false
+                            self.batches.removeFirst()
+                        } else {
+                            self.saveBatch(batch)
+                        }
+                    })
+                } else {
+                    let _ = Stream(json: data, delegate: StreamManager.sharedInstance, completionBlock: {
+                        stream in
+                        
+                        StreamManager.sharedInstance.streams.append(stream)
+                        self.savedStreams.append(stream)
+                        batch.data.removeFirst()
+                        
+                        if batch.data.isEmpty {
+                            batch.completionHandler?(streams: self.savedStreams)
+                            self.savedStreams.removeAll()
+                            
+                            self.isLocked = false
+                            self.batches.removeFirst()
+                        } else {
+                            self.saveBatch(batch)
+                        }
+                    })
+                }
+            }
+        }
+    }
+    
+//    init(streamsData data: [JSON], completionBlock : ((streams : [Stream])->Void)?) {
+//        self.completionBlock = completionBlock
+//        self.saveOne(data)
+//    }
+//    func saveOne(var batch : [JSON]){
+//        
+//        if let data = batch.first {
+//            let _ = Stream(json: data, delegate: StreamManager.sharedInstance, completionBlock: {
+//                stream in
+//                
+//                StreamManager.sharedInstance.streams.append(stream)
+//                self.savedStreams.append(stream)
+//                
+//                batch.removeFirst()
+//                if batch.isEmpty {
+//                    self.completionBlock?(streams: self.savedStreams)
+//                } else {
+//                    self.saveOne(batch)
+//                }
+//            })
+//        }
+//    }
 }
+let _batchSaver : BatchStreamSaver = {
+    return BatchStreamSaver()
+}()
 
 class StreamManager : NSObject, StreamDelegate {
     
@@ -266,7 +332,7 @@ extension StreamManager {
         Synnc.sharedInstance.socket.emitWithAck("Stream", [])(timeoutAfter: 0) {
             ack in
             Async.background {
-                if let jsonArr = JSON(ack.first!).array {
+                if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
                     self.findOrCreateFromData(jsonArr, completionBlock: {
                         streams in
                         let newItems = $.difference(streams, self.userFeed)
@@ -283,22 +349,16 @@ extension StreamManager {
     }
     
     internal func findOrCreateFromData(serverData : [JSON], completionBlock : ((streams: [Stream]) -> Void)?) {
-        var arr : [Stream] = []
-        var needsBatchSaving : [JSON] = []
-        for json in serverData {
-            if let stream = self.findStream(json["_id"].string) {
-                arr.append(stream)
-            } else {
-                needsBatchSaving.append(json)
-            }
-        }
         
-        let _ = BatchStreamSaver(streamsData: needsBatchSaving, completionBlock: {
-            streams in
-            
-            let allData = $.union(arr, streams)
-            completionBlock?(streams: allData)
-        })
+        let batch : StreamSaveBatch = (serverData, completionBlock)
+        BatchStreamSaver.sharedInstance.batches.append(batch)
+        
+//        let _ = BatchStreamSaver(streamsData: needsBatchSaving, completionBlock: {
+//            streams in
+//            
+//            let allData = $.union(arr, streams)
+//            completionBlock?(streams: allData)
+//        })
     }
 }
 
@@ -419,16 +479,14 @@ extension StreamManager {
                     self.findOrCreateFromData([json], completionBlock: {
                         streams in
                         
-                        let newStream = streams.first!
+                        self.userFeed = $.union(self.userFeed, streams)
                         
-                        if $.find(self.userFeed, callback: {$0 == newStream}) == nil {
-                            self.userFeed.append(newStream)
-                        }
-                        if $.find(self.streams, callback: {$0 == newStream}) == nil {
-                            self.streams.append(newStream)
-                        }
-                        let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
-                        NSNotificationCenter.defaultCenter().postNotification(notification)
+//                        if $.find(self.userFeed, callback: {$0 == newStream}) == nil {
+//                            print("append again")
+//                            self.userFeed.append(newStream)
+//                        }
+//                        let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
+//                        NSNotificationCenter.defaultCenter().postNotification(notification)
                     })
                     
                 }
@@ -444,20 +502,20 @@ extension StreamManager {
                     return
                 }
                 
-                for item in json.array! {
-                    let id = item["_id"].string
-                    let oldStream = self.findStream(id)
-                    if oldStream == nil {
-                        let newStream = Stream(json: item, delegate: self)
-                        if $.find(self.streams, callback: {$0 == newStream}) == nil {
-                            self.streams.append(newStream)
-                        }
-                        let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
-                        NSNotificationCenter.defaultCenter().postNotification(notification)
-                    } else {
-                        oldStream!.fromJSON(item)
-                    }
-                }
+//                for item in json.array! {
+//                    let id = item["_id"].string
+//                    let oldStream = self.findStream(id)
+//                    if oldStream == nil {
+//                        let newStream = Stream(json: item, delegate: self)
+//                        if $.find(self.streams, callback: {$0 == newStream}) == nil {
+//                            self.streams.append(newStream)
+//                        }
+//                        let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
+//                        NSNotificationCenter.defaultCenter().postNotification(notification)
+//                    } else {
+//                        oldStream!.fromJSON(item)
+//                    }
+//                }
             }
         }
     }
