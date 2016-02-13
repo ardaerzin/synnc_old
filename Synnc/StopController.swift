@@ -36,25 +36,13 @@ extension StopController {
         }
     }
     func yesAction(sender: ButtonNode) {
-//        guard let s = self.stream else {
-//            return
-//        }
-//        
         if let streamController = self.parentViewController?.parentViewController as? StreamViewController {
             if let p = self.parentViewController as? PopController {
                 p.hideWithTouch()
             }
-            streamController.endOfPlaylist(nil)
+            StreamManager.sharedInstance.stopStream(StreamManager.sharedInstance.activeStream!, completion: nil)
+//                .activeStream = nil
+//            streamController.endOfPlaylist(nil)
         }
-        
-//        StreamManager.sharedInstance.stopStream(s) {
-//            status in
-//            
-//            print(self.parentViewController, self.parentViewController?.parentViewController)
-//            print("done stopping", status)
-//        }
-//        if let p = self.parentViewController as? PopController {
-//            p.hideWithTouch()
-//        }
     }
 }

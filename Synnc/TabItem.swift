@@ -14,6 +14,7 @@ import AsyncDisplayKit
 import pop
 import SpinKit
 import WCLUserManager
+import Appsee
 
 class TabNavigationController : UINavigationController, UINavigationControllerDelegate {
 
@@ -143,6 +144,12 @@ class TabItemController : ASViewController, TabItem {
         self.screenNode = node
         self.automaticallyAdjustsScrollViewInsets = false
     }
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        Appsee.startScreen(NSStringFromClass(self.subsections[selectedIndex].classForCoder))
+//        NSStringFromClass(self.subsections[selectedIndex].classForCoder)
+    }
     override func willMoveToParentViewController(parent: UIViewController?) {
         if parent != nil {
             if let nn = self.screenNode as? NavigationHolderNode {
@@ -174,7 +181,9 @@ extension TabItemController : TabbarContentScrollerDelegate {
         if let nn = self.screenNode as? NavigationHolderNode {
             nn.headerNode.subSectionArea.selectedSubsectionIndex = index
         }
+//        print("changed current index", index, NSStringFromClass(self.subsections[index].classForCoder))
     }
+
     func beganScrolling() {
         if let nn = self.screenNode as? NavigationHolderNode {
             nn.headerNode.subSectionArea.pop_removeAnimationForKey("indicatorPositionAnimation")

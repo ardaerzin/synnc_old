@@ -30,6 +30,7 @@ extension SynncTrack {
         let x = json["id"].number!
         self.song_id = "\(x)"
         self.source = SynncExternalSource.Soundcloud.rawValue
+        self.duration = json["duration"].number
         
         var u = json["user"]
         if u.null == nil {

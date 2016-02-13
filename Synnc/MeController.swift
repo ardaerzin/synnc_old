@@ -183,7 +183,6 @@ extension MeController {
             if !self.popContentController.displayed {
                 self.addChildViewController(self.popContentController)
                 if self.popContentController.view.frame == CGRectZero {
-                    print(CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30))
                     self.popContentController.view.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
                 }
                 self.popContentController.screenNode.displayAnimation.completionBlock = {
@@ -249,15 +248,15 @@ extension MeController {
 }
 
 extension MeController : ParallaxNodeDelegate {
-    func imageForBackground() -> AnyObject? {
+    func imageForBackground() -> (image: AnyObject?, viewMode: UIViewContentMode?) {
         if let img = self.editedImage {
-            return img
+            return (image: img, viewMode: nil)
         } else {
             if let provider = Synnc.sharedInstance.user.provider, let type = WCLUserLoginType(rawValue: provider), let url = Synnc.sharedInstance.user.avatarURL(type, frame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width), scale: UIScreen.mainScreen().scale) {
-                return url
+                return (image: url, viewMode: nil)
             }
         }
-        return nil
+        return (image: nil, viewMode: nil)
     }
     func gradientImageName() -> String? {
         return "imageGradient"

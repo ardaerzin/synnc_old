@@ -10,22 +10,23 @@ import Foundation
 import SocketIOClientSwift
 import WCLUtilities
 import SwiftyJSON
+import WCLNotificationManager
 import Dollar
 
-@objc protocol StreamManagerDelegate {
-    
-    /**
-    
-    Triggered when manager batch updates its streams
-    
-    */
-    optional func updatedStreams(manager: StreamManager)
-    optional func streamManager(manager: StreamManager, updatedStream stream: Stream, withKeys keys: [String])
-    optional func streamManager(manager: StreamManager, updatedActiveStream stream: Stream)
-    optional func streamManager(manager: StreamManager, updatedActiveStream stream: Stream, withKeys keys: [String])
-    optional func streamManager(manager: StreamManager, didSetActiveStream stream: Stream?)
-    
-}
+//@objc protocol StreamManagerDelegate {
+//    
+//    /**
+//    
+//    Triggered when manager batch updates its streams
+//    
+//    */
+//    optional func updatedStreams(manager: StreamManager)
+//    optional func streamManager(manager: StreamManager, updatedStream stream: Stream, withKeys keys: [String])
+//    optional func streamManager(manager: StreamManager, updatedActiveStream stream: Stream)
+//    optional func streamManager(manager: StreamManager, updatedActiveStream stream: Stream, withKeys keys: [String])
+//    optional func streamManager(manager: StreamManager, didSetActiveStream stream: Stream?)
+//    
+//}
 
 
 typealias StreamSaveBatch = (data : [JSON], completionHandler : ((streams : [Stream])->Void)?)
@@ -95,29 +96,6 @@ class BatchStreamSaver {
             }
         }
     }
-    
-//    init(streamsData data: [JSON], completionBlock : ((streams : [Stream])->Void)?) {
-//        self.completionBlock = completionBlock
-//        self.saveOne(data)
-//    }
-//    func saveOne(var batch : [JSON]){
-//        
-//        if let data = batch.first {
-//            let _ = Stream(json: data, delegate: StreamManager.sharedInstance, completionBlock: {
-//                stream in
-//                
-//                StreamManager.sharedInstance.streams.append(stream)
-//                self.savedStreams.append(stream)
-//                
-//                batch.removeFirst()
-//                if batch.isEmpty {
-//                    self.completionBlock?(streams: self.savedStreams)
-//                } else {
-//                    self.saveOne(batch)
-//                }
-//            })
-//        }
-//    }
 }
 let _batchSaver : BatchStreamSaver = {
     return BatchStreamSaver()
@@ -142,24 +120,17 @@ class StreamManager : NSObject, StreamDelegate {
         didSet {
             NSNotificationCenter.defaultCenter().postNotificationName("DidSetUserStream", object: userStream, userInfo: nil)
         }
-        willSet {
-//            if let initiator = StreamWindowManager.sharedInstance.streamInitiator {
-//                initiator.reset()
-//                StreamWindowManager.sharedInstance.streamInitiator = nil
-//            }
-        }
     }
     var activeStream : Stream? {
         didSet {
             if oldValue == activeStream {
                 return
             }
-            NSNotificationCenter.defaultCenter().postNotificationName("DidSetActiveStream", object: activeStream, userInfo: nil)
-        }
-        willSet {
-            if let stream = newValue {
-                self.player.loadStream(stream, loadTracks : newValue == self.userStream)
-            }
+            let needsLoad = activeStream == self.userStream
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("DidSetActiveStream", object: activeStream, userInfo: ["loadTracks" : needsLoad])
+            self.player.didSetActiveStream(activeStream, needsReload: needsLoad)
+            
         }
     }
     var player : StreamPlayer!
@@ -203,9 +174,6 @@ extension StreamManager {
             }
         }
     }
-    func pauseStream() {
-        //        stream.status = false
-    }
 }
 
 extension StreamManager {
@@ -224,20 +192,67 @@ extension StreamManager {
 
 extension StreamManager {
     
-    //    func updatedStream(stream: Stream, changedKey key: String?) {
-    //        if stream.o_id != nil && stream == self.userStream && key != "users" && key != "likes" {
-    //            var x = stream.toJSON([key!])
-    //            println("tojson: \(x)")
-    ////            RadioHunt.socket.emit("Stream:update", stream.toJSON(key))
-    //        }
-    //    }
-    
     func stopStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
         if stream != self.activeStream {
             return
         }
+        self.activeStream = nil
+//        self.player.resetPlayer()
+    }
+    
+    func finishedStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
         
-        Synnc.sharedInstance.socket.emitWithAck("Stream:stop", stream.o_id)(timeoutAfter: 0) {
+//        let activeS = self.activeStream
+//        self.activeStream = nil
+      
+        if self.activeStream == nil {
+            
+        } else {
+            
+            self.activeStream = nil
+            
+            var info : WCLNotificationInfo!
+            
+            if stream == StreamManager.sharedInstance.userStream {
+                info = WCLNotificationInfo(defaultActionName: "", body: "You have reached the end of your stream", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+            } else {
+                info = WCLNotificationInfo(defaultActionName: "", body: "The stream you'd been listening to has just ended", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+            }
+            
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("EndedActiveStream", object: stream, userInfo: nil)
+        
+        completion?(status: true)
+        
+        if stream == self.userStream {
+            
+            self.userStream = nil
+            Synnc.sharedInstance.socket.emitWithAck("Stream:stop", stream.o_id)(timeoutAfter: 0) {
+                [weak self]
+                data in
+                
+                if self == nil {
+                    return
+                }
+                
+                if let d = data.first {
+                    let json = JSON(d)
+                    stream.fromJSON(json)
+                }
+            }
+            
+        } else {
+            self.leaveStream(stream, completion: nil)
+        }
+    }
+    
+    func leaveStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
+        Synnc.sharedInstance.socket.emitWithAck("Stream:leave", stream.o_id)(timeoutAfter: 0) {
+            
             [weak self]
             data in
             
@@ -245,23 +260,9 @@ extension StreamManager {
                 return
             }
             
-            if !data.isEmpty {
-                if stream == self?.activeStream {
-                    let a = self?.activeStream
-                    self?.activeStream = nil
-                    if stream == self?.userStream {
-                        self?.userStream = nil
-                    }
-                    self?.player.resetPlayer()
-                    let json = JSON(data)
-                    a?.fromJSON(json)
-                }
-                
-                NSNotificationCenter.defaultCenter().postNotificationName("EndedActiveStream", object: stream, userInfo: nil)
-                
-                completion?(status: true)
-            } else {
-                completion?(status: false)
+            if let ind = stream.users.indexOf(Synnc.sharedInstance.user) {
+                stream.users.removeAtIndex(ind)
+                self?.updatedStreamFromServer(stream, changedKeys: ["users"])
             }
         }
     }

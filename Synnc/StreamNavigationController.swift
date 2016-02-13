@@ -13,6 +13,7 @@ import WCLUtilities
 import WCLUIKit
 import AsyncDisplayKit
 import WCLNotificationManager
+import WCLPopupManager
 
 class StreamNavigationController : UINavigationController {
     var initialTouchTopWindowPosition : CGFloat = 0
@@ -70,8 +71,57 @@ class StreamNavigationController : UINavigationController {
         self.pushViewController(UIViewController(), animated: false)
     }
     
-    func displayMyStream() {
+    func displayStreamCreateController(playlist: SynncPlaylist? = nil) {
+        
+        if SharedPlaylistDataSource.allItems.isEmpty {
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {
+                let info = WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", object: item) {
+                    [weak self]
+                    notif in
+                    
+                    if self == nil {
+                        return
+                    }
+                    
+                    if let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController {
+                        rvc.willSetTabItem(rvc.screenNode.tabbar, item: item)
+                    }
+                }
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+            return
+        }
+        
+        if let us = StreamManager.sharedInstance.userStream {
+            
+            if us.playlist == playlist {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You are streaming this playlist already", title: "Active Playlist", showLocalNotification: false))
+                }
+                
+            } else {
+                let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: playlist)
+                WCLPopupManager.sharedInstance.newPopup(x)
+            }
+            
+            return
+        }
+        
+        if userStreamController == nil {
+            userStreamController = StreamViewController(stream: nil, playlist: playlist)
+        }
+        if let _ = self.viewControllers.indexOf(userStreamController) {
+            self.popToViewController(userStreamController, animated: false)
+        } else {
+            self.pushViewController(userStreamController, animated: false)
+        }
+        self.display()
+    }
+    
+    func displayMyStream(playlist: SynncPlaylist? = nil) {
+        
         if let us = Synnc.sharedInstance.streamManager.userStream {
+           
             if userStreamController == nil {
                 userStreamController = StreamViewController(stream: us)
             }
@@ -82,21 +132,9 @@ class StreamNavigationController : UINavigationController {
             }
             self.display()
         } else {
-            if SharedPlaylistDataSource.allItems.isEmpty {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", sound: nil, fireDate: nil, showLocalNotification: false, object: item, id: nil))
-                }
-                return
-            }
-            if userStreamController == nil {
-                userStreamController = StreamViewController(stream: nil)
-            }
-            if let _ = self.viewControllers.indexOf(userStreamController) {
-                self.popToViewController(userStreamController, animated: false)
-            } else {
-                self.pushViewController(userStreamController, animated: false)
-            }
-            self.display()
+            
+            self.displayStreamCreateController(playlist)
+            
         }
     }
     func displayActiveStream(sender: AnyObject!){
@@ -190,20 +228,7 @@ class StreamNavigationController : UINavigationController {
     func hide(){
         self.animation.completionBlock = {
             anim, finished in
-                    
-            if let controller = self.viewControllers.last as? StreamViewController {
-            
-                if controller.stream == nil || controller.stream != StreamManager.sharedInstance.activeStream || controller.stream != StreamManager.sharedInstance.userStream {
-                    if controller != self.userStreamController {
-                        self.popViewControllerAnimated(false)
-                    }
-                }
-                
-//                print(controller.stream)
-//                print(StreamManager.sharedInstance.activeStream)
-//                || controller.stream != StreamManager.sharedInstance.userStream  {
-//                print("delete this", controller)
-            }
+            self.clearUserStreamController()
         }
         
         self.animation.toValue = 1
@@ -212,5 +237,18 @@ class StreamNavigationController : UINavigationController {
             status = !tabitem.prefersStatusBarHidden()
         }
         UIApplication.sharedApplication().statusBarHidden = !status
+    }
+    
+    func clearUserStreamController() {
+        if let controller = self.viewControllers.last as? StreamViewController {
+            
+            if controller.stream == nil || controller.stream != StreamManager.sharedInstance.activeStream || controller.stream != StreamManager.sharedInstance.userStream {
+                
+                if let usc = self.userStreamController where controller == usc {
+                    self.userStreamController = nil
+                }
+                self.popViewControllerAnimated(false)
+            }
+        }
     }
 }

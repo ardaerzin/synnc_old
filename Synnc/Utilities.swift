@@ -8,6 +8,12 @@
 
 import Foundation
 
+extension UIColor {
+    class func SynncColor() -> UIColor {
+        return UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1)
+    }
+}
+
 protocol WildAnimated {
     var animator : WildTransitioning! { get set }
     var displayStatusBar : Bool! { get set }

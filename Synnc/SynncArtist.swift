@@ -52,7 +52,8 @@ class SynncArtist : Serializable {
     }
     class func create(data : AnyObject, source : SynncExternalSource) -> SynncArtist {
         let artist = SynncArtist()
-        SynncTrackStore.sharedInstance.artists.append(artist)
+        
+//        SynncTrackStore.sharedInstance.artists.append(artist)
         
         switch source {
         case .Spotify:

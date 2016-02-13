@@ -94,6 +94,22 @@ class TrackSearchController : WCLPopupViewController {
     func closeTrackSearch(sender : ButtonNode) {
         self.closeView(true)
     }
+    
+    override func closeView(animated: Bool) {
+        super.closeView(animated)
+        self.screenNode.inputNode.resignFirstResponder()
+    }
+    override func display() {
+        super.display()
+        self.screenNode.inputNode.becomeFirstResponder()
+    }
+    override func endedPanGesture(recognizer: UIPanGestureRecognizer) -> Bool {
+        let status = super.endedPanGesture(recognizer)
+        if !status {
+            self.screenNode.inputNode.resignFirstResponder()
+        }
+        return status
+    }
 }
 
 extension TrackSearchController : ASEditableTextNodeDelegate {

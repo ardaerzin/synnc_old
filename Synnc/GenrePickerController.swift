@@ -131,36 +131,17 @@ extension GenrePicker : ASCollectionDelegate {
 
 extension GenrePicker : GenresDataSourceDelegate {
     func genresDataSource(addedItem item: Genre, newIndexPath indexPath: NSIndexPath) {
-//        let collectionNode = (self.screenNode as! ASCollectionNode).view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.insertItemsAtIndexPaths([indexPath])
-//            }, completion: nil)
-//        updatedPlaylists()
+
     }
     func genresDataSource(movedItem item: Genre, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
-//        let collectionNode = (self.screenNode as! ASCollectionNode).view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.moveItemAtIndexPath(indexPath, toIndexPath: newIndexPath)
-//            }, completion: nil)
-//        updatedPlaylists()
+
     }
     
     func genresDataSource(removedItem item: Genre, fromIndexPath indexPath: NSIndexPath) {
-//        let collectionNode = (self.screenNode as! ASCollectionNode).view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.deleteItemsAtIndexPaths([indexPath])
-//            }, completion: nil)
-//        updatedPlaylists()
+
     }
     func genresDataSource(updatedItem item: Genre, atIndexPath indexPath: NSIndexPath) {
-//        let collectionNode = (self.screenNode as! ASCollectionNode).view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.reloadItemsAtIndexPaths([indexPath])
-//            }, completion: nil)
-//        updatedPlaylists()
-    }
-    
-    func updatedPlaylists(){
+
     }
 }
 

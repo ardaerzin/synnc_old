@@ -11,7 +11,6 @@ import WCLPopupManager
 import AsyncDisplayKit
 import WCLUserManager
 import SwiftyJSON
-import WCLNotificationManager
 
 class FirstLoginPopupVC : WCLPopupViewController {
     var node : FirstLoginPopupNode!

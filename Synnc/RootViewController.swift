@@ -83,14 +83,15 @@ class RootViewController : ASViewController {
     }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        print("DID APPEAR:", self.view.frame)
+//        UXCam.tagScreenName("RootVC")
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        UXCam.startWithKey("c1b881edb51a88d")
         
         /// Login Related
         let x = LoginViewController()
@@ -103,7 +104,7 @@ class RootViewController : ASViewController {
 
         // Node Related
         self.screenNode.tabbar.delegate = self
-   }
+    }
     
     
     

@@ -14,7 +14,6 @@ import WCLUIKit
 import AsyncDisplayKit
 import Cloudinary
 import WCLLocationManager
-import WCLNotificationManager
 import WCLUserManager
 
 class ListenerCellNode : ASCellNode {
@@ -35,7 +34,6 @@ class ListenerCellNode : ASCellNode {
         super.fetchData()
         
         if let url = imageURL {
-            print(url)
             imageNode.URL = url
         }
     }

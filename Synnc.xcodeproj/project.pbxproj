@@ -290,6 +290,7 @@
 		475286DF1C35AB9600731008 /* PlaylistSelectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */; };
 		475286E41C37372300731008 /* WCLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 475286E31C37372300731008 /* WCLScrollNode.m */; };
 		475286E61C3737D900731008 /* WCLScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286E51C3737D900731008 /* WCLScrollView.swift */; };
+		477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */; };
 		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
 		4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705191C3DB7E9007089D0 /* StreamContentNode.swift */; };
 		4777051C1C3DC581007089D0 /* StreamViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777051B1C3DC581007089D0 /* StreamViewNode.swift */; };
@@ -348,7 +349,6 @@
 		47A4E7051C0CC6E100354EA8 /* FuturaMaxiDemi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6E01C0CC6E100354EA8 /* FuturaMaxiDemi.ttf */; };
 		47A4E7061C0CC6E100354EA8 /* FuturaMaxiLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6E11C0CC6E100354EA8 /* FuturaMaxiLight.ttf */; };
 		47A4E7091C0D0BB600354EA8 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */; };
-		47A902871C41FFD8005CA4EB /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A902861C41FFD8005CA4EB /* FBSDKCoreKit.framework */; };
 		47B37B781C2D9779001CC6D2 /* TabItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B771C2D9779001CC6D2 /* TabItemNode.swift */; };
 		47B37B7A1C2F044E001CC6D2 /* WildTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */; };
 		47B37B7C1C2F05FE001CC6D2 /* PlaylistAnimatior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B7B1C2F05FE001CC6D2 /* PlaylistAnimatior.swift */; };
@@ -388,6 +388,10 @@
 		47D763801C3B06B4008E0334 /* GenrePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D7637F1C3B06B4008E0334 /* GenrePickerController.swift */; };
 		47D763821C3B0D0D008E0334 /* GenresDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D763811C3B0D0D008E0334 /* GenresDataSource.swift */; };
 		47D763841C3B10E2008E0334 /* GenreCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D763831C3B10E2008E0334 /* GenreCellNode.swift */; };
+		47DE5CFB1C6CB5F6006876E6 /* SynncNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DE5CFA1C6CB5F6006876E6 /* SynncNotificationView.swift */; };
+		47DE5CFD1C6CD681006876E6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47DE5CFC1C6CD681006876E6 /* Default-568h@2x.png */; };
+		47DE5CFF1C6CD81E006876E6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47DE5CFE1C6CD81E006876E6 /* FBSDKCoreKit.framework */; };
+		47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */; };
 		47EBDF701C1BBB810075CF0B /* MyPlaylistsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF6F1C1BBB810075CF0B /* MyPlaylistsController.swift */; };
 		47EBDF721C1BBB8F0075CF0B /* ImportPlaylistsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF711C1BBB8F0075CF0B /* ImportPlaylistsController.swift */; };
 		47EBDF761C1BBBAB0075CF0B /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF751C1BBBAB0075CF0B /* InboxController.swift */; };
@@ -717,6 +721,7 @@
 		475286E21C37371600731008 /* WCLScrollNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCLScrollNode.h; sourceTree = "<group>"; };
 		475286E31C37372300731008 /* WCLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLScrollNode.m; sourceTree = "<group>"; };
 		475286E51C3737D900731008 /* WCLScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCLScrollView.swift; sourceTree = "<group>"; };
+		477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistEmptyNode.swift; sourceTree = "<group>"; };
 		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
 		477705191C3DB7E9007089D0 /* StreamContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamContentNode.swift; sourceTree = "<group>"; };
 		4777051B1C3DC581007089D0 /* StreamViewNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewNode.swift; sourceTree = "<group>"; };
@@ -781,7 +786,6 @@
 		47A4E6E01C0CC6E100354EA8 /* FuturaMaxiDemi.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiDemi.ttf; sourceTree = "<group>"; };
 		47A4E6E11C0CC6E100354EA8 /* FuturaMaxiLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FuturaMaxiLight.ttf; sourceTree = "<group>"; };
 		47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
-		47A902861C41FFD8005CA4EB /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		47B37B771C2D9779001CC6D2 /* TabItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabItemNode.swift; sourceTree = "<group>"; };
 		47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WildTransitioning.swift; sourceTree = "<group>"; };
 		47B37B7B1C2F05FE001CC6D2 /* PlaylistAnimatior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistAnimatior.swift; sourceTree = "<group>"; };
@@ -826,6 +830,10 @@
 		47D7637F1C3B06B4008E0334 /* GenrePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenrePickerController.swift; sourceTree = "<group>"; };
 		47D763811C3B0D0D008E0334 /* GenresDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenresDataSource.swift; sourceTree = "<group>"; };
 		47D763831C3B10E2008E0334 /* GenreCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenreCellNode.swift; sourceTree = "<group>"; };
+		47DE5CFA1C6CB5F6006876E6 /* SynncNotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncNotificationView.swift; sourceTree = "<group>"; };
+		47DE5CFC1C6CD681006876E6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		47DE5CFE1C6CD81E006876E6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamInProgressPopup.swift; sourceTree = "<group>"; };
 		47EBDF6F1C1BBB810075CF0B /* MyPlaylistsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPlaylistsController.swift; sourceTree = "<group>"; };
 		47EBDF711C1BBB8F0075CF0B /* ImportPlaylistsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportPlaylistsController.swift; sourceTree = "<group>"; };
 		47EBDF751C1BBBAB0075CF0B /* InboxController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxController.swift; sourceTree = "<group>"; };
@@ -860,7 +868,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */,
-				47A902871C41FFD8005CA4EB /* FBSDKCoreKit.framework in Frameworks */,
+				47DE5CFF1C6CD81E006876E6 /* FBSDKCoreKit.framework in Frameworks */,
 				154D0398DDA70CB48785F728 /* Pods_Synnc.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -952,6 +960,7 @@
 			isa = PBXGroup;
 			children = (
 				4712B63C1C1206BA00C49522 /* NotificationView.xib */,
+				47DE5CFA1C6CB5F6006876E6 /* SynncNotificationView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1311,6 +1320,7 @@
 		47A4E6701C0CAE6100354EA8 = {
 			isa = PBXGroup;
 			children = (
+				47DE5CFC1C6CD681006876E6 /* Default-568h@2x.png */,
 				47A4E67B1C0CAE6100354EA8 /* Synnc */,
 				47A4E6901C0CAE6200354EA8 /* SynncTests */,
 				47A4E69B1C0CAE6200354EA8 /* SynncUITests */,
@@ -1345,6 +1355,7 @@
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
 				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
+				47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */,
 				4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */,
 				4728F94D1C34D13D00B427EA /* StreamRelated */,
 				47EBDF841C1BD89D0075CF0B /* Data Model */,
@@ -1615,6 +1626,7 @@
 				47C8F9841C1D140500333492 /* PlaylistController.swift */,
 				47B37B7B1C2F05FE001CC6D2 /* PlaylistAnimatior.swift */,
 				47B37B881C2F21D1001CC6D2 /* PlaylistNode.swift */,
+				477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */,
 				47C8F9A41C261AE400333492 /* PlaylistTableCell.swift */,
 			);
 			name = PlaylistController;
@@ -1773,7 +1785,7 @@
 		7E17BCCEA77E9EB1A172E5F7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				47A902861C41FFD8005CA4EB /* FBSDKCoreKit.framework */,
+				47DE5CFE1C6CD81E006876E6 /* FBSDKCoreKit.framework */,
 				47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */,
 				7AE84AEB7D80E0B36B62EC9D /* Pods_Synnc.framework */,
 				56E1A1899D17F83DEDFDEC35 /* Pods_SynncTests.framework */,
@@ -2182,6 +2194,7 @@
 				472CB3E61C41BDC100F82523 /* calendar.png in Resources */,
 				472CB49F1C41BDC100F82523 /* texture@3x.png in Resources */,
 				47A4E6F01C0CC6E100354EA8 /* FuturaBookItMas.ttf in Resources */,
+				47DE5CFD1C6CD681006876E6 /* Default-568h@2x.png in Resources */,
 				4704DDCC1C15EE3300B40118 /* Ubuntu-R.ttf in Resources */,
 				47A4E6E51C0CC6E100354EA8 /* FuturaBook.ttf in Resources */,
 				472CB3E51C41BDC100F82523 /* add_playlist@3x.png in Resources */,
@@ -2375,6 +2388,7 @@
 				4740A5911C52EF0D00C767EE /* PopContentController.swift in Sources */,
 				4718343E1C1B3DDD005C9533 /* MeController.swift in Sources */,
 				4718343A1C1B3DA3005C9533 /* MyStreamController.swift in Sources */,
+				477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */,
 				4712B6391C10780200C49522 /* LSFormNode.swift in Sources */,
 				47C8F98C1C1F59E900333492 /* TrackSearchNode.swift in Sources */,
 				47178C201C2AFA8E00735D21 /* MiniHeaderNode.swift in Sources */,
@@ -2388,7 +2402,9 @@
 				4728F94C1C34A2BA00B427EA /* MeContentNode.swift in Sources */,
 				47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */,
 				47C8F9921C20F37800333492 /* TrackSearchDataSource.swift in Sources */,
+				47DE5CFB1C6CB5F6006876E6 /* SynncNotificationView.swift in Sources */,
 				47EBDF891C1BD8A80075CF0B /* Playlist.swift in Sources */,
+				47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */,
 				4728F9421C3199E200B427EA /* PopController.swift in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
 				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
@@ -2614,6 +2630,8 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Synnc/Info.plist;
+				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional -D DEBUG";
+				INFOPLIST_PREPROCESS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2698,6 +2716,10 @@
 					"\"FBSDKLoginKit\"",
 					"-framework",
 					"\"FBSDKShareKit\"",
+					"-framework",
+					"\"FBSDKMessengerShareKit\"",
+					"-framework",
+					"\"Bolts\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2720,6 +2742,8 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Synnc/Info.plist;
+				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional -D RELEASE";
+				INFOPLIST_PREPROCESS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2804,6 +2828,10 @@
 					"\"FBSDKLoginKit\"",
 					"-framework",
 					"\"FBSDKShareKit\"",
+					"-framework",
+					"\"FBSDKMessengerShareKit\"",
+					"-framework",
+					"\"Bolts\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";

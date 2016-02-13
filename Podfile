@@ -29,6 +29,7 @@ pod 'DKImagePickerController'
 pod 'WebASDKImageManager', :git => 'https://github.com/ide/WebASDKImageManager.git', :branch => 'master'
 pod 'BFPaperCheckbox'
 pod 'Shimmer'
+pod 'Appsee'
 
 end
 

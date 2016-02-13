@@ -101,7 +101,7 @@ class StreamViewController : ASViewController {
         print("deinit stream view controller")
     }
     
-    init(stream : Stream?){
+    init(stream : Stream?, playlist: SynncPlaylist? = nil){
         screenNode = StreamViewNode(chatNode: chatController.screenNode, chatbar : chatController.chatbar, content: StreamContentNode(usersNode: listenersController.screenNode))
         super.init(node: screenNode)
         screenNode.delegate = self
@@ -119,7 +119,7 @@ class StreamViewController : ASViewController {
         
         if self.stream == nil {
             
-            createController = StreamCreateController(backgroundNode: screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode)
+            createController = StreamCreateController(backgroundNode: screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode, playlist: playlist)
             createController.parentController = self
             createController.delegate = self
             createController.contentNode.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
@@ -144,7 +144,10 @@ class StreamViewController : ASViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+//        self.screenNode.mainScrollNode.userInteractionEnabled = false
+    }
     override func willMoveToParentViewController(parent: UIViewController?) {
         super.willMoveToParentViewController(parent)
         if let p = parent as? StreamNavigationController {
@@ -200,7 +203,10 @@ class StreamViewController : ASViewController {
     }
     
     func updatedState(state : StreamVCState) {
-        self.chatController.isEnabled = state.rawValue >= StreamVCState.Syncing.rawValue
+        self.chatController.isEnabled = state.rawValue >= StreamVCState.Syncing.rawValue && state.rawValue != StreamVCState.Finished.rawValue
+        
+//        print("SVC updated state", state)
+        
         (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).state = state
         self.screenNode.state = state
         
@@ -318,7 +324,7 @@ extension StreamViewController : ParallaxNodeDelegate {
             self.screenNode.mainScrollNode.view.contentSize = CGSizeMake(self.view.frame.size.width, totalCs)
         }
     }
-    func imageForBackground() -> AnyObject? {
+    func imageForBackground() -> (image: AnyObject?, viewMode: UIViewContentMode?) {
         if let s = self.stream {
             let transformation = CLTransformation()
             
@@ -327,13 +333,13 @@ extension StreamViewController : ParallaxNodeDelegate {
             transformation.crop = "fill"
             
             if let str = s.img, let x = _cloudinary.url(str as String, options: ["transformation" : transformation]), let url = NSURL(string: x) {
-                return url
+                return (image: url, viewMode: nil)
             }
         } else {
             if let cc = self.createController {
                 if let img = cc.selectedImage {
-                    return img
-                } else if let plist = cc.playlist, let str = plist.cover_id {
+                    return (image: img, viewMode: nil)
+                } else if let plist = cc.playlist, let str = plist.cover_id where str != "" {
                     let transformation = CLTransformation()
                     
                     transformation.width = self.view.frame.width * UIScreen.mainScreen().scale
@@ -341,12 +347,12 @@ extension StreamViewController : ParallaxNodeDelegate {
                     transformation.crop = "fill"
                     
                     if let x = _cloudinary.url(str, options: ["transformation" : transformation]), let url = NSURL(string: x) {
-                        return url
+                        return (image: url, viewMode: nil)
                     }
                 }
             }
         }
-        return nil
+        return (image: Synnc.appIcon, viewMode: .Center)
     }
     func gradientImageName() -> String? {
         return "PICTINT"
@@ -367,14 +373,15 @@ extension StreamViewController : StreamerDelegate {
     func streamer(streamer: WildPlayer!, updatedRate rate: Float) {
         self.updatedState(self.state)
     }
-    func endOfPlaylist(streamer: WildPlayer!) {
-        if let s = self.stream {
+    
+//    func endOfPlaylist(streamer: WildPlayer!) {
+//        if let s = self.stream {
 //            StreamManager.sharedInstance.stopStream(s) {
 //                stopped in
 //                self.state = .Finished
 //            }
-        }
-    }
+//        }
+//    }
 }
 
 // MARK: - Edit and Create Controller
@@ -396,8 +403,14 @@ extension StreamViewController : StreamCreateControllerDelegate {
 
 // MARK: - Notifications and update functions
 extension StreamViewController {
+    
     func endedActiveStream(notification: NSNotification!){
-        self.state = .Finished
+        if self.stream == StreamManager.sharedInstance.userStream {
+            self.state = .Finished
+        } else {
+            self.state = .ReadyToPlay
+        }
+        
     }
     func checkActiveStream(notification: NSNotification!){
         if let s = self.stream, let st = StreamManager.sharedInstance.activeStream where s == st {
@@ -443,10 +456,18 @@ extension StreamViewController : UIGestureRecognizerDelegate {
         return true
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        if otherGestureRecognizer == self.screenNode.mainScrollNode.view.panGestureRecognizer {
+            return true
+        } else {
+            return false
+        }
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        if otherGestureRecognizer == self.screenNode.mainScrollNode.view.panGestureRecognizer {
+            return true
+        } else {
+            return false
+        }
     }
 }
 

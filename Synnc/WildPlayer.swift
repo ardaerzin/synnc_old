@@ -12,7 +12,6 @@ import MediaPlayer
 import WCLUtilities
 import SocketIOClientSwift
 import WCLSoundCloudKit
-import WCLNotificationManager
 import WCLPopupManager
 
 @objc protocol StreamerDelegate {
@@ -27,27 +26,16 @@ import WCLPopupManager
     optional func endOfPlaylist(streamer : WildPlayer!)
 }
 
-class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate, WildPlayerItemDelegate {
+class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     
-    // MARK: Properties
-    //    var hostPlayerTime : Double!
-    //    var hostLastUpdateTime : Double!
-    //    var playerNewTime : Double!
-    
-    weak var stream : Stream?
-    
-    func loadStream(stream : Stream, loadTracks : Bool = false) {
-        self.stream = stream
-        if loadTracks {
-            self.trackManager.reloadTrackData(stream)
+    weak var stream : Stream? {
+        willSet {
+            if newValue != nil {
+                self.endOfPlaylist = false
+            }
         }
     }
     
-    
-    
-    //Old Stuff
-    
-//    weak var stream: Stream?
     var syncManager : WildPlayerSyncManager!
     var trackManager : WildPlayerTrackManager!
     var delegate : StreamerDelegate?
@@ -55,8 +43,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
     
     var previousRate : Float! = 0
     
-    var isSeeking : Bool = false
-    var seekedTime : CMTime?
     var isSyncing : Bool! {
         didSet {
             if isSyncing != oldValue {
@@ -93,18 +79,11 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
     var endOfPlaylist : Bool = false {
         willSet {
             if newValue && newValue != endOfPlaylist {
-                //                self.player.pause()
-                print("ended stream", self.stream)
                 
-                self.delegate?.endOfPlaylist?(self)
                 if newValue {
                     
-                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You have reached the end of your stream", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                    }
-
                     if let s = self.stream {
-                        StreamManager.sharedInstance.stopStream(self.stream!, completion: nil)
+                        StreamManager.sharedInstance.finishedStream(s, completion: nil)
                     }
                 }
             }
@@ -152,7 +131,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
             needsPlay = false
         } else {
             needsPlay = true
-            //            reloadTrackData(self.stream!)
         }
     }
     override func pause(){
@@ -191,16 +169,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
         //        audioMix.inputParameters = allAudioParams as [AnyObject]
         //
         //        item.audioMix = audioMix
-    }
-    
-    func seekToPosition(position: CGFloat) {
-        if self.isPlaying {
-            let duration = CGFloat(CMTimeGetSeconds(self.currentItem!.duration))
-            let newPosition : Float64 = Float64(duration * position)
-            seekedTime = CMTimeMakeWithSeconds(newPosition, self.currentItem!.asset.duration.timescale)
-            self.seekToTime(seekedTime!, toleranceBefore: CMTimeMakeWithSeconds(0.2, self.currentItem!.asset.duration.timescale), toleranceAfter: kCMTimeZero)
-            self.syncManager.oldUpdate = nil
-        }
     }
     
     // MARK: Key Value Observer
@@ -281,12 +249,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
         }
     }
     
-    // MARK: StreamManager Delegate
-    func streamManager(manager: StreamManager, updatedActiveStream stream: Stream, withKeys keys: [String]) {
-        if stream === self.stream && keys.contains("songIds") {
-            self.trackManager.reloadTrackData(stream)
-        }
-    }
     
     func resetPlayer(){
         self.rate = 0
@@ -295,46 +257,28 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
             self.trackManager.dequeueItem(item)
         }
         
+        self.stream = nil
     }
     
-    func streamManager(manager: StreamManager, didSetActiveStream stream: Stream?) {
+    
+    func didSetActiveStream(stream: Stream?, needsReload : Bool) {
         
-//        self.stream = stream
-        
-        if stream != nil {
-            self.trackManager.reloadTrackData(stream!)
+        if let st = stream {
+            self.stream = st
+            if needsReload {
+                self.trackManager.reloadTrackData(st)
+            }
         } else {
             resetPlayer()
         }
         
-        //        if stream != nil {
-        //
-        //            if self.player.rate > 0 {
-        //                self.player.rate = 0
-        //            }
-        //            for item in self.player.items() {
-        //                self.dequeueItem(item as! AVPlayerItem)
-        //            }
-        //            self.stream = stream
-        //            reloadTrackData(stream!)
-        //        } else {
-        //            if self.player.rate > 0 {
-        //                self.player.rate = 0
-        //            }
-        //            for item in self.player.items() {
-        //                self.dequeueItem(item as! AVPlayerItem)
-        //            }
-        //        }
-        
     }
-    
-    func wildPlayerItem(itemDidPlayToEnd item: WildPlayerItem) {
-        //nothing... for now
-    }
+}
+
+extension WildPlayer : WildPlayerItemDelegate {
     func wildPlayerItem(itemStatusChangedForItem item: WildPlayerItem) {
         
-        let ind = self.items().indexOf(item)
-        print("itemStatusChangedForItem \(ind)")
+//        let ind = self.items().indexOf(item)
         switch item.status {
         case .ReadyToPlay:
             break
@@ -344,21 +288,11 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
             break
         }
     }
+    func wildPlayerItem(itemDidPlayToEnd item: WildPlayerItem) {
+        //nothing... for now
+    }
     func wildPlayerItem(loadedItemTimeRangesForItem item: WildPlayerItem) {
-        
-        
-//        let ind = self.items().indexOf(item)
-//        print("loadedItemTimeRangesForItem \(ind) || allitems: \(self.items())")
-        if item.loadedTimeRanges.count > 0 {
-            let tRange = item.loadedTimeRanges[0].CMTimeRangeValue
-//            var st : Double!
-            if seekedTime != nil {
-//                st = Double(round(1000*CMTimeGetSeconds(seekedTime!))/1000)
-            }
-            if seekedTime != nil && (CMTimeGetSeconds(seekedTime!) == CMTimeGetSeconds(tRange.start)) {
-                self.rate = 1
-            }
-        }
+        //nothing... for now
     }
     func wildPlayerItem(metadataUpdatedForItem item: WildPlayerItem) {
         //nothing... for now
@@ -373,7 +307,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate,  StreamManagerDelegate
         //nothing... for now
     }
     func wildPlayerItem(playbackStalledForItem item: WildPlayerItem) {
-        
+        //nothing... for now
     }
-    
 }

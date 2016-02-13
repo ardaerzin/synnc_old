@@ -12,19 +12,24 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
 import WCLUserManager
-import DeviceKit
 import WCLPopupManager
 import DKImagePickerController
 import AssetsLibrary
 import Cloudinary
 import Shimmer
+import WCLNotificationManager
 
 class PlaylistController : ASViewController, WildAnimated {
     
     var editedTitle : String!
-    var editedImage : UIImage!
+    var editedImage : UIImage! {
+        didSet {
+            if let pl = self.playlist {
+                pl.coverImage = editedImage
+            }
+        }
+    }
     
     var animator : WildTransitioning! = PlaylistAnimator()
     var displayStatusBar : Bool! = false
@@ -110,10 +115,14 @@ class PlaylistController : ASViewController, WildAnimated {
             self.editing = true
             self.screenNode.editButton.selected = true
             self.screenNode.playlist = self.playlist
+            self.screenNode.emptyState = true
         } else {
             self.playlist = playlist
             if self.playlist == SharedPlaylistDataSource.findUserFavoritesPlaylist() {
                 self.screenNode.addSongsButton.hidden = true
+            }
+            if self.playlist.songs.isEmpty {
+                self.screenNode.emptyState = true
             }
         }
         
@@ -122,6 +131,7 @@ class PlaylistController : ASViewController, WildAnimated {
         node.playlistTitleNode.delegate = self
         (node.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.addSongsButton.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.streamButton.addTarget(self, action: Selector("streamPlaylist:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.editButton.addTarget(self, action: Selector("toggleEditMode:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.headerNode.closeButton.addTarget(self, action: Selector("closeAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
     }
@@ -141,7 +151,7 @@ class PlaylistController : ASViewController, WildAnimated {
     }
     func updateScrollSizes(){
         
-        let csh = self.screenNode.tracksTable.view.contentSize.height
+        let csh = max(self.screenNode.tracksTable.view.contentSize.height, self.screenNode.tracksTable.calculatedSize.height)
         let totalCs = csh + self.screenNode.mainScrollNode.backgroundNode.calculatedSize.height + 50
         if totalCs != self.screenNode.mainScrollNode.view.contentSize.height {
             self.screenNode.mainScrollNode.view.contentSize = CGSizeMake(self.view.frame.size.width, totalCs)
@@ -208,10 +218,10 @@ extension PlaylistController : ASTableViewDelegate {
 }
 
 extension PlaylistController : ParallaxNodeDelegate {
-    func imageForBackground() -> AnyObject? {
+    func imageForBackground() -> (image: AnyObject?, viewMode: UIViewContentMode?) {
         if self.editedImage == nil {
             
-            if let str = self.playlist.cover_id {
+            if let str = self.playlist.cover_id where str != "" {
                 let transformation = CLTransformation()
                 
                 transformation.width = self.view.frame.width * UIScreen.mainScreen().scale
@@ -219,12 +229,12 @@ extension PlaylistController : ParallaxNodeDelegate {
                 transformation.crop = "fill"
                 
                 if let x = _cloudinary.url(str, options: ["transformation" : transformation]), let url = NSURL(string: x) {
-                    return url
+                    return (image: url, viewMode: nil)
                 }
             }
-            return nil
+            return (image: self.playlist.coverImage, viewMode: .Center)
         } else {
-            return self.editedImage
+            return (image: self.editedImage, viewMode: nil)
         }
     }
     func gradientImageName() -> String? {
@@ -252,7 +262,7 @@ extension PlaylistController {
         if isNewPlaylist {
             let vals = self.playlist.changedValues().keys
             if vals.indexOf("songs") == nil && vals.indexOf("name") == nil && vals.indexOf("cover_id") == nil {
-                print("DELETE")
+                playlist.delete()
             }
         }
     }
@@ -260,39 +270,59 @@ extension PlaylistController {
         self.editing = !self.editing
         sender.selected = self.editing
         
-        let playlist = self.playlist
+        self.screenNode.tracksTable.view.setEditing(self.editing, animated: true)
+        
         if !self.editing {
-            if self.editedTitle != nil {
-                self.playlist.name = self.editedTitle
-            }
-            if self.editedImage != nil {
-                Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)
-                let data = UIImageJPEGRepresentation(self.editedImage, 1)
-                let a = CLTransformation()
-                a.angle = "exif"
-                Synnc.sharedInstance.imageUploader.upload(data, options: ["transformation" : a], withCompletion: {
-//                    [unowned self]
-                    (successResult, errorString, code, context)  in
-                    
-                    if let err = errorString {
-                        print("err with upload", err)
-                    } else {
-                        if let publicId = successResult["public_id"] as? String, let v = successResult["version"] as? NSNumber, let format =  successResult["format"] as? String{
-                            
-                            let id = "image/upload/v\(v)/\(publicId).\(format)"
-                            
-                            playlist.cover_id = id
-                            playlist.save()
-                        }
-                    }
-                    
-                    }, andProgress: nil)
-            }
-
-            self.playlist.save()
+            self.saveChanges()
         }
         
-        self.screenNode.tracksTable.view.setEditing(self.editing, animated: true)
+    }
+    func saveChanges(){
+        guard let playlist = self.playlist else {
+            return
+        }
+        
+        if self.editedTitle != nil {
+            playlist.name = self.editedTitle
+            self.editedTitle = nil
+        } else if playlist.name == nil {
+            playlist.name = "Untitled Playlist"
+        }
+        
+        if self.editedImage != nil {
+            playlist.cover_id = ""
+            playlist.coverImage = self.editedImage
+            
+            Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)
+            let data = UIImageJPEGRepresentation(self.editedImage, 1)
+            let a = CLTransformation()
+            a.angle = "exif"
+            
+            Synnc.sharedInstance.imageUploader.upload(data, options: ["transformation" : a], withCompletion: {
+                (successResult, errorString, code, context)  in
+                
+                print("uploaded image")
+                
+                if let err = errorString {
+                    print("err with upload", err)
+                } else {
+                    if let publicId = successResult["public_id"] as? String, let v = successResult["version"] as? NSNumber, let format =  successResult["format"] as? String{
+                        
+                        self.editedImage = nil
+                        
+                        let id = "image/upload/v\(v)/\(publicId).\(format)"
+                        
+                        self.playlist.cover_id = id
+                        self.playlist.save()
+                    }
+                }
+                
+            }, andProgress: nil)
+        }
+        isNewPlaylist = false
+        
+        playlist.save()
+        self.screenNode.fetchData()
     }
     func imageTap(sender : ButtonNode){
         imagePicker = SynncImagePicker()
@@ -320,41 +350,56 @@ extension PlaylistController {
     }
 }
 extension PlaylistController {
-    func displayTrackSearch(sender : ASButtonNode) {
+    func displayTrackSearch(sender : ASButtonNode!) {
         let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
         lc.delegate = self
-        
-//        let x = WCLPopupViewController(nibName: nil, bundle: nil, options: opts, size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
-//        x.addChildViewController(lc)
-//        lc.view.frame = x.view.bounds
-//        x.view.addSubview(lc.view)
-//        lc.didMoveToParentViewController(x)
-        
         WCLPopupManager.sharedInstance.newPopup(lc)
     }
-}
-
-extension PlaylistController {
-    func updatedPlaylist(){
-        self.screenNode.tracksTable.view.reloadData()
-//        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+    func streamPlaylist(sender : ASButtonNode){
+        
+        if self.playlist.songs.isEmpty {
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                
+                let info = WCLNotificationInfo(defaultActionName: "", body: "Add Tracks to this playlist before streaming", title: "Invalid Playlist", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                    
+                    [weak self]
+                    notif in
+                    
+                    if self == nil {
+                        return
+                    }
+                    
+                    self?.displayTrackSearch(nil)
+                }
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+            
+            return
+        }
+        
+        Synnc.sharedInstance.streamNavigationController.displayStreamCreateController(self.playlist)
     }
 }
 
 extension PlaylistController : TrackSearchControllerDelegate {
-    func didSelectTrack(song: SynncTrack) {
-        self.playlist.addSongs([song])
-        self.playlist.save()
+    
+    func updatedPlaylist(){
+        self.screenNode.updateTrackCount()
         
         self.screenNode.updateTrackCount()
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+        
+        self.screenNode.emptyState = self.playlist.songs.isEmpty
+    }
+    
+    func didSelectTrack(song: SynncTrack) {
+        self.playlist.addSongs([song])
+        self.saveChanges()
     }
     func didDeselectTrack(song: SynncTrack) {
         self.playlist.removeSongs([song])
-        self.playlist.save()
         
-        self.screenNode.updateTrackCount()
-        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+        self.saveChanges()
     }
     func hasSong(song: SynncTrack) -> Bool{
         return self.playlist.hasTrack(song)

@@ -140,6 +140,12 @@ extension SynncPlaylist {
         if let ind = x.indexOf("socketCallback") {
             x.removeAtIndex(ind)
         }
+        if let ind = x.indexOf("_coverImage") {
+            x.removeAtIndex(ind)
+        }
+        if let ind = x.indexOf("coverImage") {
+            x.removeAtIndex(ind)
+        }
         
         return x
     }

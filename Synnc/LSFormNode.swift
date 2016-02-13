@@ -151,7 +151,6 @@ class InputFieldArea : ASDisplayNode {
             
             let x = 50+2*buttonSpacing+25+buttonSpacing
             self.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: x))
-            print(x)
         }
         
 //        self.backgroundColor = UIColor.blueColor()

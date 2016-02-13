@@ -16,6 +16,24 @@ import Shimmer
 
 class PlaylistNode : ParallaxNode {
     
+    var emptyStateNode : PlaylistEmptyNode!
+    var emptyState : Bool = false {
+        didSet {
+            if emptyState != oldValue {
+                if self.emptyStateNode == nil {
+                    emptyStateNode = PlaylistEmptyNode()
+                }
+                if emptyState {
+                    self.addSubnode(emptyStateNode)
+                } else {
+                    emptyStateNode.removeFromSupernode()
+                    emptyStateNode = nil
+                }
+                self.setNeedsLayout()
+            }
+        }
+    }
+    
     var playlist : SynncPlaylist?
     
     var tracksTable : ASTableNode!
@@ -111,22 +129,27 @@ class PlaylistNode : ParallaxNode {
      
         self.titleShimmer = FBShimmeringView()
         self.titleShimmer.contentView = self.playlistTitleNode.view
-//        self.titleShimmer.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.3)
         
         self.imageNode.userInteractionEnabled = false
         self.imageNode.enabled = false
+
         
         self.view.addSubview(self.titleShimmer)
         self.addSubnode(countTextNode)
     }
     
+    override func didScroll(position: CGFloat) {
+        super.didScroll(position)
+        if let esn = self.emptyStateNode {
+            POPLayerSetTranslationY(esn.layer, -position)
+        }
+    }
+    
+    
     override func layout() {
         super.layout()
         
-//        var
-//        playlistTitleNode.position.x = (playlistTitleNode.calculatedSize.width / 2) + 20
-//        playlistTitleNode.position.y = (playlistTitleNode.calculatedSize.height / 2) + 50
-//        print(self.playlistTitleNode.calculatedSize)
+        emptyStateNode?.position.y = self.calculatedSize.width + (emptyStateNode.calculatedSize.height / 2)
         
         countTextNode.position.x = (countTextNode.calculatedSize.width / 2) + 20
         countTextNode.position.y = (((playlistTitleNode.calculatedSize.height / 2) + 50) + (playlistTitleNode.calculatedSize.height / 2)) + 10 + (countTextNode.calculatedSize.height / 2)
@@ -137,7 +160,14 @@ class PlaylistNode : ParallaxNode {
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
         playlistTitleNode.sizeRange = ASRelativeSizeRangeMake(ASRelativeSize(width: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 40), height: ASRelativeDimension(type: .Points, value: 30)), ASRelativeSize(width: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 40), height: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 100)))
-        return ASStaticLayoutSpec(children: [x, playlistTitleNode, countTextNode])
+        
+        self.emptyStateNode?.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - constrainedSize.max.width - 50))
+        
+        if self.emptyStateNode == nil {
+            return ASStaticLayoutSpec(children: [x, playlistTitleNode, countTextNode])
+        } else {
+            return ASStaticLayoutSpec(children: [x, playlistTitleNode, countTextNode, self.emptyStateNode])
+        }
     }
 }
 extension PlaylistNode : MyTextNodeDelegate{
@@ -149,65 +179,9 @@ extension PlaylistNode : MyTextNodeDelegate{
 
 
 class PlaylistBackgroundNode : ParallaxBackgroundNode {
-//    var imageSelector : ButtonNode!
-    
-//    var enableSelectionAnimation : POPBasicAnimation! {
-//        get {
-//            if let anim = self.imageSelector.pop_animationForKey("enableSelectionAnimation") as? POPBasicAnimation {
-//                return anim
-//            } else {
-//                let anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-//                anim.completionBlock = {
-//                    a, finished in
-//                    if ((a as! POPBasicAnimation).toValue as! CGFloat) == 1.0 {
-//                        self.imageSelector.userInteractionEnabled = true
-//                        self.imageSelector.enabled = true
-//                    } else {
-//                        self.imageSelector.userInteractionEnabled = false
-//                        self.imageSelector.enabled = false
-//                    }
-//                }
-//                self.imageSelector.pop_addAnimation(anim, forKey: "enableSelectionAnimation")
-//                return anim
-//            }
-//        }
-//    }
-    
     override init(){
         super.init()
-        
-//        imageSelector = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
-//        imageSelector.setImage(UIImage(named: "camera-large")?.resizeImage(usingWidth: 20), forState: ASControlState.Normal)
-//        imageSelector.minScale = 1
-//        imageSelector.enabled = false
-//        imageSelector.userInteractionEnabled = false
-//        imageSelector.alpha = 0
-//        
-//        imageSelector.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50, 50))
-//        
-//        self.addSubnode(imageSelector)
     }
-    
-//    override func layout() {
-//        super.layout()
-//        
-//        self.imageSelector.position.x = self.calculatedSize.width - (self.imageSelector.calculatedSize.width / 2)
-//        self.imageSelector.position.y = self.calculatedSize.height - (self.imageSelector.calculatedSize.height / 2)
-//    }
-    
-//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-//        let x = super.layoutSpecThatFits(constrainedSize)
-//        return ASStaticLayoutSpec(children: [x, imageSelector])
-//    }
-//    
-//    override func updateScrollPositions(position: CGFloat) {
-//        if position < 0 {
-//            POPLayerSetTranslationY(self.imageSelector.layer, -position/2)
-//        } else {
-//            POPLayerSetTranslationY(self.imageSelector.layer, 0)
-//        }
-//        super.updateScrollPositions(position)
-//    }
 }
 
 

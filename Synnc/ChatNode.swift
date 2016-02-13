@@ -14,7 +14,6 @@ import WCLUIKit
 import AsyncDisplayKit
 import Cloudinary
 import WCLLocationManager
-import WCLNotificationManager
 import WCLUserManager
 
 protocol ChatNodeDelegate {

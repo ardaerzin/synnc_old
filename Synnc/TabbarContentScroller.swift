@@ -129,7 +129,7 @@ class TabbarContentScroller : ASScrollNode {
         self.view.contentSize = CGSizeMake(CGFloat(self.pages.count) * constrainedSize.max.width, constrainedSize.max.height)
         let hStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: staticSpecs)
         
-//        self.updatePositionAnimation.toValue = CGFloat(self.currentIndex) * constrainedSize.max.width
+        //        self.updatePositionAnimation.toValue = CGFloat(self.currentIndex) * constrainedSize.max.width
         
         return hStack
     }

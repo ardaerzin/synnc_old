@@ -79,12 +79,7 @@ class NotificationRequestPopupNode : ASDisplayNode {
     override func fetchData() {
         super.fetchData()
         
-        let primaryIconsDictionary = NSBundle.mainBundle().infoDictionary?["CFBundleIcons"]?["CFBundlePrimaryIcon"] as? NSDictionary
-        let iconFiles = primaryIconsDictionary!["CFBundleIconFiles"] as! NSArray
-        let lastIcon = iconFiles.lastObject as! NSString //last seems to be largest, use first for smallest
-        let theIcon = UIImage(named: lastIcon as String)
-        
-        self.imageNode.image = theIcon
+        self.imageNode.image = Synnc.appIcon
     }
     
     override init() {

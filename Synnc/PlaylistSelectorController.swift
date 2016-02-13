@@ -36,6 +36,7 @@ class PlaylistSelectorController : TabSubsectionController {
                 return
             }
             
+            selectedPlaylist = nil
             selectedPlaylist = playlistDataSource.allItems[selectedIndexPath.item]
             
             if let node = (self.screenNode.view as! ASCollectionView).nodeForItemAtIndexPath(selectedIndexPath) as? SelectablePlaylistCellNode {
@@ -47,10 +48,10 @@ class PlaylistSelectorController : TabSubsectionController {
         }
     }
     var delegate : PlaylistSelectorDelegate?
-    var playlistDataSource : PlaylistsDataSource! = PlaylistsDataSource()
+    var playlistDataSource : PlaylistsDataSource!
     var selectedPlaylist : SynncPlaylist! {
         didSet {
-            if selectedPlaylist != oldValue {
+            if selectedPlaylist != nil && selectedPlaylist != oldValue {
                 self.delegate?.didSelectPlaylist(selectedPlaylist)
             }
         }
@@ -62,20 +63,31 @@ class PlaylistSelectorController : TabSubsectionController {
     deinit {
         print("ADHSAKDAS")
     }
-    override init(){
+    init(playlist : SynncPlaylist? = nil){
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .Vertical
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
+        
+        self.selectedPlaylist = playlist
+        
+        playlistDataSource = SelectablePlaylistsDataSource(predicates:
+            [
+                NSPredicate(format: "user == %@", Synnc.sharedInstance.user._id, NSNull()),
+                NSPredicate(format: "id != %@", NSNull())
+            ], type: NSCompoundPredicateType.AndPredicateType)
+        
         let listNode = ASCollectionNode(collectionViewLayout: layout)
         super.init(node: listNode)
         self.screenNode = listNode
+        
         
         if playlistDataSource.allItems.isEmpty {
             let s = self.screenNode as! MyPlaylistsNode
             s.emptyState = true
             s.emptyStateNode.subTextNode.addTarget(self, action: Selector("newPlaylistAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         }
+        
         playlistDataSource.delegate = self
         
         listNode.view.scrollEnabled = false
@@ -122,9 +134,18 @@ extension PlaylistSelectorController : ASCollectionDelegate {
         self.selectedIndexPath = indexPath
     }
     func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.item == 0 && self.selectedPlaylist == nil {
-            self.selectedIndexPath = indexPath
-            collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+        
+        let ind = indexPath.item
+        if self.selectedPlaylist != nil {
+            if ind < playlistDataSource.allItems.count && playlistDataSource.allItems[ind] == self.selectedPlaylist {
+                self.selectedIndexPath = indexPath
+                collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            }
+        } else {
+            if ind == 0 {
+                self.selectedIndexPath = indexPath
+                collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            }
         }
     }
 }
@@ -141,21 +162,21 @@ extension PlaylistSelectorController : PlaylistsDataSourceDelegate {
         let collectionNode = (self.screenNode as! ASCollectionNode).view
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.deleteItemsAtIndexPaths([indexPath])
-            }, completion: nil)
+        }, completion: nil)
         updatedPlaylists()
     }
     func playlistsDataSource(updatedItem item: SynncPlaylist, atIndexPath indexPath: NSIndexPath) {
         let collectionNode = (self.screenNode as! ASCollectionNode).view
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.reloadItemsAtIndexPaths([indexPath])
-            }, completion: nil)
+        }, completion: nil)
         updatedPlaylists()
     }
     func playlistsDataSource(movedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
         let collectionNode = (self.screenNode as! ASCollectionNode).view
         collectionNode.performBatchAnimated(true, updates: {
             collectionNode.moveItemAtIndexPath(indexPath, toIndexPath: newIndexPath)
-            }, completion: nil)
+        }, completion: nil)
         updatedPlaylists()
     }
     

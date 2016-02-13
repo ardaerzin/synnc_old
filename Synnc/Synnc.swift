@@ -21,17 +21,28 @@ import CoreLocation
 import WCLPopupManager
 import AsyncDisplayKit
 import WCLUserManager
-
+import Appsee
 import WCLNotificationManager
 
-extension UIColor {
-    class func SynncColor() -> UIColor {
-        return UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1)
-    }
-}
+#if DEBUG
+    let serverURLString = "https://synnc.herokuapp.com"
+    let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
+#else
+    let serverURLString = "https://synnc.herokuapp.com"
+    let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
+#endif
 
 @UIApplicationMain
 class Synnc : UIResponder, UIApplicationDelegate {
+    
+    class var appIcon : UIImage! {
+        get {
+            let primaryIconsDictionary = NSBundle.mainBundle().infoDictionary?["CFBundleIcons"]?["CFBundlePrimaryIcon"] as? NSDictionary
+            let iconFiles = primaryIconsDictionary!["CFBundleIconFiles"] as! NSArray
+            let lastIcon = iconFiles.lastObject as! NSString //last seems to be largest, use first for smallest
+            return UIImage(named: lastIcon as String)
+        }
+    }
     
     var bgTime : NSTimer!
     var backgroundTask : UIBackgroundTaskIdentifier!
@@ -75,12 +86,15 @@ class Synnc : UIResponder, UIApplicationDelegate {
         super.init()
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Twitter.sharedInstance()])
-        
-        self.socket = initSocket("https://synnc.herokuapp.com")
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
+        self.socket = initSocket()
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+//        Appsee.start(appSeeKey)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -89,13 +103,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         self.locationManager.delegate = self
         self.locationManager.initLocationManager()
-        
-//        SPTAuth.defaultInstance().sessionUserDefaultsKey = "SynncSPT"
-//        SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
-//        SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://ivory-yes.codio.io:9500/refresh")
-//        SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://ivory-yes.codio.io:9500/swap")
-//        SPTAuth.defaultInstance().redirectURL = NSURL(string: "Synnc://callback")
-//        SPTAuth.defaultInstance().requestedScopes = [SPTAuthUserReadPrivateScope, SPTAuthStreamingScope]
         
         WildDataManager.sharedInstance().setCoreDataStack(dbName: "SynncDB", modelName: "SynncDataModel", bundle: nil, iCloudSync: false)
         
@@ -122,10 +129,21 @@ class Synnc : UIResponder, UIApplicationDelegate {
             
             self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
             let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-            print("normal date:", normalDate, "network date:", networkDate, "diff is:", diff)
+            print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
         })
         
         return true
+    }
+    
+    func detectedScreen(notification: NSNotification) {
+        
+        var userInfo = notification.userInfo
+        let screenName = userInfo![kAppseeScreenName] as! String
+        // To ignore a new screen set its value to nil
+        
+        print("detected screenName", screenName)
+        
+        userInfo![kAppseeScreenName] = nil
     }
     
     func willChangeStatusBarFrame(notification : NSNotification!){
@@ -144,7 +162,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        print("SHIET")
         bgTime = NSTimer.scheduledTimerWithTimeInterval(1.0,
             target: self,
             selector: "timerMethod:",
@@ -155,14 +172,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
             UIApplication.sharedApplication().beginBackgroundTaskWithName("task1",
                 expirationHandler: {[weak self] in
                     self!.endBackgroundTask()
-                })
-        
-//        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler {
-//            [unowned self] in
-//            print("end background task now")
-//            self.endBackgroundTask()
-//        }
-//        assert(backgroundTask != UIBackgroundTaskInvalid)
+            })
     }
     
     func endBackgroundTask(){
@@ -181,23 +191,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
     }
     func timerMethod(sender: NSTimer){
         
-        let backgroundTimeRemaining =
-        UIApplication.sharedApplication().backgroundTimeRemaining
-        
-        if backgroundTimeRemaining == DBL_MAX{
-            print("Background Time Remaining = Undetermined")
-        } else {
-            print("Background Time Remaining = " +
-                "\(backgroundTimeRemaining) Seconds")
-        }
-        
     }
-    
-//    func endBackgroundTask() {
-//        NSLog("Background task ended.")
-//        UIApplication.sharedApplication().endBackgroundTask(backgroundTask)
-//        backgroundTask = UIBackgroundTaskInvalid
-//    }
     
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -225,33 +219,37 @@ class Synnc : UIResponder, UIApplicationDelegate {
 //            return true
 //        }
         
-        print("open url", url.absoluteString)
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 }
 
 extension Synnc : WCLNotificationManagerDelegate {
     func notificationManager(manager: WCLNotificationManager, didTapInappNotification notification: WCLNotificationView) {
-        if let info = notification.info {
-            switch info.defaultActionName {
-            case "OpenTab" :
-                if let rvc = self.window?.rootViewController as? RootViewController {
-                    rvc.willSetTabItem(rvc.screenNode.tabbar, item: info.object as! TabItem)
-                }
-                break
-            default:
-                return
-            }
-        }
+//        if let info = notification.info {
+//            switch info.defaultActionName {
+//            case "OpenTab" :
+//                if let rvc = self.window?.rootViewController as? RootViewController {
+//                    rvc.willSetTabItem(rvc.screenNode.tabbar, item: info.object as! TabItem)
+//                }
+//                break
+//            default:
+//                return
+//            }
+//        }
     }
 }
 
 extension Synnc {
-    func initSocket(urlStr : String) -> SocketIOClient {
-        let x = SocketIOClient(socketURL: urlStr, options: [.Reconnects(true), .ForceWebsockets(true)])
-        x.on("connect", callback: connectCallback)
-        x.connect()
-        return x
+    func initSocket() -> SocketIOClient! {
+        guard let url = NSURL(string: serverURLString) else {
+            assertionFailure("not a valid server address")
+            return nil
+        }
+        
+        let socket = SocketIOClient(socketURL: url, options: [SocketIOClientOption.Reconnects(true), SocketIOClientOption.ForceWebsockets(true)])
+        socket.on("connect", callback: connectCallback)
+        socket.connect()
+        return socket
     }
     var connectCallback : NormalCallback {
         return {

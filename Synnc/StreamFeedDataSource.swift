@@ -59,6 +59,10 @@ class StreamFeedNode : ASCellNode {
         
         if let id = self.imgId, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             self.imageNode.URL = url
+            self.imageNode.contentMode = .ScaleAspectFill
+        } else {
+            self.imageNode.image = Synnc.appIcon
+            self.imageNode.contentMode = .Center
         }
         
         self.genresNode.attributedString = NSAttributedString(string: genreStr, attributes: self.genreAttributes)

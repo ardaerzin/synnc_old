@@ -76,7 +76,19 @@ class StreamCreateController : NSObject {
     var selectedImage : UIImage!
     var imagePicker : SynncImagePicker!
     var parentController : ASViewController?
+    
     var streamName : String!
+//        {
+//        didSet {
+//            if streamName == nil || streamName == "" {
+//                updatedName = false
+//            } else {
+//                updatedName = true
+//            }
+//        }
+//    }
+    var updatedName : Bool = false
+    
     var streamGenres : [Genre] = []
     
     var loadingNode : StreamLoadingNode!
@@ -88,10 +100,13 @@ class StreamCreateController : NSObject {
         }
     }
     
-    var playlistSelector : PlaylistSelectorController = PlaylistSelectorController()
+    var playlistSelector : PlaylistSelectorController!
     
-    init(backgroundNode : StreamBackgroundNode!){
+    init(backgroundNode : StreamBackgroundNode!, playlist : SynncPlaylist? = nil){
         super.init()
+        
+        self.playlistSelector = PlaylistSelectorController(playlist: playlist)
+        
         self.backgroundNode = backgroundNode
         self.playlistSelector.delegate = self
         self.backgroundNode.editing = true
@@ -181,10 +196,8 @@ class StreamCreateController : NSObject {
     func getAddress(){
         let location = WCLLocationManager.sharedInstance().getCurrentLocation()
         WCLLocationManager.sharedInstance().gpsManager.reverseGeocodeLocationUsingGoogleWithCoordinates(location, callback: { (address, error) -> Void in
-            print(address)
             if let ad = address {
                 self.streamCity = (ad.locality as String).uppercaseString
-                
                 Async.main {
                     self.backgroundNode.updateLocation(self.streamCity, status: true)
                 }
@@ -268,7 +281,7 @@ class StreamCreateController : NSObject {
     func createStreamInfoObject() -> [String : AnyObject]{
         var info : [String : AnyObject] = [String : AnyObject]()
         
-        if let url = self.playlist.cover_id {
+        if let url = self.playlist.cover_id where url != "" {
             info["img"] = url
         }
         if let name = self.streamName {
@@ -329,6 +342,12 @@ extension StreamCreateController : GenrePickerDelegate {
 extension StreamCreateController : PlaylistSelectorDelegate {
     func didSelectPlaylist(playlist: SynncPlaylist) {
         self.playlist = playlist
+        
+        if !updatedName {
+            streamName = playlist.name!
+            self.backgroundNode.infoNode.streamTitle.attributedText = NSAttributedString(string: streamName, attributes: self.backgroundNode.infoNode.streamTitle.typingAttributes)
+        }
+        
         self.delegate?.updatedData()
     }
 }
@@ -339,11 +358,20 @@ extension StreamCreateController : ASEditableTextNodeDelegate {
             editableTextNode.resignFirstResponder()
             return false
         }
+        
         if let fieldStr = editableTextNode.textView.text {
             var str = (fieldStr as NSString).stringByReplacingCharactersInRange(range, withString: text)
             str = (str as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+            
+            if str == "" {
+                self.updatedName = false
+            } else {
+                self.updatedName = true
+                
+            }
             self.streamName = str
         }
+        
         return true
     }
 }

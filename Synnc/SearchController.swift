@@ -40,6 +40,7 @@ class SearchController : TabItemController {
                 item.textContainerInset = UIEdgeInsetsMake(6, 6, 6, 6)
                 item.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
                 item.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor(), NSKernAttributeName : -0.09]
+                item.userInteractionEnabled = false
                 _titleItem = item
             }
             return _titleItem

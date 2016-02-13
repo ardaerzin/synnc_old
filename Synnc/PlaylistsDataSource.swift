@@ -20,8 +20,24 @@ protocol PlaylistsDataSourceDelegate {
     func playlistsDataSource(movedItem item: SynncPlaylist, fromIndexPath indexPath : NSIndexPath, toIndexPath newIndexPath : NSIndexPath)
 }
 
+class SelectablePlaylistsDataSource : PlaylistsDataSource {
+    override var allItems : [SynncPlaylist] {
+        get {
+            if let items = frc.controller.fetchedObjects as? [SynncPlaylist] {
+                let x = items.filter {
+                    return !$0.songs.isEmpty
+                }
+                return x
+            } else {
+                return []
+            }
+        }
+    }
+}
+
 class PlaylistsDataSource : NSObject {
     
+    var userFavoritePlaylist : SynncPlaylist?
     var oldItems_all : [SynncPlaylist] = []
     var playableItems_all : [SynncPlaylist] = []
     
@@ -43,6 +59,10 @@ class PlaylistsDataSource : NSObject {
     var allItems : [SynncPlaylist] {
         get {
             if let items = frc.controller.fetchedObjects as? [SynncPlaylist] {
+//                let x = items.filter {
+//                    return !$0.songs.isEmpty
+//                }
+//                return x
                 return items
             } else {
                 return []
@@ -56,8 +76,9 @@ class PlaylistsDataSource : NSObject {
         }
     }
     
-    override init(){
+    init(predicates: [NSPredicate], type: NSCompoundPredicateType) {
         super.init()
+        
         self.availablePlaylistPredicate = NSPredicate { (obj, _) in
             if let playlist = obj as? SynncPlaylist {
                 if playlist.allSources().isEmpty {
@@ -70,7 +91,8 @@ class PlaylistsDataSource : NSObject {
                 return false
             }
         }
-        frc = SynncPlaylist.finder(inContext: WildDataManager.sharedInstance().coreDataStack.getMainContext()).filter(NSPredicate(format: "user == %@ AND id != %@", Synnc.sharedInstance.user._id, NSNull())).sort(keys: ["last_update"], ascending: [true]).createFRC(delegate: self)
+//        NSPredicate(format: "user == %@ AND id != %@", Synnc.sharedInstance.user._id, NSNull())
+        frc = SynncPlaylist.finder(inContext: WildDataManager.sharedInstance().coreDataStack.getMainContext()).filter(NSCompoundPredicate(type: type, subpredicates: predicates)).sort(keys: ["name"], ascending: [true]).createFRC(delegate: self)
         
         self.playableItems_all = self.playableItems.map({return $0})
     }
@@ -135,13 +157,16 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
         var plist : SynncPlaylist?
         
         if let p = self.findUserFavoritesPlaylist() {
+            print("found user fav plist")
             completionHandler(playlist: p)
         } else {
+            print("cannot found user fav plist")
             plist = self.createUserFavoritesPlaylist()
             
             plist!.socketCallback = {
                 p in
                 
+                print("created and saved playlist", p.id!)
                 Synnc.sharedInstance.user.favPlaylistId = p.id!
                 Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "favPlaylistId" : p.id!])
                 completionHandler(playlist: p)
@@ -151,13 +176,18 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
         }
     }
     func findUserFavoritesPlaylist() -> SynncPlaylist? {
-        if let id = Synnc.sharedInstance.user.favPlaylistId {
+        if let plist = self.userFavoritePlaylist {
+            return plist
+        } else if let id = Synnc.sharedInstance.user.favPlaylistId {
+
+            print("found fav plist id")
             let a = allItems.filter {
                 playlist in
                 return playlist.id == id
             }
             return a.first
         } else {
+            print("not found fav plist id")
             return nil
         }
     }
@@ -166,10 +196,11 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
         let plist = SynncPlaylist.create(inContext: Synnc.sharedInstance.moc) as! SynncPlaylist
         plist.user = Synnc.sharedInstance.user._id
         plist.name = "Favorited"
+        userFavoritePlaylist = plist
         
         return plist
     }
 }
 let SharedPlaylistDataSource : PlaylistsDataSource = {
-    return PlaylistsDataSource()
+    return PlaylistsDataSource(predicates: [NSPredicate(format: "user == %@ AND id != %@", Synnc.sharedInstance.user._id, NSNull())], type: NSCompoundPredicateType.AndPredicateType)
 }()

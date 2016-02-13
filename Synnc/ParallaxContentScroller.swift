@@ -64,7 +64,7 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
         if scrollView != self.view {
             return
         }
-        let position: CGFloat = scrollView.contentOffset.y
+        var position: CGFloat = scrollView.contentOffset.y
         var delta : CGFloat = 0
         let limit : CGFloat = self.calculatedSize.width - topLimit
         
@@ -77,8 +77,8 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
         
         if scrollView.contentOffset.y < 0 {
             
+            position = position/2
             self.backgroundNode.scrollNode.clipsToBounds = false
-//            self.backgroundNode.scrollNode.view.setContentOffset(CGPointMake(0, 0), animated: false)
             
             
             let y = 1 + abs(position / self.calculatedSize.width)
@@ -89,8 +89,9 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
             POPLayerSetScaleXY(self.backgroundNode.imageGradientNode.layer, CGPointMake(y, y))
             POPLayerSetScaleXY(self.backgroundNode.imageNode.layer, CGPointMake(y, y))
             
-            self.parallaxContentNode.position.y = x - (tabbarHeight / 2)
+            self.parallaxContentNode.position.y = x - (tabbarHeight / 2) + position
             
+            a = -position
         } else {
             
             self.backgroundNode.scrollNode.clipsToBounds = true
@@ -114,6 +115,9 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
             }
         }
         
+        if let s = self.supernode as? ParallaxNode {
+            s.didScroll(position)
+        }
         self.backgroundNode.position.y = (self.backgroundNode.calculatedSize.height / 2) - bgScalePosition - a
         self.backgroundNode.updateScrollPositions(position)
     }

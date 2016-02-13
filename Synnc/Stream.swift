@@ -226,7 +226,9 @@ class Stream : Serializable {
                     json = JSON(j)
                 }
                 
+//                print(json)
                 var keys = super.fromJSON(json)
+                
                 let listenersJSON = JSON(listenersInfo)
                 if let arr = listenersJSON.array {
                     

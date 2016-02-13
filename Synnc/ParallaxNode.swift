@@ -14,7 +14,7 @@ import SpinKit
 import WCLUIKit
 
 protocol ParallaxNodeDelegate {
-    func imageForBackground() -> AnyObject?
+    func imageForBackground() -> (image: AnyObject?, viewMode: UIViewContentMode?)
     func gradientImageName() -> String?
 }
 
@@ -57,18 +57,23 @@ class ParallaxNode : ASDisplayNode {
         super.fetchData()
         
         if let imgData = self.delegate?.imageForBackground() {
-            if let url = imgData as? NSURL {
+            
+            var imageMode : UIViewContentMode = .Center
+            if let m = imgData.viewMode {
+                imageMode = m
+            }
+            
+            if let url = imgData.image as? NSURL {
                 mainScrollNode.backgroundNode.imageNode.URL = url
-                mainScrollNode.backgroundNode.imageNode.contentMode = .ScaleAspectFill
-            } else if let img = imgData as? UIImage {
+            } else if let img = imgData.image as? UIImage {
                 mainScrollNode.backgroundNode.imageNode.URL = nil
                 mainScrollNode.backgroundNode.imageNode.image = img
-                mainScrollNode.backgroundNode.imageNode.contentMode = .ScaleAspectFill
             } else {
                 mainScrollNode.backgroundNode.imageNode.URL = nil
                 mainScrollNode.backgroundNode.imageNode.image = UIImage(named: "camera-large")
-                mainScrollNode.backgroundNode.imageNode.contentMode = .Center
             }
+            
+            mainScrollNode.backgroundNode.imageNode.contentMode = imageMode
         } else {
             mainScrollNode.backgroundNode.imageNode.image = UIImage(named: "camera-large")
             mainScrollNode.backgroundNode.imageNode.contentMode = .Center
@@ -79,6 +84,10 @@ class ParallaxNode : ASDisplayNode {
         } else {
             mainScrollNode.backgroundNode.imageGradientNode.image = UIImage(named: "imageGradient")
         }
+    }
+    
+    func didScroll(position: CGFloat){
+        
     }
 
 }

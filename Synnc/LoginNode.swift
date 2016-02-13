@@ -25,7 +25,7 @@ class SeperatorNode : ASDisplayNode {
 //        print("deinit SeperatorNode")
     }
     
-        override init() {
+    override init() {
         super.init()
         
         self.seperatorLine1 = ASDisplayNode()
@@ -72,7 +72,7 @@ class ButtonHolder : ASDisplayNode {
 //        print("deinit button holder")
     }
     
-        override init() {
+    override init() {
         super.init()
         
         var buttonHeight : CGFloat = 60
@@ -564,7 +564,7 @@ class BackgroundNode : ASDisplayNode {
     override init() {
         super.init()
         
-        self.logoHolder = AnimatedLogoNode(barCount: 15)
+        self.logoHolder = AnimatedLogoNode(barCount: 5)
         
         self.titleNode = ASTextNode()
         self.titleNode.spacingBefore = 20
@@ -585,7 +585,7 @@ class BackgroundNode : ASDisplayNode {
         let bottomSpacer = ASLayoutSpec()
         bottomSpacer.flexGrow = true
         
-        self.logoHolder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 50))
+        self.logoHolder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
         let c = ASStaticLayoutSpec(children: [self.logoHolder])
         
         let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [spacer, titleNode, c, bottomSpacer])

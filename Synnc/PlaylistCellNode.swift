@@ -36,9 +36,6 @@ class SelectablePlaylistCellNode : PlaylistCellNode {
             
             self.nameNode.attributedString = NSAttributedString(string: self.nameNode.attributedString!.string, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)])
             self.trackCountNode.attributedString = NSAttributedString(string: self.trackCountNode.attributedString!.string, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor(red: tr/255, green: tg/255, blue: tb/255, alpha: 0.41)])
-            
-//            UIColor(red: 87/255, green: 87/255, blue: 87/255, alpha: 1)
-//            self.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(cellStateAnimationProgress)
         }
     }
     var cellStateAnimatableProperty : POPAnimatableProperty {
@@ -91,7 +88,7 @@ class PlaylistCellNode : ASCellNode {
     var imageNode : ASNetworkImageNode!
     var nameNode : ASTextNode!
     var trackCountNode : ASTextNode!
-    var imageId : String!
+    var img : AnyObject!
     
     override func fetchData() {
         super.fetchData()
@@ -101,8 +98,10 @@ class PlaylistCellNode : ASCellNode {
         transformation.height = self.imageNode.calculatedSize.height * UIScreen.mainScreen().scale
         transformation.crop = "fill"
         
-        if let id = self.imageId, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+        if let id = self.img as? String, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             self.imageNode.URL = url
+        } else if let img = self.img as? UIImage {
+            self.imageNode.image = img
         }
     }
     override init() {
@@ -118,7 +117,9 @@ class PlaylistCellNode : ASCellNode {
         self.trackCountNode.spacingBefore = 5
         self.trackCountNode.maximumNumberOfLines = 1
         
-        self.imageNode.image = UIImage(named: "camera-large")
+        self.imageNode.image = Synnc.appIcon
+        self.imageNode.contentMode = UIViewContentMode.Center
+        
         self.addSubnode(self.imageNode)
         self.addSubnode(self.nameNode)
         self.addSubnode(self.trackCountNode)
@@ -127,10 +128,14 @@ class PlaylistCellNode : ASCellNode {
         if let name = playlist.name {
             self.nameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 87/255, green: 87/255, blue: 87/255, alpha: 1)])
         }
-        
         self.trackCountNode.attributedString = NSAttributedString(string: "\(playlist.songs.count) tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 125/255, green: 125/255, blue: 125/255, alpha: 0.41)])
         
-        self.imageId = playlist.cover_id
+        if let id = playlist.cover_id where id != "" {
+            self.img = id
+        }
+        if let img = playlist.coverImage {
+            self.img = img
+        }
         self.fetchData()
     }
     

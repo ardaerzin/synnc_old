@@ -11,6 +11,7 @@ import AsyncDisplayKit
 import BFPaperCheckbox
 import FBSDKCoreKit
 import FBSDKShareKit
+import FBSDKMessengerShareKit
 import Cloudinary
 import Twitter
 

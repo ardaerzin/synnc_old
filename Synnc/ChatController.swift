@@ -14,7 +14,6 @@ import WCLUIKit
 import AsyncDisplayKit
 import Cloudinary
 import WCLLocationManager
-import WCLNotificationManager
 import WCLUserManager
 
 class ChatController : ASViewController {
@@ -201,7 +200,7 @@ class ChatController : ASViewController {
         POPLayerSetTranslationY(self.screenNode.collectionHolder.layer, isDisplayed ? -CGRectGetHeight(a.finalFrame) : 0)
     }
     
-    var msgStr : String! = ""
+    var msgStr : String!
     
     func configure(stream: Stream) {
         self.screenNode.headerNode.configure(stream)
@@ -213,7 +212,7 @@ class ChatController : ASViewController {
             let msg : [String : AnyObject] = ["stream_id" : sid, "message" : m]
             ChatManager.sharedInstance().sendMessage(msg)
             self.chatbar.textNode.attributedText = nil
-            self.msgStr = ""
+            self.msgStr = nil
         }
     }
 }

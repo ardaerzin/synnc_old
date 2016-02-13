@@ -20,14 +20,13 @@ class NavigationHolderNode : ASDisplayNode {
     var headerNode : HeaderNode!
     var scrollNode : TabbarContentScroller!
     
-        override init() {
+    override init() {
         super.init()
         
         self.headerNode = HeaderNode()
         
         scrollNode = TabbarContentScroller()
         scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        scrollNode.backgroundColor = UIColor.whiteColor()
         
         self.headerNode.subSectionArea.delegate = self.scrollNode
         self.scrollNode.backgroundColor = UIColor.whiteColor()

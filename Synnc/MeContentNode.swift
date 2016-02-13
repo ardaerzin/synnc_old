@@ -68,7 +68,7 @@ class UserHeaderInfoNode : ASDisplayNode {
             self.countNode = ASTextNode()
             self.titleNode = ASTextNode()
             
-            self.countNode.attributedString = NSAttributedString(string: "732", attributes: self.countAttributes)
+            self.countNode.attributedString = NSAttributedString(string: "NaN", attributes: self.countAttributes)
             self.titleNode.attributedString = NSAttributedString(string: sectionName, attributes: self.titleAttributes)
             
             self.bottomBorder = ASDisplayNode()

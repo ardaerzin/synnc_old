@@ -20,7 +20,7 @@ class StreamsFeedNode : ASDisplayNode {
     
     var streamCollection : ASCollectionNode!
     
-        override init() {
+    override init() {
         super.init()
         self.backgroundColor = UIColor.redColor()
         

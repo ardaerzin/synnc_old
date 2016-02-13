@@ -139,8 +139,6 @@ extension LoginViewController : WCLUserDelegate {
                 self.screenNode.displayAnimation.toValue = 0
                 
                 
-                print("id", self.user._id)
-                
                 Synnc.sharedInstance.socket!.emit("user:update", [ "id" : self.user._id, "lat" : 0, "lon" : 0])
             }
         } else {

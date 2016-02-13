@@ -36,27 +36,30 @@ class SynncPlaylist: NSManagedObject {
     var needsNotifySocket : Bool = false
     var socketCallback : ((playlist : SynncPlaylist) -> Void)?
     
+    
     /// Computed Properties
+    internal var _coverImage : UIImage!
+    var coverImage : UIImage! {
+        get {
+            if let id = cover_id where id != "" {
+                return nil
+            } else {
+                if _coverImage == nil {
+                    return Synnc.appIcon
+                }
+                return _coverImage
+            }
+        }
+        set {
+            _coverImage = newValue
+        }
+    }
     var currentIndex : Int = 0 {
         didSet {
             
         }
         willSet {
             self.delegate?.willChangeCurrentIndex?(newValue)
-        }
-    }
-    var coverImageURL : String! {
-        get {
-//            if let song = self.songs.first {
-//                if song.source == SynncExternalSource.Soundcloud.rawValue {
-//                    if let url = song.artwork_url {
-//                        return url.stringByReplacingOccurrencesOfString("large", withString: "t500x500", options: [], range: nil)
-//                    }
-//                } else {
-//                    return song.artwork_url
-//                }
-//            }
-            return nil
         }
     }
     

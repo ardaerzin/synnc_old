@@ -18,59 +18,16 @@ import SocketIOClientSwift
 
 class StreamPlayer : WildPlayer {
     
-    //    var maxPreviewDuration : Double = 10
-    //    var previewPlayer : Bool = false
-    
     var nowPlayingInfo : [String : AnyObject] = [String : AnyObject]()
     let imgManager: SDWebImageManager = SDWebImageManager.sharedManager()
     let imgQueue = dispatch_queue_create("controlCenterImage",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0))
-    //    let playerQueue = dispatch_queue_create("playerQueue",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0))
+  
     
-    //    var isPlaying : Bool {
-    //        get {
-    //            if self.player.rate > 0 && self.player.error == nil {
-    //                return true
-    //            } else {
-    //                return false
-    //            }
-    //        }
-    //    }
-    //    var currentIndex : Int = -1 {
-    //        didSet{
-    //            if currentIndex != oldValue && self.stream != nil {
-    //                if self.stream != nil && self.stream === MusicApp.sharedInstance().streamManager.userStream {
-    //                    var dict = ["currentSongIndex" : currentIndex]
-    //                    self.stream!.fromJSON(JSON(dict))
-    //                }
-    //            }
-    //        }
-    //    }
     var playerReadyToPlay : Bool = false {
         willSet {
             self.delegate?.streamer?(self, readyToPlay: playerReadyToPlay)
         }
     }
-    //    var isSeeking : Bool = false
-    //    var isSyncing : Bool = false {
-    //        didSet {
-    //            if !isSyncing && isSyncing != oldValue {
-    //                fadeVolume(toValue: 1)
-    //            }
-    //        }
-    //        willSet {
-    //            if newValue == true && isSyncing != newValue {
-    //                fadeVolume(toValue: 0)
-    //            }
-    //        }
-    //    }
-    //    var endOfPlaylist : Bool = false {
-    //        willSet {
-    //            if newValue && newValue != endOfPlaylist {
-    //                self.player.pause()
-    //                self.delegate?.endOfPlaylist?(self)
-    //            }
-    //        }
-    //    }
     
     override init(){
         super.init()
@@ -103,10 +60,7 @@ class StreamPlayer : WildPlayer {
     }
     
     //Mark: Player Controls
-    override func seekToPosition(position: CGFloat) {
-        super.seekToPosition(position)
-        updateControlCenterRate()
-    }
+    
     func updateControlCenterRate(){
         if self.currentItem != nil && MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] != nil && (MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(CMTimeGetSeconds(self.currentItem!.duration)) {
             
@@ -162,72 +116,6 @@ class StreamPlayer : WildPlayer {
         
     }
     
-    //Mark: Observers
-    
-    
-    
-    //Mark: StreamManager Delegate
-    //    var hostPlayerTime : Double!
-    //    var hostLastUpdateTime : Double!
-    //    var playerNewTime : Double!
-    
-    //    func checkTimeSync(){
-    //        if hostLastUpdateTime == nil || hostPlayerTime == nil {
-    //            return
-    //        }
-    //        var now = NSDate().timeIntervalSince1970
-    //        var diff = now - hostLastUpdateTime
-    //
-    //        playerNewTime = hostPlayerTime + diff
-    //
-    //        var actualTime = CMTimeGetSeconds(self.player.currentTime())
-    //        var clockTime = CMClockGetTime(CMClockGetHostTimeClock())
-    //
-    //        if !self.isPlaying && self.playerReadyToPlay {
-    //            self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime - 1), self.player.currentItem.asset.duration.timescale), completionHandler: {
-    //
-    //                cb in
-    //                self.player.setRate(1, time: CMTimeMakeWithSeconds((self.playerNewTime+0.25), self.player.currentItem.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime)+0.25, self.player.currentItem.asset.duration.timescale) )
-    //            })
-    //            self.isSyncing = true
-    //
-    //        } else if self.isPlaying {
-    //            if abs(playerNewTime - actualTime) > 0.01 {
-    //                self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime+0.1), self.player.currentItem.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime)+0.1, self.player.currentItem.asset.duration.timescale) )
-    //                self.isSyncing = true
-    //            } else {
-    //                self.isSyncing = false
-    //            }
-    //        }
-    //    }
-    
-    //    var timeUpdateData : JSON!
-    //    func handleTimeUpdate(data: JSON){
-    //        if !playerReadyToPlay{
-    //            timeUpdateData = data
-    ////            return
-    //        }
-    //        var pInd = data["playlist_index"].intValue
-    //        if data["stream_id"].stringValue == self.stream!.o_id {
-    //            //set track data
-    //
-    //            if self.currentIndex != pInd {
-    //                self.currentIndex = pInd
-    //                self.reloadTrackData(self.stream!)
-    //            } else {
-    //                self.hostPlayerTime = data["player_time"].double!
-    //                self.hostLastUpdateTime = data["timeStamp"].double!
-    //                self.checkTimeSync()
-    //            }
-    //        }
-    //    }
-    
-//    override var stream : Stream? {
-//        get {
-//            return nil
-//        }
-//    }
-    
     override func currentItemChanged() {
         super.currentItemChanged()
         
@@ -241,7 +129,4 @@ class StreamPlayer : WildPlayer {
     func reloadTrackData(stream: Stream){
     }
     
-    override func streamManager(manager: StreamManager, didSetActiveStream stream: Stream?) {
-        super.streamManager(manager, didSetActiveStream: stream)
-    }
 }

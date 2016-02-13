@@ -41,7 +41,7 @@ class SynncTrack: Serializable {
     var id: String!
     var song_id: String!
     var info: AnyObject!
-//    var playlists: NSOrderedSet
+    var duration : NSNumber!
     var name: String!
     var artists : [SynncArtist]! = []
     
