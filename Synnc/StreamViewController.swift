@@ -120,10 +120,13 @@ class StreamViewController : ASViewController {
         if self.stream == nil {
             
             createController = StreamCreateController(backgroundNode: screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode, playlist: playlist)
+            
             createController.parentController = self
             createController.delegate = self
-            createController.contentNode.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
             
+            createController.contentNode.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
+            self.addChildViewController(createController.playlistSelector)
+            createController.playlistSelector.didMoveToParentViewController(self)
         }
 
         self.configure(self.stream)

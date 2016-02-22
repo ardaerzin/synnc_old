@@ -47,7 +47,14 @@ class PlaylistSelectorController : TabSubsectionController {
             }
         }
     }
-    var delegate : PlaylistSelectorDelegate?
+    var delegate : PlaylistSelectorDelegate? {
+        didSet {
+            if let plist = selectedPlaylist {
+                print(plist)
+                self.delegate?.didSelectPlaylist(plist)
+            }
+        }
+    }
     var playlistDataSource : PlaylistsDataSource!
     var selectedPlaylist : SynncPlaylist! {
         didSet {
@@ -56,10 +63,7 @@ class PlaylistSelectorController : TabSubsectionController {
             }
         }
     }
-    
-    override var _title : String! {
-        return "My Playlists"
-    }
+    weak var plist : SynncPlaylist?
     deinit {
         print("ADHSAKDAS")
     }
@@ -69,6 +73,7 @@ class PlaylistSelectorController : TabSubsectionController {
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         
+//        self.plist = playlist
         self.selectedPlaylist = playlist
         
         playlistDataSource = SelectablePlaylistsDataSource(predicates:
@@ -94,6 +99,11 @@ class PlaylistSelectorController : TabSubsectionController {
         listNode.view.asyncDataSource = self
         listNode.view.asyncDelegate = self
     }
+//    override func didMoveToParentViewController(parent: UIViewController?) {
+//        print("did move to parent", parent, plist)
+//        super.didMoveToParentViewController(parent)
+//        self.selectedPlaylist = plist
+//    }
     override func viewDidLoad() {
         super.viewDidLoad()
     }
