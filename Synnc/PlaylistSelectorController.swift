@@ -99,17 +99,7 @@ class PlaylistSelectorController : TabSubsectionController {
         listNode.view.asyncDataSource = self
         listNode.view.asyncDelegate = self
     }
-//    override func didMoveToParentViewController(parent: UIViewController?) {
-//        print("did move to parent", parent, plist)
-//        super.didMoveToParentViewController(parent)
-//        self.selectedPlaylist = plist
-//    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

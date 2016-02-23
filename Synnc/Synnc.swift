@@ -28,7 +28,7 @@ import WCLNotificationManager
     let serverURLString = "https://digital-reform.codio.io:9500"
     let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
 #else
-    let serverURLString = "https://synnc.herokuapp.com"
+    let serverURLString = "https://digital-reform.codio.io:9500"
     let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
 #endif
 
@@ -241,6 +241,7 @@ extension Synnc : WCLNotificationManagerDelegate {
 
 extension Synnc {
     func initSocket() -> SocketIOClient! {
+        print(serverURLString)
         guard let url = NSURL(string: serverURLString) else {
             assertionFailure("not a valid server address")
             return nil

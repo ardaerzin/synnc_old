@@ -32,6 +32,7 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
         willSet {
             if newValue != nil {
                 self.endOfPlaylist = false
+                self.syncManager.needsUpdate = true
             }
         }
     }
@@ -117,7 +118,7 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
             })
         
         self.trackManager = WildPlayerTrackManager(player: self)
-        self.syncManager = WildPlayerSyncManager(socket: socket, player: self)
+        self.syncManager = WildPlayerSyncManager(player: self)
     }
     
     // MARK: Methods
@@ -236,6 +237,9 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
             break
         case .ReadyToPlay:
             self.readyToPlay = true
+            if let s = self.stream where !s.isUserStream {
+                self.syncManager.checkTimeSync()
+            }
             //            if timeUpdateData != nil {
             //                self.handleTimeUpdate(timeUpdateData)
             //            }

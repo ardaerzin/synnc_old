@@ -280,8 +280,10 @@ extension StreamManager {
             if !data.isEmpty {
                 
                 completion?(status: true)
+                
                 self?.activeStream = stream
                 self?.player.isSyncing = true
+                self?.player.syncManager.timestamp = stream.timestamp
                 
                 if stream.isUserStream {
                 } else {
@@ -317,12 +319,16 @@ extension StreamManager {
                 result in
                 Synnc.sharedInstance.socket.emit("Stream:update", result)
             }
-            
         }
     }
     func updatedStreamFromServer(stream: Stream, changedKeys keys: [String]?) {
         let changedKeys = keys == nil ? [] : keys!
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
+        
+        if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
+            self.player.syncManager.timestamp = stream.timestamp
+        }
+        
         NSNotificationCenter.defaultCenter().postNotification(notification)
     }
     

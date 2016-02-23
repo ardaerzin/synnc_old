@@ -1045,12 +1045,12 @@
 		4728F94D1C34D13D00B427EA /* StreamRelated */ = {
 			isa = PBXGroup;
 			children = (
-				47D763721C3A2829008E0334 /* Player */,
 				475286D81C35989400731008 /* Stream.swift */,
 				4728F9501C34D2D900B427EA /* StreamNavigationController.swift */,
 				475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */,
 				475286DA1C359E1900731008 /* StreamManager.swift */,
 				477705251C3EB020007089D0 /* ChatManager.swift */,
+				47D763721C3A2829008E0334 /* Player */,
 				47D7636B1C38B53F008E0334 /* StreamViewController */,
 				47D7636C1C38B547008E0334 /* StreamCreateController */,
 			);
@@ -1307,6 +1307,46 @@
 			name = "SoundCloud Login Controller";
 			sourceTree = "<group>";
 		};
+		47380A5D1C7BE7760028EA38 /* WCLScrollNode */ = {
+			isa = PBXGroup;
+			children = (
+				475286E21C37371600731008 /* WCLScrollNode.h */,
+				475286E31C37372300731008 /* WCLScrollNode.m */,
+			);
+			name = WCLScrollNode;
+			sourceTree = "<group>";
+		};
+		47380A5E1C7BE7830028EA38 /* WCLTableNode */ = {
+			isa = PBXGroup;
+			children = (
+				472CB2F61C413F8100F82523 /* WCLTableNode.h */,
+				472CB2F71C413FF900F82523 /* WCLTableNode.m */,
+			);
+			name = WCLTableNode;
+			sourceTree = "<group>";
+		};
+		47380A5F1C7BE78B0028EA38 /* WCL+ASDK */ = {
+			isa = PBXGroup;
+			children = (
+				47380A5D1C7BE7760028EA38 /* WCLScrollNode */,
+				475286E51C3737D900731008 /* WCLScrollView.swift */,
+				47380A5E1C7BE7830028EA38 /* WCLTableNode */,
+			);
+			name = "WCL+ASDK";
+			sourceTree = "<group>";
+		};
+		47380A601C7BE7B70028EA38 /* Popups */ = {
+			isa = PBXGroup;
+			children = (
+				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
+				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
+				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
+				47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */,
+				4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */,
+			);
+			name = Popups;
+			sourceTree = "<group>";
+		};
 		4777052A1C3EB62D007089D0 /* StreamsFeed */ = {
 			isa = PBXGroup;
 			children = (
@@ -1343,20 +1383,11 @@
 		47A4E67B1C0CAE6100354EA8 /* Synnc */ = {
 			isa = PBXGroup;
 			children = (
-				47B899BD1C485421007C2B7F /* NHNetworkTime */,
 				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
 				4712B63A1C11149800C49522 /* Utilities.swift */,
 				47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */,
-				475286E21C37371600731008 /* WCLScrollNode.h */,
-				475286E31C37372300731008 /* WCLScrollNode.m */,
-				475286E51C3737D900731008 /* WCLScrollView.swift */,
-				472CB2F61C413F8100F82523 /* WCLTableNode.h */,
-				472CB2F71C413FF900F82523 /* WCLTableNode.m */,
-				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
-				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
-				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
-				47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */,
-				4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */,
+				47B899BD1C485421007C2B7F /* NHNetworkTime */,
+				47380A601C7BE7B70028EA38 /* Popups */,
 				4728F94D1C34D13D00B427EA /* StreamRelated */,
 				47EBDF841C1BD89D0075CF0B /* Data Model */,
 				47EBDF831C1BD8860075CF0B /* User Related */,
@@ -1523,6 +1554,7 @@
 		47A4E7071C0D0B9800354EA8 /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				47380A5F1C7BE78B0028EA38 /* WCL+ASDK */,
 				47B37B7F1C2F150F001CC6D2 /* ParallaxNode */,
 				4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */,
 				47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */,
