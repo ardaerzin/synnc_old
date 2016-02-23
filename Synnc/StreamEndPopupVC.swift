@@ -97,7 +97,7 @@ class StreamEndPopupNode : ASDisplayNode {
         infoNode.alignSelf = .Stretch
         infoNode.attributedString = NSAttributedString(string: "With notifications, you will stay in touch with your followers and get the latest news.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
-        imageNode = ASNetworkImageNode(webImage: ())
+        imageNode = ASNetworkImageNode()
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         yesButton.setAttributedTitle(NSAttributedString(string: "Sure", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)

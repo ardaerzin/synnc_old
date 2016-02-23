@@ -313,7 +313,7 @@ class SpinnerNode : ASDisplayNode {
         msgNode.attributedString = NSAttributedString(string: "Logging you in..", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
         msgNode.spacingBefore = 20
         
-        userImageNode = ASNetworkImageNode(webImage: ())
+        userImageNode = ASNetworkImageNode()
         userImageNode.alpha = 0
         userImageNode.preferredFrameSize = CGSizeMake(75, 75)
         userImageNode.cornerRadius = 3

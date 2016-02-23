@@ -2753,6 +2753,7 @@
 					"-framework",
 					"\"Bolts\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
@@ -2865,6 +2866,7 @@
 					"-framework",
 					"\"Bolts\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wildcardlabs.Synnc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";

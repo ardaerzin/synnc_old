@@ -41,7 +41,7 @@ class StreamFeedNode : ASCellNode {
         
         genresNode = ASTextNode()
         
-        imageNode = ASNetworkImageNode(webImage: ())
+        imageNode = ASNetworkImageNode()
         imageNode.contentMode = UIViewContentMode.ScaleAspectFill
         
         self.addSubnode(imageNode)

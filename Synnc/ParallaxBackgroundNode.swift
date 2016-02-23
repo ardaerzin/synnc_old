@@ -21,11 +21,9 @@ class ParallaxBackgroundScrollNode : ASDisplayNode {
     
     override init() {
         super.init()
-//        self.view.scrollEnabled = false
-        
         self.clipsToBounds = true
         
-        self.imageNode = ASNetworkImageNode(webImage: ())
+        self.imageNode = ASNetworkImageNode()
         imageNode.userInteractionEnabled = false
         imageNode.enabled = false
         imageNode.backgroundColor = UIColor.whiteColor()

@@ -24,7 +24,7 @@ class ListenerCellNode : ASCellNode {
     override init() {
         super.init()
         
-        imageNode = ASNetworkImageNode(webImage: ())
+        imageNode = ASNetworkImageNode()
         imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
         
         self.addSubnode(imageNode)

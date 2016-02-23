@@ -107,7 +107,7 @@ class PlaylistCellNode : ASCellNode {
     override init() {
         super.init()
         
-        self.imageNode = ASNetworkImageNode(webImage: ())
+        self.imageNode = ASNetworkImageNode()
         self.imageNode.preferredFrameSize = CGSizeMake(106, 106)
         
         self.nameNode = ASTextNode()

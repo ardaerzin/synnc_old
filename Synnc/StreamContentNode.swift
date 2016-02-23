@@ -103,7 +103,7 @@ class StreamTitleNode : ASDisplayNode {
         override init() {
         super.init()
         
-        userImage = ASNetworkImageNode(webImage: ())
+        userImage = ASNetworkImageNode()
         userImage.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(25, 25))
         
         streamTitle = ASTextNode()

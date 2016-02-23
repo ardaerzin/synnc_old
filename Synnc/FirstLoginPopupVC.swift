@@ -99,7 +99,7 @@ class FirstLoginPopupNode : ASDisplayNode {
         infoNode.alignSelf = .Stretch
         infoNode.attributedString = NSAttributedString(string: "Welcome To Synnc. If you don't like your username or photo, you can edit them from the profile section.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
-        imageNode = ASNetworkImageNode(webImage: ())
+        imageNode = ASNetworkImageNode()
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         yesButton.setAttributedTitle(NSAttributedString(string: "Go To Profile", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)

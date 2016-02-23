@@ -28,7 +28,7 @@ import WCLNotificationManager
     let serverURLString = "https://digital-reform.codio.io:9500"
     let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
 #else
-    let serverURLString = "https://digital-reform.codio.io:9500"
+    let serverURLString = "https://synnc.herokuapp.com"
     let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
 #endif
 
