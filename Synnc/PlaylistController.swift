@@ -37,6 +37,19 @@ class PlaylistController : ASViewController, WildAnimated {
     var screenNode : PlaylistNode!
     var playlist : SynncPlaylist!
     var imagePicker : DKImagePickerController!
+    var emptyState : Bool! {
+        didSet {
+            if emptyState != oldValue {
+                self.screenNode.emptyState = emptyState
+                
+                if let e = emptyState where e {
+                    self.screenNode.emptyStateNode.subTextNode.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
+                } else {
+                    self.screenNode.emptyStateNode?.subTextNode.removeTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
+                }
+            }
+        }
+    }
     
     override var editing : Bool {
         didSet {
@@ -112,29 +125,27 @@ class PlaylistController : ASViewController, WildAnimated {
             self.playlist = SynncPlaylist.create(inContext: Synnc.sharedInstance.moc) as! SynncPlaylist
             self.playlist.user = Synnc.sharedInstance.user._id
             isNewPlaylist = true
-            self.editing = true
+            
             self.screenNode.editButton.selected = true
-            self.screenNode.playlist = self.playlist
-            self.screenNode.emptyState = true
+            self.editing = true
         } else {
             self.playlist = playlist
-            if self.playlist == SharedPlaylistDataSource.findUserFavoritesPlaylist() {
-                self.screenNode.addSongsButton.hidden = true
-            }
-            if self.playlist.songs.isEmpty {
-                self.screenNode.emptyState = true
-            }
         }
+        
+        self.screenNode.playlist = self.playlist
+        
         
         self.screenNode.tracksTable.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
         
         node.playlistTitleNode.delegate = self
         (node.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.addSongsButton.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.streamButton.addTarget(self, action: Selector("streamPlaylist:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.editButton.addTarget(self, action: Selector("toggleEditMode:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.headerNode.closeButton.addTarget(self, action: Selector("closeAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        
+        node.addSongsButton.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
+        node.streamButton.addTarget(self, action: Selector("streamPlaylist:"), forControlEvents: .TouchUpInside)
+        node.editButton.addTarget(self, action: Selector("toggleEditMode:"), forControlEvents: .TouchUpInside)
+        node.headerNode.closeButton.addTarget(self, action: Selector("closeAction:"), forControlEvents: .TouchUpInside)
     }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -143,6 +154,18 @@ class PlaylistController : ASViewController, WildAnimated {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if isNewPlaylist {
+            self.emptyState = true
+        } else {
+            if self.playlist == SharedPlaylistDataSource.findUserFavoritesPlaylist() {
+                self.screenNode.addSongsButton.hidden = true
+            }
+            if self.playlist.songs.isEmpty {
+                self.emptyState = true
+            }
+        }
+        
         self.screenNode.tracksTable.view.asyncDataSource = self
         self.screenNode.tracksTable.view.asyncDelegate = self
     }
@@ -389,7 +412,7 @@ extension PlaylistController : TrackSearchControllerDelegate {
         self.screenNode.updateTrackCount()
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
         
-        self.screenNode.emptyState = self.playlist.songs.isEmpty
+        self.emptyState = self.playlist.songs.isEmpty
     }
     
     func didSelectTrack(song: SynncTrack) {
