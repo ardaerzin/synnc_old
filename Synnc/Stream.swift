@@ -22,9 +22,12 @@ import SwiftyJSON
     optional func removedStream(stream: Stream)
 }
 
-//class UserStream : Serializable {
-//
-//}
+class StreamTimeStamp : Serializable {
+    var stream_id : String!
+    var player_time : NSNumber!
+    var timeStamp : NSNumber!
+    var playlist_index : NSNumber!
+}
 
 class Stream : Serializable {
     
@@ -33,29 +36,21 @@ class Stream : Serializable {
     Active status of stream, set by the Master Stream
     
     */
-    var status: ObjCBool = false {
-        didSet {
-            
-        }
-    }
-    
-    var delegate : StreamDelegate? = Synnc.sharedInstance.streamManager {
-        didSet {
-            //Notify delegate
-            //            self.delegate?.createdStream?(self)
-        }
-    }
+    var status: ObjCBool = false
+    var delegate : StreamDelegate? = Synnc.sharedInstance.streamManager
+    var timestamp : StreamTimeStamp?
     var genres : [Genre] = []
-    dynamic var name: String!
+    var name: String!
     var img: NSString!
     var lat: NSNumber!
     var lon: NSNumber!
     var user: WCLUser!
     var userid: String!
     var city : NSString!
-    dynamic var currentSongIndex : NSNumber! = 0
+    var currentSongIndex : NSNumber! = 0
     var info : String = ""
-    dynamic var playlist : SynncPlaylist!
+    var playlist : SynncPlaylist!
+    var users : [WCLUser] = []
     
     var createCallback : ((status : Bool) -> Void)?
     var isActiveStream : Bool {
@@ -68,26 +63,18 @@ class Stream : Serializable {
             return self === Synnc.sharedInstance.streamManager.userStream
         }
     }
-    dynamic var songIds : [NSNumber] = []
-    var users : [WCLUser] = []
+    
+    
     internal func keys() -> [String] {
         return self.propertyNames(Stream)
     }
+    
     deinit {
         self.delegate?.removedStream?(self)
-        
-        //        for key in self.keys() {
-        //            self.removeObserver(self, forKeyPath: key)
-        //        }
-        //
     }
     required init() {
         super.init()
         self.last_update = NSDate(timeIntervalSince1970: NSTimeInterval(0))
-        
-        //        for key in self.keys() {
-        //            self.addObserver(self, forKeyPath: key, options: NSKeyValueObservingOptions.New, context: nil)
-        //        }
     }
     convenience init(json: JSON, delegate : StreamDelegate?){
         self.init()
@@ -108,10 +95,6 @@ class Stream : Serializable {
             stream.delegate?.createdStream?(self)
         })
     }
-    convenience init(json: JSON){
-        self.init()
-        self.fromJSON(json)
-    }
     convenience init(user: MainUser) {
         self.init()
         
@@ -127,10 +110,19 @@ class Stream : Serializable {
             keys.append(key as! String)
             self.setValue(value, forKey: key as! String)
         }
+        
         self.delegate?.updatedStreamLocally?(self, changedKeys : keys)
     }
     
-    
+    override func fromJSON(json: JSON) -> [String] {
+        return self.fromJSON(json, callback: nil)
+    }
+}
+
+
+// MARK: - From & To JSON
+
+extension Stream {
     //modify createJSON to loop songs
     func toJSON(properties: [String]? = nil, callback: ((result : [String : AnyObject])->Void)?) {
         Async.background {
@@ -200,11 +192,8 @@ class Stream : Serializable {
         
         return dict
     }
-    override func fromJSON(json: JSON) -> [String] {
-        return self.fromJSON(json, callback: nil)
-    }
+    
     func fromJSON(shit: JSON, callback: ((stream : Stream) -> Void)? ) -> [String] {
-        
         Async.background {
             if shit["__v"].intValue < self.__v {
             } else {
@@ -216,6 +205,13 @@ class Stream : Serializable {
                 let userInfo = shit["user"].object.copy()
                 let listenersInfo = shit["users"].object.copy()
                 let genresInfo = shit["genres"].object.copy()
+                var tsInfo : AnyObject?
+                
+                
+                if let _ = shit["timestamp"].null {
+                } else {
+                    tsInfo = shit["timestamp"].object.copy()
+                }
                 
                 let x = JSON(shit.object.copy())
                 if var j = x.dictionary {
@@ -223,11 +219,27 @@ class Stream : Serializable {
                     j.removeValueForKey("user")
                     j.removeValueForKey("genres")
                     j.removeValueForKey("users")
+                    j.removeValueForKey("timestamp")
                     json = JSON(j)
                 }
                 
-//                print(json)
                 var keys = super.fromJSON(json)
+                
+                if let tsi = tsInfo {
+                    let tsJSON = JSON(tsi)
+                    let ts = StreamTimeStamp()
+                    ts.fromJSON(tsJSON)
+                    
+                    if let os = self.timestamp {
+                        if os.timeStamp != ts.timeStamp {
+                            keys.append("timestamp")
+                        }
+                    } else {
+                        keys.append("timestamp")
+                    }
+                    
+                    self.timestamp = ts
+                }
                 
                 let listenersJSON = JSON(listenersInfo)
                 if let arr = listenersJSON.array {
@@ -258,7 +270,6 @@ class Stream : Serializable {
                     }
                     
                     self.users = usersArr
-                    
                     
                 }
                 
@@ -335,5 +346,4 @@ class Stream : Serializable {
         
         return []
     }
-    
 }

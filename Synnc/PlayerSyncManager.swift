@@ -7,58 +7,31 @@
 //
 
 import Foundation
-import SocketIOClientSwift
 import AVFoundation
 import WCLUtilities
 import SwiftyJSON
 
 class WildPlayerSyncManager {
     
-    class TimeStamp {
-        var streamId : String!
-        var playerTime : NSTimeInterval!
-        var timeStamp : NSTimeInterval!
-        var index : Int!
-        
-        init(json: JSON, ntpOffset : NSTimeInterval) {
-            self.streamId = json["stream_id"].string
-            self.playerTime = json["player_time"].double!
-            self.timeStamp = json["timeStamp"].double! + ntpOffset
-            self.index = json["playlist_index"].intValue
-        }
-    }
-    
-    weak var socket: SocketIOClient!
     weak var player: WildPlayer!
-    
-    var hostPlayerTime : Double!
-    var hostLastUpdateTime : Double!
-    var playerNewTime : Double!
-    
     var updateInterval : Double = 1.0
     var oldUpdate : Float64?
     var timeUpdateData : JSON!
     var offSet : NSTimeInterval = 0
+    var needsUpdate : Bool = true
     
-    init(socket: SocketIOClient, player: WildPlayer) {
-        self.player = player
-        self.socket = socket
-        
-        self.socket.on("Stream:timeUpdate", callback: timeUpdateHandler())
-    }
-    
-    func timeUpdateHandler() -> NormalCallback {
-        return {
-            (dataArr, ack) in
-//            print("received time update")
-            if let data = dataArr.first {
-                let json = JSON(data)
-                
-                if json["stream_id"].string == self.player.stream?.o_id && self.player.stream != Synnc.sharedInstance.streamManager.userStream {
-                    self.handleTimeUpdate(json)
+    var timestamp : StreamTimeStamp! {
+        didSet {
+            if timestamp != oldValue {
+                if !player.stream!.isUserStream {
+                    self.handleTimeStampChange(timestamp)
                 }
             }
         }
+    }
+    
+    init(player: WildPlayer) {
+        self.player = player
     }
     
     func playerTimeUpdated(time: CMTime) {
@@ -69,82 +42,82 @@ class WildPlayerSyncManager {
                 return
             }
             
-//            if let ou = self.oldUpdate {
-//                print("read error: ", abs(timeS - ou), timeS)
-//            }
-            
-            
-//            let dict = ["stream_id" : player.stream!.o_id, "player_time": CMTimeGetSeconds(time), "timeStamp" : NSDate().timeIntervalSince1970, "playlist_index" : player.currentIndex]
-            
-            let dict = ["stream_id" : player.stream!.o_id, "player_time": CMTimeGetSeconds(time), "timeStamp" : NSDate().timeIntervalSince1970 - offSet, "playlist_index" : player.currentIndex]
-            self.oldUpdate = CMTimeGetSeconds(time)
-            socket.emitWithAck("Stream:timeUpdate", dict)(timeoutAfter: 0) {
-                data in
+            if needsUpdate {
+                let timestamp = StreamTimeStamp()
+                timestamp.stream_id = player.stream!.o_id
+                timestamp.player_time = CMTimeGetSeconds(time)
+                timestamp.timeStamp = NSDate().timeIntervalSince1970 - offSet
+                timestamp.playlist_index = player.currentIndex
+                
+                player.stream?.update(["timestamp" : timestamp])
+                needsUpdate = false
             }
-            
-        }
-        
-    }
-
-    
-    func handleTimeUpdate(data: JSON){
-        if !player.readyToPlay{
-            timeUpdateData = data
-            //            return
-        }
-        
-//        print("handle time update")
-    
-        let pInd = data["playlist_index"].intValue
-        if data["stream_id"].stringValue == player.stream!.o_id {
-            //set track data
-            
-            if player.currentIndex != pInd {
-                self.player.isSyncing = true
-                player.currentIndex = pInd
-                player.trackManager.reloadTrackData(player.stream!)
+        } else {
+            let timeS = CMTimeGetSeconds(time)
+            if (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
+                return
             } else {
-                self.hostPlayerTime = data["player_time"].double!
-                self.hostLastUpdateTime = data["timeStamp"].double! + offSet
                 self.checkTimeSync()
             }
         }
+        
     }
+}
+
+extension WildPlayerSyncManager {
     
-    var shit : NSTimeInterval!
-    var fuck : NSTimeInterval!
+    func handleTimeStampChange(ts: StreamTimeStamp){
+        if player.currentIndex != ts.playlist_index {
+            self.player.isSyncing = true
+            player.currentIndex = ts.playlist_index as Int
+            player.trackManager.reloadTrackData(player.stream!)
+            handleTimeStampChange(ts)
+        } else {
+            self.checkTimeSync()
+        }
+    }
     
     func checkTimeSync(){
         
-        if hostLastUpdateTime == nil || hostPlayerTime == nil {
+        let hpt = self.timestamp.player_time as Double
+        let hlut = self.timestamp.timeStamp as Double + offSet
+        
+        if player.currentIndex != self.timestamp.playlist_index {
+            //do not update time until song indices are the same.
             return
         }
         
         let now = NSDate().timeIntervalSince1970
-        let diff = now - hostLastUpdateTime
-        
-        playerNewTime = hostPlayerTime + diff
+        let diff = now - hlut
+        let playerNewTime = hpt + diff
         
         let actualTime = CMTimeGetSeconds(self.player.currentTime())
         let clockTime = CMClockGetTime(CMClockGetHostTimeClock())
+        
+        
+        
         
         if let item = self.player.currentItem where !self.player.isPlaying && self.player.readyToPlay {
             
             self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime + 1), item.asset.duration.timescale), completionHandler: {
                 
                 cb in
-                self.player.setRate(1, time: CMTimeMakeWithSeconds((self.playerNewTime + 0.25), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
+                self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime + 0.25), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
+                self.checkTimeSync()
             })
             self.player.isSyncing = true
             
         } else if self.player.isPlaying {
             
-            if abs(playerNewTime - actualTime) > 0.02 {
+            if abs(playerNewTime - actualTime) > 0.01 {
+                
                 self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
                 self.player.isSyncing = true
-            
+                
             } else {
+                
                 self.player.isSyncing = false
+            
             }
         }
     }

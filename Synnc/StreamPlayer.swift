@@ -21,13 +21,6 @@ class StreamPlayer : WildPlayer {
     var nowPlayingInfo : [String : AnyObject] = [String : AnyObject]()
     let imgManager: SDWebImageManager = SDWebImageManager.sharedManager()
     let imgQueue = dispatch_queue_create("controlCenterImage",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0))
-  
-    
-    var playerReadyToPlay : Bool = false {
-        willSet {
-            self.delegate?.streamer?(self, readyToPlay: playerReadyToPlay)
-        }
-    }
     
     override init(){
         super.init()
@@ -84,6 +77,8 @@ class StreamPlayer : WildPlayer {
         nowPlayingInfo.updateValue(self.rate, forKey: MPNowPlayingInfoPropertyPlaybackRate)
         nowPlayingInfo.updateValue(CMTimeGetSeconds(self.currentTime()), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
         
+        
+        
         if self.currentItem != nil && self.stream != nil {
 //            WildSoundCloud.sharedInstance().track(self.stream!.songIds[currentIndex], cb: {
 //                [weak self]
@@ -119,6 +114,7 @@ class StreamPlayer : WildPlayer {
     override func currentItemChanged() {
         super.currentItemChanged()
         
+        self.syncManager.needsUpdate = true
         updateControlCenterItem()
     }
     override func playerRateChanged() {
@@ -127,6 +123,12 @@ class StreamPlayer : WildPlayer {
     }
     
     func reloadTrackData(stream: Stream){
+    }
+    
+    
+    override func wildPlayerItem(playbackStalledForItem item: WildPlayerItem) {
+        super.wildPlayerItem(playbackStalledForItem: item)
+        self.syncManager.needsUpdate = true
     }
     
 }
