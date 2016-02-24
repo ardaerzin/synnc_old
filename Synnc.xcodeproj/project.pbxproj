@@ -359,6 +359,8 @@
 		47B37B871C2F169B001CC6D2 /* TitleColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B861C2F169B001CC6D2 /* TitleColorButton.swift */; };
 		47B37B891C2F21D1001CC6D2 /* PlaylistNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B881C2F21D1001CC6D2 /* PlaylistNode.swift */; };
 		47B37B8B1C2F791C001CC6D2 /* MeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B8A1C2F791C001CC6D2 /* MeNode.swift */; };
+		47B8083A1C7D337200312C96 /* SourceSelectorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808391C7D337200312C96 /* SourceSelectorNode.swift */; };
+		47B8083C1C7D35B500312C96 /* SourceLoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */; };
 		47B899BA1C459EE0007C2B7F /* addPlaylist.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B71C459EE0007C2B7F /* addPlaylist.png */; };
 		47B899BB1C459EE0007C2B7F /* addPlaylist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */; };
 		47B899BC1C459EE0007C2B7F /* addPlaylist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */; };
@@ -796,6 +798,8 @@
 		47B37B861C2F169B001CC6D2 /* TitleColorButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleColorButton.swift; sourceTree = "<group>"; };
 		47B37B881C2F21D1001CC6D2 /* PlaylistNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistNode.swift; sourceTree = "<group>"; };
 		47B37B8A1C2F791C001CC6D2 /* MeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeNode.swift; sourceTree = "<group>"; };
+		47B808391C7D337200312C96 /* SourceSelectorNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceSelectorNode.swift; sourceTree = "<group>"; };
+		47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceLoginButtonNode.swift; sourceTree = "<group>"; };
 		47B899B71C459EE0007C2B7F /* addPlaylist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPlaylist.png; sourceTree = "<group>"; };
 		47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@2x.png"; sourceTree = "<group>"; };
 		47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@3x.png"; sourceTree = "<group>"; };
@@ -1559,6 +1563,7 @@
 				4704DDCE1C17329F00B40118 /* AnimatedLogoNode.swift */,
 				47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */,
 				47A4E7081C0D0BB600354EA8 /* ButtonNode.swift */,
+				47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */,
 				47B37B861C2F169B001CC6D2 /* TitleColorButton.swift */,
 				47178C1F1C2AFA8E00735D21 /* MiniHeaderNode.swift */,
 				4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */,
@@ -1671,6 +1676,7 @@
 				47C8F98D1C1F8B6300333492 /* ArtistSearchDataSource.swift */,
 				47C8F9911C20F37800333492 /* TrackSearchDataSource.swift */,
 				47C8F98B1C1F59E900333492 /* TrackSearchNode.swift */,
+				47B808391C7D337200312C96 /* SourceSelectorNode.swift */,
 			);
 			name = TrackSearchController;
 			sourceTree = "<group>";
@@ -2441,6 +2447,7 @@
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
 				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
 				470F8C0B1C48A5E200624F0F /* StreamBackgroundInfoNode.swift in Sources */,
+				47B8083C1C7D35B500312C96 /* SourceLoginButtonNode.swift in Sources */,
 				472CB2FA1C416EC100F82523 /* FirstLoginPopupVC.swift in Sources */,
 				47D763841C3B10E2008E0334 /* GenreCellNode.swift in Sources */,
 				47B37B7C1C2F05FE001CC6D2 /* PlaylistAnimatior.swift in Sources */,
@@ -2487,6 +2494,7 @@
 				47C8F9A31C24523500333492 /* SynncImagePicker.swift in Sources */,
 				47B37B781C2D9779001CC6D2 /* TabItemNode.swift in Sources */,
 				47A4E6B51C0CB6D100354EA8 /* LoginNode.swift in Sources */,
+				47B8083A1C7D337200312C96 /* SourceSelectorNode.swift in Sources */,
 				47B37B8B1C2F791C001CC6D2 /* MeNode.swift in Sources */,
 				47354E381C4F3E7F00A5F03E /* TabSubsectionController.swift in Sources */,
 				470F8C041C48806D00624F0F /* StreamListenersNode.swift in Sources */,

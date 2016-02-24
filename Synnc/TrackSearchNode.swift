@@ -16,87 +16,54 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 
-class SourceLoginButtonNode : SourceButton {
-    
-    override init(source: SynncExternalSource) {
-        super.init(source: source)
+class TrackEmptyStateNode : EmptyStateNode {
+    override func layout() {
+        super.layout()
         
-        if let type = WCLUserLoginType(rawValue: source.rawValue.lowercaseString) {
+        self.stateMsgNode.position.x = self.calculatedSize.width / 2
+        self.stateMsgNode.position.y = 100
+    }
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASStaticLayoutSpec(children: [self.stateMsgNode])
+    }
+}
+
+class EmptyStateNode : ASDisplayNode {
+    
+    var state : Bool = false {
+        didSet {
+            self.alpha = state ? 1 : 0
+        }
+    }
+    var stateMsgNode : ASTextNode!
+    var textAttributes : [String : AnyObject] {
+        get {
+            let p = NSMutableParagraphStyle()
+            p.alignment = .Center
             
-            if let ext = Synnc.sharedInstance.user.userExtension(type) {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "loginStatusChanged:", name: "\(type.rawValue)LoginStatusChanged", object: ext)
-                self.selected = ext.loginStatus
-            }
+            return [NSFontAttributeName : UIFont(name: "Ubuntu", size: 16)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSParagraphStyleAttributeName : p]
         }
     }
-    func loginStatusChanged(notification: NSNotification){
-        if let userExtension = notification.object as? WCLUserExtension {
-            self.selected = userExtension.loginStatus
-        }
-    }
-}
-
-class SourceButton : ButtonNode {
-    var normalImage : UIImage!
-    var selectedImage : UIImage!
-    var source : SynncExternalSource!
     
-    init(source : SynncExternalSource) {
-        
-        super.init()
-        self.source = source
-        let normalImage = UIImage(named: source.rawValue.lowercaseString + "_inactive")!
-        let selectedImage = UIImage(named: source.rawValue.lowercaseString + "_active")!
-        
-        setImage(normalImage, forState: ASControlState.Normal)
-        setImage(selectedImage, forState: ASControlState.Highlighted)
-        
-        self.normalImage = normalImage
-        self.selectedImage = selectedImage
-        
-        self.imageNode.contentMode = UIViewContentMode.ScaleAspectFit
-    }
-    
-    override func changedSelected() {
-        super.changedSelected()
-        
-        let img = self.selected ? self.selectedImage : self.normalImage
-        self.setImage(img, forState: ASControlState.Normal)
-    }
-}
-
-class SourceSelectionNode : ASDisplayNode {
-    
-    var titleNode : ASTextNode!
-    var sourceButtons : [ButtonNode] = []
-    
-    init(sources: [String]) {
+    override init() {
         super.init()
         
-        for source in sources {
-            let src = SynncExternalSource(rawValue: source.capitalizedString)
-            if let x = src {
-                let button = SourceButton(source: x)
-                self.sourceButtons.append(button)
-                
-                self.addSubnode(button)
-            }
-        }
+        self.stateMsgNode = ASTextNode()
+        self.addSubnode(self.stateMsgNode)
         
-        titleNode = ASTextNode()
-        titleNode.spacingAfter = 20
-        titleNode.attributedString = NSAttributedString(string: "Select a music provider", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
-        
-        self.addSubnode(titleNode)
-        
-        self.backgroundColor = UIColor.whiteColor()
+        self.alpha = 0
+        self.userInteractionEnabled = false
+    }
+    
+    func setMessage(msg: String) {
+        self.stateMsgNode.attributedString = NSAttributedString(string: msg, attributes: self.textAttributes)
+        self.setNeedsLayout()
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Center, alignItems: .Center, children: self.sourceButtons)
-        
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [ self.titleNode, a])
+        return ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: self.stateMsgNode)
     }
+    
 }
 
 class TrackSearchNode : ASDisplayNode {
@@ -114,7 +81,10 @@ class TrackSearchNode : ASDisplayNode {
     var seperator1 : ASDisplayNode!
     var seperator2 : ASDisplayNode!
     
-        override init() {
+    var trackEmptyStateNode : TrackEmptyStateNode!
+    var artistEmptyStateNode : EmptyStateNode!
+    
+    override init() {
         super.init()
         self.clipsToBounds = true
         
@@ -131,7 +101,7 @@ class TrackSearchNode : ASDisplayNode {
         self.sourceOptionsButton.imageNode.preferredFrameSize = CGSizeMake(20, 20)
         self.sourceOptionsButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 40, height: 40))
         self.sourceOptionsButton.imageNode.contentMode = .Center
-        self.sourceOptionsButton.addTarget(self, action: Selector("toggleSourceSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        
         
         self.closeButton = ButtonNode()
 //        self.closeButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
@@ -142,6 +112,7 @@ class TrackSearchNode : ASDisplayNode {
         
         self.inputNode = ASEditableTextNode()
         self.inputNode.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
+        
         self.inputNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)]
         
         self.inputNode.textContainerInset = UIEdgeInsetsMake(6, 6, 6, 6)
@@ -175,9 +146,13 @@ class TrackSearchNode : ASDisplayNode {
         
         self.tracksTable = ASTableNode(style: UITableViewStyle.Plain)
         self.tracksTable.backgroundColor = UIColor.redColor()
-        self.tracksTable.alignSelf = .Stretch
+//        self.tracksTable.alignSelf = .Stretch
         self.tracksTable.view.leadingScreensForBatching = 1
-        self.tracksTable.flexGrow = true
+//        self.tracksTable.flexGrow = true
+        
+        
+        trackEmptyStateNode = TrackEmptyStateNode()
+        artistEmptyStateNode = EmptyStateNode()
         
         
         self.addSubnode(self.seperator1)
@@ -191,6 +166,9 @@ class TrackSearchNode : ASDisplayNode {
         self.addSubnode(self.sourceOptionsButton)
         self.addSubnode(self.inputNode)
         self.addSubnode(self.closeButton)
+        
+        self.addSubnode(trackEmptyStateNode)
+        self.addSubnode(artistEmptyStateNode)
     }
     
     override func didLoad() {
@@ -225,67 +203,16 @@ class TrackSearchNode : ASDisplayNode {
         let artistsSpec = ASStaticLayoutSpec(children: [artistsCollection])
         artistsSpec.spacingBefore = 15
         
-        let y = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [seperator1, artistsSpec, seperator2])
+        let c = ASOverlayLayoutSpec(child: artistsSpec, overlay: artistEmptyStateNode)
+        let d = ASOverlayLayoutSpec(child: tracksTable, overlay: trackEmptyStateNode)
+        d.alignSelf = .Stretch
+        d.flexGrow = true
+        
+        let y = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [seperator1, c, seperator2])
         let x = ASOverlayLayoutSpec(child: y, overlay: self.sourceSelectionNode)
 
-        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [searchStack, x, tracksTable])
+        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [searchStack, x, d])
         return vStack
-    }
-    
-    func toggleSourceSelector(sender : ButtonNode){
-        sourceSelectionDisplayStatus = !sourceSelectionDisplayStatus
-    }
-    var sourceSelectionDisplayStatus : Bool = false {
-        didSet {
-            if sourceSelectionDisplayStatus != oldValue {
-                self.sourceSelectionAnimation.toValue = sourceSelectionDisplayStatus ? 1 : 0
-            }
-        }
-    }
-    var sourceSelectionAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("sourceSelectionAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! TrackSearchNode).sourceSelectionAnimationProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! TrackSearchNode).sourceSelectionAnimationProgress = values[0]
-                }
-                prop.threshold = 0.001
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var sourceSelectionAnimation : POPSpringAnimation {
-        get {
-            if let anim = self.pop_animationForKey("sourceSelectionAnimation") {
-                return anim as! POPSpringAnimation
-            } else {
-                let x = POPSpringAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    self.pop_removeAnimationForKey("sourceSelectionAnimation")
-                }
-                x.springBounciness = 0
-                x.property = self.sourceSelectionAnimatableProperty
-                self.pop_addAnimation(x, forKey: "sourceSelectionAnimation")
-                return x
-            }
-        }
-    }
-    var sourceSelectionAnimationProgress : CGFloat = 0 {
-        didSet {
-            let tranlation = POPTransition(sourceSelectionAnimationProgress, startValue: 0, endValue: sourceSelectionNode.calculatedSize.height)
-            print(sourceSelectionNode.calculatedSize.height)
-            POPLayerSetTranslationY(sourceSelectionNode.layer, tranlation)
-        }
     }
 }
 

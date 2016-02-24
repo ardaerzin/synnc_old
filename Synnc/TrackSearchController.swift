@@ -35,8 +35,7 @@ class TrackSearchController : WCLPopupViewController {
     var queryString_tracks : String = ""
     
     var screenNode : TrackSearchNode!
-    var previous_trackSearchTimestamp : NSDate! = NSDate()
-    var previous_userSearchTimestamp : NSDate! = NSDate()
+    
     var last_search : NSDate!
     var delegate : TrackSearchControllerDelegate?
     
@@ -46,9 +45,9 @@ class TrackSearchController : WCLPopupViewController {
     var artistsManager : WCLCollectionViewManager = WCLCollectionViewManager()
     var tracksManager : WCLTableViewManager = WCLTableViewManager()
     
-    var selectedSource : SynncExternalSource? = .Soundcloud {
+    var selectedSource : SynncExternalSource = .Soundcloud {
         didSet {
-            print("did change selected source")
+            self.screenNode.sourceOptionsButton.setImage(UIImage(named: selectedSource.rawValue.lowercaseString + "_active"), forState: .Normal)
         }
     }
     var selectedArtist : SynncArtist?
@@ -65,8 +64,11 @@ class TrackSearchController : WCLPopupViewController {
         
         self.screenNode = TrackSearchNode()
         
+        self.screenNode.sourceSelectionNode.delegate = self
+        
         self.screenNode.inputNode.delegate = self
         self.screenNode.closeButton.addTarget(self, action: Selector("closeTrackSearch:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.screenNode.sourceOptionsButton.addTarget(self, action: Selector("toggleSourceSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.screenNode.artistsCollection.view.asyncDataSource = artistsDataSource
         self.screenNode.artistsCollection.view.asyncDelegate = self
@@ -81,6 +83,12 @@ class TrackSearchController : WCLPopupViewController {
         self.screenNode.view.frame = CGRect(origin: CGPointZero, size: self.size)
         
     }
+    
+    func toggleSourceSelector(sender : ButtonNode){
+        self.screenNode.sourceSelectionNode.toggle(self.selectedSource)
+//            .displayStatus = !self.screenNode.sourceSelectionNode.displayStatus
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if let n = self.screenNode {
@@ -116,6 +124,7 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
     func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         
         if let _ = text.rangeOfString("\n") {
+            editableTextNode.resignFirstResponder()
             return false
         }
         if let fieldStr = editableTextNode.textView.text {
@@ -140,7 +149,7 @@ extension TrackSearchController : ASTableViewDelegate {
     }
     func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
         Async.background {
-            if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where self.delegate!.hasSong(data) {
+            if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.hasSong(data) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }
         }
@@ -189,6 +198,9 @@ extension TrackSearchController {
         
         self.selectedArtist = nil
         
+        last_search = NSDate()
+        let ts = last_search
+        
         if newString == "" {
             self.tracksDataSource.refresh = true
             self.tracksDataSource.pendingData = []
@@ -198,34 +210,32 @@ extension TrackSearchController {
             return
         }
         
-        last_search = NSDate()
-        let ts = last_search
-        
         searchSoundcloud(newString,timeStamp: ts)
     }
     
     func searchSpotify(str: String, timeStamp: NSDate) {
         
-//        let types : [EntityType] = [.Track, .Artist]
+        //        let types : [EntityType] = [.Track, .Artist]
         
-//        for type in types {
-//            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
-//                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
-//                    if let sptshit = data as? SPTListPage {
-//                        if sptshit.items != nil {
-//                            self.processResults(str, source: .Spotify, entity: type, dataArr: sptshit.items)
-//                        }
-//                    }
-//                    switch type {
-//                    case .Track:
-//                        break
-//                    case .Artist:
-//                        break
-//                    }
-//                }
-//            }
-//        }
+        //        for type in types {
+        //            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
+        //                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
+        //                    if let sptshit = data as? SPTListPage {
+        //                        if sptshit.items != nil {
+        //                            self.processResults(str, source: .Spotify, entity: type, dataArr: sptshit.items)
+        //                        }
+        //                    }
+        //                    switch type {
+        //                    case .Track:
+        //                        break
+        //                    case .Artist:
+        //                        break
+        //                    }
+        //                }
+        //            }
+        //        }
     }
+    
     func searchSoundcloud(str: String, timeStamp: NSDate){
         if str == "" {
             return
@@ -241,7 +251,7 @@ extension TrackSearchController {
                         if let arr = cb.data {
                             Async.background {
                                 
-                                self.processResults(str, source: .Soundcloud, entity: type == .Tracks ? .Track : .Artist, dataArr: arr)
+                                self.processResults(str, source: .Soundcloud, entity: type == .Tracks ? .Track : .Artist, timestamp: timeStamp, dataArr: arr)
                                 
                                 if type == .Tracks {
                                     self.tracksDataSource.nextAction = cb.next
@@ -257,7 +267,7 @@ extension TrackSearchController {
         }
     }
     
-    func processResults(query: String, source: SynncExternalSource, entity: EntityType! = nil, dataArr: [AnyObject]? = nil){
+    func processResults(query: String, source: SynncExternalSource, entity: EntityType! = nil, timestamp: NSDate, dataArr: [AnyObject]? = nil){
         
         if entity == nil {
             return
@@ -269,16 +279,41 @@ extension TrackSearchController {
                 data.append(x)
             }
             
+            if (self.last_search.compare(timestamp) != NSComparisonResult.OrderedSame) {
+                return
+            }
+            
             if entity == .Track {
                 let needsRefresh = query != self.queryString_tracks
                 self.tracksDataSource.refresh = needsRefresh
                 self.tracksDataSource.pendingData = data
                 self.queryString_tracks = query
+                
+                if (needsRefresh && data.isEmpty) || (!needsRefresh && self.tracksDataSource.data.isEmpty && data.isEmpty) {
+                    
+                    var emptyMsg : String
+                    if let _ = self.selectedArtist {
+                        emptyMsg = "Selected artist doesn't \n have any playable tracks"
+                    } else {
+                        emptyMsg = "Couldn't find any tracks \n mathing your query"
+                    }
+                    self.screenNode.trackEmptyStateNode.setMessage(emptyMsg)
+                    self.screenNode.trackEmptyStateNode.state = true
+                } else {
+                    self.screenNode.trackEmptyStateNode.state = false
+                }
             } else {
                 let needsRefresh = query != self.queryString_artists
                 self.artistsDataSource.refresh = needsRefresh
                 self.artistsDataSource.pendingData = data
                 self.queryString_artists = query
+                
+                if (needsRefresh && data.isEmpty) || (!needsRefresh && self.artistsDataSource.data.isEmpty && data.isEmpty) {
+                    self.screenNode.artistEmptyStateNode.setMessage("Couldn't find any artists \n mathing your query")
+                    self.screenNode.artistEmptyStateNode.state = true
+                } else {
+                    self.screenNode.artistEmptyStateNode.state = false
+                }
             }
         }
     }
@@ -288,18 +323,27 @@ extension TrackSearchController {
             self.searchStringChanged("", toString: self.screenNode.inputNode.textView.text)
             return
         }
+        
+        last_search = NSDate()
+        let ts = last_search
+        
+        
         Async.background {
             SCEngine.tracks(id, limit: 20, jsonCallback: {
                 cb in
                 let timestamp = cb.timestamp
-                if self.previous_trackSearchTimestamp != nil && (self.previous_trackSearchTimestamp.compare(timestamp) == NSComparisonResult.OrderedAscending) {
-                    if (self.last_search.compare(timestamp) == NSComparisonResult.OrderedAscending) {
-                        self.processResults(id, source: .Soundcloud, entity: .Track, dataArr: cb.data)
-                        self.tracksDataSource.nextAction = cb.next
-                    }
+                if (ts.compare(timestamp) == NSComparisonResult.OrderedAscending) {
+                    self.processResults(id, source: .Soundcloud, entity: .Track, timestamp: self.last_search, dataArr: cb.data)
+                    self.tracksDataSource.nextAction = cb.next
                 }
             })
         }
+    }
+}
+
+extension TrackSearchController : SourceSelectorDelegate {
+    func sourceSelector(didUpdateSource source: SynncExternalSource) {
+        self.selectedSource = source
     }
 }
 
