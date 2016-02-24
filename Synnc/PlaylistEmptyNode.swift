@@ -38,31 +38,32 @@ class PlaylistEmptyNode : ASDisplayNode {
         self.addSubnode(mainTextNode)
         self.addSubnode(subTextNode)
     }
-    override func fetchData() {
-        
+    
+    func setText(message : String, withAction: Bool){
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Center
         paragraphStyle.lineHeightMultiple = 1.25
         
-        mainTextNode.attributedString = NSAttributedString(string: "Your playlist is empty", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1, NSParagraphStyleAttributeName : paragraphStyle])
+        mainTextNode.attributedString = NSAttributedString(string: message, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1, NSParagraphStyleAttributeName : paragraphStyle])
         
-        let a = NSAttributedString(string: "Search for ", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1])
-        let b = NSAttributedString(string: "tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.1])
-        let c = NSMutableAttributedString(attributedString: a)
-        let d = NSMutableAttributedString(attributedString: b)
-        c.appendAttributedString(d)
         
-        subTextNode.attributedString = c
+        if withAction {
+            let a = NSAttributedString(string: "Start searching for ", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1])
+            let b = NSAttributedString(string: "tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.1])
+            let c = NSMutableAttributedString(attributedString: a)
+            let d = NSMutableAttributedString(attributedString: b)
+            c.appendAttributedString(d)
+            
+            subTextNode.attributedString = c
+        }
     }
+    
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let headerSpacer = ASLayoutSpec()
         headerSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 0)
         
         let spacerBefore = ASLayoutSpec()
         spacerBefore.flexBasis = ASRelativeDimension(type: .Percent, value: 0)
-        
-//        let spacerAfter = ASLayoutSpec()
-//        spacerAfter.flexGrow = true
         
         mainTextNode.flexBasis = ASRelativeDimension(type: .Percent, value: 0.5)
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerSpacer, spacerBefore, ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [mainTextNode]), subTextNode])

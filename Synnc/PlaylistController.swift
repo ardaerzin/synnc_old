@@ -43,7 +43,12 @@ class PlaylistController : ASViewController, WildAnimated {
                 self.screenNode.emptyState = emptyState
                 
                 if let e = emptyState where e {
-                    self.screenNode.emptyStateNode.subTextNode.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
+                    if self.playlist == SharedPlaylistDataSource.findUserFavoritesPlaylist() {
+                        self.screenNode.emptyStateNode.setText("Add Tracks to your favorites as you listen to them.", withAction: false)
+                    } else {
+                        self.screenNode.emptyStateNode.setText("This playlist does not contain any songs", withAction: true)
+                        self.screenNode.emptyStateNode.subTextNode.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
+                    }
                 } else {
                     self.screenNode.emptyStateNode?.subTextNode.removeTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
                 }
@@ -340,7 +345,7 @@ extension PlaylistController {
                     }
                 }
                 
-            }, andProgress: nil)
+                }, andProgress: nil)
         }
         isNewPlaylist = false
         
@@ -356,7 +361,7 @@ extension PlaylistController {
         imagePicker.didSelectAssets = {
             assets in
             if let img = assets.first {
-            
+                
                 img.fetchOriginalImageWithCompleteBlock {
                     image, info in
                     if let i = image {
