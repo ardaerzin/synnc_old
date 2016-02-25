@@ -118,6 +118,8 @@ class ChatController : ASViewController {
         screenNode = n
         screenNode.view.addGestureRecognizer(panRecognizer)
         screenNode.chatCollection.view.asyncDelegate = self
+        
+        
         screenNode.delegate = self
         self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hide:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.chatbar.sendButton.addTarget(self, action: Selector("newMessage:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
@@ -217,6 +219,10 @@ class ChatController : ASViewController {
     }
 }
 extension ChatController : WCLAsyncTableViewDataSourceDelegate {
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItemAtIndexPath indexPAth: NSIndexPath) {
+        print("update at indexPath", indexPAth)
+        self.manager.updateItem(self.screenNode.chatCollection.view, indexPath: indexPAth, animated: true)
+    }
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
         
         self.manager.performUpdates(self.screenNode.chatCollection.view, updates: updatedItems, animated: true, completion: {

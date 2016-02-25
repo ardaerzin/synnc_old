@@ -29,7 +29,6 @@ pod 'DKImagePickerController'
 pod 'BFPaperCheckbox'
 pod 'Shimmer'
 pod 'Appsee'
-pod 'GoogleAnalytics'
 
 end
 
