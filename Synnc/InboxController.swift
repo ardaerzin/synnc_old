@@ -75,6 +75,9 @@ class InboxController : PopContentController {
     }
 }
 extension InboxController : WCLAsyncTableViewDataSourceDelegate {
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItemAtIndexPath indexPAth: NSIndexPath) {
+        
+    }
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
         self.inboxManager.performUpdates((self.screenNode as! InboxNode).inboxTable.view, updates: updatedItems, animated: true)
     }

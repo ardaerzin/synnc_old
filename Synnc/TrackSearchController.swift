@@ -348,6 +348,9 @@ extension TrackSearchController : SourceSelectorDelegate {
 }
 
 extension TrackSearchController : WCLAsyncTableViewDataSourceDelegate {
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItemAtIndexPath indexPAth: NSIndexPath) {
+        
+    }
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
         self.tracksManager.performUpdates(self.screenNode.tracksTable.view, updates: updatedItems, animated: true)
     }

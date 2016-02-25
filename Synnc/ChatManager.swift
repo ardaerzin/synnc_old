@@ -13,147 +13,59 @@ import WCLUserManager
 import SwiftyJSON
 import AsyncDisplayKit
 import WCLUIKit
-
-class ChatItem : Serializable {
-    var message: String!
-    var timestamp : NSDate = NSDate()
-    var user_id : String!
-    var stream_id : String!
-    var user : WCLUser!
-    
-    required init() {
-        super.init()
-    }
-    
-    override func fromJSON(json: JSON) -> [String] {
-        let x = super.fromJSON(json)
-        self.timestamp = NSDate(timeIntervalSince1970: json["timestamp"].double! / 1000 )
-        return x
-    }
-}
+import Dollar
 
 protocol ChatRoomDataSourceDelegate {
     func constrainedSizeForChatItem() -> (min : CGSize, max: CGSize)
 }
 class ChatRoomDataSource : WCLAsyncTableViewDataSource {
     var roomDelegate : ChatRoomDataSourceDelegate?
+    weak var tableView : ASTableView!
     
     override func processPendingData(oldData: [NSObject], newData: [NSObject]) {
-        
-//        super.processPendingData(oldData, newData: newData)
-
-        
         Async.background {
             if var chatData = newData as? [ChatItem] where !newData.isEmpty {
                 chatData.sortInPlace { $0.timestamp.compare($1.timestamp) == NSComparisonResult.OrderedAscending }
-                //                if !self.dataSourceLocked {
                 super.processPendingData(oldData, newData: chatData)
-                //                }
             }
         }
 
     }
     
     override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
-        let node = ChatItemNode()
+        var node : ChatItemNode
+        self.tableView = tableView
+        
         if let data = self.data[indexPath.item] as? ChatItem {
+            if data.user == Synnc.sharedInstance.user {
+                node = MyChatItemNode()
+            } else {
+                node = ChatItemNode()
+            }
+            
             node.configure(data)
+        } else {
+            node = ChatItemNode()
         }
         
         return node
     }
     
-//    override func collectionView(collectionView: ASCollectionView!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
-//        if let size = self.delegate?.asyncCollectionViewDataSource(self, constrainedSizeForNodeAtIndexPath: indexPath) {
-//            return ASSizeRange(min: size.min, max: size.max)
-//        }
-//        return ASSizeRange(min: CGSizeZero, max: CGSizeZero)
-//    }
-//    override func collectionView(collectionView: ASCollectionView!, nodeForItemAtIndexPath indexPath: NSIndexPath!) -> ASCellNode! {
-//        let node = ChatItemNode()
-//        if let data = self.data[indexPath.item] as? ChatItem {
-//            node.configure(data)
-//        }
-//        return node
-//    }
+    func updateItem(item: ChatItem) {
+        if let ind = self.data.indexOf(item) where ind >= 0, let table = tableView {
+            if let node = table.nodeForRowAtIndexPath(NSIndexPath(forRow: ind, inSection: 0)) as? ChatItemNode where ind < tableView.numberOfRowsInSection(0) {
+                node.configure(item)
+            }
+        }
+    }
     func pushItem(item: ChatItem, completion : (()->Void)?) {
-//        var a = self.pendingData
-//        a.append(item)
-        
         self.pendingData = [item]
-        
     }
     
-}
-
-class ChatItemNode : ASCellNode {
-    
-    var imageNode : ASNetworkImageNode!
-    var textNode : ASTextNode!
-    var timeNode : ASTextNode!
-    
-    //Data
-    var messageString : String!
-    var messageUserAvatar : NSURL!
-    var timeString : String!
-    
-    override init(){
-        super.init()
-        
-        imageNode = ASNetworkImageNode()
-        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
-        
-        textNode = ASTextNode()
-        textNode.flexGrow = true
-        textNode.alignSelf = .Stretch
-        
-        timeNode = ASTextNode()
-        timeNode.spacingAfter = 6
-        
-        self.selectionStyle = UITableViewCellSelectionStyle.None
-        
-        self.addSubnode(imageNode)
-        self.addSubnode(textNode)
-        self.addSubnode(timeNode)
-    }
-    
-    override func layout() {
-        super.layout()
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let imageSpec = ASStaticLayoutSpec(children: [self.imageNode])
-        imageSpec.spacingBefore = 20
-        
-        timeNode.flexBasis = ASRelativeDimension(type: .Points, value: 36)
-        self.textNode.flexBasis = ASRelativeDimension(type: .Points, value: max(0,constrainedSize.max.width - 40 - 36 - 10 - 10 - 20 - 6))
-        
-        let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Start, alignItems: .Start, children: [imageSpec, textNode, timeNode])
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0), child: x)
-    }
-    override func fetchData() {
-        super.fetchData()
-        self.imageNode.URL = messageUserAvatar
-        if let msg = self.messageString {
-            self.textNode.attributedString = NSAttributedString(string: msg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSKernAttributeName : -0.1, NSForegroundColorAttributeName : UIColor(red: 95/255, green: 95/255, blue: 95/255, alpha: 1)])
-        }
-        if let date = self.timeString {
-            self.timeNode.attributedString = NSAttributedString(string: date, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 9)!, NSForegroundColorAttributeName : UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1)])
-        }
-    }
-    func configure(item: ChatItem){
-        self.messageString = item.message.stringByRemovingPercentEncoding
-        self.messageUserAvatar = item.user.avatarURL(WCLUserLoginType(rawValue: item.user.provider)!, frame: CGRectMake(0, 0, 40, 40), scale: UIScreen.mainScreen().scale)
-        let formatter = NSDateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        self.timeString = formatter.stringFromDate(NSDate())
-        self.fetchData()
-    }
 }
 
 class ChatManager : NSObject {
     
-//    var delegate : ChatManagerDelegate?
     weak var socket : SocketIOClient!
     var chatData : [String : ChatRoomDataSource] = [String : ChatRoomDataSource]()
     
@@ -192,18 +104,28 @@ class ChatManager : NSObject {
     func sendMessage(var dict: [String : AnyObject]){
         dict["timestamp"] = NSDate().timeIntervalSince1970
         dict["user_id"] = Synnc.sharedInstance.user._id
+        
+        let json = JSON(dict)
+        
+        let ci = ChatItem()
+        ci.fromJSON(json)
+        ci.status = false
+        ci.user = Synnc.sharedInstance.user
+        self.newChatEntry(ci)
+        
         self.socket.emitWithAck("StreamChat:message", dict)(timeoutAfter: 0, callback: {
             (dataArr) in
             if let err = dataArr.first, let isErr = JSON(err).bool where isErr {
                 print("err with chat", err)
             }
             
-            if let data = dataArr.last {
-                let json = JSON(data)
-                let ci = ChatItem()
-                ci.fromJSON(json)
-                self.newChatEntry(ci)
+            if self.chatData[ci.stream_id] == nil {
+                self.chatData[ci.stream_id] = ChatRoomDataSource()
             }
+            
+            let dataSource = self.chatData[ci.stream_id]!
+            ci.status = true
+            dataSource.updateItem(ci)
         })
     }
     
@@ -214,19 +136,10 @@ class ChatManager : NSObject {
             chatData[stream_id] = ChatRoomDataSource()
             return chatData[stream_id]!
         }
-//        let chatRoom = chatData[stream_id] == nil ? [] : chatData[stream_id]!
-//        return chatRoom
     }
     
     func newChatEntry(item: ChatItem) {
-        
-//        if Synnc.sharedInstance.streamManager.activeStream == nil || chatData[item.stream_id] == nil || item.stream_id != Synnc.sharedInstance.streamManager.activeStream!.o_id {
-//            chatData[item.stream_id] = []
-//        }
-//        
-//        let chatArray = chatData[item.stream_id]!
-        
-
+     
         if chatData[item.stream_id] == nil {
             chatData[item.stream_id] = ChatRoomDataSource()
         }
@@ -259,15 +172,6 @@ class ChatManager : NSObject {
 //                        self.delegate?.chatManager?(self, messageReceived: item)
 //                    }
                 })
-                
-                
-//                let prevItems = chatArray.filter({
-//                    return $0.timestamp.compare(item.timestamp) == NSComparisonResult.OrderedAscending
-//                })
-//                let newIndex = prevItems.count
-//                item.user = user
-//                self.chatData[item.stream_id]!.insert(item, atIndex: newIndex)
-//                self.delegate?.chatManager?(self, messageReceived: item, atIndex: newIndex)
             })
         }
     }
@@ -275,4 +179,4 @@ class ChatManager : NSObject {
 
 let _sharedChatManager : ChatManager = {
     return ChatManager()
-    }()
+}()

@@ -12,7 +12,6 @@ import AsyncDisplayKit.ASDisplayNode_Subclasses
 import pop
 import SpinKit
 import WCLUIKit
-import WebASDKImageManager
 
 class ParallaxBackgroundScrollNode : ASDisplayNode {
     var imageNode : ASNetworkImageNode!

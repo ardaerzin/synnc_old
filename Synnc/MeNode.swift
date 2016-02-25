@@ -92,7 +92,11 @@ class MeNode : ParallaxNode {
     func updateForUser(user : WCLUser) {
         if let name = user.name {
             fullnameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
-            usernameNode.attributedText = NSAttributedString(string: "@username", attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
+//            usernameNode.attributedText = NSAttributedString(string: "@username", attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
+        }
+        
+        if let uname = user.username {
+            usernameNode.attributedText = NSAttributedString(string: uname, attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
         }
     }
     

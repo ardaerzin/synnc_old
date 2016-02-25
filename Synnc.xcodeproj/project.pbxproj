@@ -361,6 +361,8 @@
 		47B37B8B1C2F791C001CC6D2 /* MeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B37B8A1C2F791C001CC6D2 /* MeNode.swift */; };
 		47B8083A1C7D337200312C96 /* SourceSelectorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808391C7D337200312C96 /* SourceSelectorNode.swift */; };
 		47B8083C1C7D35B500312C96 /* SourceLoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */; };
+		47B808401C7DDB4000312C96 /* ChatItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */; };
+		47B808431C7DDB5200312C96 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808421C7DDB5200312C96 /* ChatItem.swift */; };
 		47B899BA1C459EE0007C2B7F /* addPlaylist.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B71C459EE0007C2B7F /* addPlaylist.png */; };
 		47B899BB1C459EE0007C2B7F /* addPlaylist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */; };
 		47B899BC1C459EE0007C2B7F /* addPlaylist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */; };
@@ -800,6 +802,8 @@
 		47B37B8A1C2F791C001CC6D2 /* MeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeNode.swift; sourceTree = "<group>"; };
 		47B808391C7D337200312C96 /* SourceSelectorNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceSelectorNode.swift; sourceTree = "<group>"; };
 		47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceLoginButtonNode.swift; sourceTree = "<group>"; };
+		47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItemNode.swift; sourceTree = "<group>"; };
+		47B808421C7DDB5200312C96 /* ChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
 		47B899B71C459EE0007C2B7F /* addPlaylist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPlaylist.png; sourceTree = "<group>"; };
 		47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@2x.png"; sourceTree = "<group>"; };
 		47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@3x.png"; sourceTree = "<group>"; };
@@ -1053,7 +1057,7 @@
 				4728F9501C34D2D900B427EA /* StreamNavigationController.swift */,
 				475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */,
 				475286DA1C359E1900731008 /* StreamManager.swift */,
-				477705251C3EB020007089D0 /* ChatManager.swift */,
+				47B808411C7DDB4800312C96 /* ChatManager */,
 				47D763721C3A2829008E0334 /* Player */,
 				47D7636B1C38B53F008E0334 /* StreamViewController */,
 				47D7636C1C38B547008E0334 /* StreamCreateController */,
@@ -1582,6 +1586,15 @@
 			name = ParallaxNode;
 			sourceTree = "<group>";
 		};
+		47B808411C7DDB4800312C96 /* ChatManager */ = {
+			isa = PBXGroup;
+			children = (
+				477705251C3EB020007089D0 /* ChatManager.swift */,
+				47B808421C7DDB5200312C96 /* ChatItem.swift */,
+			);
+			name = ChatManager;
+			sourceTree = "<group>";
+		};
 		47B899BD1C485421007C2B7F /* NHNetworkTime */ = {
 			isa = PBXGroup;
 			children = (
@@ -1625,6 +1638,7 @@
 				477705211C3DF4F6007089D0 /* ChatController.swift */,
 				470F8C081C48825000624F0F /* ChatTableManager.swift */,
 				477705231C3E00ED007089D0 /* ChatNode.swift */,
+				47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */,
 			);
 			name = "Chat Controller";
 			sourceTree = "<group>";
@@ -2445,6 +2459,7 @@
 				47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */,
 				4728F9421C3199E200B427EA /* PopController.swift in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
+				47B808431C7DDB5200312C96 /* ChatItem.swift in Sources */,
 				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
 				470F8C0B1C48A5E200624F0F /* StreamBackgroundInfoNode.swift in Sources */,
 				47B8083C1C7D35B500312C96 /* SourceLoginButtonNode.swift in Sources */,
@@ -2459,6 +2474,7 @@
 				4728F9511C34D2D900B427EA /* StreamNavigationController.swift in Sources */,
 				47C8F98E1C1F8B6300333492 /* ArtistSearchDataSource.swift in Sources */,
 				47EBDF911C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld in Sources */,
+				47B808401C7DDB4000312C96 /* ChatItemNode.swift in Sources */,
 				47D763701C39FEBF008E0334 /* StreamLoadingNode.swift in Sources */,
 				47EBDF801C1BBBEB0075CF0B /* StreamsFeedController.swift in Sources */,
 				47EBDF7C1C1BBBD30075CF0B /* SearchUsersController.swift in Sources */,
@@ -2747,8 +2763,6 @@
 					"-framework",
 					"\"WCLUtilities\"",
 					"-framework",
-					"\"WebASDKImageManager\"",
-					"-framework",
 					"\"pop\"",
 					"-framework",
 					"\"FBSDKCoreKit\"",
@@ -2859,8 +2873,6 @@
 					"\"WCLUserManager\"",
 					"-framework",
 					"\"WCLUtilities\"",
-					"-framework",
-					"\"WebASDKImageManager\"",
 					"-framework",
 					"\"pop\"",
 					"-framework",
