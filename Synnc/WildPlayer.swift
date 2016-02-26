@@ -94,6 +94,14 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     var fadeoutObserver : AnyObject!
     var needsPlay = false
     
+    override var rate : Float {
+        didSet {
+            if rate != oldValue {
+                playerRateChanged()
+            }
+        }
+    }
+    
     // MARK: Initializers
     
     override init() {
@@ -102,7 +110,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     init(socket: SocketIOClient) {
         super.init()
         
-        self.addObserver(self, forKeyPath: "rate", options: [NSKeyValueObservingOptions.Initial, NSKeyValueObservingOptions.New], context: nil)
         self.addObserver(self, forKeyPath: "status", options: [], context: nil)
         self.addObserver(self, forKeyPath: "currentItem", options: [], context: nil)
         
@@ -180,9 +187,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
                 
             case "status" :
                 playerStatusChanged()
-                break
-            case "rate" :
-                playerRateChanged()
                 break
             case "currentItem" :
                 currentItemChanged()

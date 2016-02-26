@@ -36,7 +36,11 @@ class Stream : Serializable {
     Active status of stream, set by the Master Stream
     
     */
-    var status: ObjCBool = false
+    var status: ObjCBool = false {
+        didSet {
+            print("did set stream status", status)
+        }
+    }
     var delegate : StreamDelegate? = Synnc.sharedInstance.streamManager
     var timestamp : StreamTimeStamp?
     var genres : [Genre] = []
@@ -194,6 +198,7 @@ extension Stream {
     }
     
     func fromJSON(shit: JSON, callback: ((stream : Stream) -> Void)? ) -> [String] {
+        
         Async.background {
             if shit["__v"].intValue < self.__v {
             } else {

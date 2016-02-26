@@ -363,6 +363,7 @@
 		47B8083C1C7D35B500312C96 /* SourceLoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */; };
 		47B808401C7DDB4000312C96 /* ChatItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */; };
 		47B808431C7DDB5200312C96 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808421C7DDB5200312C96 /* ChatItem.swift */; };
+		47B808811C7FA58C00312C96 /* StreamSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808801C7FA58C00312C96 /* StreamSaver.swift */; };
 		47B899BA1C459EE0007C2B7F /* addPlaylist.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B71C459EE0007C2B7F /* addPlaylist.png */; };
 		47B899BB1C459EE0007C2B7F /* addPlaylist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */; };
 		47B899BC1C459EE0007C2B7F /* addPlaylist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */; };
@@ -804,6 +805,7 @@
 		47B8083B1C7D35B500312C96 /* SourceLoginButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceLoginButtonNode.swift; sourceTree = "<group>"; };
 		47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItemNode.swift; sourceTree = "<group>"; };
 		47B808421C7DDB5200312C96 /* ChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
+		47B808801C7FA58C00312C96 /* StreamSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamSaver.swift; sourceTree = "<group>"; };
 		47B899B71C459EE0007C2B7F /* addPlaylist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPlaylist.png; sourceTree = "<group>"; };
 		47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@2x.png"; sourceTree = "<group>"; };
 		47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@3x.png"; sourceTree = "<group>"; };
@@ -1057,6 +1059,7 @@
 				4728F9501C34D2D900B427EA /* StreamNavigationController.swift */,
 				475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */,
 				475286DA1C359E1900731008 /* StreamManager.swift */,
+				47B808801C7FA58C00312C96 /* StreamSaver.swift */,
 				47B808411C7DDB4800312C96 /* ChatManager */,
 				47D763721C3A2829008E0334 /* Player */,
 				47D7636B1C38B53F008E0334 /* StreamViewController */,
@@ -2519,6 +2522,7 @@
 				47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */,
 				936DB9741C41C5690069ACDA /* WildUser+FBSDK.swift in Sources */,
 				47EBDF9F1C1BE1990075CF0B /* SynncTrack+Spotify.swift in Sources */,
+				47B808811C7FA58C00312C96 /* StreamSaver.swift in Sources */,
 				4704DDD31C17AC1900B40118 /* TabNode.swift in Sources */,
 				4718343C1C1B3DD5005C9533 /* PlaylistsController.swift in Sources */,
 				47D763791C3A283B008E0334 /* StreamPlayer.swift in Sources */,

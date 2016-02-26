@@ -13,14 +13,15 @@ import WCLUtilities
 import WCLSoundCloudKit
 import CoreMedia
 import UIKit
-import SDWebImage
 import SocketIOClientSwift
+import WCLNotificationManager
+import AsyncDisplayKit
+import Cloudinary
 
 class StreamPlayer : WildPlayer {
     
     var nowPlayingInfo : [String : AnyObject] = [String : AnyObject]()
-    let imgManager: SDWebImageManager = SDWebImageManager.sharedManager()
-    let imgQueue = dispatch_queue_create("controlCenterImage",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0))
+    var isActiveSession : Bool = false
     
     override init(){
         super.init()
@@ -32,28 +33,85 @@ class StreamPlayer : WildPlayer {
         setupMainPlayer()
     }
     
+    func audioRouteChanged(notification: NSNotification) {
+        if let _ = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] {
+            
+            if let st = self.stream where st.status {
+                
+                if self.rate == 0 {
+                    self.play()
+                
+                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Your stream is now Muted, but continues in the background", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                    }
+                    
+                    self.volume = 0
+                }
+            }
+        }
+    }
+    
     override func playerTimeUpdated(time: CMTime) {
         super.playerTimeUpdated(time)
         self.syncManager.playerTimeUpdated(time)
     }
     
-    func setupMainPlayer() {
+    func setActiveAudioSession(){
         do {
             try AVAudioSession.sharedInstance().setActive(true)
             do {
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-                
                 UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+                self.isActiveSession = true
+                updateControlCenterControls()
             } catch let error as NSError {
                 print(error)
+                self.isActiveSession = false
             }
         } catch let error as NSError {
             print(error)
+            self.isActiveSession = false
         }
     }
     
-    //Mark: Player Controls
+    func bookmarkAction(event: MPFeedbackCommandEvent) {
+        
+        guard let st = self.stream, let ind = st.currentSongIndex else {
+            return
+        }
+        
+        let song = st.playlist.songs[ind as Int]
+        StreamManager.sharedInstance.toggleTrackFavStatus(song, callback: nil)
+    }
     
+    func remotePlayPauseStream(event: MPRemoteCommandEvent) {
+        
+    }
+    
+    func userFavPlaylistUpdated(notification: NSNotification){
+        self.updateControlCenterItem()
+    }
+    
+    func setupMainPlayer() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userFavPlaylistUpdated:"), name: "UpdatedFavPlaylist", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("audioRouteChanged:"), name: AVAudioSessionRouteChangeNotification, object: nil)
+    }
+    
+    override func play() {
+        if !self.isActiveSession {
+            setActiveAudioSession()
+        }
+        super.play()
+    }
+    
+    //Mark: Player Controls
+    func updateControlCenterControls(){
+        MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = true
+        MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.addTarget(self, action: Selector("bookmarkAction:"))
+        
+        MPRemoteCommandCenter.sharedCommandCenter().togglePlayPauseCommand.enabled = true
+        MPRemoteCommandCenter.sharedCommandCenter().togglePlayPauseCommand.addTarget(self, action: Selector("remotePlayPauseStream:"))
+    }
     func updateControlCenterRate(){
         if self.currentItem != nil && MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] != nil && (MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(CMTimeGetSeconds(self.currentItem!.duration)) {
             
@@ -68,45 +126,56 @@ class StreamPlayer : WildPlayer {
     
     func updateControlCenterItem(){
         
-        if self.currentItem == nil {
+        guard let st = self.stream, let ci = st.currentSongIndex, let npi = self.currentItem else {
             MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [String : AnyObject]()
             return
         }
         
+        let track = st.playlist.songs[ci as Int]
+    
+        MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = false
+        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {
+            MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.localizedTitle = "Remove Song from Favorites"
+        } else {
+            MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.localizedTitle = "Add Song to Favorites"
+        }
+        MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = true
+        
         nowPlayingInfo.updateValue(NSTimeInterval(CMTimeGetSeconds(self.currentItem!.duration)), forKey: MPMediaItemPropertyPlaybackDuration)
+        
         nowPlayingInfo.updateValue(self.rate, forKey: MPNowPlayingInfoPropertyPlaybackRate)
         nowPlayingInfo.updateValue(CMTimeGetSeconds(self.currentTime()), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
         
         
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
         
-        if self.currentItem != nil && self.stream != nil {
-//            WildSoundCloud.sharedInstance().track(self.stream!.songIds[currentIndex], cb: {
-//                [weak self]
-//                (response, data, error, timestamp) in
-//
-//                if data == nil {
-//                    return
-//                }
-//                var song = data![0] as! SoundCloudTrack
-//                self!.nowPlayingInfo.updateValue(song.title, forKey: MPMediaItemPropertyTitle)
-//                
-//                dispatch_async(self!.imgQueue, {
-//                    var urlStr = song.artwork_url != nil ? song.artwork_url.stringByReplacingOccurrencesOfString("large", withString: "t500x500", options: nil, range: nil) : "http://icons.iconarchive.com/icons/pelfusion/long-shadow-media/128/Contact-icon.png"
-//                    var x = self!.imgManager.downloadImageWithURL( NSURL(string: urlStr) , options: nil, progress: nil, completed: {
-//                        [weak self]
-//                        (cb) in
-//                        if cb.0 == nil {
-//                            return
-//                        }
-//                        dispatch_async(dispatch_get_main_queue(), {
-//                            var albumArt = MPMediaItemArtwork(image: cb.0)
-//                            self!.nowPlayingInfo.updateValue(albumArt, forKey: MPMediaItemPropertyArtwork)
-//                            self!.nowPlayingInfo.updateValue(NSTimeInterval(CMTimeGetSeconds(self!.currentItem.duration)), forKey: MPMediaItemPropertyPlaybackDuration)
-//                            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self!.nowPlayingInfo
-//                        })
-//                        })
-//                })
-//                })
+        nowPlayingInfo.updateValue(track.name, forKey: MPMediaItemPropertyTitle)
+        nowPlayingInfo.updateValue(st.name + ", by" + st.user.username, forKey: MPMediaItemPropertyArtist)
+        
+        
+        let downloader = ASPINRemoteImageDownloader.sharedDownloader()
+        
+        let transformation = CLTransformation()
+        
+        transformation.width = 500 * UIScreen.mainScreen().scale
+        transformation.height = 500 * UIScreen.mainScreen().scale
+        
+        transformation.crop = "fill"
+        
+        if let str = st.img, let x = _cloudinary.url(str as String, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+            
+            
+            downloader.downloadImageWithURL(url, callbackQueue: dispatch_get_main_queue(), downloadProgress: nil) {
+                (img, err, id) -> Void in
+                if let image = img {
+                    let albumArt = MPMediaItemArtwork(image: image)
+                    self.nowPlayingInfo.updateValue(albumArt, forKey: MPMediaItemPropertyArtwork)
+                }
+                
+                self.nowPlayingInfo.updateValue(NSTimeInterval(CMTimeGetSeconds(npi.duration)), forKey: MPMediaItemPropertyPlaybackDuration)
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
+            }
+            
         }
         
     }
@@ -120,6 +189,10 @@ class StreamPlayer : WildPlayer {
     override func playerRateChanged() {
         super.playerRateChanged()
         updateControlCenterRate()
+        
+        if let sm = self.syncManager {
+            sm.needsUpdate = true
+        }
     }
     
     func reloadTrackData(stream: Stream){

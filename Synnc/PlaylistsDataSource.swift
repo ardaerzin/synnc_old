@@ -157,16 +157,13 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
         var plist : SynncPlaylist?
         
         if let p = self.findUserFavoritesPlaylist() {
-            print("found user fav plist")
             completionHandler(playlist: p)
         } else {
-            print("cannot found user fav plist")
             plist = self.createUserFavoritesPlaylist()
             
             plist!.socketCallback = {
                 p in
                 
-                print("created and saved playlist", p.id!)
                 Synnc.sharedInstance.user.favPlaylistId = p.id!
                 Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "favPlaylistId" : p.id!])
                 completionHandler(playlist: p)
@@ -179,15 +176,12 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
         if let plist = self.userFavoritePlaylist {
             return plist
         } else if let id = Synnc.sharedInstance.user.favPlaylistId {
-
-            print("found fav plist id")
             let a = allItems.filter {
                 playlist in
                 return playlist.id == id
             }
             return a.first
         } else {
-            print("not found fav plist id")
             return nil
         }
     }
@@ -201,6 +195,7 @@ extension PlaylistsDataSource : NSFetchedResultsControllerDelegate {
         return plist
     }
 }
+
 let SharedPlaylistDataSource : PlaylistsDataSource = {
     return PlaylistsDataSource(predicates: [NSPredicate(format: "user == %@ AND id != %@", Synnc.sharedInstance.user._id, NSNull())], type: NSCompoundPredicateType.AndPredicateType)
 }()

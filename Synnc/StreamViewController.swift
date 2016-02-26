@@ -142,15 +142,14 @@ class StreamViewController : ASViewController {
         self.screenNode.stopStreamButton.addTarget(self, action: Selector("stopStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.screenNode.contentNode.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userFavPlaylistUpdated:"), name: "UpdatedFavPlaylist", object: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-//        self.screenNode.mainScrollNode.userInteractionEnabled = false
-    }
+    
     override func willMoveToParentViewController(parent: UIViewController?) {
         super.willMoveToParentViewController(parent)
         if let p = parent as? StreamNavigationController {
@@ -207,8 +206,6 @@ class StreamViewController : ASViewController {
     
     func updatedState(state : StreamVCState) {
         self.chatController.isEnabled = state.rawValue >= StreamVCState.Syncing.rawValue && state.rawValue != StreamVCState.Finished.rawValue
-        
-//        print("SVC updated state", state)
         
         (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).state = state
         self.screenNode.state = state
@@ -283,32 +280,46 @@ extension StreamViewController {
         
     }
     
+    
+    func userFavPlaylistUpdated(notification: NSNotification){
+        guard let st = self.stream, let ind = st.currentSongIndex else {
+            return
+        }
+        
+        let song = st.playlist.songs[ind as Int]
+        let button = (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).infoNode.addToFavoritesButton
+        var anim : POPBasicAnimation
+        if let x = button.pop_animationForKey("hide") as? POPBasicAnimation {
+            anim = x
+        } else {
+            anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+            anim.duration = 0.2
+            button.pop_addAnimation(anim, forKey: "hide")
+        }
+        
+        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let _ = plist.indexOf(song) {
+            button.selected = true
+        } else {
+            button.selected = false
+        }
+        
+        anim.toValue = 1
+    }
+    
     func addSongToFavorites(sender : ButtonNode){
         
         guard let st = self.stream, let ind = st.currentSongIndex else {
             return
         }
         
-        sender.selected = !sender.selected
+        let animation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+        animation.duration = 0.2
+        animation.toValue = 0
+        sender.pop_addAnimation(animation, forKey: "hide")
+        
         let song = st.playlist.songs[ind as Int]
         
-        if sender.selected {
-            SharedPlaylistDataSource.getUserFavoritesPlaylist() {
-                playlist in
-                
-                if let plist = playlist {
-                    plist.addSongs([song])
-                    plist.save()
-                }
-            }
-        } else {
-            print("remove song")
-            
-            if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let favInd = plist.indexOf(song) {
-                plist.removeSong(atIndexPath: NSIndexPath(forItem: favInd, inSection: 0))
-                plist.save()
-            }
-        }
+        StreamManager.sharedInstance.toggleTrackFavStatus(song, callback: nil)
     }
 }
 
