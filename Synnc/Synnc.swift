@@ -135,6 +135,21 @@ class Synnc : UIResponder, UIApplicationDelegate {
         return true
     }
     
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if event != nil && event!.type == UIEventType.RemoteControl {
+            switch event!.subtype {
+            case UIEventSubtype.RemoteControlPause :
+                //                MusicApp.sharedInstance().streamManager.playPauseStream(false)
+                break
+            case UIEventSubtype.RemoteControlPlay :
+                //                MusicApp.sharedInstance().streamManager.playPauseStream(true)
+                break
+            default :
+                return
+            }
+        }
+    }
+    
     func detectedScreen(notification: NSNotification) {
         
         var userInfo = notification.userInfo

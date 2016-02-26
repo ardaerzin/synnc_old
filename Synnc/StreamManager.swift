@@ -13,94 +13,6 @@ import SwiftyJSON
 import WCLNotificationManager
 import Dollar
 
-//@objc protocol StreamManagerDelegate {
-//    
-//    /**
-//    
-//    Triggered when manager batch updates its streams
-//    
-//    */
-//    optional func updatedStreams(manager: StreamManager)
-//    optional func streamManager(manager: StreamManager, updatedStream stream: Stream, withKeys keys: [String])
-//    optional func streamManager(manager: StreamManager, updatedActiveStream stream: Stream)
-//    optional func streamManager(manager: StreamManager, updatedActiveStream stream: Stream, withKeys keys: [String])
-//    optional func streamManager(manager: StreamManager, didSetActiveStream stream: Stream?)
-//    
-//}
-
-
-typealias StreamSaveBatch = (data : [JSON], completionHandler : ((streams : [Stream])->Void)?)
-
-class BatchStreamSaver {
-    
-    var isLocked : Bool = false
-    var batches : [StreamSaveBatch] = [] {
-        didSet {
-            if let batch = batches.first where !isLocked {
-                self.isLocked = true
-                self.saveBatch(batch)
-            }
-        }
-    }
-    var savedStreams : [Stream] = []
-    class var sharedInstance : BatchStreamSaver {
-        get {
-            return _batchSaver
-        }
-    }
-    init() {
-        
-    }
-    
-    func saveBatch(var batch : StreamSaveBatch){
-        if let data = batch.data.first {
-            
-            if let id = data["_id"].string {
-                if let str = StreamManager.sharedInstance.findStream(id) {
-                    
-                    str.fromJSON(data, callback: {
-                        stream in
-                        
-                        self.savedStreams.append(stream)
-                        batch.data.removeFirst()
-                        
-                        if batch.data.isEmpty {
-                            batch.completionHandler?(streams: self.savedStreams)
-                            self.savedStreams.removeAll()
-                            
-                            self.isLocked = false
-                            self.batches.removeFirst()
-                        } else {
-                            self.saveBatch(batch)
-                        }
-                    })
-                } else {
-                    let _ = Stream(json: data, delegate: StreamManager.sharedInstance, completionBlock: {
-                        stream in
-                        
-                        StreamManager.sharedInstance.streams.append(stream)
-                        self.savedStreams.append(stream)
-                        batch.data.removeFirst()
-                        
-                        if batch.data.isEmpty {
-                            batch.completionHandler?(streams: self.savedStreams)
-                            self.savedStreams.removeAll()
-                            
-                            self.isLocked = false
-                            self.batches.removeFirst()
-                        } else {
-                            self.saveBatch(batch)
-                        }
-                    })
-                }
-            }
-        }
-    }
-}
-let _batchSaver : BatchStreamSaver = {
-    return BatchStreamSaver()
-}()
-
 class StreamManager : NSObject, StreamDelegate {
     
     var userFeed : [Stream] = [] {
@@ -142,9 +54,6 @@ class StreamManager : NSObject, StreamDelegate {
         return Singleton.instance
     }
     
-    override init() {
-        super.init()
-    }
 }
 
 extension StreamManager {
@@ -170,6 +79,11 @@ extension StreamManager {
             Synnc.sharedInstance.socket.emitWithAck("Stream:start", stream.o_id)(timeoutAfter: 0) {
                 data in
                 
+                if let d = data.first {
+                    let json = JSON(d)
+                    stream.fromJSON(json)
+                }
+//                stream.update(["status" : true])
                 sharedInstance.player.play()
             }
         }
@@ -197,14 +111,10 @@ extension StreamManager {
             return
         }
         self.activeStream = nil
-//        self.player.resetPlayer()
     }
     
     func finishedStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
         
-//        let activeS = self.activeStream
-//        self.activeStream = nil
-      
         if self.activeStream == nil {
             
         } else {
@@ -322,6 +232,9 @@ extension StreamManager {
         }
     }
     func updatedStreamFromServer(stream: Stream, changedKeys keys: [String]?) {
+        
+//        print(keys)
+        
         let changedKeys = keys == nil ? [] : keys!
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
@@ -333,6 +246,66 @@ extension StreamManager {
     }
     
 }
+
+// MARK: - Song Favorite
+extension StreamManager {
+    func toggleTrackFavStatus(track: SynncTrack, callback : ((status:Bool) -> Void )?){
+        
+        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {
+            //remove
+            self.removeSongFromFavorites(track) {
+                status in
+                
+                if status {
+                    callback?(status: true)
+                    
+//                    NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFavPlaylist", object: nil, userInfo: nil)
+                    
+                }
+            }
+        } else {
+            //add
+            self.addSongToFavorites(track) {
+                status in
+                
+                if status {
+                    callback?(status: true)
+                    
+//                    NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFavPlaylist", object: nil, userInfo: nil)
+                    
+//                    self.player.updateControlCenterItem()
+                }
+            }
+        }
+        
+    }
+    
+    func addSongToFavorites(song: SynncTrack, handler: ((status: Bool)->Void)?){
+        SharedPlaylistDataSource.getUserFavoritesPlaylist() {
+            playlist in
+            
+            if let plist = playlist {
+                plist.addSongs([song])
+                plist.save()
+                
+                handler?(status: true)
+            } else {
+                handler?(status: false)
+            }
+        }
+    }
+    func removeSongFromFavorites(song: SynncTrack, handler: ((status: Bool)->Void)?) {
+        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let favInd = plist.indexOf(song) {
+            plist.removeSong(atIndexPath: NSIndexPath(forItem: favInd, inSection: 0))
+            plist.save()
+            
+            handler?(status: true)
+        }
+    }
+
+}
+
+// MARK: - USER FEED RELATED
 
 extension StreamManager {
     func updateUserFeed(){
@@ -356,18 +329,12 @@ extension StreamManager {
     }
     
     internal func findOrCreateFromData(serverData : [JSON], completionBlock : ((streams: [Stream]) -> Void)?) {
-        
         let batch : StreamSaveBatch = (serverData, completionBlock)
         BatchStreamSaver.sharedInstance.batches.append(batch)
-        
-//        let _ = BatchStreamSaver(streamsData: needsBatchSaving, completionBlock: {
-//            streams in
-//            
-//            let allData = $.union(arr, streams)
-//            completionBlock?(streams: allData)
-//        })
     }
 }
+
+// MARK: - STREAM SEARCH
 
 extension StreamManager {
     typealias StreamSearchCallback = (searchString: String, genres: [Genre], timeStamp: NSTimeInterval, objects: [Stream]) -> Void
@@ -442,6 +409,8 @@ extension StreamManager {
     }
     
 }
+
+// MARK: - Socket Callbacks
 
 extension StreamManager {
     

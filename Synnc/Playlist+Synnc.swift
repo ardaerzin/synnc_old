@@ -161,6 +161,11 @@ extension SynncPlaylist {
         } else {
             needsNotifySocket = false
         }
+        
+        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist == self {
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFavPlaylist", object: nil, userInfo: nil)
+        }
+        
         super.willSave()
     }
 }
