@@ -21,7 +21,43 @@ import WCLNotificationManager
 
 class MeController : TabItemController {
     
-    var editedUsername : String!
+    
+    var usernameTimeStamp : NSDate!
+    var canSetUsername : Bool?
+    var editedUsername : String! {
+        didSet {
+            
+            (self.screenNode as! MeNode).ghostLabel.attributedString = NSMutableAttributedString(string: editedUsername, attributes: ((self.screenNode as! MeNode).usernameNode.typingAttributes as [String : AnyObject]!))
+            
+            
+            let size = (self.screenNode as! MeNode).ghostLabel.measure((self.screenNode as! MeNode).usernameNode.calculatedSize)
+            
+            (self.screenNode as! MeNode).usernameBorder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(size.width, 2))
+            (self.screenNode as! MeNode).usernameBorder.setNeedsLayout()
+            
+            var date = NSDate()
+            usernameTimeStamp = date
+            canSetUsername = nil
+            
+            Synnc.sharedInstance.socket.emitWithAck("user:check", editedUsername) (timeoutAfter: 0, callback: {
+                (dataArr) in
+                
+                if date.compare(self.usernameTimeStamp) != NSComparisonResult.OrderedSame {
+                    return
+                }
+                
+                if let status = dataArr.first as? Bool where status || self.editedUsername == Synnc.sharedInstance.user.username {
+                    (self.screenNode as! MeNode).usernameBorder.backgroundColor = UIColor.greenColor()
+                    self.canSetUsername = true
+                } else {
+                    (self.screenNode as! MeNode).usernameBorder.backgroundColor = UIColor.redColor()
+                    self.canSetUsername = false
+                }
+                
+                (self.screenNode as! MeNode).usernameNode.setNeedsLayout()
+            })
+        }
+    }
     var editedImage : UIImage!
     
     var imagePicker : DKImagePickerController!
@@ -138,6 +174,23 @@ extension MeController : ASEditableTextNodeDelegate {
         }
         return true
     }
+    func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode) {
+        print("did begin editing")
+        
+        if (self.screenNode as! MeNode).usernameBorder.calculatedSize == CGSizeZero {
+            (self.screenNode as! MeNode).usernameBorder.setNeedsLayout()
+            let size = (self.screenNode as! MeNode).ghostLabel.measure((self.screenNode as! MeNode).usernameNode.calculatedSize)
+            
+            (self.screenNode as! MeNode).usernameBorder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(size.width, 2))
+            (self.screenNode as! MeNode).usernameBorder.setNeedsLayout()
+        }
+        
+        (self.screenNode as! MeNode).displayUsernameBorder()
+    }
+    func editableTextNodeDidFinishEditing(editableTextNode: ASEditableTextNode) {
+        print("did finish editing")
+        (self.screenNode as! MeNode).hideUsernameBorder()
+    }
     func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode) {
         let str = editableTextNode.textView.text
         self.editedUsername = str
@@ -215,9 +268,27 @@ extension MeController {
 extension MeController {
     func tryUserUpdate() {
         
-//        if let newUsername = self.editedUsername {
-//            Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "username" : newUsername])
-//        }
+        if let newUsername = self.editedUsername {
+            
+            if let unameRdy = canSetUsername where !unameRdy {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Can't set this username. Please type another one.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            } else {
+                
+                Synnc.sharedInstance.socket.emitWithAck("user:check", newUsername) (timeoutAfter: 0, callback: {
+                    (dataArr) in
+                
+                    if let status = dataArr.first as? Bool where status {
+                        Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "username" : newUsername])
+                    } else {
+                        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Can't set this username. Please type another one.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                        }
+                    }
+                })
+            }
+        }
         
         if let newImage = self.editedImage {
             Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)

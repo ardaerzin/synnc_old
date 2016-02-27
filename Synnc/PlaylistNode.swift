@@ -174,6 +174,12 @@ extension PlaylistNode : MyTextNodeDelegate{
     func needsLayout() {
         self.setNeedsLayout()
     }
+    func tf_becomeFirstResponder() {
+        
+    }
+    func tf_resignFirstResponder() {
+        
+    }
 }
 
 
@@ -190,6 +196,8 @@ class PlaylistBackgroundNode : ParallaxBackgroundNode {
 protocol MyTextNodeDelegate {
     func needsLayout()
 }
+
+
 class MyTextNode : ASEditableTextNode {
     var layoutDelegate : MyTextNodeDelegate?
     var hh : CGFloat = 0 {

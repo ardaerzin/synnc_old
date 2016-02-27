@@ -17,8 +17,10 @@ import Shimmer
 
 class MeNode : ParallaxNode {
     
+    var usernameBorder : ASDisplayNode!
     var fullnameNode : ASTextNode!
     var usernameNode : MyTextNode!
+    var ghostLabel : ASTextNode!
     var usernameShimmer : FBShimmeringView!
     
     var editing : Bool = false {
@@ -60,11 +62,31 @@ class MeNode : ParallaxNode {
     override func fetchData() {
         super.fetchData()
     }
+    
+    
+    var usernameBorderAnimation : POPBasicAnimation {
+        get {
+            if let x = self.usernameBorder.pop_animationForKey("borderDisplayAnim") as? POPBasicAnimation {
+                return x
+            } else {
+                let animation = POPBasicAnimation(propertyNamed: kPOPViewAlpha )
+                animation.duration = 0.2
+                self.usernameBorder.pop_addAnimation(animation, forKey: "borderDisplayAnim")
+                return animation
+            }
+        }
+    }
+    func hideUsernameBorder(){
+        usernameBorderAnimation.toValue = 0
+    }
+    func displayUsernameBorder(){
+        usernameBorderAnimation.toValue = 1
+    }
+    
     init(user : WCLUser) {
         
         let content = MeContentNode()
         
-//        content.view.backgroundColor = UIColor.redColor()
         content.view.scrollEnabled = false
         
         let bgNode = ParallaxBackgroundNode()
@@ -75,28 +97,40 @@ class MeNode : ParallaxNode {
         fullnameNode = ASTextNode()
         
         
+        ghostLabel = ASTextNode()
+        ghostLabel.alpha = 0
         
         usernameNode = MyTextNode()
+        
+        usernameBorder = ASDisplayNode()
+        usernameBorder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeZero)
+        usernameBorder.backgroundColor = .redColor()
+        usernameBorder.alpha = 0
+        
         usernameNode.returnKeyType = UIReturnKeyType.Done
         usernameNode.userInteractionEnabled = false
         usernameNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.26)]
+        
+        
         
         self.usernameShimmer = FBShimmeringView()
         self.usernameShimmer.contentView = self.usernameNode.view
         
         self.addSubnode(fullnameNode)
         self.view.addSubview(self.usernameShimmer)
-//        self.addSubnode(usernameNode)
+        self.addSubnode(ghostLabel)
+        self.addSubnode(usernameBorder)
     }
     
     func updateForUser(user : WCLUser) {
         if let name = user.name {
-            fullnameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
+            fullnameNode.attributedString = NSMutableAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
 //            usernameNode.attributedText = NSAttributedString(string: "@username", attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
         }
         
         if let uname = user.username {
-            usernameNode.attributedText = NSAttributedString(string: uname, attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
+            usernameNode.attributedText = NSMutableAttributedString(string: uname, attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
+            ghostLabel.attributedString = NSMutableAttributedString(string: uname, attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
         }
     }
     
@@ -107,6 +141,11 @@ class MeNode : ParallaxNode {
         fullnameNode.position.y = (fullnameNode.calculatedSize.height / 2) + 50
         
         usernameShimmer.frame = CGRect(origin: CGPointMake(20, (fullnameNode.position.y + (fullnameNode.calculatedSize.height / 2)) + 10), size: self.usernameNode.calculatedSize)
+        
+//        usernameBorder.frame = CGRect(x: usernameNode.position.x - usernameNode.calculatedSize.width / 2, y: usernameNode.position.y - usernameNode.calculatedSize.height / 2, width: ghostLabel.calculatedSize.width, height: 2)
+        usernameBorder.position = CGPointMake(usernameBorder.calculatedSize.width / 2 + 20,(fullnameNode.position.y + (fullnameNode.calculatedSize.height / 2)) + 10 + usernameNode.calculatedSize.height + 2)
+//            usernameNode.position
+        
 //        usernameNode.position.x = (usernameNode.calculatedSize.width / 2) + 20
 //        usernameNode.position.y = (fullnameNode.position.y + (fullnameNode.calculatedSize.height / 2)) + 10 + (usernameNode.calculatedSize.height / 2)
     }
@@ -114,6 +153,7 @@ class MeNode : ParallaxNode {
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let x = super.layoutSpecThatFits(constrainedSize)
         usernameNode.sizeRange = ASRelativeSizeRangeMake(ASRelativeSize(width: ASRelativeDimension(type: .Points, value: 0), height: ASRelativeDimension(type: .Points, value: 21)), ASRelativeSize(width: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 40), height: ASRelativeDimension(type: .Points, value: 21)))
-        return ASStaticLayoutSpec(children: [x, fullnameNode, usernameNode])
+        
+        return ASStaticLayoutSpec(children: [x, fullnameNode, usernameNode, ghostLabel, usernameBorder])
     }
 }
