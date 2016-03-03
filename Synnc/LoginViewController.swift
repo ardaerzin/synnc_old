@@ -26,7 +26,7 @@ class LoginViewController : ASViewController {
         }
     }
     deinit {
-//        print("deinit login view controller")
+        //        print("deinit login view controller")
     }
     init(){
         let node = LoginNode()
@@ -37,7 +37,7 @@ class LoginViewController : ASViewController {
         node.formNode.buttonHolder.regularLoginButton.addTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.formNode.closeFormButton.addTarget(self, action: Selector("closeFormView:"), forControlEvents: .TouchUpInside)
         node.formNode.formSwitcher.switchButton.addTarget(self, action: Selector("switchForm:"), forControlEvents: .TouchUpInside)
-        
+//        node.backgroundColor = .redColor()
         self.screenNode = node
     }
     override func didMoveToParentViewController(parent: UIViewController?) {
@@ -92,8 +92,8 @@ extension LoginViewController {
         if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
             WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
         }
-//        self.screenNode.formNode.formDisplayStatus = true
-//        self.screenNode.formNode.formHolder.state = .Signup
+        //        self.screenNode.formNode.formDisplayStatus = true
+        //        self.screenNode.formNode.formHolder.state = .Signup
     }
     func loginWithTwitter(sender : AnyObject){
         Synnc.sharedInstance.user.socialLogin(.Twitter)
@@ -104,10 +104,10 @@ extension LoginViewController {
             WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
         }
         
-//        let a = self.screenNode.formNode.formSwitcher.targetForm
-//        self.screenNode.formNode.formDisplayStatus = true
-//        self.screenNode.formNode.formHolder.state = self.screenNode.formNode.formSwitcher.targetForm
-//        self.screenNode.formNode.formSwitcher.targetForm = a == .Login ? .Signup : .Login
+        //        let a = self.screenNode.formNode.formSwitcher.targetForm
+        //        self.screenNode.formNode.formDisplayStatus = true
+        //        self.screenNode.formNode.formHolder.state = self.screenNode.formNode.formSwitcher.targetForm
+        //        self.screenNode.formNode.formSwitcher.targetForm = a == .Login ? .Signup : .Login
     }
     func closeFormView(sender : ASButtonNode) {
         self.screenNode.formNode.formHolder.state = FormNodeState.None
@@ -125,20 +125,24 @@ extension LoginViewController : WCLUserDelegate {
                 if let root = self.parentViewController as? RootViewController {
                     root.displayStatusBar = true
                 }
-                self.screenNode.displayAnimation.completionBlock = {
-                    anim, finished in
-                    
-                    if finished {
-                        if let rvc = self.parentViewController as? RootViewController {
-                            rvc.dismissLoginController()
-                        }
-                    }
+//                self.screenNode.displayAnimation.completionBlock = {
+//                    anim, finished in
+//                    
+//                    if finished {
+//                        if let rvc = self.parentViewController as? RootViewController {
+//                            rvc.dismissLoginController()
+//                        }
+//                    }
+//                }
+//                self.screenNode.displayAnimation.springSpeed = 0
+//                self.screenNode.displayAnimation.dynamicsFriction = 10
+//                self.screenNode.displayAnimation.toValue = 0
+                
+                print("parent", self.parentViewController)
+                
+                if let p = self.parentViewController as? InitialViewController {
+                    p.closeView(true)
                 }
-                self.screenNode.displayAnimation.springSpeed = 0
-                self.screenNode.displayAnimation.dynamicsFriction = 10
-                self.screenNode.displayAnimation.toValue = 0
-                
-                
                 Synnc.sharedInstance.socket!.emit("user:update", [ "id" : self.user._id, "lat" : 0, "lon" : 0])
             }
         } else {
@@ -146,7 +150,7 @@ extension LoginViewController : WCLUserDelegate {
         }
     }
     func wildUser(user: WCLUser, loginStatusChanged status: Bool, forExtension ext: String) {
-       
+        
         if status == false {
         } else {
             

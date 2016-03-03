@@ -12,7 +12,7 @@ import AsyncDisplayKit
 class LoginButtonNode : ButtonNode {
     override init(normalColor: UIColor? = .clearColor(), selectedColor: UIColor? = .clearColor()) {
         super.init(normalColor: normalColor, selectedColor: selectedColor)
-        self.imageNode.spacingAfter = 15
+//        self.imageNode.spacingAfter = 15
     }
 //    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
 //        

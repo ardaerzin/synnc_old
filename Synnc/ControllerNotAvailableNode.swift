@@ -16,48 +16,60 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 
+class EmptyVC : ASViewController {
+    init(){
+        let node = ControllerNotAvailableNode()
+        super.init(node: node)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class ControllerNotAvailableNode : ASDisplayNode {
     var mainTextNode : ASTextNode!
     var subTextNode : ASTextNode!
-    var controllerName : String!
+    var controllerName : String! = "test"
+    var box : ASDisplayNode!
     
     override init() {
         super.init()
         
         mainTextNode = ASTextNode()
-        
-        subTextNode = ASTextNode()
-        subTextNode.spacingBefore = 20
+        mainTextNode.maximumNumberOfLines = 2
+      
+//        box = ASDisplayNode()
+//        box.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 100, height: 100))
+//        box.backgroundColor = .orangeColor()
         
         self.addSubnode(mainTextNode)
-        self.addSubnode(subTextNode)
+//        self.addSubnode(box)
+//        self.backgroundColor = .blueColor()
+    }
+    override func willEnterHierarchy() {
+        super.willEnterHierarchy()
+        self.fetchData()
     }
     override func fetchData() {
+        
+        super.fetchData()
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Center
         paragraphStyle.lineHeightMultiple = 1.25
         
         mainTextNode.attributedString = NSAttributedString(string: "\"" + controllerName + "\" will be here soon...", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1, NSParagraphStyleAttributeName : paragraphStyle])
+//        self.layoutSpecThatFits(ASSizeRange(min: UIScreen.mainScreen().bounds.size, max: UIScreen.mainScreen().bounds.size))
+//            setNeedsLayout()
         
-//        let a = NSAttributedString(string: "Create a ", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1])
-//        let b = NSAttributedString(string: "new playlist", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.1])
-//        let c = NSMutableAttributedString(attributedString: a)
-//        let d = NSMutableAttributedString(attributedString: b)
-//        c.appendAttributedString(d)
-//        subTextNode.attributedString = c
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let headerSpacer = ASLayoutSpec()
-        headerSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 130)
+        print("constrainedSize", constrainedSize.max)
         
-        let spacerBefore = ASLayoutSpec()
-        spacerBefore.flexBasis = ASRelativeDimension(type: .Percent, value: 0.15)
+        let shit = ASStaticLayoutSpec(children: [mainTextNode])
+        let centerSpec = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: shit)
         
-        let spacerAfter = ASLayoutSpec()
-        spacerAfter.flexGrow = true
-        
-        mainTextNode.flexBasis = ASRelativeDimension(type: .Percent, value: 0.5)
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerSpacer, spacerBefore, ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [mainTextNode]), subTextNode, spacerAfter])
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 50, 0, 50), child: centerSpec)
     }
 }

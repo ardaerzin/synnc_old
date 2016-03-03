@@ -182,6 +182,8 @@ class WildFacebookUser : WCLUserExtension {
         
         self.isLoggingIn = true
         
+//        print(, UIApplication.sharedApplication().windows.last?.rootViewController)
+        
         FBSDKLoginManager().logInWithReadPermissions(permissions, fromViewController: nil, handler: {
             
             (result, error) in

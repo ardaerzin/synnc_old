@@ -102,15 +102,7 @@ class TabItemController : ASViewController, TabItem {
         return status
     }
     internal var _subsections : [TabSubsectionController]!
-        {
-        didSet {
-            if _subsections != nil {
-                for section in _subsections {
-                    self.addChildViewController(section)
-                }
-            }
-        }
-    }
+    
     var subsections : [TabSubsectionController]! {
         get {
             return []
@@ -151,9 +143,11 @@ class TabItemController : ASViewController, TabItem {
 //        NSStringFromClass(self.subsections[selectedIndex].classForCoder)
     }
     override func willMoveToParentViewController(parent: UIViewController?) {
+        super.willMoveToParentViewController(parent)
         if parent != nil {
             if let nn = self.screenNode as? NavigationHolderNode {
-                nn.scrollNode.delegate = self
+                nn.scrollNode.scrollerDelegate = self
+                nn.scrollNode.setDataSource(self)
                 nn.headerNode.updateForItem(self)
                 nn.scrollNode.updateForItem(self, controller : self)
             }
@@ -164,6 +158,33 @@ class TabItemController : ASViewController, TabItem {
     }
     func willBecomeActiveTab(){
         
+    }
+}
+extension TabItemController : ASPagerNodeDataSource {
+    func pagerNode(pagerNode: ASPagerNode!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
+        print(pagerNode.calculatedSize)
+        return ASSizeRangeMake(pagerNode.calculatedSize, pagerNode.calculatedSize)
+    }
+    func pagerNode(pagerNode: ASPagerNode!, nodeBlockAtIndex index: Int) -> ASCellNodeBlock! {
+        return {
+            return ASCellNode(viewControllerBlock: { () -> UIViewController in
+                
+                var controller = self.subsections[index]
+                if self.childViewControllers.indexOf(controller) == nil {
+                    self.addChildViewController(controller)
+                }
+                
+                return controller
+                }, didLoadBlock: nil)
+        }
+    }
+//    func pagerNode(pagerNode: ASPagerNode!, nodeAtIndex index: Int) -> ASCellNode! {
+//        return ASCellNode(viewControllerBlock: { () -> UIViewController in
+//            return self.subsections[index]
+//        }, didLoadBlock: nil)
+//    }
+    func numberOfPagesInPagerNode(pagerNode: ASPagerNode!) -> Int {
+        return self.subsections.count
     }
 }
 extension TabItemController : TabbarContentScrollerDelegate {
@@ -181,7 +202,6 @@ extension TabItemController : TabbarContentScrollerDelegate {
         if let nn = self.screenNode as? NavigationHolderNode {
             nn.headerNode.subSectionArea.selectedSubsectionIndex = index
         }
-//        print("changed current index", index, NSStringFromClass(self.subsections[index].classForCoder))
     }
 
     func beganScrolling() {

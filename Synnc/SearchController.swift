@@ -57,8 +57,4 @@ class SearchController : TabItemController {
             return _iconItem
         }
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-//        self.screenNode.backgroundColor = UIColor.yellowColor()
-    }
 }

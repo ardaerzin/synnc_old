@@ -25,11 +25,11 @@ import Appsee
 import WCLNotificationManager
 
 #if DEBUG
-    let serverURLString = "https://digital-reform.codio.io:9500"
-    let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
+let serverURLString = "https://digital-reform.codio.io:9500"
+let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
 #else
-    let serverURLString = "https://synnc.herokuapp.com"
-    let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
+let serverURLString = "https://synnc.herokuapp.com"
+let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
 #endif
 
 @UIApplicationMain
@@ -66,6 +66,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
     var socket: SocketIOClient!
     var device = Device()
     var window: UIWindow?
+    var rootVC : RootViewController!
     
     var streamManager : StreamManager! {
         return StreamManager.sharedInstance
@@ -89,12 +90,13 @@ class Synnc : UIResponder, UIApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         self.socket = initSocket()
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
+        print(WCLPopupManager.sharedInstance.state)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-//        Appsee.start(appSeeKey)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
+        //        Appsee.start(appSeeKey)
+        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -115,11 +117,14 @@ class Synnc : UIResponder, UIApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         
         //Initialize rootViewController for main window
-        let rvc = RootViewController()
-        self.window?.rootViewController = rvc
-        self.window?.backgroundColor = UIColor.whiteColor()
+        rootVC = RootViewController()
+//        let nvc = RootNavigationController(rootViewController: rootVC)
+//        nvc.rootViewController = rootVC
         
         self.window?.makeKeyAndVisible()
+        self.window?.rootViewController = rootVC
+//        self.window?.backgroundColor = UIColor.whiteColor()
+        
         
         self.streamManager.setSocket(self.socket)
         
@@ -187,7 +192,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
             UIApplication.sharedApplication().beginBackgroundTaskWithName("task1",
                 expirationHandler: {[weak self] in
                     self!.endBackgroundTask()
-            })
+                })
     }
     
     func endBackgroundTask(){
@@ -221,18 +226,18 @@ class Synnc : UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-//        let authCallback : SPTAuthCallback = {
-//            (err, session) in
-//            
-//            if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
-//                u.sptAuthenticationStatus(session, error: err)
-//            }
-//        }
+        //        let authCallback : SPTAuthCallback = {
+        //            (err, session) in
+        //
+        //            if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
+        //                u.sptAuthenticationStatus(session, error: err)
+        //            }
+        //        }
         
-//        if SPTAuth.defaultInstance().canHandleURL(url) {
-//            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
-//            return true
-//        }
+        //        if SPTAuth.defaultInstance().canHandleURL(url) {
+        //            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
+        //            return true
+        //        }
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
@@ -240,17 +245,17 @@ class Synnc : UIResponder, UIApplicationDelegate {
 
 extension Synnc : WCLNotificationManagerDelegate {
     func notificationManager(manager: WCLNotificationManager, didTapInappNotification notification: WCLNotificationView) {
-//        if let info = notification.info {
-//            switch info.defaultActionName {
-//            case "OpenTab" :
-//                if let rvc = self.window?.rootViewController as? RootViewController {
-//                    rvc.willSetTabItem(rvc.screenNode.tabbar, item: info.object as! TabItem)
-//                }
-//                break
-//            default:
-//                return
-//            }
-//        }
+        //        if let info = notification.info {
+        //            switch info.defaultActionName {
+        //            case "OpenTab" :
+        //                if let rvc = self.window?.rootViewController as? RootViewController {
+        //                    rvc.willSetTabItem(rvc.screenNode.tabbar, item: info.object as! TabItem)
+        //                }
+        //                break
+        //            default:
+        //                return
+        //            }
+        //        }
     }
 }
 

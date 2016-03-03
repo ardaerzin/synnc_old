@@ -35,7 +35,7 @@ class MeController : TabItemController {
             (self.screenNode as! MeNode).usernameBorder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(size.width, 2))
             (self.screenNode as! MeNode).usernameBorder.setNeedsLayout()
             
-            var date = NSDate()
+            let date = NSDate()
             usernameTimeStamp = date
             canSetUsername = nil
             

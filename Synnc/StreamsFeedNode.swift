@@ -16,7 +16,7 @@ import SpinKit
 import WCLUserManager
 import DeviceKit
 
-class StreamsFeedNode : ASDisplayNode {
+class StreamsFeedNode : ASCellNode {
     
     var streamCollection : ASCollectionNode!
     

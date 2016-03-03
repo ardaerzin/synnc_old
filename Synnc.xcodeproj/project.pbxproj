@@ -284,6 +284,7 @@
 		4740A5911C52EF0D00C767EE /* PopContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4740A5901C52EF0D00C767EE /* PopContentController.swift */; };
 		4740A5931C543E6F00C767EE /* NotificationRequestPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */; };
 		4740A5951C544A6300C767EE /* StreamEndPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */; };
+		4748719B1C84D83D007F3C68 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4748719A1C84D83D007F3C68 /* FBSDKCoreKit.framework */; };
 		475286D91C35989400731008 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286D81C35989400731008 /* Stream.swift */; };
 		475286DB1C359E1900731008 /* StreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DA1C359E1900731008 /* StreamManager.swift */; };
 		475286DD1C35A22E00731008 /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DC1C35A22E00731008 /* StreamViewController.swift */; };
@@ -364,6 +365,8 @@
 		47B808401C7DDB4000312C96 /* ChatItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */; };
 		47B808431C7DDB5200312C96 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808421C7DDB5200312C96 /* ChatItem.swift */; };
 		47B808811C7FA58C00312C96 /* StreamSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808801C7FA58C00312C96 /* StreamSaver.swift */; };
+		47B808C91C8245CC00312C96 /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808C81C8245CC00312C96 /* OnboardingVC.swift */; };
+		47B808CE1C834BDF00312C96 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B808CD1C834BDF00312C96 /* InitialViewController.swift */; };
 		47B899BA1C459EE0007C2B7F /* addPlaylist.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B71C459EE0007C2B7F /* addPlaylist.png */; };
 		47B899BB1C459EE0007C2B7F /* addPlaylist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */; };
 		47B899BC1C459EE0007C2B7F /* addPlaylist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */; };
@@ -395,7 +398,6 @@
 		47D763841C3B10E2008E0334 /* GenreCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D763831C3B10E2008E0334 /* GenreCellNode.swift */; };
 		47DE5CFB1C6CB5F6006876E6 /* SynncNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DE5CFA1C6CB5F6006876E6 /* SynncNotificationView.swift */; };
 		47DE5CFD1C6CD681006876E6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47DE5CFC1C6CD681006876E6 /* Default-568h@2x.png */; };
-		47DE5CFF1C6CD81E006876E6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47DE5CFE1C6CD81E006876E6 /* FBSDKCoreKit.framework */; };
 		47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */; };
 		47EBDF701C1BBB810075CF0B /* MyPlaylistsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF6F1C1BBB810075CF0B /* MyPlaylistsController.swift */; };
 		47EBDF721C1BBB8F0075CF0B /* ImportPlaylistsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF711C1BBB8F0075CF0B /* ImportPlaylistsController.swift */; };
@@ -416,8 +418,6 @@
 		47EBDFA41C1C8A060075CF0B /* SynncArtist+Soundcloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDFA31C1C8A060075CF0B /* SynncArtist+Soundcloud.swift */; };
 		47EBDFA61C1C8A110075CF0B /* SynncArtist+Spotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDFA51C1C8A110075CF0B /* SynncArtist+Spotify.swift */; };
 		936DB9741C41C5690069ACDA /* WildUser+FBSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936DB9731C41C5690069ACDA /* WildUser+FBSDK.swift */; };
-		E78CA2027BD68B66D1DC5905 /* Pods_SynncUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696637A1F5E218B729C8DF00 /* Pods_SynncUITests.framework */; };
-		EBA34BFC38A0AF29DAC020BE /* Pods_SynncTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56E1A1899D17F83DEDFDEC35 /* Pods_SynncTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -438,8 +438,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F50E5C3B84408976E63613D /* Pods-SynncTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SynncTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SynncTests/Pods-SynncTests.release.xcconfig"; sourceTree = "<group>"; };
-		3F3D33A5975C018960A3960D /* Pods-SynncTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SynncTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SynncTests/Pods-SynncTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4704DDBA1C15EE3300B40118 /* UBUNTU FONT LICENCE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "UBUNTU FONT LICENCE.txt"; sourceTree = "<group>"; };
 		4704DDBB1C15EE3300B40118 /* Ubuntu-B.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-B.ttf"; sourceTree = "<group>"; };
 		4704DDBC1C15EE3300B40118 /* Ubuntu-BI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Ubuntu-BI.ttf"; sourceTree = "<group>"; };
@@ -719,6 +717,7 @@
 		4740A5901C52EF0D00C767EE /* PopContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopContentController.swift; sourceTree = "<group>"; };
 		4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationRequestPopupVC.swift; sourceTree = "<group>"; };
 		4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamEndPopupVC.swift; sourceTree = "<group>"; };
+		4748719A1C84D83D007F3C68 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		475286D81C35989400731008 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
 		475286DA1C359E1900731008 /* StreamManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamManager.swift; sourceTree = "<group>"; };
 		475286DC1C35A22E00731008 /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
@@ -806,6 +805,8 @@
 		47B8083F1C7DDB4000312C96 /* ChatItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItemNode.swift; sourceTree = "<group>"; };
 		47B808421C7DDB5200312C96 /* ChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
 		47B808801C7FA58C00312C96 /* StreamSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamSaver.swift; sourceTree = "<group>"; };
+		47B808C81C8245CC00312C96 /* OnboardingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
+		47B808CD1C834BDF00312C96 /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		47B899B71C459EE0007C2B7F /* addPlaylist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPlaylist.png; sourceTree = "<group>"; };
 		47B899B81C459EE0007C2B7F /* addPlaylist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@2x.png"; sourceTree = "<group>"; };
 		47B899B91C459EE0007C2B7F /* addPlaylist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPlaylist@3x.png"; sourceTree = "<group>"; };
@@ -842,7 +843,6 @@
 		47D763831C3B10E2008E0334 /* GenreCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenreCellNode.swift; sourceTree = "<group>"; };
 		47DE5CFA1C6CB5F6006876E6 /* SynncNotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncNotificationView.swift; sourceTree = "<group>"; };
 		47DE5CFC1C6CD681006876E6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		47DE5CFE1C6CD81E006876E6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamInProgressPopup.swift; sourceTree = "<group>"; };
 		47EBDF6F1C1BBB810075CF0B /* MyPlaylistsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPlaylistsController.swift; sourceTree = "<group>"; };
 		47EBDF711C1BBB8F0075CF0B /* ImportPlaylistsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportPlaylistsController.swift; sourceTree = "<group>"; };
@@ -863,11 +863,9 @@
 		47EBDFA31C1C8A060075CF0B /* SynncArtist+Soundcloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncArtist+Soundcloud.swift"; sourceTree = "<group>"; };
 		47EBDFA51C1C8A110075CF0B /* SynncArtist+Spotify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncArtist+Spotify.swift"; sourceTree = "<group>"; };
 		56E1A1899D17F83DEDFDEC35 /* Pods_SynncTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SynncTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A3E1D753F8AB41593362BFA /* Pods-SynncUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SynncUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SynncUITests/Pods-SynncUITests.release.xcconfig"; sourceTree = "<group>"; };
 		696637A1F5E218B729C8DF00 /* Pods_SynncUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SynncUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE84AEB7D80E0B36B62EC9D /* Pods_Synnc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Synnc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8420EC8C48455A7F08130F2F /* Pods-Synnc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Synnc.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Synnc/Pods-Synnc.debug.xcconfig"; sourceTree = "<group>"; };
-		916A00F96877BA97E8CAF27B /* Pods-SynncUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SynncUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SynncUITests/Pods-SynncUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		936DB9731C41C5690069ACDA /* WildUser+FBSDK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WildUser+FBSDK.swift"; sourceTree = "<group>"; };
 		C2AEA561410678258DE52FDD /* Pods-Synnc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Synnc.release.xcconfig"; path = "Pods/Target Support Files/Pods-Synnc/Pods-Synnc.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -878,7 +876,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */,
-				47DE5CFF1C6CD81E006876E6 /* FBSDKCoreKit.framework in Frameworks */,
+				4748719B1C84D83D007F3C68 /* FBSDKCoreKit.framework in Frameworks */,
 				154D0398DDA70CB48785F728 /* Pods_Synnc.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -887,7 +885,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EBA34BFC38A0AF29DAC020BE /* Pods_SynncTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -895,7 +892,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E78CA2027BD68B66D1DC5905 /* Pods_SynncUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1349,6 +1345,7 @@
 		47380A601C7BE7B70028EA38 /* Popups */ = {
 			isa = PBXGroup;
 			children = (
+				47B808CA1C8245D200312C96 /* Onboarding Popup */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
 				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
@@ -1468,9 +1465,8 @@
 		47A4E6AC1C0CB42E00354EA8 /* LoginViewController */ = {
 			isa = PBXGroup;
 			children = (
-				47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */,
-				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
-				4712B6381C10780200C49522 /* LSFormNode.swift */,
+				47B808CB1C834B9D00312C96 /* Old */,
+				47B808CD1C834BDF00312C96 /* InitialViewController.swift */,
 			);
 			name = LoginViewController;
 			sourceTree = "<group>";
@@ -1596,6 +1592,24 @@
 				47B808421C7DDB5200312C96 /* ChatItem.swift */,
 			);
 			name = ChatManager;
+			sourceTree = "<group>";
+		};
+		47B808CA1C8245D200312C96 /* Onboarding Popup */ = {
+			isa = PBXGroup;
+			children = (
+				47B808C81C8245CC00312C96 /* OnboardingVC.swift */,
+			);
+			name = "Onboarding Popup";
+			sourceTree = "<group>";
+		};
+		47B808CB1C834B9D00312C96 /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */,
+				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
+				4712B6381C10780200C49522 /* LSFormNode.swift */,
+			);
+			name = Old;
 			sourceTree = "<group>";
 		};
 		47B899BD1C485421007C2B7F /* NHNetworkTime */ = {
@@ -1840,7 +1854,7 @@
 		7E17BCCEA77E9EB1A172E5F7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				47DE5CFE1C6CD81E006876E6 /* FBSDKCoreKit.framework */,
+				4748719A1C84D83D007F3C68 /* FBSDKCoreKit.framework */,
 				47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */,
 				7AE84AEB7D80E0B36B62EC9D /* Pods_Synnc.framework */,
 				56E1A1899D17F83DEDFDEC35 /* Pods_SynncTests.framework */,
@@ -1854,10 +1868,6 @@
 			children = (
 				8420EC8C48455A7F08130F2F /* Pods-Synnc.debug.xcconfig */,
 				C2AEA561410678258DE52FDD /* Pods-Synnc.release.xcconfig */,
-				3F3D33A5975C018960A3960D /* Pods-SynncTests.debug.xcconfig */,
-				2F50E5C3B84408976E63613D /* Pods-SynncTests.release.xcconfig */,
-				916A00F96877BA97E8CAF27B /* Pods-SynncUITests.debug.xcconfig */,
-				5A3E1D753F8AB41593362BFA /* Pods-SynncUITests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1890,12 +1900,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 47A4E6A41C0CAE6200354EA8 /* Build configuration list for PBXNativeTarget "SynncTests" */;
 			buildPhases = (
-				258929E08143D233019749D0 /* Check Pods Manifest.lock */,
 				47A4E6891C0CAE6200354EA8 /* Sources */,
 				47A4E68A1C0CAE6200354EA8 /* Frameworks */,
 				47A4E68B1C0CAE6200354EA8 /* Resources */,
-				7301EAB0AAEDD76160C3B8BD /* Embed Pods Frameworks */,
-				D0EA414D9BA2C27440E8587A /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1911,11 +1918,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 47A4E6A71C0CAE6200354EA8 /* Build configuration list for PBXNativeTarget "SynncUITests" */;
 			buildPhases = (
-				2D1EBD4DA8476A42F48F9A63 /* Check Pods Manifest.lock */,
 				47A4E6941C0CAE6200354EA8 /* Sources */,
 				47A4E6951C0CAE6200354EA8 /* Frameworks */,
 				47A4E6961C0CAE6200354EA8 /* Resources */,
-				B00B3581F4B6D61B246718A0 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2278,36 +2283,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		258929E08143D233019749D0 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		2D1EBD4DA8476A42F48F9A63 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		4712B6411C1327B000C49522 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2320,21 +2295,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" 47f502ee49ade8a26f22e7aca8e384f1495bd755 a7fa59fe01bc4316f5c3cc278964657dc27cbb733c55df31ee0fb213869f1cce";
-		};
-		7301EAB0AAEDD76160C3B8BD /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SynncTests/Pods-SynncTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		7E02A84A70DA3121AFC19BC2 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2351,21 +2311,6 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		B00B3581F4B6D61B246718A0 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SynncUITests/Pods-SynncUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		BE486E95C5748E546D3E33BC /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2379,21 +2324,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Synnc/Pods-Synnc-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D0EA414D9BA2C27440E8587A /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SynncTests/Pods-SynncTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DF20952D340609F7E7E88064 /* Embed Pods Frameworks */ = {
@@ -2427,6 +2357,7 @@
 				47C8F98A1C1F4DF400333492 /* TrackSearchController.swift in Sources */,
 				47C8F9851C1D140500333492 /* PlaylistController.swift in Sources */,
 				47B37B871C2F169B001CC6D2 /* TitleColorButton.swift in Sources */,
+				47B808C91C8245CC00312C96 /* OnboardingVC.swift in Sources */,
 				47B37B831C2F1596001CC6D2 /* ParallaxBackgroundNode.swift in Sources */,
 				477705261C3EB020007089D0 /* ChatManager.swift in Sources */,
 				47D7637A1C3A283B008E0334 /* WildPlayer.swift in Sources */,
@@ -2537,6 +2468,7 @@
 				47EBDF9D1C1BE18B0075CF0B /* SynncTrack+Soundcloud.swift in Sources */,
 				47EBDFA41C1C8A060075CF0B /* SynncArtist+Soundcloud.swift in Sources */,
 				4728F93E1C31933A00B427EA /* SettingsController.swift in Sources */,
+				47B808CE1C834BDF00312C96 /* InitialViewController.swift in Sources */,
 				4728F9451C31D37300B427EA /* InboxItemNode.swift in Sources */,
 				4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */,
 				475286DB1C359E1900731008 /* StreamManager.swift in Sources */,
@@ -2765,8 +2697,6 @@
 					"-framework",
 					"\"WCLUserManager\"",
 					"-framework",
-					"\"WCLUtilities\"",
-					"-framework",
 					"\"pop\"",
 					"-framework",
 					"\"FBSDKCoreKit\"",
@@ -2876,8 +2806,6 @@
 					"-framework",
 					"\"WCLUserManager\"",
 					"-framework",
-					"\"WCLUtilities\"",
-					"-framework",
 					"\"pop\"",
 					"-framework",
 					"\"FBSDKCoreKit\"",
@@ -2900,7 +2828,6 @@
 		};
 		47A4E6A51C0CAE6200354EA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F3D33A5975C018960A3960D /* Pods-SynncTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = SynncTests/Info.plist;
@@ -2913,7 +2840,6 @@
 		};
 		47A4E6A61C0CAE6200354EA8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F50E5C3B84408976E63613D /* Pods-SynncTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = SynncTests/Info.plist;
@@ -2926,7 +2852,6 @@
 		};
 		47A4E6A81C0CAE6200354EA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 916A00F96877BA97E8CAF27B /* Pods-SynncUITests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SynncUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2939,7 +2864,6 @@
 		};
 		47A4E6A91C0CAE6200354EA8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A3E1D753F8AB41593362BFA /* Pods-SynncUITests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SynncUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

@@ -26,21 +26,21 @@ protocol TabbarContentScrollerDelegate {
     func didChangeCurrentIndex(index : Int)
 }
 
-class TabbarContentScroller : ASScrollNode {
+class TabbarContentScroller : ASPagerNode {
     
     var contentDelegate : TabbarContentLoaderDelegate?
-    var delegate : TabbarContentScrollerDelegate?
+    var scrollerDelegate : TabbarContentScrollerDelegate?
+    
     var pages : [ASDisplayNode] = []
     var pageNodes : [ASLayoutable] = []
     var currentIndex : Int = -1 {
         didSet {
             if currentIndex != oldValue && currentIndex != -1 {
-                self.delegate?.didChangeCurrentIndex(currentIndex)
+                self.scrollerDelegate?.didChangeCurrentIndex(currentIndex)
             }
         }
     }
     var isScrolling : Bool = false
-    var colors : [UIColor] = [UIColor.clearColor(), UIColor.blueColor(), UIColor.yellowColor()]
     
     var isUpdating : Bool = false
     
@@ -92,20 +92,20 @@ class TabbarContentScroller : ASScrollNode {
     
     
     func updateForItem(item: TabItem, controller : TabItemController){
-        for page in pages {
-            page.removeFromSupernode()
-        }
-        self.pages = []
-        
-        for (_,vc) in item.subsections.enumerate() {
-            controller.addChildViewController(vc)
-            let a = vc.screenNode
-            vc.view.frame.size = self.view.bounds.size
-            self.addSubnode(a)
-            self.pages.append(a)
-            vc.didMoveToParentViewController(controller)
-        }
         self.currentIndex = item.selectedIndex
+    }
+    
+    override init(viewBlock: ASDisplayNodeViewBlock, didLoadBlock: ASDisplayNodeDidLoadBlock?) {
+        super.init(viewBlock: viewBlock, didLoadBlock: didLoadBlock)
+    }
+    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, layoutFacilitator: ASCollectionViewLayoutFacilitatorProtocol?) {
+        super.init(frame: frame, collectionViewLayout: layout, layoutFacilitator: layoutFacilitator)
+    }
+    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+        super.init(frame: frame, collectionViewLayout: layout)
+    }
+    override init!(collectionViewLayout flowLayout: ASPagerFlowLayout!) {
+        super.init(collectionViewLayout: flowLayout)
     }
     
     override init() {
@@ -114,31 +114,18 @@ class TabbarContentScroller : ASScrollNode {
     
     override func didLoad() {
         super.didLoad()
-        self.view.pagingEnabled = true
-        self.view.delegate = self
+        self.view.asyncDelegate = self
         self.view.delaysContentTouches = false
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        var staticSpecs : [ASStaticLayoutSpec] = []
-        for node in pages {
-            node.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeSize(ASRelativeSizeMake(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Percent, value: 1)))
-            let a = ASStaticLayoutSpec(children: [node])
-            staticSpecs.append(a)
-        }
-        self.view.contentSize = CGSizeMake(CGFloat(self.pages.count) * constrainedSize.max.width, constrainedSize.max.height)
-        let hStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: staticSpecs)
         
-        //        self.updatePositionAnimation.toValue = CGFloat(self.currentIndex) * constrainedSize.max.width
-        
-        return hStack
+        let a = ASRangeTuningParameters(leadingBufferScreenfuls: 1, trailingBufferScreenfuls: 1)
+        self.setTuningParameters(a, forRangeMode: .Full, rangeType: ASLayoutRangeType.FetchData)
     }
 }
 
-extension TabbarContentScroller : UIScrollViewDelegate {
+extension TabbarContentScroller : ASCollectionDelegate {
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.pop_removeAnimationForKey("updatePositionAnimation")
-        self.delegate?.beganScrolling()
+        self.scrollerDelegate?.beganScrolling()
         self.isUpdating = false
         self.isScrolling = true
     }
@@ -153,7 +140,7 @@ extension TabbarContentScroller : UIScrollViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let ratio = self.view.contentOffset.x / (self.view.contentSize.width - self.calculatedSize.width)
         if !isUpdating {
-            self.delegate?.didScrollToRatio(ratio)
+            self.scrollerDelegate?.didScrollToRatio(ratio)
         }
     }
 }

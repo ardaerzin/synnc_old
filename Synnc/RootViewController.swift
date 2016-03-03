@@ -13,6 +13,8 @@ import pop
 import WCLUIKit
 import WCLNotificationManager
 import WCLPopupManager
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 extension UIViewController {
     var rootViewController : RootViewController? {
@@ -28,10 +30,25 @@ extension UIViewController {
     }
 }
 
+class RootNavigationController : UINavigationController {
+    override init(rootViewController: UIViewController) {
+        super.init(rootViewController: rootViewController)
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
+
 class RootViewController : ASViewController {
     
     var screenNode : TabControllerNode!
-    var loginController : LoginViewController!
+    var initialPopup : InitialViewController!
     var displayStatusBar : Bool = true {
         didSet {
             self.setNeedsStatusBarAppearanceUpdate()
@@ -40,7 +57,7 @@ class RootViewController : ASViewController {
     var displayItem : TabItem! {
         didSet {
             self.screenNode.item = displayItem
-//            self.screenNode.updateForItem(displayItem)
+            //            self.screenNode.updateForItem(displayItem)
             
             if let vc = displayItem as? TabItemController {
                 vc.willBecomeActiveTab()
@@ -83,7 +100,7 @@ class RootViewController : ASViewController {
     }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-//        UXCam.tagScreenName("RootVC")
+        //        UXCam.tagScreenName("RootVC")
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -91,17 +108,21 @@ class RootViewController : ASViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        UXCam.startWithKey("c1b881edb51a88d")
+        //        UXCam.startWithKey("c1b881edb51a88d")
+        
+        initialPopup = InitialViewController(size: UIScreen.mainScreen().bounds.size)
+//        (size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+        WCLPopupManager.sharedInstance.newPopup(initialPopup)
         
         /// Login Related
-        let x = LoginViewController()
-        x.willMoveToParentViewController(self)
-        self.addChildViewController(x)
-        x.didMoveToParentViewController(self)
-        x.view.frame = UIScreen.mainScreen().bounds
-        self.screenNode.addSubnode(x.screenNode)
-        self.loginController = x
-
+//        let x = InitialViewController()
+//        x.willMoveToParentViewController(self)
+//        self.addChildViewController(x)
+//        x.didMoveToParentViewController(self)
+//        x.view.frame = UIScreen.mainScreen().bounds
+//        self.screenNode.addSubnode(x.screenNode)
+//        self.loginController = x
+        
         // Node Related
         self.screenNode.tabbar.delegate = self
     }
@@ -149,14 +170,15 @@ class RootViewController : ASViewController {
 }
 extension RootViewController {
     func dismissLoginController() {
-        self.loginController.willMoveToParentViewController(nil)
-        self.loginController.removeFromParentViewController()
-        self.loginController = nil
-        
-        if !WCLNotificationManager.sharedInstance().settingsManager.isAllowed {
-            let x = NotificationRequestPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-            WCLPopupManager.sharedInstance.newPopup(x)
-        }
+//        self.initialPopup.closeView(true)
+//        self.loginController.willMoveToParentViewController(nil)
+//        self.loginController.removeFromParentViewController()
+//        self.loginController = nil
+//        
+//        if !WCLNotificationManager.sharedInstance().settingsManager.isAllowed {
+//            let x = NotificationRequestPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+//            WCLPopupManager.sharedInstance.newPopup(x)
+//        }
     }
 }
 
@@ -190,7 +212,7 @@ extension RootViewController : TabbarDelegate {
             
             self.addChildViewController(nvc)
             nvc.view.frame = UIScreen.mainScreen().bounds
-
+            
             self.screenNode.contentHolder.view.addSubview(nvc.view)
             nvc.didMoveToParentViewController(self)
             self.displayItem = item

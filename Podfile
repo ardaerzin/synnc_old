@@ -31,12 +31,3 @@ pod 'Shimmer'
 pod 'Appsee'
 
 end
-
-target 'SynncTests' do
-
-end
-
-target 'SynncUITests' do
-
-end
-

@@ -67,6 +67,7 @@ class ButtonHolder : ASDisplayNode {
     var facebookLoginButton : LoginButtonNode!
     var twitterLoginButton : LoginButtonNode!
     var seperatorNode : SeperatorNode!
+    var buttonHeight : CGFloat!
     
     deinit {
 //        print("deinit button holder")
@@ -75,20 +76,19 @@ class ButtonHolder : ASDisplayNode {
     override init() {
         super.init()
         
-        var buttonHeight : CGFloat = 60
+        var buttonHeight : CGFloat = 50
         
         let screenSize = UIScreen.mainScreen().bounds.size
         if screenSize.height < 600 {
             buttonHeight = 44
-        } else {
-            buttonHeight = 60
         }
+        self.buttonHeight = buttonHeight
         
         let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 1]
         
         let normalTitleString = NSAttributedString(string: "BORING SIGN UP FORM", attributes: attributes)
-        let facebookTitleString = NSAttributedString(string: "JOIN WITH FACEBOOK", attributes: attributes)
-        let twitterTitleString = NSAttributedString(string: "JOIN WITH TWITTER", attributes: attributes)
+//        let facebookTitleString = NSAttributedString(string: "JOIN WITH FACEBOOK", attributes: attributes)
+//        let twitterTitleString = NSAttributedString(string: "JOIN WITH TWITTER", attributes: attributes)
         
         self.regularLoginButton = LoginButtonNode(normalColor: UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1), selectedColor: UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1))
         self.regularLoginButton.minScale = 0.85
@@ -107,17 +107,16 @@ class ButtonHolder : ASDisplayNode {
         self.facebookLoginButton.minScale = 0.85
         self.facebookLoginButton.setImage(UIImage(named: "facebook"), forState: ASControlState.Normal)
         self.facebookLoginButton.cornerRadius = 3
-        self.facebookLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.facebookLoginButton.setAttributedTitle(facebookTitleString, forState: ASControlState.Normal)
+//        self.facebookLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
+//        self.facebookLoginButton.setAttributedTitle(facebookTitleString, forState: ASControlState.Normal)
         
         self.twitterLoginButton = LoginButtonNode(normalColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1), selectedColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1))
         self.twitterLoginButton.alpha = 0
         self.twitterLoginButton.minScale = 0.85
         self.twitterLoginButton.setImage(UIImage(named: "twitter"), forState: ASControlState.Normal)
         self.twitterLoginButton.cornerRadius = 3
-        self.twitterLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.twitterLoginButton.setAttributedTitle(twitterTitleString, forState: ASControlState.Normal)
-        
+//        self.twitterLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
+//        self.twitterLoginButton.setAttributedTitle(twitterTitleString, forState: ASControlState.Normal)
         
         
         self.addSubnode(self.regularLoginButton)
@@ -133,7 +132,16 @@ class ButtonHolder : ASDisplayNode {
         let twitterButtonStack = ASStaticLayoutSpec(children: [self.twitterLoginButton])
         let seperatorStack = ASStaticLayoutSpec(children: [self.seperatorNode])
         
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [regularButtonStack, seperatorStack, facebookButtonStack, twitterButtonStack])
+        let socialSpacer = ASLayoutSpec()
+        socialSpacer.flexGrow = true
+        
+        self.facebookLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width * 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
+        self.twitterLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width * 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
+        
+        let socialLoginStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [facebookButtonStack, socialSpacer, twitterButtonStack])
+        socialLoginStack.alignSelf = .Stretch
+        
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [regularButtonStack, seperatorStack, socialLoginStack])
         
         return a
     }
@@ -505,7 +513,7 @@ class FormNode : ASDisplayNode {
         
         self.formSwitcher = FormSwitcherNode()
         
-        self.backgroundColor = UIColor.whiteColor()
+//        self.backgroundColor = UIColor.whiteColor()
         
         self.spinnerNode = SpinnerNode()
         self.spinnerNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
@@ -524,9 +532,11 @@ class FormNode : ASDisplayNode {
     var formDisplayStatus : Bool! {
         didSet {
             if formDisplayStatus != oldValue {
-                if !formDisplayStatus && self.formHolder.isFirstResponder() {
-                    self.formHolder.resignFirstResponder()
-                }
+                print(formDisplayStatus)
+                print(self.formHolder)
+//                if !formDisplayStatus && self.formHolder.isFirstResponder() {
+//                    self.formHolder.resignFirstResponder()
+//                }
                 self.formDisplayAnimation.toValue = formDisplayStatus! ? 1 : 0
             }
         }
@@ -568,7 +578,7 @@ class BackgroundNode : ASDisplayNode {
         
         self.titleNode = ASTextNode()
         self.titleNode.spacingBefore = 20
-        self.titleNode.attributedString = NSAttributedString(string: "SYNNC", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 32)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1), NSKernAttributeName : 2])
+        self.titleNode.attributedString = NSAttributedString(string: "synnc", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 48)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1), NSKernAttributeName : -0.2])
         
         self.addSubnode(self.logoHolder)
         self.addSubnode(self.titleNode)
@@ -608,10 +618,10 @@ class LoginNode : ASDisplayNode {
         super.init()
         
         self.backgroundNode = BackgroundNode()
-        self.backgroundNode.backgroundColor = UIColor.whiteColor()
+        self.backgroundNode.backgroundColor = UIColor.clearColor()
       
         self.formNode = FormNode()
-        self.formNode.backgroundColor = UIColor.whiteColor()
+//        self.formNode.backgroundColor = UIColor.whiteColor()
         self.formNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
         self.addSubnode(backgroundNode)

@@ -16,7 +16,7 @@ import SpinKit
 import WCLUserManager
 
 class TabSubsectionController : ASViewController {
-    
+
     var screenNode : ASDisplayNode!
     internal var _title : String! {
         get {
