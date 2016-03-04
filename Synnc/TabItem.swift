@@ -162,7 +162,6 @@ class TabItemController : ASViewController, TabItem {
 }
 extension TabItemController : ASPagerNodeDataSource {
     func pagerNode(pagerNode: ASPagerNode!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
-        print(pagerNode.calculatedSize)
         return ASSizeRangeMake(pagerNode.calculatedSize, pagerNode.calculatedSize)
     }
     func pagerNode(pagerNode: ASPagerNode!, nodeBlockAtIndex index: Int) -> ASCellNodeBlock! {
@@ -175,14 +174,9 @@ extension TabItemController : ASPagerNodeDataSource {
                 }
                 
                 return controller
-                }, didLoadBlock: nil)
+            }, didLoadBlock: nil)
         }
     }
-//    func pagerNode(pagerNode: ASPagerNode!, nodeAtIndex index: Int) -> ASCellNode! {
-//        return ASCellNode(viewControllerBlock: { () -> UIViewController in
-//            return self.subsections[index]
-//        }, didLoadBlock: nil)
-//    }
     func numberOfPagesInPagerNode(pagerNode: ASPagerNode!) -> Int {
         return self.subsections.count
     }

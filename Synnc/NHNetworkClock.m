@@ -7,12 +7,12 @@
 
 @interface NHNetworkClock () <NHNetAssociationDelegate>
 
-@property (nonatomic) NSMutableArray *timeAssociations;
-@property (nonatomic) NSArray *sortDescriptors;
-@property (nonatomic) NSSortDescriptor *dispersionSortDescriptor;
-@property (nonatomic) dispatch_queue_t associationDelegateQueue;
-@property (nonatomic, readwrite) BOOL isSynchronized;
-@property (nonatomic, copy) void (^complete)();
+@property (atomic) NSMutableArray *timeAssociations;
+@property (atomic) NSArray *sortDescriptors;
+@property (atomic) NSSortDescriptor *dispersionSortDescriptor;
+@property (atomic) dispatch_queue_t associationDelegateQueue;
+@property (atomic, readwrite) BOOL isSynchronized;
+@property (atomic, copy) void (^complete)();
 
 @end
 
@@ -65,7 +65,9 @@
     
     if(self.timeAssociations.count > 0) {
     
-        NSArray *sortedArray = [self.timeAssociations sortedArrayUsingDescriptors:self.sortDescriptors];
+        NSArray *sortedArray = [[self.timeAssociations sortedArrayUsingDescriptors:self.sortDescriptors] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            return [evaluatedObject isKindOfClass:[NHNetAssociation class]];
+        }]];
         
         for (NHNetAssociation * timeAssociation in sortedArray) {
             if (timeAssociation.active) {
@@ -190,7 +192,8 @@
 // Stop all the individual ntp clients associations ..
 
 - (void)finishAssociations {
-    for (NHNetAssociation * timeAssociation in self.timeAssociations) {
+    NSArray *timeAssociationsCopied = [self.timeAssociations copy];
+    for (NHNetAssociation * timeAssociation in timeAssociationsCopied) {
         timeAssociation.delegate = nil;
         [timeAssociation finish];
     }
@@ -214,6 +217,7 @@
 - (void)netAssociationDidFinishGetTime:(NHNetAssociation *)netAssociation {
     if(netAssociation.active && netAssociation.trusty) {
         
+        NTP_Logging(@"  za");
         [[NSUserDefaults standardUserDefaults] setDouble:netAssociation.offset forKey:kTimeOffsetKey];
         
         if(self.complete) {
@@ -222,8 +226,14 @@
         }
         
         if (self.isSynchronized == NO) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNHNetworkTimeSyncCompleteNotification object:nil userInfo:nil];
+            NTP_Logging(@"  is not synced");
+            
             self.isSynchronized = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNHNetworkTimeSyncCompleteNotification object:nil userInfo:nil];
+            
+        } else {
+            NTP_Logging(@"  is synced");
+            
         }
     }
 }

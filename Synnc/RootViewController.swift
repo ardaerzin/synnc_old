@@ -58,7 +58,6 @@ class RootViewController : ASViewController {
         didSet {
             self.screenNode.item = displayItem
             //            self.screenNode.updateForItem(displayItem)
-            
             if let vc = displayItem as? TabItemController {
                 vc.willBecomeActiveTab()
             }

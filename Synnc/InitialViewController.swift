@@ -193,7 +193,6 @@ class InitialControllerNode : ASDisplayNode {
         
         node.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
-        print("node shit", node)
         
 //        node.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.5), ASRelativeDimension(type: .Percent, value: 0.5))
         

@@ -50,7 +50,6 @@ class PlaylistSelectorController : TabSubsectionController {
     var delegate : PlaylistSelectorDelegate? {
         didSet {
             if let plist = selectedPlaylist {
-                print(plist)
                 self.delegate?.didSelectPlaylist(plist)
             }
         }
@@ -73,7 +72,6 @@ class PlaylistSelectorController : TabSubsectionController {
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         
-//        self.plist = playlist
         self.selectedPlaylist = playlist
         
         playlistDataSource = SelectablePlaylistsDataSource(predicates:

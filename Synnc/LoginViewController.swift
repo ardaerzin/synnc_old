@@ -138,7 +138,7 @@ extension LoginViewController : WCLUserDelegate {
 //                self.screenNode.displayAnimation.dynamicsFriction = 10
 //                self.screenNode.displayAnimation.toValue = 0
                 
-                print("parent", self.parentViewController)
+//                print("parent", self.parentViewController)
                 
                 if let p = self.parentViewController as? InitialViewController {
                     p.closeView(true)

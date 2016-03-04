@@ -27,6 +27,13 @@ class StreamTimeStamp : Serializable {
     var player_time : NSNumber!
     var timeStamp : NSNumber!
     var playlist_index : NSNumber!
+    
+    override func fromJSON(json: JSON) -> [String] {
+        print("JSON TS", json["timeStamp"])
+        let a = super.fromJSON(json)
+        print("TS", self.timeStamp)
+        return a
+    }
 }
 
 class Stream : Serializable {

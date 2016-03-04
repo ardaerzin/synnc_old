@@ -244,6 +244,7 @@ double ntpDiffSeconds(NHTimeStamp *start, NHTimeStamp *stop) {
     
     //determine the quality of this particular time if max_error is less than 50mS (and not zero) AND stratum > 0 AND the mode is 4 (packet came from server) AND the server clock was set less than 1 minute ago
     _offset = INFINITY;                                                 // clock meaningless
+    NSLog(@"DISPERSION: %f", _dispersion);
     if ((_dispersion < 50.0 && _dispersion > 0.00001) &&
         (self.stratum > 0) && (mode == 4) &&
         (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 60.0)) {
@@ -310,11 +311,14 @@ double ntpDiffSeconds(NHTimeStamp *start, NHTimeStamp *stop) {
 
         _trusty = (good+none > 4) &&                                // four or more 'fails'
                   (fabs(_offset) > stdDev*3.0);                     // s.d. < offset
+//        NTP_Logging(@" trusty [%@]", _trusty);
+        if (_trusty) {
+            NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
+                        fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
+                        fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
+                        good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓ ");
+        }
         
-        NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
-                    fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
-                    fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
-                    good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓");
 
     }
     

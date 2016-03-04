@@ -14,7 +14,7 @@ import SwiftyJSON
 class WildPlayerSyncManager {
     
     weak var player: WildPlayer!
-    var updateInterval : Double = 1.0
+    var updateInterval : Double = 2.0
     var oldUpdate : Float64?
     var timeUpdateData : JSON!
     var offSet : NSTimeInterval = 0
@@ -38,15 +38,19 @@ class WildPlayerSyncManager {
         
         if player.stream != nil && player.stream!.isUserStream {
             let timeS = CMTimeGetSeconds(time)
-            if (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
+            
+            if timeS == 0 || (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
                 return
             }
-            
+            print("update time", time)
             if needsUpdate {
                 let timestamp = StreamTimeStamp()
                 timestamp.stream_id = player.stream!.o_id
                 timestamp.player_time = CMTimeGetSeconds(time)
-                timestamp.timeStamp = NSDate().timeIntervalSince1970 - offSet
+                timestamp.timeStamp = NSDate.networkDate().timeIntervalSince1970
+                
+                
+//                timestamp.timeStamp = NSDate().timeIntervalSince1970 - offSet
                 timestamp.playlist_index = player.currentIndex
                 
                 player.stream?.update(["timestamp" : timestamp])
@@ -80,14 +84,16 @@ extension WildPlayerSyncManager {
     func checkTimeSync(){
         
         let hpt = self.timestamp.player_time as Double
-        let hlut = self.timestamp.timeStamp as Double + offSet
+        let hlut = self.timestamp.timeStamp as Double
+            
+//            + offSet
         
         if player.currentIndex != self.timestamp.playlist_index {
             //do not update time until song indices are the same.
             return
         }
         
-        let now = NSDate().timeIntervalSince1970
+        let now = NSDate.networkDate().timeIntervalSince1970
         let diff = now - hlut
         let playerNewTime = hpt + diff
         
@@ -99,17 +105,31 @@ extension WildPlayerSyncManager {
         
         if let item = self.player.currentItem where !self.player.isPlaying && self.player.readyToPlay {
             
-            self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime + 1), item.asset.duration.timescale), completionHandler: {
+//            print("nope")
+            
+            self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime+5), item.asset.duration.timescale), completionHandler: {
                 
                 cb in
-                self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime + 0.25), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
+                
+                let now = NSDate.networkDate().timeIntervalSince1970
+                let diff = now - hlut
+                let pnt = hpt + diff
+//                self.player.play()
+                
+                let clockTime = CMClockGetTime(CMClockGetHostTimeClock())
+                
+                self.player.setRate(1, time: CMTimeMakeWithSeconds((pnt), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
                 self.checkTimeSync()
             })
             self.player.isSyncing = true
             
         } else if self.player.isPlaying {
             
+//            print("shit", playerNewTime - actualTime)
+            
             if abs(playerNewTime - actualTime) > 0.01 {
+                
+//                print("yo")
                 
                 self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
                 self.player.isSyncing = true

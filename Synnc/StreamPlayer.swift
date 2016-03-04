@@ -64,6 +64,7 @@ class StreamPlayer : WildPlayer {
                 UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
                 self.isActiveSession = true
                 updateControlCenterControls()
+                print("set audio session")
             } catch let error as NSError {
                 print(error)
                 self.isActiveSession = false

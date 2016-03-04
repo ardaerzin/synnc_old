@@ -243,6 +243,7 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
             self.readyToPlay = true
             if let s = self.stream where !s.isUserStream {
                 self.syncManager.checkTimeSync()
+//                self.play()
             }
             //            if timeUpdateData != nil {
             //                self.handleTimeUpdate(timeUpdateData)

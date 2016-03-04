@@ -23,6 +23,7 @@ import AsyncDisplayKit
 import WCLUserManager
 import Appsee
 import WCLNotificationManager
+import Crashlytics
 
 #if DEBUG
 let serverURLString = "https://digital-reform.codio.io:9500"
@@ -85,12 +86,15 @@ class Synnc : UIResponder, UIApplicationDelegate {
     
     override init() {
         super.init()
+        
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
-        Fabric.with([Twitter.sharedInstance()])
+        
+        Fabric.with([Crashlytics.sharedInstance(), Twitter.sharedInstance()])
+        
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         self.socket = initSocket()
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
-        print(WCLPopupManager.sharedInstance.state)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -115,6 +119,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("willChangeStatusBarFrame:"), name: UIApplicationWillChangeStatusBarFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didChangeStatusBarFrame:"), name: UIApplicationDidChangeStatusBarFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("syncCompleteNotification:"), name: kNHNetworkTimeSyncCompleteNotification, object: nil)
         
         //Initialize rootViewController for main window
         rootVC = RootViewController()
@@ -127,17 +132,52 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         
         self.streamManager.setSocket(self.socket)
-        
-        NHNetworkClock.sharedNetworkClock().syncWithComplete({
-            let networkDate = NSDate.networkDate()
-            let normalDate = NSDate()
-            
-            self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-            let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-            print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
-        })
+        performNTPCheck()
+//        let d = NSDate()
+//        NHNetworkClock.sharedNetworkClock().syncWithComplete({
+////            let networkDate = NSDate.networkDate()
+////            let normalDate = NSDate()
+////            
+//            let x = NSDate().timeIntervalSince1970 - d.timeIntervalSince1970
+//            print("sorgu:", x)
+//////            self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+////            let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+////            print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
+//        })
         
         return true
+    }
+    
+    var ntpShit : NSDate!
+    func performNTPCheck(){
+        ntpShit = NSDate()
+//        NHNetworkClock.sharedNetworkClock().remo
+            //.shouldUseSavedSynchronizedTime = false
+        NHNetworkClock.sharedNetworkClock().syncWithComplete(nil)
+    }
+    
+    func syncCompleteNotification(notification : NSNotification){
+        
+        let x = NSDate().timeIntervalSince1970 - ntpShit.timeIntervalSince1970
+        if x >= 5 {
+            self.performNTPCheck()
+        }
+        
+        print("sorgu:", x)
+        
+//        let networkDate = NSDate.networkDate()
+//        let normalDate = NSDate()
+        let networkDate = NSDate.networkDate()
+        let normalDate = NSDate()
+//
+////        let x = normalDate.timeIntervalSince1970 - d.timeIntervalSince1970
+////        print("sorgu:", x)
+//        //            self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+//        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+//        print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
+//        self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+        print("********NOTIF normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
