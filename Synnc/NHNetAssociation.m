@@ -244,7 +244,7 @@ double ntpDiffSeconds(NHTimeStamp *start, NHTimeStamp *stop) {
     
     //determine the quality of this particular time if max_error is less than 50mS (and not zero) AND stratum > 0 AND the mode is 4 (packet came from server) AND the server clock was set less than 1 minute ago
     _offset = INFINITY;                                                 // clock meaningless
-    NSLog(@"DISPERSION: %f", _dispersion);
+//    NSLog(@"DISPERSION: %f", _dispersion);
     if ((_dispersion < 50.0 && _dispersion > 0.00001) &&
         (self.stratum > 0) && (mode == 4) &&
         (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 60.0)) {

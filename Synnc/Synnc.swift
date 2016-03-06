@@ -21,9 +21,10 @@ import CoreLocation
 import WCLPopupManager
 import AsyncDisplayKit
 import WCLUserManager
-import Appsee
+//import Appsee
 import WCLNotificationManager
 import Crashlytics
+//import AppAnalytics
 
 #if DEBUG
 let serverURLString = "https://digital-reform.codio.io:9500"
@@ -88,18 +89,18 @@ class Synnc : UIResponder, UIApplicationDelegate {
         super.init()
         
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
+        Fabric.with([Answers(), Crashlytics.sharedInstance(), Twitter.sharedInstance()])
         
-        Fabric.with([Crashlytics.sharedInstance(), Twitter.sharedInstance()])
         
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         self.socket = initSocket()
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        //        Appsee.start(appSeeKey)
+//                Appsee.start(appSeeKey)
+//        Appsee.
         //        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -161,14 +162,15 @@ class Synnc : UIResponder, UIApplicationDelegate {
         let x = NSDate().timeIntervalSince1970 - ntpShit.timeIntervalSince1970
         if x >= 5 {
             self.performNTPCheck()
+            NHNetworkClock.sharedNetworkClock().networkOffset
         }
         
         print("sorgu:", x)
         
 //        let networkDate = NSDate.networkDate()
 //        let normalDate = NSDate()
-        let networkDate = NSDate.networkDate()
-        let normalDate = NSDate()
+//        let networkDate = NSDate.networkDate()
+//        let normalDate = NSDate()
 //
 ////        let x = normalDate.timeIntervalSince1970 - d.timeIntervalSince1970
 ////        print("sorgu:", x)
@@ -176,8 +178,8 @@ class Synnc : UIResponder, UIApplicationDelegate {
 //        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
 //        print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
 //        self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-        print("********NOTIF normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
+//        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
+//        print("********NOTIF normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
@@ -197,13 +199,13 @@ class Synnc : UIResponder, UIApplicationDelegate {
     
     func detectedScreen(notification: NSNotification) {
         
-        var userInfo = notification.userInfo
-        let screenName = userInfo![kAppseeScreenName] as! String
-        // To ignore a new screen set its value to nil
-        
-        print("detected screenName", screenName)
-        
-        userInfo![kAppseeScreenName] = nil
+//        var userInfo = notification.userInfo
+//        let screenName = userInfo![kAppseeScreenName] as! String
+//        // To ignore a new screen set its value to nil
+//        
+//        print("detected screenName", screenName)
+//        
+//        userInfo![kAppseeScreenName] = nil
     }
     
     func willChangeStatusBarFrame(notification : NSNotification!){

@@ -29,9 +29,9 @@ class StreamTimeStamp : Serializable {
     var playlist_index : NSNumber!
     
     override func fromJSON(json: JSON) -> [String] {
-        print("JSON TS", json["timeStamp"])
+//        print("JSON TS", json["timeStamp"])
         let a = super.fromJSON(json)
-        print("TS", self.timeStamp)
+//        print("TS", self.timeStamp)
         return a
     }
 }
@@ -45,7 +45,7 @@ class Stream : Serializable {
     */
     var status: ObjCBool = false {
         didSet {
-            print("did set stream status", status)
+//            print("did set stream status", status)
         }
     }
     var delegate : StreamDelegate? = Synnc.sharedInstance.streamManager

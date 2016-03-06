@@ -44,23 +44,6 @@ class MyPlaylistsController : TabSubsectionController {
         
         print("init shit")
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-//        let nn = self.screenNode as! MyPlaylistsNode
-//        nn.collectionNode.view.asyncDataSource = self
-//        nn.collectionNode.view.asyncDelegate = self
-//        
-        print("did load controller")
-    }
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        print("will appear")
-    }
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        print("did appear")
-    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

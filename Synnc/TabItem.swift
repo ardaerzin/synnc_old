@@ -14,7 +14,7 @@ import AsyncDisplayKit
 import pop
 import SpinKit
 import WCLUserManager
-import Appsee
+//import Appsee
 
 class TabNavigationController : UINavigationController, UINavigationControllerDelegate {
 

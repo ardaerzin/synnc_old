@@ -60,13 +60,9 @@ class MyPlaylistsNode : ASCellNode {
     
     override func calculatedLayoutDidChange() {
         super.calculatedLayoutDidChange()
-        print("did change calculated layout")
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        
-        print("layoutSpecThatFits", constrainedSize.max)
-        
         let a = ASStaticLayoutSpec(children: [self.collectionNode])
         let o = ASOverlayLayoutSpec(child: a, overlay: self.emptyStateNode)
         return o

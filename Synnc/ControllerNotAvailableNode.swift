@@ -65,8 +65,6 @@ class ControllerNotAvailableNode : ASDisplayNode {
         
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        print("constrainedSize", constrainedSize.max)
-        
         let shit = ASStaticLayoutSpec(children: [mainTextNode])
         let centerSpec = ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: shit)
         

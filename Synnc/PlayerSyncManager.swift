@@ -42,7 +42,7 @@ class WildPlayerSyncManager {
             if timeS == 0 || (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
                 return
             }
-            print("update time", time)
+//            print("update time", time)
             if needsUpdate {
                 let timestamp = StreamTimeStamp()
                 timestamp.stream_id = player.stream!.o_id

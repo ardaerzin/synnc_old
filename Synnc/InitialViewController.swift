@@ -33,38 +33,6 @@ class InitialViewController : WCLPopupViewController {
     var onboardingController : OnboardingVC!
     var loginController : LoginViewController!
     
-//    init(){
-//        let node = InitialControllerNode()
-//        super.init(node: node)
-//        self.screenNode = node
-//        
-//        loginController = LoginViewController()
-//        loginController.view.frame = UIScreen.mainScreen().bounds
-//        self.addChildViewController(loginController)
-//        
-//        
-//        onboardingController = OnboardingVC()
-//        onboardingController.view.frame = UIScreen.mainScreen().bounds
-//        self.addChildViewController(onboardingController)
-//        
-//        screenNode.loginNode = loginController.node as! LoginNode
-//        screenNode.onboardingNode = onboardingController.node as! OnboardingVCNode
-    
-//        if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
-//            state = .Login
-//            self.node.addSubnode(screenNode.loginNode)
-//            print("already seen onboarding")
-//        } else {
-//            state = .Onboarding
-//            self.node.addSubnode(screenNode.onboardingNode)
-//            print("not seen onboarding")
-//        }
-        
-//        state = .Login
-//        self.node.addSubnode(screenNode.loginNode)
-//        screenNode.state = self.state
-//    }
-    
     init(size: CGSize) {
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
@@ -80,16 +48,18 @@ class InitialViewController : WCLPopupViewController {
         self.screenNode.loginNode = loginController.node as! LoginNode
         self.screenNode.onboardingNode = onboardingController.node as! OnboardingVCNode
         
-        if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
-            state = .Login
-            self.screenNode.addSubnode(self.screenNode.loginNode)
-            print("already seen onboarding")
-        } else {
-            state = .Onboarding
-            self.screenNode.addSubnode(self.screenNode.onboardingNode)
-            print("not seen onboarding")
-        }
+//        if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
+//            state = .Login
+//            self.screenNode.addSubnode(self.screenNode.loginNode)
+//            print("already seen onboarding")
+//        } else {
+//            state = .Onboarding
+//            self.screenNode.addSubnode(self.screenNode.onboardingNode)
+//            print("not seen onboarding")
+//        }
         
+        state = .Login
+        self.screenNode.addSubnode(self.screenNode.loginNode)
         
         self.screenNode.state = self.state
     }

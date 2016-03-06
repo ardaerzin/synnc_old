@@ -306,6 +306,10 @@
 		477705261C3EB020007089D0 /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705251C3EB020007089D0 /* ChatManager.swift */; };
 		477705291C3EB628007089D0 /* StreamsFeedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705281C3EB628007089D0 /* StreamsFeedNode.swift */; };
 		4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777052B1C3EBAF7007089D0 /* StreamFeedDataSource.swift */; };
+		478921CD1C8A0472008BDA96 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921CC1C8A0472008BDA96 /* Security.framework */; };
+		478921CF1C8A0479008BDA96 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921CE1C8A0479008BDA96 /* SystemConfiguration.framework */; };
+		478921D01C8A04DD008BDA96 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921CA1C8A01CB008BDA96 /* libc++.tbd */; };
+		478921D11C8A04E7008BDA96 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921C81C8A01C2008BDA96 /* libz.tbd */; };
 		47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* Synnc.swift */; };
 		47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6831C0CAE6100354EA8 /* Assets.xcassets */; };
 		47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */; };
@@ -746,6 +750,10 @@
 		477705251C3EB020007089D0 /* ChatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 		477705281C3EB628007089D0 /* StreamsFeedNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedNode.swift; sourceTree = "<group>"; };
 		4777052B1C3EBAF7007089D0 /* StreamFeedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamFeedDataSource.swift; sourceTree = "<group>"; };
+		478921C81C8A01C2008BDA96 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		478921CA1C8A01CB008BDA96 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		478921CC1C8A0472008BDA96 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		478921CE1C8A0479008BDA96 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		47A4E6791C0CAE6100354EA8 /* Synnc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synnc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A4E67C1C0CAE6100354EA8 /* Synnc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Synnc.swift; sourceTree = "<group>"; };
 		47A4E6831C0CAE6100354EA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -877,6 +885,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				478921D11C8A04E7008BDA96 /* libz.tbd in Frameworks */,
+				478921D01C8A04DD008BDA96 /* libc++.tbd in Frameworks */,
+				478921CF1C8A0479008BDA96 /* SystemConfiguration.framework in Frameworks */,
+				478921CD1C8A0472008BDA96 /* Security.framework in Frameworks */,
 				47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */,
 				4748719B1C84D83D007F3C68 /* FBSDKCoreKit.framework in Frameworks */,
 				154D0398DDA70CB48785F728 /* Pods_Synnc.framework in Frameworks */,
@@ -1362,6 +1374,7 @@
 		47380A601C7BE7B70028EA38 /* Popups */ = {
 			isa = PBXGroup;
 			children = (
+				47B808CD1C834BDF00312C96 /* InitialViewController.swift */,
 				47B808CA1C8245D200312C96 /* Onboarding Popup */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
@@ -1484,8 +1497,9 @@
 		47A4E6AC1C0CB42E00354EA8 /* LoginViewController */ = {
 			isa = PBXGroup;
 			children = (
-				47B808CB1C834B9D00312C96 /* Old */,
-				47B808CD1C834BDF00312C96 /* InitialViewController.swift */,
+				47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */,
+				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
+				4712B6381C10780200C49522 /* LSFormNode.swift */,
 			);
 			name = LoginViewController;
 			sourceTree = "<group>";
@@ -1619,16 +1633,6 @@
 				47B808C81C8245CC00312C96 /* OnboardingVC.swift */,
 			);
 			name = "Onboarding Popup";
-			sourceTree = "<group>";
-		};
-		47B808CB1C834B9D00312C96 /* Old */ = {
-			isa = PBXGroup;
-			children = (
-				47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */,
-				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
-				4712B6381C10780200C49522 /* LSFormNode.swift */,
-			);
-			name = Old;
 			sourceTree = "<group>";
 		};
 		47B899BD1C485421007C2B7F /* NHNetworkTime */ = {
@@ -1865,6 +1869,10 @@
 		7E17BCCEA77E9EB1A172E5F7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				478921CE1C8A0479008BDA96 /* SystemConfiguration.framework */,
+				478921CC1C8A0472008BDA96 /* Security.framework */,
+				478921CA1C8A01CB008BDA96 /* libc++.tbd */,
+				478921C81C8A01C2008BDA96 /* libz.tbd */,
 				4748719A1C84D83D007F3C68 /* FBSDKCoreKit.framework */,
 				47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */,
 				7AE84AEB7D80E0B36B62EC9D /* Pods_Synnc.framework */,
