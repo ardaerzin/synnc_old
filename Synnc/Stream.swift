@@ -238,6 +238,8 @@ extension Stream {
                 var keys = super.fromJSON(json)
                 
                 if let tsi = tsInfo {
+                    print("!*!*!*!**!*!*!*!*!")
+                    print(tsi)
                     let tsJSON = JSON(tsi)
                     let ts = StreamTimeStamp()
                     ts.fromJSON(tsJSON)

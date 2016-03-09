@@ -12,9 +12,6 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
-import WCLUserManager
-import DeviceKit
 import WCLNotificationManager
 
 protocol SourceSelectorDelegate {

@@ -107,20 +107,8 @@ class RootViewController : ASViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //        UXCam.startWithKey("c1b881edb51a88d")
-        
         initialPopup = InitialViewController(size: UIScreen.mainScreen().bounds.size)
-//        (size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
         WCLPopupManager.sharedInstance.newPopup(initialPopup)
-        
-        /// Login Related
-//        let x = InitialViewController()
-//        x.willMoveToParentViewController(self)
-//        self.addChildViewController(x)
-//        x.didMoveToParentViewController(self)
-//        x.view.frame = UIScreen.mainScreen().bounds
-//        self.screenNode.addSubnode(x.screenNode)
-//        self.loginController = x
         
         // Node Related
         self.screenNode.tabbar.delegate = self
@@ -169,15 +157,7 @@ class RootViewController : ASViewController {
 }
 extension RootViewController {
     func dismissLoginController() {
-//        self.initialPopup.closeView(true)
-//        self.loginController.willMoveToParentViewController(nil)
-//        self.loginController.removeFromParentViewController()
-//        self.loginController = nil
-//        
-//        if !WCLNotificationManager.sharedInstance().settingsManager.isAllowed {
-//            let x = NotificationRequestPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-//            WCLPopupManager.sharedInstance.newPopup(x)
-//        }
+
     }
 }
 

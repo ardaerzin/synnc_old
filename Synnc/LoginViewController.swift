@@ -15,6 +15,7 @@ import pop
 import FBSDKLoginKit
 import WCLNotificationManager
 import WCLUserManager
+import SafariServices
 
 class LoginViewController : ASViewController {
     
@@ -32,22 +33,23 @@ class LoginViewController : ASViewController {
         let node = LoginNode()
         super.init(node: node)
         
-        node.formNode.buttonHolder.facebookLoginButton.addTarget(self, action: Selector("loginWithFacebook:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.formNode.buttonHolder.twitterLoginButton.addTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.formNode.buttonHolder.regularLoginButton.addTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.formNode.closeFormButton.addTarget(self, action: Selector("closeFormView:"), forControlEvents: .TouchUpInside)
-        node.formNode.formSwitcher.switchButton.addTarget(self, action: Selector("switchForm:"), forControlEvents: .TouchUpInside)
-//        node.backgroundColor = .redColor()
+        node.buttonHolder.facebookLoginButton.addTarget(self, action: Selector("loginWithFacebook:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.buttonHolder.twitterLoginButton.addTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+//        node.buttonHolder.actionButton.addTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.formSwitcher.switchButton.addTarget(self, action: Selector("switchForm:"), forControlEvents: .TouchUpInside)
         self.screenNode = node
+        
+        self.screenNode.legal.delegate = self
+        self.screenNode.legal.userInteractionEnabled = true
     }
     override func didMoveToParentViewController(parent: UIViewController?) {
         if parent == nil {
             self.user.delegate = nil
-            self.screenNode.formNode.buttonHolder.facebookLoginButton.removeTarget(self, action: Selector("loginWithFacebook:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-            self.screenNode.formNode.buttonHolder.twitterLoginButton.removeTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-            self.screenNode.formNode.buttonHolder.regularLoginButton.removeTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-            self.screenNode.formNode.closeFormButton.removeTarget(self, action: Selector("closeFormView:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-            self.screenNode.formNode.formSwitcher.switchButton.removeTarget(self, action: Selector("switchForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.buttonHolder.facebookLoginButton.removeTarget(self, action: Selector("loginWithFacebook:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.buttonHolder.twitterLoginButton.removeTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            
+//            self.screenNode.buttonHolder.actionButton.removeTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            self.screenNode.formSwitcher.switchButton.removeTarget(self, action: Selector("switchForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
             self.screenNode.removeFromSupernode()
             self.screenNode = nil
             self.loginCallback = nil
@@ -59,11 +61,11 @@ class LoginViewController : ASViewController {
         if let root = self.parentViewController as? RootViewController {
             root.displayStatusBar = false
         }
-        self.screenNode.formNode.alpha = 0
+        self.screenNode.alpha = 0
         if let c1 = self.user.isLoggedIn(.Facebook), let c2 = self.user.isLoggedIn(.Twitter), let c3 = self.user.isLoggingIn(.Facebook), let c4 = self.user.isLoggingIn(.Twitter) where c1 || c2 || c3 || c4 {
-            self.screenNode.formNode.serverCheckStatusAnimation.toValue = 1
+//            self.screenNode.formNode.serverCheckStatusAnimation.toValue = 1
         } else {
-            self.screenNode.formNode.serverCheckStatusAnimation.toValue = 0
+//            self.screenNode.formNode.serverCheckStatusAnimation.toValue = 0
         }
         self.user.delegate = self
         self.parentViewController?.prefersStatusBarHidden()
@@ -75,11 +77,17 @@ class LoginViewController : ASViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        self.screenNode.backgroundNode.logoHolder.startAnimation()
-        
-        self.screenNode.formNode.formDisplayStatus = false
-        self.screenNode.formNode.alpha = 1
+        self.screenNode.alpha = 1
+    }
+}
+
+extension LoginViewController : ASTextNodeDelegate {
+    func textNode(textNode: ASTextNode, tappedLinkAttribute attribute: String, value: AnyObject, atPoint point: CGPoint, textRange: NSRange) {
+        if let url = value as? NSURL {
+            let x = SFSafariViewController(URL: url)
+            x.modalPresentationStyle = .OverCurrentContext
+            self.presentViewController(x, animated: true, completion: nil)
+        }
     }
 }
 
@@ -89,29 +97,24 @@ extension LoginViewController {
         Synnc.sharedInstance.user.socialLogin(.Facebook)
     }
     func displaySignupForm(sender : ASButtonNode) {
-        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-        }
-        //        self.screenNode.formNode.formDisplayStatus = true
-        //        self.screenNode.formNode.formHolder.state = .Signup
+//        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+//            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+//        }
+//        self.screenNode.formHolder.state = .Signup
     }
     func loginWithTwitter(sender : AnyObject){
+        self.screenNode.serverCheckStatusAnimation.toValue = 1
         Synnc.sharedInstance.user.socialLogin(.Twitter)
     }
     
     func switchForm(sender : ASButtonNode){
-        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-        }
+//        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+//            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+//        }
         
-        //        let a = self.screenNode.formNode.formSwitcher.targetForm
-        //        self.screenNode.formNode.formDisplayStatus = true
-        //        self.screenNode.formNode.formHolder.state = self.screenNode.formNode.formSwitcher.targetForm
-        //        self.screenNode.formNode.formSwitcher.targetForm = a == .Login ? .Signup : .Login
-    }
-    func closeFormView(sender : ASButtonNode) {
-        self.screenNode.formNode.formHolder.state = FormNodeState.None
-        self.screenNode.formNode.formDisplayStatus = false
+//        let a = self.screenNode.formSwitcher.targetState
+        self.screenNode.state = self.screenNode.formSwitcher.targetState
+//        self.screenNode.formSwitcher.targetState = a == .Login ? .Signup : .Login
     }
 }
 
@@ -119,30 +122,19 @@ extension LoginViewController : WCLUserDelegate {
     func wildUser(user: WCLUser, loginStatusChanged status: Bool) {
         if status == true {
             //user is new?
-            self.screenNode.formNode.spinnerNode.updateForUser(user)
-            self.screenNode.formNode.spinnerNode.loginStatusAnimation.toValue = 1
+            self.screenNode.spinnerNode.updateForUser(user as! MainUser)
+            self.screenNode.spinnerNode.loginStatusAnimation.toValue = 1
             Async.main(after: 2) {
                 if let root = self.parentViewController as? RootViewController {
                     root.displayStatusBar = true
                 }
-//                self.screenNode.displayAnimation.completionBlock = {
-//                    anim, finished in
-//                    
-//                    if finished {
-//                        if let rvc = self.parentViewController as? RootViewController {
-//                            rvc.dismissLoginController()
-//                        }
-//                    }
-//                }
-//                self.screenNode.displayAnimation.springSpeed = 0
-//                self.screenNode.displayAnimation.dynamicsFriction = 10
-//                self.screenNode.displayAnimation.toValue = 0
-                
-//                print("parent", self.parentViewController)
+      
                 
                 if let p = self.parentViewController as? InitialViewController {
                     p.closeView(true)
                 }
+                
+                
                 Synnc.sharedInstance.socket!.emit("user:update", [ "id" : self.user._id, "lat" : 0, "lon" : 0])
             }
         } else {
@@ -152,10 +144,10 @@ extension LoginViewController : WCLUserDelegate {
     func wildUser(user: WCLUser, loginStatusChanged status: Bool, forExtension ext: String) {
         
         if status == false {
+            self.screenNode.serverCheckStatusAnimation.toValue = 0
         } else {
-            
             if ext == WCLUserLoginType.Facebook.rawValue || ext == WCLUserLoginType.Twitter.rawValue {
-                self.screenNode.formNode.serverCheckStatusAnimation.toValue = 1
+                self.screenNode.serverCheckStatusAnimation.toValue = 1
             } else {
             }
         }

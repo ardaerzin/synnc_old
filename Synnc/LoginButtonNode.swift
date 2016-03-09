@@ -12,7 +12,10 @@ import AsyncDisplayKit
 class LoginButtonNode : ButtonNode {
     override init(normalColor: UIColor? = .clearColor(), selectedColor: UIColor? = .clearColor()) {
         super.init(normalColor: normalColor, selectedColor: selectedColor)
-//        self.imageNode.spacingAfter = 15
+        self.imageNode.spacingAfter = 15
+//        self.titleNode.backgroundColor = .redColor()
+//        self.titleNode.flexGrow = true
+//        self.titleNode.spacingAfter = 10
     }
 //    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
 //        
@@ -25,7 +28,7 @@ class LoginButtonNode : ButtonNode {
 //            imgSpec = ASRatioLayoutSpec(ratio: 1, child: self.imageNode)
 //            imgSpec.flexGrow = false
 //            self.imageNode.contentMode = UIViewContentMode.Center
-//            imgSpec.spacingBefore = 20
+//            imgSpec.spacingBefore = 10
 //            
 //            let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [imgSpec, self.titleNode])
 //            return a

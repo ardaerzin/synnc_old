@@ -12,9 +12,6 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
-import WCLUserManager
-import DeviceKit
 
 extension MyPlaylistsEmptyStateNode {
     func newPlaylistAction(sender: ButtonNode) {
@@ -27,7 +24,7 @@ class MyPlaylistsEmptyStateNode : ASDisplayNode {
     var mainTextNode : ASTextNode!
     var subTextNode : ASTextNode!
     
-        override init() {
+    override init() {
         super.init()
         
         mainTextNode = ASTextNode()
@@ -53,6 +50,8 @@ class MyPlaylistsEmptyStateNode : ASDisplayNode {
         c.appendAttributedString(d)
         
         subTextNode.attributedString = c
+        
+        self.setNeedsLayout()
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let headerSpacer = ASLayoutSpec()

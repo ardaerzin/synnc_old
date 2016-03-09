@@ -158,7 +158,6 @@ class WildFacebookUser : WCLUserExtension {
     func accessTokenObserver(notification: NSNotification!){
         ENTRY_LOG()
         let token = FBSDKAccessToken.currentAccessToken()
-        
         self.isLoggingIn = false
         if token == nil {
             self.accessToken = nil

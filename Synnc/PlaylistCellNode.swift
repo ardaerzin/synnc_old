@@ -101,6 +101,11 @@ class PlaylistCellNode : ASCellNode {
         if let id = self.img as? String, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             self.imageNode.URL = url
         } else if let img = self.img as? UIImage {
+            if img.size.width != img.size.height {
+                self.imageNode.contentMode = UIViewContentMode.ScaleAspectFill
+            } else {
+                self.imageNode.contentMode = UIViewContentMode.Center
+            }
             self.imageNode.image = img
         }
     }

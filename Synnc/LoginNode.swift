@@ -12,194 +12,7 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
 import WCLUserManager
-import DeviceKit
-
-class SeperatorNode : ASDisplayNode {
-    var seperatorLine1 : ASDisplayNode!
-    var seperatorLine2 : ASDisplayNode!
-    var seperatorText : ASTextNode!
-    
-    deinit {
-//        print("deinit SeperatorNode")
-    }
-    
-    override init() {
-        super.init()
-        
-        self.seperatorLine1 = ASDisplayNode()
-        self.seperatorLine1.preferredFrameSize = CGSizeMake(100, 1)
-        self.seperatorLine1.layerBacked = true
-        self.seperatorLine1.spacingAfter = 10
-        self.seperatorLine1.backgroundColor = UIColor(red: 151/255, green: 151/255, blue: 151/255, alpha: 1)
-        self.seperatorLine1.flexGrow = true
-        
-        self.seperatorLine2 = ASDisplayNode()
-        self.seperatorLine2.layerBacked = true
-        self.seperatorLine2.preferredFrameSize = CGSizeMake(100, 1)
-        self.seperatorLine2.spacingBefore = 10
-        self.seperatorLine2.backgroundColor = UIColor(red: 0/255, green: 151/255, blue: 151/255, alpha: 1)
-        self.seperatorLine2.flexGrow = true
-        
-        self.seperatorText = ASTextNode()
-        self.seperatorText.layerBacked = true
-        self.seperatorText.attributedString = NSAttributedString(string: "OR", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1)])
-        
-        self.addSubnode(self.seperatorLine1)
-        self.addSubnode(self.seperatorText)
-        self.addSubnode(self.seperatorLine2)
-        
-        self.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: 10))
-        self.alignSelf = .Stretch
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.seperatorLine1,self.seperatorText, self.seperatorLine2])
-        a.alignSelf = .Stretch
-        return a
-    }
-}
-
-class ButtonHolder : ASDisplayNode {
-    
-    var regularLoginButton : LoginButtonNode!
-    var facebookLoginButton : LoginButtonNode!
-    var twitterLoginButton : LoginButtonNode!
-    var seperatorNode : SeperatorNode!
-    var buttonHeight : CGFloat!
-    
-    deinit {
-//        print("deinit button holder")
-    }
-    
-    override init() {
-        super.init()
-        
-        var buttonHeight : CGFloat = 50
-        
-        let screenSize = UIScreen.mainScreen().bounds.size
-        if screenSize.height < 600 {
-            buttonHeight = 44
-        }
-        self.buttonHeight = buttonHeight
-        
-        let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 1]
-        
-        let normalTitleString = NSAttributedString(string: "BORING SIGN UP FORM", attributes: attributes)
-//        let facebookTitleString = NSAttributedString(string: "JOIN WITH FACEBOOK", attributes: attributes)
-//        let twitterTitleString = NSAttributedString(string: "JOIN WITH TWITTER", attributes: attributes)
-        
-        self.regularLoginButton = LoginButtonNode(normalColor: UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1), selectedColor: UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1))
-        self.regularLoginButton.minScale = 0.85
-        self.regularLoginButton.flexShrink = true
-        self.regularLoginButton.cornerRadius = 3
-        self.regularLoginButton.alpha = 0
-        self.regularLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.regularLoginButton.setAttributedTitle(normalTitleString, forState: ASControlState.Normal)
-        
-        self.seperatorNode = SeperatorNode()
-        self.seperatorNode.alpha = 0
-        self.seperatorNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.75), ASRelativeDimension(type: .Points, value: 15))
-        
-        self.facebookLoginButton = LoginButtonNode(normalColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1), selectedColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1))
-        self.facebookLoginButton.alpha = 0
-        self.facebookLoginButton.minScale = 0.85
-        self.facebookLoginButton.setImage(UIImage(named: "facebook"), forState: ASControlState.Normal)
-        self.facebookLoginButton.cornerRadius = 3
-//        self.facebookLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
-//        self.facebookLoginButton.setAttributedTitle(facebookTitleString, forState: ASControlState.Normal)
-        
-        self.twitterLoginButton = LoginButtonNode(normalColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1), selectedColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1))
-        self.twitterLoginButton.alpha = 0
-        self.twitterLoginButton.minScale = 0.85
-        self.twitterLoginButton.setImage(UIImage(named: "twitter"), forState: ASControlState.Normal)
-        self.twitterLoginButton.cornerRadius = 3
-//        self.twitterLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
-//        self.twitterLoginButton.setAttributedTitle(twitterTitleString, forState: ASControlState.Normal)
-        
-        
-        self.addSubnode(self.regularLoginButton)
-        self.addSubnode(self.seperatorNode)
-        self.addSubnode(self.facebookLoginButton)
-        self.addSubnode(self.twitterLoginButton)
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        
-        let regularButtonStack = ASStaticLayoutSpec(children: [self.regularLoginButton])
-        let facebookButtonStack = ASStaticLayoutSpec(children: [self.facebookLoginButton])
-        let twitterButtonStack = ASStaticLayoutSpec(children: [self.twitterLoginButton])
-        let seperatorStack = ASStaticLayoutSpec(children: [self.seperatorNode])
-        
-        let socialSpacer = ASLayoutSpec()
-        socialSpacer.flexGrow = true
-        
-        self.facebookLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width * 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
-        self.twitterLoginButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width * 0.35), ASRelativeDimension(type: .Points, value: buttonHeight))
-        
-        let socialLoginStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [facebookButtonStack, socialSpacer, twitterButtonStack])
-        socialLoginStack.alignSelf = .Stretch
-        
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [regularButtonStack, seperatorStack, socialLoginStack])
-        
-        return a
-    }
-}
-
-class FormSwitcherNode : ASDisplayNode {
-    var switchButton : ButtonNode!
-    var textNode : ASTextNode!
-    var targetForm : FormNodeState = .Login {
-        didSet {
-            didChangeState()
-        }
-    }
-    
-    deinit {
-//        print("deinit FormSwitcherNode")
-    }
-    func didChangeState(){
-        switch self.targetForm {
-        case .Login :
-            self.textNode.attributedString = NSAttributedString(string: "Already have an account?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.51), NSKernAttributeName : 0.86])
-            self.switchButton.setAttributedTitle(NSAttributedString(string: "LOGIN", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0]), forState: ASControlState.Normal)
-            break
-        case .Signup:
-            self.textNode.attributedString = NSAttributedString(string: "Don't have an account?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.51), NSKernAttributeName : 0.86])
-            self.switchButton.setAttributedTitle(NSAttributedString(string: "SIGNUP", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0]), forState: ASControlState.Normal)
-            break
-        default:
-            return
-        }
-        
-        self.setNeedsLayout()
-    }
-        override init() {
-        super.init()
-        
-        self.textNode = ASTextNode()
-        self.textNode.attributedString = NSAttributedString(string: "Already have an account?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.51), NSKernAttributeName : 0.86])
-        
-        self.switchButton = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
-        self.switchButton.setAttributedTitle(NSAttributedString(string: "LOGIN", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: ASControlState.Normal)
-        self.switchButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(62, 30))
-        self.switchButton.cornerRadius = 3
-        self.switchButton.borderColor = UIColor.SynncColor().CGColor
-        self.switchButton.borderWidth = 2
-        
-        self.addSubnode(self.textNode)
-        self.addSubnode(self.switchButton)
-        
-        self.alignSelf = .Stretch
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let a = ASStaticLayoutSpec(children: [self.switchButton])
-        return ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [textNode, a])
-    }
-}
-
 
 class SpinnerNode : ASDisplayNode {
     var spinnerHolder : ASDisplayNode!
@@ -324,7 +137,7 @@ class SpinnerNode : ASDisplayNode {
         userImageNode = ASNetworkImageNode()
         userImageNode.alpha = 0
         userImageNode.preferredFrameSize = CGSizeMake(75, 75)
-        userImageNode.cornerRadius = 3
+        userImageNode.cornerRadius = 5
         
         userLoginMsgNode = ASTextNode()
         userLoginMsgNode.spacingBefore = 20
@@ -337,14 +150,23 @@ class SpinnerNode : ASDisplayNode {
         self.addSubnode(spinnerHolder)
     }
     
-    func updateForUser(user: WCLUser) {
+    func updateForUser(user: MainUser) {
         
         let a = user.provider
         if let url = user.userExtension(WCLUserLoginType(rawValue: a)!)?.avatarUrl(userImageNode.bounds, scale: UIScreen.mainScreen().scale) {
             self.userImageNode.URL = url
             self.imageDisplayAnimation.toValue = 1
         }
-        userLoginMsgNode.attributedString = NSAttributedString(string: "Welcome back, \(user.name)", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
+        
+        var welcomeMsg : String = "Welcome back,"
+        if user.generatedUsername {
+            welcomeMsg = "Welcome"
+        }
+        let str = NSMutableAttributedString(string: welcomeMsg + " \(user.name)", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor()])
+        str.addAttribute(NSFontAttributeName, value: UIFont(name: "Ubuntu", size: 18)!, range: str.string.NSRangeFromRange(str.string.rangeOfString(user.name)!))
+        userLoginMsgNode.attributedString = str
+        
+        
         self.fetchData()
         self.setNeedsLayout()
     }
@@ -361,17 +183,151 @@ class SpinnerNode : ASDisplayNode {
         return ASOverlayLayoutSpec(child: x, overlay: y)
     }
 }
-class FormNode : ASDisplayNode {
+
+enum LoginNodeState : Int {
+    case None = -1
+    case Login = 0
+    case Signup = 1
+}
+enum LoginNodeKeyboardState : Int {
+    case Down = 0
+    case Up = 1
+}
+typealias NodeKeyboardState = (state: LoginNodeKeyboardState, frame: CGRect)
+
+class LoginNode : ASDisplayNode {
     
+    var brandNode : LoginBrandNode!
     var buttonHolder : ButtonHolder!
     var spinnerNode : SpinnerNode!
     var formSwitcher : FormSwitcherNode!
-    var closeFormButton : ButtonNode!
-    
     var formHolder : LSFormNode!
+    var legal : ASTextNode!
+    
+    var keyboardState : NodeKeyboardState! {
+        didSet {
+            self.buttonHolder.keyboardState = keyboardState
+        }
+    }
+    var state : LoginNodeState! = .None {
+        didSet {
+            self.formHolder.state = state
+            self.formSwitcher.state = state
+            self.buttonHolder.state = state
+        }
+    }
     
     deinit {
         self.spinnerNode = nil
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+        
+        self.formHolder.resignFirstResponder()
+    }
+    
+    override init() {
+        super.init()
+        
+        self.buttonHolder = ButtonHolder()
+        
+        self.formHolder = LSFormNode()
+        self.formSwitcher = FormSwitcherNode()
+        
+        self.brandNode = LoginBrandNode()
+        self.brandNode.alignSelf = .Stretch
+        
+        self.spinnerNode = SpinnerNode()
+        self.spinnerNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+        self.spinnerNode.alpha = 0
+        
+        self.legal = ASTextNode()
+        
+//        var str = NSMutableAttributedString()
+//        str.appendAttributedString(<#T##attrString: NSAttributedString##NSAttributedString#>)
+        
+        let p = NSMutableParagraphStyle()
+        p.alignment = .Center
+        
+        let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6)]
+        let linkAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+        
+        let str1 = NSAttributedString(string: "By using Synnc, you agree to the ", attributes: attributes)
+        
+        var x = linkAttributes
+        x[NSLinkAttributeName] = NSURL(string: "https://synnc.live/privacy/")!
+        let str2 = NSAttributedString(string: "Privacy Policy", attributes: x)
+        
+        let str3 = NSAttributedString(string: " and ", attributes: attributes)
+        
+        var y = linkAttributes
+        y[NSLinkAttributeName] = NSURL(string: "https://synnc.live/terms/")!
+        let str4 = NSAttributedString(string: "Terms of Service.", attributes: y)
+        
+        let mutableStr = NSMutableAttributedString()
+        mutableStr.appendAttributedString(str1)
+        mutableStr.appendAttributedString(str2)
+        mutableStr.appendAttributedString(str3)
+        mutableStr.appendAttributedString(str4)
+        let r = mutableStr.string.NSRangeFromRange(mutableStr.string.rangeOfString(mutableStr.string)!)
+        mutableStr.addAttribute(NSParagraphStyleAttributeName, value: p, range: r)
+        mutableStr.addAttribute(NSUnderlineColorAttributeName, value: UIColor.clearColor(), range: r)
+        
+        self.legal.attributedString = mutableStr
+        
+        self.addSubnode(self.brandNode)
+//        self.addSubnode(self.formHolder)
+        self.addSubnode(self.buttonHolder)
+        self.addSubnode(self.spinnerNode)
+//        self.addSubnode(self.formSwitcher)
+        self.addSubnode(legal)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillChangeFrame:"), name: UIKeyboardWillChangeFrameNotification, object: nil)
+    }
+    func keyboardWillChangeFrame(notification: NSNotification) {
+        
+        let a = KeyboardAnimationInfo(dict: notification.userInfo!)
+        
+        if CGRectGetMinY(a.finalFrame) - self.calculatedSize.height <= 0 {
+            self.keyboardState = (.Down,a.finalFrame)
+        } else {
+            self.keyboardState = (.Up,a.finalFrame)
+        }
+    }
+
+    override func layoutDidFinish() {
+        super.layoutDidFinish()
+        if self.state == .None {
+            self.state = .Login
+        }
+    }
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let a = ASStaticLayoutSpec(children: [self.spinnerNode])
+        let b = ASOverlayLayoutSpec(child: self.buttonHolder, overlay: a)
+        
+        self.brandNode.spacingBefore = 75
+        self.formSwitcher.spacingAfter = 10
+        
+        let spacerTop = ASLayoutSpec()
+        spacerTop.flexGrow = true
+        
+        let spacerBottom = ASLayoutSpec()
+        spacerBottom.flexGrow = true
+        
+        let spacerB = ASLayoutSpec()
+        spacerB.flexGrow = true
+        
+        b.spacingAfter = 50
+        
+        self.formHolder.flexGrow = true
+        
+        let l = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 50, 0, 50), child: legal)
+        l.spacingAfter = 10
+        
+        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.brandNode, spacerTop, b, l])
+        
+        return x
     }
     
     var serverCheckStatusAnimatableProperty : POPAnimatableProperty {
@@ -382,11 +338,11 @@ class FormNode : ASDisplayNode {
                 
                 prop.readBlock = {
                     obj, values in
-                    values[0] = (obj as! FormNode).serverCheckStatusAnimationProgress
+                    values[0] = (obj as! LoginNode).serverCheckStatusAnimationProgress
                 }
                 prop.writeBlock = {
                     obj, values in
-                    (obj as! FormNode).serverCheckStatusAnimationProgress = values[0]
+                    (obj as! LoginNode).serverCheckStatusAnimationProgress = values[0]
                 }
                 prop.threshold = 0.01
             }) as! POPAnimatableProperty
@@ -416,279 +372,14 @@ class FormNode : ASDisplayNode {
     var serverCheckStatusAnimationProgress : CGFloat = 0 {
         didSet {
             let a = POPTransition(serverCheckStatusAnimationProgress, startValue: 1, endValue: 0)
-            self.buttonHolder.regularLoginButton.alpha = a
-            self.buttonHolder.twitterLoginButton.alpha = a
-            self.buttonHolder.facebookLoginButton.alpha = a
-            self.buttonHolder.seperatorNode.alpha = a
+//            self.buttonHolder.regularLoginButton.alpha = a
+            
+//            print("server check shit", serverCheckStatusAnimationProgress)
+            self.buttonHolder.alpha = a
             self.formSwitcher.alpha = a
+            self.legal.alpha = a
             
             self.spinnerNode.alpha = 1-a
-        }
-    }
-    var closeButtonY : CGFloat {
-        get {
-            let screenSize = UIScreen.mainScreen().bounds.size
-            if screenSize.height < 600 {
-                return 0
-            } else {
-                return 10
-            }
-        }
-    }
-    var buttonHolderAlpha : CGFloat = 0
-    var formSwitcherAlpha : CGFloat = 0
-    
-    var formDisplayAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("scaleAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! FormNode).fullDisplayProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! FormNode).fullDisplayProgress = values[0]
-                }
-                prop.threshold = 0.01
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var formDisplayAnimation : POPSpringAnimation {
-        get {
-            if let anim = self.pop_animationForKey("scaleAnimation") {
-                return anim as! POPSpringAnimation
-            } else {
-                let x = POPSpringAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    self.pop_removeAnimationForKey("scaleAnimation")
-                }
-                x.springSpeed = 10
-                x.springBounciness = 0
-                x.property = self.formDisplayAnimatableProperty
-                self.pop_addAnimation(x, forKey: "scaleAnimation")
-                return x
-            }
-        }
-    }
-    var fullDisplayProgress : CGFloat = -1 {
-        didSet {
-            let positionY = POPTransition(fullDisplayProgress, startValue: self.calculatedSize.height, endValue: self.calculatedSize.height / 2)
-           
-            buttonHolderAlpha = max(0,min(1,POPTransition(fullDisplayProgress, startValue: 1, endValue: 0)))
-            
-            let closeButtonAlpha = POPTransition(fullDisplayProgress, startValue: 0, endValue: 1)
-            let tbyMax = self.calculatedSize.height - (self.formSwitcher.frame.height / 2) - 10
-            let tbyMin = self.calculatedSize.height / 2 - (self.formSwitcher.frame.height / 2) - 10
-            let textButtonY = POPTransition(fullDisplayProgress, startValue: tbyMin, endValue: tbyMax)
-            
-            self.position = CGPoint(x: self.position.x, y: positionY)
-            self.buttonHolder.alpha = buttonHolderAlpha
-            self.closeFormButton.alpha = closeButtonAlpha
-            self.formSwitcher.position.y = textButtonY
-        }
-    }
-    
-        override init() {
-        super.init()
-        
-        self.buttonHolder = ButtonHolder()
-        
-        self.closeFormButton = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
-        self.closeFormButton.minScale = 0.85
-        self.closeFormButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(44, 44))
-        self.closeFormButton.imageNode.preferredFrameSize = CGSizeMake(15, 15)
-        self.closeFormButton.imageNode.contentMode = .Center
-        self.closeFormButton.alpha = 0
-        self.closeFormButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASControlState.Normal)
-//        self.closeFormButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
-        
-        self.formHolder = LSFormNode()
-        
-        self.formSwitcher = FormSwitcherNode()
-        
-//        self.backgroundColor = UIColor.whiteColor()
-        
-        self.spinnerNode = SpinnerNode()
-        self.spinnerNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        self.spinnerNode.alpha = 0
-        
-        self.addSubnode(self.formHolder)
-        self.addSubnode(self.buttonHolder)
-        self.addSubnode(self.spinnerNode)
-        self.addSubnode(self.formSwitcher)
-        self.addSubnode(self.closeFormButton)
-    }
-    override func didLoad() {
-        super.didLoad()
-    }
-    
-    var formDisplayStatus : Bool! {
-        didSet {
-            if formDisplayStatus != oldValue {
-                print(formDisplayStatus)
-                print(self.formHolder)
-//                if !formDisplayStatus && self.formHolder.isFirstResponder() {
-//                    self.formHolder.resignFirstResponder()
-//                }
-                self.formDisplayAnimation.toValue = formDisplayStatus! ? 1 : 0
-            }
-        }
-    }
-    override func layoutDidFinish() {
-        super.layoutDidFinish()
-        let a = fullDisplayProgress
-        self.fullDisplayProgress = a
-    }
-    override func layout() {
-        super.layout()
-        let size = self.calculatedSize
-        
-        self.closeFormButton.position.x = size.width - self.closeFormButton.calculatedSize.width/2 - 10
-        self.closeFormButton.position.y += closeButtonY
-        
-        let x = self.calculatedSize.height / 2 - (self.formSwitcher.frame.height) - 15
-        self.buttonHolder.position = CGPoint(x: self.calculatedSize.width / 2, y: x/2)
-        self.spinnerNode.position = self.buttonHolder.position
-        self.formSwitcher.position.x = size.width / 2
-    }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let a = ASStaticLayoutSpec(children: [self.spinnerNode])
-        let b = ASOverlayLayoutSpec(child: self.buttonHolder, overlay: a)
-        let x = ASStaticLayoutSpec(children: [self.formHolder, b, self.closeFormButton, self.formSwitcher])
-        
-        return x
-    }
-}
-
-class BackgroundNode : ASDisplayNode {
-    var logoHolder : AnimatedLogoNode!
-    var titleNode : ASTextNode!
-    
-    override init() {
-        super.init()
-        
-        self.logoHolder = AnimatedLogoNode(barCount: 5)
-        
-        self.titleNode = ASTextNode()
-        self.titleNode.spacingBefore = 20
-        self.titleNode.attributedString = NSAttributedString(string: "synnc", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 48)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1), NSKernAttributeName : -0.2])
-        
-        self.addSubnode(self.logoHolder)
-        self.addSubnode(self.titleNode)
-    }
-    override func layout() {
-        super.layout()
-        self.logoHolder.position.x = self.calculatedSize.width - self.logoHolder.calculatedSize.width / 2
-        self.logoHolder.position.y = self.titleNode.position.y
-    }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.flexBasis = ASRelativeDimension(type: .Percent, value: 0.1)
-        
-        let bottomSpacer = ASLayoutSpec()
-        bottomSpacer.flexGrow = true
-        
-        self.logoHolder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
-        let c = ASStaticLayoutSpec(children: [self.logoHolder])
-        
-        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [spacer, titleNode, c, bottomSpacer])
-        
-        
-        return x
-    }
-}
-
-class LoginNode : ASDisplayNode {
-    
-    var formNode : FormNode!
-    var backgroundNode : BackgroundNode!
-    
-    deinit {
-//        print("deinit login node")
-    }
-    
-        override init() {
-        super.init()
-        
-        self.backgroundNode = BackgroundNode()
-        self.backgroundNode.backgroundColor = UIColor.clearColor()
-      
-        self.formNode = FormNode()
-//        self.formNode.backgroundColor = UIColor.whiteColor()
-        self.formNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        
-        self.addSubnode(backgroundNode)
-        self.addSubnode(formNode)
-        backgroundColor = UIColor.clearColor()
-    }
-
-    override func layout() {
-        super.layout()
-    }
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.flexGrow = true
-        let a = ASStaticLayoutSpec(children: [formNode])
-        let x = ASBackgroundLayoutSpec(child: a, background: backgroundNode)
-        return x
-    }
-    
-    var displayAnimatableProperty : POPAnimatableProperty {
-        get {
-            let x = POPAnimatableProperty.propertyWithName("scaleAnimationProperty", initializer: {
-                
-                prop in
-                
-                prop.readBlock = {
-                    obj, values in
-                    values[0] = (obj as! LoginNode).displayProgress
-                }
-                prop.writeBlock = {
-                    obj, values in
-                    (obj as! LoginNode).displayProgress = values[0]
-                }
-                prop.threshold = 0.01
-            }) as! POPAnimatableProperty
-            
-            return x
-        }
-    }
-    var displayAnimation : POPSpringAnimation {
-        get {
-            if let anim = self.pop_animationForKey("scaleAnimation") {
-                return anim as! POPSpringAnimation
-            } else {
-                let x = POPSpringAnimation()
-                x.completionBlock = {
-                    anim, finished in
-                    
-                    self.pop_removeAnimationForKey("scaleAnimation")
-                }
-                x.springBounciness = 0
-                x.property = self.displayAnimatableProperty
-                self.pop_addAnimation(x, forKey: "scaleAnimation")
-                return x
-            }
-        }
-    }
-    var displayProgress : CGFloat = 1 {
-        didSet {
-            let positionY = POPTransition(displayProgress, startValue: self.calculatedSize.height, endValue: 0)
-            POPLayerSetTranslationY(self.layer, positionY)
-            
-            let min = self.calculatedSize.width - self.backgroundNode.logoHolder.calculatedSize.width / 2
-            let max = self.calculatedSize.width + self.backgroundNode.logoHolder.calculatedSize.width / 2
-            
-            let x = POPTransition(displayProgress, startValue: min, endValue: max)
-            POPLayerSetTranslationX(self.backgroundNode.logoHolder.layer, x)
-            self.backgroundNode.logoHolder.alpha = displayProgress
         }
     }
 }

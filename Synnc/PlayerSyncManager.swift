@@ -23,6 +23,7 @@ class WildPlayerSyncManager {
     var timestamp : StreamTimeStamp! {
         didSet {
             if timestamp != oldValue {
+                print("updated timestamp")
                 if !player.stream!.isUserStream {
                     self.handleTimeStampChange(timestamp)
                 }
@@ -47,6 +48,9 @@ class WildPlayerSyncManager {
                 let timestamp = StreamTimeStamp()
                 timestamp.stream_id = player.stream!.o_id
                 timestamp.player_time = CMTimeGetSeconds(time)
+                
+                print("playerTime", timestamp.player_time)
+                
                 timestamp.timeStamp = NSDate.networkDate().timeIntervalSince1970
                 
                 
@@ -61,6 +65,7 @@ class WildPlayerSyncManager {
             if (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
                 return
             } else {
+//                print("check time sync")
                 self.checkTimeSync()
             }
         }
@@ -105,7 +110,7 @@ extension WildPlayerSyncManager {
         
         if let item = self.player.currentItem where !self.player.isPlaying && self.player.readyToPlay {
             
-//            print("nope")
+            print("nope")
             
             self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime+5), item.asset.duration.timescale), completionHandler: {
                 
@@ -139,6 +144,8 @@ extension WildPlayerSyncManager {
                 self.player.isSyncing = false
             
             }
+        } else {
+            print("!81*!*!*!*!**!*!*!*!*!*!**!")
         }
     }
 }

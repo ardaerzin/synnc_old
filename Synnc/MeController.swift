@@ -12,9 +12,7 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
 import WCLUserManager
-import DeviceKit
 import DKImagePickerController
 import Cloudinary
 import WCLNotificationManager
@@ -324,7 +322,7 @@ extension MeController : ParallaxNodeDelegate {
             return (image: img, viewMode: nil)
         } else {
             if let provider = Synnc.sharedInstance.user.provider, let type = WCLUserLoginType(rawValue: provider), let url = Synnc.sharedInstance.user.avatarURL(type, frame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width), scale: UIScreen.mainScreen().scale) {
-                return (image: url, viewMode: nil)
+                return (image: url, viewMode: UIViewContentMode.ScaleAspectFill)
             }
         }
         return (image: nil, viewMode: nil)

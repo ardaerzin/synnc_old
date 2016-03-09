@@ -12,7 +12,6 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
 import WCLUserManager
 
 class TabSubsectionController : ASViewController {

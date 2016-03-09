@@ -247,7 +247,7 @@ extension PlaylistController : ASTableViewDelegate {
 
 extension PlaylistController : ParallaxNodeDelegate {
     func imageForBackground() -> (image: AnyObject?, viewMode: UIViewContentMode?) {
-        if self.editedImage == nil {
+        if self.editedImage == nil && self.playlist.coverImage == nil {
             
             if let str = self.playlist.cover_id where str != "" {
                 let transformation = CLTransformation()
@@ -256,13 +256,22 @@ extension PlaylistController : ParallaxNodeDelegate {
                 transformation.height = self.view.frame.width * UIScreen.mainScreen().scale
                 transformation.crop = "fill"
                 
+                print("image shit", self.view.frame.width)
+                
                 if let x = _cloudinary.url(str, options: ["transformation" : transformation]), let url = NSURL(string: x) {
                     return (image: url, viewMode: nil)
                 }
             }
+            print("return a")
             return (image: self.playlist.coverImage, viewMode: .Center)
         } else {
-            return (image: self.editedImage, viewMode: nil)
+            var image : UIImage!
+            if let img = self.editedImage {
+                image = img
+            } else if let img = self.playlist.coverImage {
+                image = img
+            }
+            return (image: image, viewMode: UIViewContentMode.ScaleAspectFill)
         }
     }
     func gradientImageName() -> String? {

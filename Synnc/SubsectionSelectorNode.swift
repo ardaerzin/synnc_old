@@ -14,7 +14,6 @@ import AsyncDisplayKit
 import pop
 import SpinKit
 import WCLUserManager
-import DeviceKit
 
 protocol SubsectionSelectorDelegate {
     func willSelectSubsection(subsectionIndex: Int)

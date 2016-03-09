@@ -11,7 +11,6 @@ import FBSDKCoreKit
 import SocketIOClientSwift
 import TwitterKit
 import Fabric
-import DeviceKit
 import WCLSoundCloudKit
 import WCLDataManager
 import Cloudinary
@@ -21,10 +20,8 @@ import CoreLocation
 import WCLPopupManager
 import AsyncDisplayKit
 import WCLUserManager
-//import Appsee
 import WCLNotificationManager
 import Crashlytics
-//import AppAnalytics
 
 #if DEBUG
 let serverURLString = "https://digital-reform.codio.io:9500"
@@ -66,7 +63,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
     var imageUploader : CLUploader!
     var user : MainUser!
     var socket: SocketIOClient!
-    var device = Device()
     var window: UIWindow?
     var rootVC : RootViewController!
     

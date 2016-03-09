@@ -24,7 +24,7 @@ class MainUser : WCLUser {
     convenience init(socket: SocketIOClient) {
         self.init(alternatives: [
             .Facebook : [.withSession, .authServer],
-//            .Twitter : [.withSession, .authServer],
+            .Twitter : [.withSession, .authServer],
 //            .Spotify : [.withSession],
             .Soundcloud : [.withSession]
         ])

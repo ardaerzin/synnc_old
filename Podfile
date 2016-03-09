@@ -26,11 +26,8 @@ pod 'TwitterKit'
 pod 'TwitterCore'
 pod 'Crashlytics'
 
-pod 'DeviceKit', '0.3.0'
 pod 'DKImagePickerController'
 pod 'BFPaperCheckbox'
 pod 'Shimmer'
-
-pod 'Appsee'
 
 end
