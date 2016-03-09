@@ -48,18 +48,18 @@ class InitialViewController : WCLPopupViewController {
         self.screenNode.loginNode = loginController.node as! LoginNode
         self.screenNode.onboardingNode = onboardingController.node as! OnboardingVCNode
         
-//        if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
-//            state = .Login
-//            self.screenNode.addSubnode(self.screenNode.loginNode)
-//            print("already seen onboarding")
-//        } else {
-//            state = .Onboarding
-//            self.screenNode.addSubnode(self.screenNode.onboardingNode)
-//            print("not seen onboarding")
-//        }
+        if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
+            state = .Login
+            self.screenNode.addSubnode(self.screenNode.loginNode)
+            print("already seen onboarding")
+        } else {
+            state = .Onboarding
+            self.screenNode.addSubnode(self.screenNode.onboardingNode)
+            print("not seen onboarding")
+        }
         
-        state = .Login
-        self.screenNode.addSubnode(self.screenNode.loginNode)
+//        state = .Login
+//        self.screenNode.addSubnode(self.screenNode.loginNode)
         
         self.screenNode.state = self.state
     }

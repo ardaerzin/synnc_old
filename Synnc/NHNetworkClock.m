@@ -89,7 +89,7 @@
     
     if (usefulCount > 0) {
         timeInterval = timeInterval / usefulCount;
-        NSLog(@"*!*!*!*!* calculated time interval: %f", timeInterval);
+//        NSLog(@"*!*!*!*!* calculated time interval: %f", timeInterval);
     }
     else {
         if(self.shouldUseSavedSynchronizedTime) {

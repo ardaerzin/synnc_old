@@ -30,7 +30,6 @@
 		470F8C151C49B20700624F0F /* StopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C141C49B20700624F0F /* StopController.swift */; };
 		470F8C171C49B20D00624F0F /* StopControllerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C161C49B20D00624F0F /* StopControllerNode.swift */; };
 		4712B62D1C0F58E100C49522 /* ASMaterialTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */; };
-		4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6301C0F594700C49522 /* JJMaterialTextfield.m */; };
 		4712B6331C0FAA3B00C49522 /* LoginButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */; };
 		4712B6391C10780200C49522 /* LSFormNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B6381C10780200C49522 /* LSFormNode.swift */; };
 		4712B63B1C11149800C49522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63A1C11149800C49522 /* Utilities.swift */; };
@@ -310,6 +309,8 @@
 		478921CF1C8A0479008BDA96 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921CE1C8A0479008BDA96 /* SystemConfiguration.framework */; };
 		478921D01C8A04DD008BDA96 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921CA1C8A01CB008BDA96 /* libc++.tbd */; };
 		478921D11C8A04E7008BDA96 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921C81C8A01C2008BDA96 /* libz.tbd */; };
+		478921D61C8CD2CD008BDA96 /* LoginSeperatorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478921D51C8CD2CD008BDA96 /* LoginSeperatorNode.swift */; };
+		478921D81C8CD35E008BDA96 /* FormSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478921D71C8CD35E008BDA96 /* FormSwitcher.swift */; };
 		47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* Synnc.swift */; };
 		47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6831C0CAE6100354EA8 /* Assets.xcassets */; };
 		47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */; };
@@ -390,6 +391,8 @@
 		47C8F9A01C243BC900333492 /* PlaylistCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8F99F1C243BC900333492 /* PlaylistCellNode.swift */; };
 		47C8F9A31C24523500333492 /* SynncImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8F9A21C24523500333492 /* SynncImagePicker.swift */; };
 		47C8F9A51C261AE400333492 /* PlaylistTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8F9A41C261AE400333492 /* PlaylistTableCell.swift */; };
+		47D1A6941C8CF42100B73E68 /* LoginBrandNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D1A6931C8CF42100B73E68 /* LoginBrandNode.swift */; };
+		47D1A6961C8DD47B00B73E68 /* LoginButtonHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D1A6951C8DD47B00B73E68 /* LoginButtonHolder.swift */; };
 		47D7636A1C38A385008E0334 /* StreamCreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D763691C38A385008E0334 /* StreamCreateController.swift */; };
 		47D7636E1C38B55F008E0334 /* StreamBackgroundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D7636D1C38B55F008E0334 /* StreamBackgroundNode.swift */; };
 		47D763701C39FEBF008E0334 /* StreamLoadingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D7636F1C39FEBF008E0334 /* StreamLoadingNode.swift */; };
@@ -466,8 +469,6 @@
 		470F8C161C49B20D00624F0F /* StopControllerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StopControllerNode.swift; sourceTree = "<group>"; };
 		4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASMaterialTextField.swift; sourceTree = "<group>"; };
 		4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Synnc-Bridging-Header.h"; sourceTree = "<group>"; };
-		4712B62F1C0F594700C49522 /* JJMaterialTextfield.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJMaterialTextfield.h; sourceTree = "<group>"; };
-		4712B6301C0F594700C49522 /* JJMaterialTextfield.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJMaterialTextfield.m; sourceTree = "<group>"; };
 		4712B6321C0FAA3B00C49522 /* LoginButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginButtonNode.swift; sourceTree = "<group>"; };
 		4712B6381C10780200C49522 /* LSFormNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSFormNode.swift; sourceTree = "<group>"; };
 		4712B63A1C11149800C49522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -754,6 +755,8 @@
 		478921CA1C8A01CB008BDA96 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		478921CC1C8A0472008BDA96 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		478921CE1C8A0479008BDA96 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		478921D51C8CD2CD008BDA96 /* LoginSeperatorNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginSeperatorNode.swift; sourceTree = "<group>"; };
+		478921D71C8CD35E008BDA96 /* FormSwitcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormSwitcher.swift; sourceTree = "<group>"; };
 		47A4E6791C0CAE6100354EA8 /* Synnc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synnc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A4E67C1C0CAE6100354EA8 /* Synnc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Synnc.swift; sourceTree = "<group>"; };
 		47A4E6831C0CAE6100354EA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -840,6 +843,8 @@
 		47C8F99F1C243BC900333492 /* PlaylistCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistCellNode.swift; sourceTree = "<group>"; };
 		47C8F9A21C24523500333492 /* SynncImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncImagePicker.swift; sourceTree = "<group>"; };
 		47C8F9A41C261AE400333492 /* PlaylistTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistTableCell.swift; sourceTree = "<group>"; };
+		47D1A6931C8CF42100B73E68 /* LoginBrandNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginBrandNode.swift; sourceTree = "<group>"; };
+		47D1A6951C8DD47B00B73E68 /* LoginButtonHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginButtonHolder.swift; sourceTree = "<group>"; };
 		47D763691C38A385008E0334 /* StreamCreateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamCreateController.swift; sourceTree = "<group>"; };
 		47D7636D1C38B55F008E0334 /* StreamBackgroundNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamBackgroundNode.swift; sourceTree = "<group>"; };
 		47D7636F1C39FEBF008E0334 /* StreamLoadingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamLoadingNode.swift; sourceTree = "<group>"; };
@@ -970,8 +975,6 @@
 			isa = PBXGroup;
 			children = (
 				4712B62C1C0F58E100C49522 /* ASMaterialTextField.swift */,
-				4712B62F1C0F594700C49522 /* JJMaterialTextfield.h */,
-				4712B6301C0F594700C49522 /* JJMaterialTextfield.m */,
 			);
 			name = MaterialTextField;
 			sourceTree = "<group>";
@@ -1395,6 +1398,19 @@
 			name = StreamsFeed;
 			sourceTree = "<group>";
 		};
+		478921D41C8CD2A7008BDA96 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
+				478921D51C8CD2CD008BDA96 /* LoginSeperatorNode.swift */,
+				478921D71C8CD35E008BDA96 /* FormSwitcher.swift */,
+				47D1A6931C8CF42100B73E68 /* LoginBrandNode.swift */,
+				47D1A6951C8DD47B00B73E68 /* LoginButtonHolder.swift */,
+				4712B6381C10780200C49522 /* LSFormNode.swift */,
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
 		47A4E6701C0CAE6100354EA8 = {
 			isa = PBXGroup;
 			children = (
@@ -1498,8 +1514,7 @@
 			isa = PBXGroup;
 			children = (
 				47A4E6B21C0CB69700354EA8 /* LoginViewController.swift */,
-				47A4E6B41C0CB6D100354EA8 /* LoginNode.swift */,
-				4712B6381C10780200C49522 /* LSFormNode.swift */,
+				478921D41C8CD2A7008BDA96 /* Nodes */,
 			);
 			name = LoginViewController;
 			sourceTree = "<group>";
@@ -1898,13 +1913,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 47A4E6A11C0CAE6200354EA8 /* Build configuration list for PBXNativeTarget "Synnc" */;
 			buildPhases = (
-				7E02A84A70DA3121AFC19BC2 /* Check Pods Manifest.lock */,
+				7E02A84A70DA3121AFC19BC2 /* 📦 Check Pods Manifest.lock */,
 				47A4E6751C0CAE6100354EA8 /* Sources */,
 				47A4E6761C0CAE6100354EA8 /* Frameworks */,
 				47A4E6771C0CAE6100354EA8 /* Resources */,
 				4712B6411C1327B000C49522 /* ShellScript */,
-				DF20952D340609F7E7E88064 /* Embed Pods Frameworks */,
-				BE486E95C5748E546D3E33BC /* Copy Pods Resources */,
+				DF20952D340609F7E7E88064 /* 📦 Embed Pods Frameworks */,
+				BE486E95C5748E546D3E33BC /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2316,14 +2331,14 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" 47f502ee49ade8a26f22e7aca8e384f1495bd755 a7fa59fe01bc4316f5c3cc278964657dc27cbb733c55df31ee0fb213869f1cce";
 		};
-		7E02A84A70DA3121AFC19BC2 /* Check Pods Manifest.lock */ = {
+		7E02A84A70DA3121AFC19BC2 /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2331,14 +2346,14 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		BE486E95C5748E546D3E33BC /* Copy Pods Resources */ = {
+		BE486E95C5748E546D3E33BC /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2346,14 +2361,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Synnc/Pods-Synnc-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DF20952D340609F7E7E88064 /* Embed Pods Frameworks */ = {
+		DF20952D340609F7E7E88064 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "📦 Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2405,6 +2420,7 @@
 				47D763801C3B06B4008E0334 /* GenrePickerController.swift in Sources */,
 				47EBDF761C1BBBAB0075CF0B /* InboxController.swift in Sources */,
 				471834361C1B3D6E005C9533 /* HomeController.swift in Sources */,
+				478921D81C8CD35E008BDA96 /* FormSwitcher.swift in Sources */,
 				477705291C3EB628007089D0 /* StreamsFeedNode.swift in Sources */,
 				4728F94C1C34A2BA00B427EA /* MeContentNode.swift in Sources */,
 				47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */,
@@ -2416,6 +2432,7 @@
 				4728F9421C3199E200B427EA /* PopController.swift in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
 				47B808431C7DDB5200312C96 /* ChatItem.swift in Sources */,
+				47D1A6961C8DD47B00B73E68 /* LoginButtonHolder.swift in Sources */,
 				4712B63B1C11149800C49522 /* Utilities.swift in Sources */,
 				470F8C0B1C48A5E200624F0F /* StreamBackgroundInfoNode.swift in Sources */,
 				47B8083C1C7D35B500312C96 /* SourceLoginButtonNode.swift in Sources */,
@@ -2436,15 +2453,16 @@
 				47EBDF7C1C1BBBD30075CF0B /* SearchUsersController.swift in Sources */,
 				470F8C0F1C4985AB00624F0F /* ShareController.swift in Sources */,
 				47EBDF9A1C1BE1470075CF0B /* SynncArtist.swift in Sources */,
-				4712B6311C0F594700C49522 /* JJMaterialTextfield.m in Sources */,
 				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
 				47D7636E1C38B55F008E0334 /* StreamBackgroundNode.swift in Sources */,
 				4740A5951C544A6300C767EE /* StreamEndPopupVC.swift in Sources */,
 				4740A5931C543E6F00C767EE /* NotificationRequestPopupVC.swift in Sources */,
+				47D1A6941C8CF42100B73E68 /* LoginBrandNode.swift in Sources */,
 				475286D91C35989400731008 /* Stream.swift in Sources */,
 				47EBDF821C1BBBF50075CF0B /* RecommendedFeedController.swift in Sources */,
 				47B37B7E1C2F150A001CC6D2 /* ParallaxNode.swift in Sources */,
 				47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */,
+				478921D61C8CD2CD008BDA96 /* LoginSeperatorNode.swift in Sources */,
 				47EBDFA61C1C8A110075CF0B /* SynncArtist+Spotify.swift in Sources */,
 				470F8C111C4985DD00624F0F /* ShareNode.swift in Sources */,
 				47C8F9A51C261AE400333492 /* PlaylistTableCell.swift in Sources */,
@@ -2675,8 +2693,6 @@
 					"-framework",
 					"\"DKImagePickerController\"",
 					"-framework",
-					"\"DeviceKit\"",
-					"-framework",
 					"\"Dollar\"",
 					"-framework",
 					"\"Fabric\"",
@@ -2783,8 +2799,6 @@
 					"\"CoreText\"",
 					"-framework",
 					"\"DKImagePickerController\"",
-					"-framework",
-					"\"DeviceKit\"",
 					"-framework",
 					"\"Dollar\"",
 					"-framework",

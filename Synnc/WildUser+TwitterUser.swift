@@ -90,12 +90,24 @@ class WildTwitterUser : WCLUserExtension {
         var url : String? = "http://icons.iconarchive.com/icons/pelfusion/long-shadow-media/128/Contact-icon.png"
         
         if let ui = self.profileInfo as? TWTRUser {
-            if let largeUrl = ui.profileImageLargeURL {
+            if let largeUrl = ui.profileImageURL {
                 url = largeUrl
-            } else if let smallUrl = ui.profileImageURL {
-                url = smallUrl
             }
+            
+            if frame.width <= 15 {
+                url = url?.stringByReplacingOccurrencesOfString("_normal", withString: "_mini")
+            } else if frame.width <= 24 {
+                
+            } else if frame.width <= 35 {
+                url = url?.stringByReplacingOccurrencesOfString("_normal", withString: "_bigger")
+            } else {
+                url = url?.stringByReplacingOccurrencesOfString("_normal", withString: "")
+            }
+//            else if let smallUrl = ui.profileImageURL {
+//                url = smallUrl
+//            }
         }
+        print("twitter url", url)
         return url == nil ? nil : NSURL(string: url!)
     }
     
@@ -125,9 +137,12 @@ class WildTwitterUser : WCLUserExtension {
     //Mark: Login
     private func loginWithTwitter(){
         
-        Twitter.sharedInstance().logInWithViewController(nil) { (session, error) -> Void in
+        Twitter.sharedInstance().logInWithCompletion { (session, error) -> Void in
             self.loadTwitterSession()
         }
+//        Twitter.sharedInstance().logInWithViewController(nil) { (session, error) -> Void in
+//            self.loadTwitterSession()
+//        }
     }
     
     //Mark: Logout

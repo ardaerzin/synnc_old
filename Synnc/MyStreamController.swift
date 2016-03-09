@@ -12,9 +12,7 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
 import WCLUserManager
-import DeviceKit
 
 class MyStreamController : TabItemController {
     override var identifier : String! {

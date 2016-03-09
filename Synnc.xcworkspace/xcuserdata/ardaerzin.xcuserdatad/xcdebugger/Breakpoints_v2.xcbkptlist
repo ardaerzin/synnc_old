@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/TabSubsectionController.swift"
-            timestampString = "477788997.095112"
+            timestampString = "479249161.434692"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/Stream.swift"
-            timestampString = "478737376.986067"
+            timestampString = "479253966.051625"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
             landmarkName = "fromJSON(_:callback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -73,13 +73,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Synnc/RootViewController.swift"
-            timestampString = "478712450.796619"
+            filePath = "Pods/WCLUserManager/Pod/Classes/Core/WildUser+Socket.swift"
+            timestampString = "479161103.776483"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
-            landmarkName = "dismissLoginController()"
+            startingLineNumber = "229"
+            endingLineNumber = "229"
+            landmarkName = "onDisconnect(forExtensions:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

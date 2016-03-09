@@ -10,7 +10,6 @@ import Foundation
 import AsyncDisplayKit
 import AsyncDisplayKit.ASDisplayNode_Subclasses
 import pop
-import SpinKit
 import WCLUIKit
 
 class TitleColorButton : ButtonNode {

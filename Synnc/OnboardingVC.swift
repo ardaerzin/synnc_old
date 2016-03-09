@@ -47,6 +47,7 @@ class OnboardingVC : ASViewController {
     func proceedToLogin(sender : ButtonNode) {
         if let ivc = self.parentViewController as? InitialViewController {
             ivc.state = .Login
+            WildDataManager.sharedInstance().updateUserDefaultsValue("seenOnboarding", value: true)
         }
     }
     func didSelectPageControl(sender: UIPageControl) {

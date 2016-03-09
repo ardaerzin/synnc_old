@@ -239,6 +239,7 @@ extension StreamManager {
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
+            print("updated timestamp")
             self.player.syncManager.timestamp = stream.timestamp
         }
         

@@ -12,9 +12,6 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
-import SpinKit
-import WCLUserManager
-import DeviceKit
 
 class ImportPlaylistsController : TabSubsectionController {
     override var _title : String! {
