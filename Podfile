@@ -30,4 +30,6 @@ pod 'DKImagePickerController'
 pod 'BFPaperCheckbox'
 pod 'Shimmer'
 
+pod 'GoogleAnalytics'
+
 end

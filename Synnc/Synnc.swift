@@ -84,6 +84,13 @@ class Synnc : UIResponder, UIApplicationDelegate {
     override init() {
         super.init()
         
+        var gai = GAI.sharedInstance()
+        let tracker = gai.trackerWithName("SynncTracker", trackingId: "UA-65806539-3")
+        //            trackerWithTrackingId("UA-65806539-3")
+        //            .sharedInstance()
+        gai.trackUncaughtExceptions = true  // report uncaught exceptions
+        gai.logger.logLevel = GAILogLevel.Info  // remove before app release
+        
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Answers(), Crashlytics.sharedInstance(), Twitter.sharedInstance()])
         
@@ -141,6 +148,14 @@ class Synnc : UIResponder, UIApplicationDelegate {
 ////            let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
 ////            print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
 //        })
+        
+        // Configure tracker from GoogleService-Info.plist.
+//        var configureError:NSError?
+//        GGLContext.sharedInstance().configureWithError(&configureError)
+//        assert(configureError == nil, "Error configuring Google services: \(configureError)")
+//        
+        // Optional: configure GAI options.
+        
         
         return true
     }

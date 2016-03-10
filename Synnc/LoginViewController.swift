@@ -33,6 +33,9 @@ class LoginViewController : ASViewController {
         let node = LoginNode()
         super.init(node: node)
         
+//        Gai.share
+        
+        
         node.buttonHolder.facebookLoginButton.addTarget(self, action: Selector("loginWithFacebook:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.buttonHolder.twitterLoginButton.addTarget(self, action: Selector("loginWithTwitter:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
 //        node.buttonHolder.actionButton.addTarget(self, action: Selector("displaySignupForm:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
@@ -69,6 +72,9 @@ class LoginViewController : ASViewController {
         }
         self.user.delegate = self
         self.parentViewController?.prefersStatusBarHidden()
+    
+        GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: "LoginScreen")
+        GAI.sharedInstance().defaultTracker.send(GAIDictionaryBuilder.createScreenView().build() as [NSObject : AnyObject])
     }
     
     required init?(coder aDecoder: NSCoder) {
