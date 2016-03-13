@@ -34,10 +34,10 @@ class StreamPlayer : WildPlayer {
     }
     
     func audioRouteChanged(notification: NSNotification) {
-        if let _ = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] {
+        if let reason = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] {
             
             if let st = self.stream where st.status {
-                
+                AnalyticsEvent.new(category: "StreamPlayer", action: "audioRouteChanged", label: "\(reason)", value: nil)
                 if self.rate == 0 {
                     self.play()
                 
@@ -186,6 +186,8 @@ class StreamPlayer : WildPlayer {
         
         self.syncManager.needsUpdate = true
         updateControlCenterItem()
+        
+        AnalyticsEvent.new(category: "StreamPlayer", action: "itemChanged", label: nil, value: nil)
     }
     override func playerRateChanged() {
         super.playerRateChanged()

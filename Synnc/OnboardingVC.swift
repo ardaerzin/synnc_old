@@ -20,6 +20,7 @@ struct OnboardingItem {
 class OnboardingVC : ASViewController {
 //    var node : OnboardingVCNode!
   
+    var currentIndex : Int = 0
     var pages : [OnboardingItem] = [
         OnboardingItem(title: "Onboarding 1", mainText: "wadap"),
         OnboardingItem(title: "Onboarding 2", mainText: "wadap"),
@@ -48,6 +49,8 @@ class OnboardingVC : ASViewController {
         if let ivc = self.parentViewController as? InitialViewController {
             ivc.state = .Login
             WildDataManager.sharedInstance().updateUserDefaultsValue("seenOnboarding", value: true)
+            
+            AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Get Started", value: nil)
         }
     }
     func didSelectPageControl(sender: UIPageControl) {
@@ -55,6 +58,7 @@ class OnboardingVC : ASViewController {
         let ind = sender.currentPage
         
         if ind >= 0 && ind < self.pages.count {
+            AnalyticsEvent.new(category : "ui_action", action: "pager_tap", label: "onboardingPager", value: nil)
             (node as! OnboardingVCNode).pager.scrollToPageAtIndex(ind, animated: true)
         }
     }
@@ -63,11 +67,22 @@ class OnboardingVC : ASViewController {
 extension OnboardingVC : ASCollectionDelegate {
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let cp = Int(scrollView.contentOffset.x / scrollView.frame.width)
+        
+        let a = (node as! OnboardingVCNode).pageControl.currentPage
+        
+        AnalyticsEvent.new(category : "ui_action", action: "pan", label: "onboarding", value: nil)
+        
         (node as! OnboardingVCNode).pageControl.currentPage = cp
+        currentIndex = cp
         (node as! OnboardingVCNode).pageControl.updateCurrentPageDisplay()
     }
     func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        
+        let cp = Int(scrollView.contentOffset.x / scrollView.frame.width)
+        currentIndex = cp
+        
         (node as! OnboardingVCNode).pageControl.updateCurrentPageDisplay()
+        
     }
 }
 extension OnboardingVC : ASPagerNodeDataSource {
@@ -89,7 +104,9 @@ extension OnboardingVC : ASPagerNodeDataSource {
 }
 
 
-class OnboardingVCNode : ASDisplayNode {
+class OnboardingVCNode : ASDisplayNode, TrackedView {
+    
+    var title : String! = "OnboardingView"
     
     var displayAnimationProgress : CGFloat = 1 {
         didSet {

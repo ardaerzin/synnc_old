@@ -14,8 +14,9 @@ import AsyncDisplayKit
 import pop
 import WCLUserManager
 
-class MyPlaylistsNode : ASCellNode {
+class MyPlaylistsNode : ASDisplayNode, TrackedView {
     
+    var title : String! = "MyPlaylists"
     var collectionNode : ASCollectionNode!
     var emptyStateNode : MyPlaylistsEmptyStateNode!
     

@@ -47,15 +47,7 @@ class ButtonHolder : ASDisplayNode {
             
             let diff = keyboardTop - (actionButtonCenter + translationY)
             
-            if diff < 0 {
-                print("keyboard diff", diff)
-            }
-            
             maxTranslationY = diff
-            print(diff)
-            
-//            print("button shit", actionButtonCenter, keyboardTop)
-            
             self.keyboardStateAnimation.toValue = keyboardState.state.rawValue
         }
     }
@@ -66,8 +58,6 @@ class ButtonHolder : ASDisplayNode {
             self.seperatorNode.alpha = alpha
             self.facebookLoginButton.alpha = alpha
             self.twitterLoginButton.alpha = alpha
-            
-            print(keyboardStateProgress)
             
             let ty = POPTransition(keyboardStateProgress, startValue: 0, endValue: maxTranslationY)
             POPLayerSetTranslationY(self.layer, ty)

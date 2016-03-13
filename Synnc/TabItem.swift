@@ -40,6 +40,14 @@ class TabNavigationController : UINavigationController, UINavigationControllerDe
     }
     func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
+        print("TO VC", toVC)
+        
+        if let tic = toVC as? TabItemController {
+            tic.didBecomeActiveTab()
+        } else if let avc = toVC as? ASViewController, let tv = avc.node as? TrackedView {
+            AnalyticsScreen.new(node: tv)
+        }
+        
         switch operation {
         case .Push:
             if let vc = toVC as? WildAnimated {
@@ -119,9 +127,18 @@ class TabItemController : ASViewController, TabItem {
             return nil
         }
     }
-    final var selectedIndex : Int = 0
+    var selectedIndex : Int = 0
     var titleAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 30)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.15]
     var screenNode : ASDisplayNode!
+    
+    var isActive : Bool!
+        {
+        didSet {
+            if let x = isActive where x {
+                self.didBecomeActiveTab()
+            }
+        }
+    }
     
     init(){
         let a = NavigationHolderNode()
@@ -145,12 +162,17 @@ class TabItemController : ASViewController, TabItem {
         super.willMoveToParentViewController(parent)
         if parent != nil {
             if let nn = self.screenNode as? NavigationHolderNode {
+                nn.scrollNode.identifier = self.identifier
                 nn.scrollNode.scrollerDelegate = self
                 nn.scrollNode.setDataSource(self)
                 nn.headerNode.updateForItem(self)
                 nn.scrollNode.updateForItem(self, controller : self)
             }
         }
+    }
+    
+    func didBecomeActiveTab(){
+        trackViews()
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -167,7 +189,7 @@ extension TabItemController : ASPagerNodeDataSource {
         return {
             return ASCellNode(viewControllerBlock: { () -> UIViewController in
                 
-                var controller = self.subsections[index]
+                let controller = self.subsections[index]
                 if self.childViewControllers.indexOf(controller) == nil {
                     self.addChildViewController(controller)
                 }
@@ -190,8 +212,21 @@ extension TabItemController : TabbarContentScrollerDelegate {
             }
         }
     }
+    func trackViews(){
+        
+        if let s = self.isActive where s {
+            if self.subsections.count > self.selectedIndex {
+                let x = self.subsections[self.selectedIndex]
+                AnalyticsScreen.new(node: x.screenNode as! TrackedView)
+            } else if let ss = self.screenNode as? TrackedView {
+                AnalyticsScreen.new(node: ss)
+            }
+            
+        }
+    }
     func didChangeCurrentIndex(index: Int) {
         self.selectedIndex = index
+        trackViews()
         if let nn = self.screenNode as? NavigationHolderNode {
             nn.headerNode.subSectionArea.selectedSubsectionIndex = index
         }

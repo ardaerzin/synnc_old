@@ -173,8 +173,6 @@ extension MeController : ASEditableTextNodeDelegate {
         return true
     }
     func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode) {
-        print("did begin editing")
-        
         if (self.screenNode as! MeNode).usernameBorder.calculatedSize == CGSizeZero {
             (self.screenNode as! MeNode).usernameBorder.setNeedsLayout()
             let size = (self.screenNode as! MeNode).ghostLabel.measure((self.screenNode as! MeNode).usernameNode.calculatedSize)
@@ -186,7 +184,6 @@ extension MeController : ASEditableTextNodeDelegate {
         (self.screenNode as! MeNode).displayUsernameBorder()
     }
     func editableTextNodeDidFinishEditing(editableTextNode: ASEditableTextNode) {
-        print("did finish editing")
         (self.screenNode as! MeNode).hideUsernameBorder()
     }
     func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode) {

@@ -121,6 +121,7 @@ class StreamCreateController : NSObject {
     }
     
     func genreSelector(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "genre", value: nil)
         let popup = GenrePicker(size: CGSizeMake(325, 400), genres : self.streamGenres)
         popup.delegate = self
         WCLPopupManager.sharedInstance.newPopup(popup)
@@ -133,6 +134,8 @@ class StreamCreateController : NSObject {
         imagePicker.maxSelectableCount = 1
         imagePicker.showsCancelButton = true
         
+        AnalyticsEvent.new(category: "StreamAction", action: "infoToggle", label: "image", value: nil)
+        
         imagePicker.didSelectAssets = {
             assets in
             if let img = assets.first {
@@ -144,6 +147,10 @@ class StreamCreateController : NSObject {
                         self.delegate?.updatedData()
                     }
                 }
+                
+                AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "image", value: nil)
+            } else {
+                AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "imageFail", value: nil)
             }
             
             if let parent = self.parentController as? StreamViewController {
@@ -155,6 +162,7 @@ class StreamCreateController : NSObject {
         }
     }
     func toggleLocation(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "StreamAction", action: "infoToggle", label: "location", value: nil)
         let managerStatus = WCLLocationManager.sharedInstance().locationMngrStatus
         switch managerStatus {
         case -1:
@@ -194,6 +202,7 @@ class StreamCreateController : NSObject {
     }
     
     func getAddress(){
+        AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "location", value: nil)
         let location = WCLLocationManager.sharedInstance().getCurrentLocation()
         WCLLocationManager.sharedInstance().gpsManager.reverseGeocodeLocationUsingGoogleWithCoordinates(location, callback: { (address, error) -> Void in
             if let ad = address {
@@ -206,6 +215,9 @@ class StreamCreateController : NSObject {
     }
 
     func createStreamAction(sender : ButtonNode) {
+        
+        AnalyticsEvent.new(category: "StreamAction", action: "Create", label: nil, value: nil)
+        
         if self.streamName == nil {
             self.backgroundNode.infoNode.streamTitle.becomeFirstResponder()
             return
@@ -258,7 +270,6 @@ class StreamCreateController : NSObject {
                 if let err = errorString {
                     if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
                         WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Please try to create your stream once again", title: "Couldn't Upload Stream Image", sound: nil, fireDate: nil, showLocalNotification: false, object: nil, id: nil))
-                        print(err)
                     }
                     self.backgroundNode.editing = true
                 } else {
@@ -336,6 +347,12 @@ extension StreamCreateController : GenrePickerDelegate {
     func pickedGenres(genres: [Genre]) {
         self.streamGenres = genres
         self.backgroundNode.updateGenres(genres)
+        
+        if genres.isEmpty {
+            AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "genresFail", value: nil)
+        } else {
+            AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "genres", value: nil)
+        }
     }
 }
 
@@ -372,6 +389,7 @@ extension StreamCreateController : ASEditableTextNodeDelegate {
             self.streamName = str
         }
         
+        AnalyticsEvent.new(category: "StreamAction", action: "infoEdit", label: "name", value: nil)
         return true
     }
 }

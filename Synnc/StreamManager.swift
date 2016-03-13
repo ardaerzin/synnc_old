@@ -233,13 +233,10 @@ extension StreamManager {
     }
     func updatedStreamFromServer(stream: Stream, changedKeys keys: [String]?) {
         
-//        print(keys)
-        
         let changedKeys = keys == nil ? [] : keys!
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
-            print("updated timestamp")
             self.player.syncManager.timestamp = stream.timestamp
         }
         
@@ -258,7 +255,7 @@ extension StreamManager {
                 status in
                 
                 if status {
-                    callback?(status: true)
+                    callback?(status: false)
                     
 //                    NSNotificationCenter.defaultCenter().postNotificationName("UpdatedFavPlaylist", object: nil, userInfo: nil)
                     
@@ -458,12 +455,6 @@ extension StreamManager {
                         
                         self.userFeed = $.union(self.userFeed, streams)
                         
-//                        if $.find(self.userFeed, callback: {$0 == newStream}) == nil {
-//                            print("append again")
-//                            self.userFeed.append(newStream)
-//                        }
-//                        let notification = NSNotification(name: "NewStream", object: newStream, userInfo: nil)
-//                        NSNotificationCenter.defaultCenter().postNotification(notification)
                     })
                     
                 }

@@ -215,8 +215,15 @@ class StreamNavigationController : UINavigationController {
     }
     
     var statusbarDisplay : Bool = true
+    var oldScreen : AnalyticsScreen!
+    
     func display(){
-        self.animation.completionBlock = nil
+        self.animation.completionBlock = {
+            anim, finished in
+            
+            self.oldScreen = AnalyticsManager.sharedInstance.screens.last
+            AnalyticsScreen.new(node: (self.viewControllers.last as! StreamViewController).screenNode)
+        }
         self.animation.toValue = 0
         
         if let rvc = self.rootViewController {
@@ -228,6 +235,7 @@ class StreamNavigationController : UINavigationController {
     func hide(){
         self.animation.completionBlock = {
             anim, finished in
+            AnalyticsManager.sharedInstance.newScreen(self.oldScreen)
             self.clearUserStreamController()
         }
         

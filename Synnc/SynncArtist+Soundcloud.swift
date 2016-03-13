@@ -27,7 +27,6 @@ extension SynncArtist {
     
     internal func parseSoundcloud(data : AnyObject?) {
         guard let d = data else {
-            print("soundcloud user data is nil")
             return
         }
         let json = JSON(d)

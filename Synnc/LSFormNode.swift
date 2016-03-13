@@ -53,7 +53,6 @@ class LSFormNode : ASDisplayNode {
     
     
     func didChangeState(state : LoginNodeState!) {
-        print("did change state", state)
         self.formStateAnimation.toValue = state.rawValue
     }
     

@@ -27,8 +27,8 @@ class LoginViewController : ASViewController {
         }
     }
     deinit {
-        //        print("deinit login view controller")
     }
+    
     init(){
         let node = LoginNode()
         super.init(node: node)
@@ -57,6 +57,8 @@ class LoginViewController : ASViewController {
             self.screenNode = nil
             self.loginCallback = nil
         }
+        
+        super.didMoveToParentViewController(parent)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,9 +74,6 @@ class LoginViewController : ASViewController {
         }
         self.user.delegate = self
         self.parentViewController?.prefersStatusBarHidden()
-    
-        GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: "LoginScreen")
-        GAI.sharedInstance().defaultTracker.send(GAIDictionaryBuilder.createScreenView().build() as [NSObject : AnyObject])
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -90,9 +89,11 @@ class LoginViewController : ASViewController {
 extension LoginViewController : ASTextNodeDelegate {
     func textNode(textNode: ASTextNode, tappedLinkAttribute attribute: String, value: AnyObject, atPoint point: CGPoint, textRange: NSRange) {
         if let url = value as? NSURL {
+            let a = (textNode.attributedString!.string as NSString).substringWithRange(textRange)
             let x = SFSafariViewController(URL: url)
             x.modalPresentationStyle = .OverCurrentContext
             self.presentViewController(x, animated: true, completion: nil)
+            AnalyticsEvent.new(category : "ui_action", action: "text_tap", label: a, value: nil)
         }
     }
 }
@@ -101,6 +102,7 @@ extension LoginViewController {
     
     func loginWithFacebook(sender : AnyObject){
         Synnc.sharedInstance.user.socialLogin(.Facebook)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "facebook_login", value: nil)
     }
     func displaySignupForm(sender : ASButtonNode) {
 //        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
@@ -109,8 +111,12 @@ extension LoginViewController {
 //        self.screenNode.formHolder.state = .Signup
     }
     func loginWithTwitter(sender : AnyObject){
-        self.screenNode.serverCheckStatusAnimation.toValue = 1
-        Synnc.sharedInstance.user.socialLogin(.Twitter)
+//        self.screenNode.serverCheckStatusAnimation.toValue = 1
+//        Synnc.sharedInstance.user.socialLogin(.Twitter)
+        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This login options is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+        }
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "twitter_login", value: nil)
     }
     
     func switchForm(sender : ASButtonNode){

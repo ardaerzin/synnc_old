@@ -92,13 +92,13 @@ class StreamViewController : ASViewController {
     var state : StreamVCState = .ReadyToPlay {
         didSet {
             if state != oldValue {
+                AnalyticsEvent.new(category: "Stream", action: "StateChange", label: "\(state.rawValue)", value: nil)
                 updatedState(state)
             }
         }
     }
     
     deinit {
-        print("deinit stream view controller")
     }
     
     init(stream : Stream?, playlist: SynncPlaylist? = nil){
@@ -137,7 +137,6 @@ class StreamViewController : ASViewController {
         
         
         self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hideAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        self.screenNode.editButton.addTarget(self, action: Selector("editStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.shareStreamButton.addTarget(self, action: Selector("shareStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.stopStreamButton.addTarget(self, action: Selector("stopStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
@@ -237,6 +236,7 @@ extension StreamViewController {
         if let nvc = self.navigationController as? StreamNavigationController {
             nvc.hide()
         }
+        AnalyticsEvent.new(category: "Stream", action: "Hide", label: nil, value: nil)
     }
     func toggleStreamStatus(sender : TitleColorButton){
         if sender.selected {
@@ -252,11 +252,10 @@ extension StreamViewController {
             }
         } else {
             self.state = .Syncing
+            AnalyticsEvent.new(category: "Stream", action: "join", label: nil, value: nil)
             StreamManager.sharedInstance.joinStream(self.stream!) {
                 success in
                 if success {
-                    print("JOINED")
-                    print("!*!*!*!*!**!*!*!*!*!*!*!*!*!**!")
                     //                StreamManager.sharedInstance.player.delegate = self
                 }
             }
@@ -265,6 +264,7 @@ extension StreamViewController {
     
     func stopStream(sender : ButtonNode) {
         sender.selected = !sender.selected
+        AnalyticsEvent.new(category: "Stream", action: "SubmenuToggle", label: "stopControl", value: nil)
         togglePopover(sender, contentController: stopController)
     }
     
@@ -273,13 +273,9 @@ extension StreamViewController {
         if let s = self.stream {
             shareController.configure(s)
         }
+        AnalyticsEvent.new(category: "Stream", action: "SubmenuToggle", label: "share", value: nil)
         togglePopover(sender, contentController: shareController)
     }
-    
-    func editStream(sender : ButtonNode) {
-        
-    }
-    
     
     func userFavPlaylistUpdated(notification: NSNotification){
         guard let st = self.stream, let ind = st.currentSongIndex else {
@@ -319,7 +315,10 @@ extension StreamViewController {
         
         let song = st.playlist.songs[ind as Int]
         
-        StreamManager.sharedInstance.toggleTrackFavStatus(song, callback: nil)
+        StreamManager.sharedInstance.toggleTrackFavStatus(song, callback: {
+            status in
+            AnalyticsEvent.new(category: "Stream", action: "FavSong", label: status ? "add" : "remove", value: nil)
+        })
     }
 }
 
@@ -507,15 +506,6 @@ extension StreamViewController : ParallaxContentScrollerDelegate {
 }
 
 extension StreamViewController {
-    func toggleEditMode(sender : ButtonNode) {
-//        if let popover = self.selectedPopoverButton where popover.selected {
-//            popover.selected = !popover.selected
-//            self.hidePopover()
-//        }
-//        
-//        self.editing = !self.editing
-//        sender.selected = self.editing
-    }
     func togglePopover(sender : ButtonNode, contentController : PopContentController!){
         if sender.selected {
             if let selected = selectedPopoverButton where selected != sender {

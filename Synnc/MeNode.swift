@@ -15,8 +15,9 @@ import WCLUIKit
 import WCLUserManager
 import Shimmer
 
-class MeNode : ParallaxNode {
+class MeNode : ParallaxNode, TrackedView {
     
+    var title : String! = "MeView"
     var usernameBorder : ASDisplayNode!
     var fullnameNode : ASTextNode!
     var usernameNode : MyTextNode!

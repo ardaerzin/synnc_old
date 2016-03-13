@@ -97,6 +97,7 @@ class SourceSelectionNode : ASDisplayNode {
         doneButton.backgroundColor = UIColor.SynncColor()
         doneButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50,30))
         doneButton.setAttributedTitle(NSAttributedString(string: "Done", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : -0.09]), forState: .Normal)
+        doneButton.alpha = 0
         doneButton.addTarget(self, action: Selector("closeSelector:"), forControlEvents: .TouchUpInside)
         self.addSubnode(titleNode)
         self.addSubnode(doneButton)
@@ -104,6 +105,8 @@ class SourceSelectionNode : ASDisplayNode {
     }
     
     func didSelectSource(sender: SourceButton) {
+        
+        AnalyticsEvent.new(category: "searchSourceSelect", action: "sourceSelect", label: sender.source.rawValue, value: nil)
         
         if sender.source == .Spotify {
             if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
@@ -126,6 +129,7 @@ class SourceSelectionNode : ASDisplayNode {
     
     func closeSelector(sender: ButtonNode) {
         self.toggle()
+        AnalyticsEvent.new(category: "searchSourceSelect", action: "close", label: nil, value: nil)
     }
     
     func toggle(selectedSource: SynncExternalSource? = nil){

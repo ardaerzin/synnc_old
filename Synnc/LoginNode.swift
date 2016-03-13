@@ -22,7 +22,6 @@ class SpinnerNode : ASDisplayNode {
     var userLoginMsgNode : ASTextNode!
     
     deinit {
-//        print("deinit spinner node")
     }
     
     var loginStatusAnimatableProperty : POPAnimatableProperty {
@@ -195,7 +194,9 @@ enum LoginNodeKeyboardState : Int {
 }
 typealias NodeKeyboardState = (state: LoginNodeKeyboardState, frame: CGRect)
 
-class LoginNode : ASDisplayNode {
+class LoginNode : ASDisplayNode, TrackedView {
+    
+    var title : String! = "LoginView"
     
     var brandNode : LoginBrandNode!
     var buttonHolder : ButtonHolder!
@@ -372,9 +373,6 @@ class LoginNode : ASDisplayNode {
     var serverCheckStatusAnimationProgress : CGFloat = 0 {
         didSet {
             let a = POPTransition(serverCheckStatusAnimationProgress, startValue: 1, endValue: 0)
-//            self.buttonHolder.regularLoginButton.alpha = a
-            
-//            print("server check shit", serverCheckStatusAnimationProgress)
             self.buttonHolder.alpha = a
             self.formSwitcher.alpha = a
             self.legal.alpha = a

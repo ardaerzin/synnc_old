@@ -311,6 +311,7 @@
 		478921D11C8A04E7008BDA96 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 478921C81C8A01C2008BDA96 /* libz.tbd */; };
 		478921D61C8CD2CD008BDA96 /* LoginSeperatorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478921D51C8CD2CD008BDA96 /* LoginSeperatorNode.swift */; };
 		478921D81C8CD35E008BDA96 /* FormSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478921D71C8CD35E008BDA96 /* FormSwitcher.swift */; };
+		479AF8151C91A327001C9F4F /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479AF8141C91A327001C9F4F /* AnalyticsManager.swift */; };
 		47A4E67D1C0CAE6100354EA8 /* Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A4E67C1C0CAE6100354EA8 /* Synnc.swift */; };
 		47A4E6841C0CAE6100354EA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6831C0CAE6100354EA8 /* Assets.xcassets */; };
 		47A4E6871C0CAE6100354EA8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47A4E6851C0CAE6100354EA8 /* LaunchScreen.storyboard */; };
@@ -757,6 +758,7 @@
 		478921CE1C8A0479008BDA96 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		478921D51C8CD2CD008BDA96 /* LoginSeperatorNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginSeperatorNode.swift; sourceTree = "<group>"; };
 		478921D71C8CD35E008BDA96 /* FormSwitcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormSwitcher.swift; sourceTree = "<group>"; };
+		479AF8141C91A327001C9F4F /* AnalyticsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		47A4E6791C0CAE6100354EA8 /* Synnc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synnc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A4E67C1C0CAE6100354EA8 /* Synnc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Synnc.swift; sourceTree = "<group>"; };
 		47A4E6831C0CAE6100354EA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -1440,6 +1442,7 @@
 			children = (
 				4714D24A1C8909F000F6F5AD /* NHTime */,
 				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
+				479AF8141C91A327001C9F4F /* AnalyticsManager.swift */,
 				4712B63A1C11149800C49522 /* Utilities.swift */,
 				47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */,
 				47B899BD1C485421007C2B7F /* NHNetworkTime */,
@@ -2510,6 +2513,7 @@
 				47B808CE1C834BDF00312C96 /* InitialViewController.swift in Sources */,
 				4728F9451C31D37300B427EA /* InboxItemNode.swift in Sources */,
 				4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */,
+				479AF8151C91A327001C9F4F /* AnalyticsManager.swift in Sources */,
 				475286DB1C359E1900731008 /* StreamManager.swift in Sources */,
 				475286DD1C35A22E00731008 /* StreamViewController.swift in Sources */,
 				4777051C1C3DC581007089D0 /* StreamViewNode.swift in Sources */,

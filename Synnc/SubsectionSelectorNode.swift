@@ -73,7 +73,6 @@ class SubsectionSelectorNode : ASDisplayNode {
                     }
                 } else {
                 }
-//                self.delegate?.didSelectSubsection(selectedSubsectionIndex)
             }
         }
     }
@@ -89,7 +88,7 @@ class SubsectionSelectorNode : ASDisplayNode {
     var minX : CGFloat!
     var maxX : CGFloat!
     
-        override init() {
+    override init() {
         super.init()
         self.alignSelf = .Stretch
         self.flexBasis = ASRelativeDimension(type: .Points, value: 30)
@@ -165,11 +164,7 @@ class SubsectionSelectorNode : ASDisplayNode {
 extension SubsectionSelectorNode {
     
     func didSelectSubsection(sender : SubsectionButtonNode){
-//        self.selectedSubsectionIndex = sender.index
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: sender.item.subsections[sender.index].publicIdentifier, value: nil)
         self.delegate?.didSelectSubsection(sender.index)
     }
-//    func didScrollToRatio(ratio: CGFloat) {
-//        let a = POPTransition(ratio, startValue: minX, endValue: maxX)
-//        self.currentIndicatorPosition = a
-//    }
 }

@@ -85,78 +85,7 @@ class PlaylistAnimator : WildTransitioning {
 
             self.displayAnimation.toValue = 0
             
-//            if fromVC.view.frame.origin.y - initialFrame.origin.y > containerView.frame.height {
-//                initialFrame.origin.y = fromVC.view.frame.origin.y + containerView.frame.height
-//            }
-            
-            //            self.containerView.addSubview(fromVC.view)
-            //            print("za")
         }
-       
-//        UIView.animateWithDuration(2/3, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: [.BeginFromCurrentState], animations: {
-//            //        UIView.animateWithDuration(1/3, delay: 0, options: [], animations: {
-//            
-//            self.toVC.setNeedsStatusBarAppearanceUpdate()
-//            self.fromVC.setNeedsStatusBarAppearanceUpdate()
-//            
-//            if self.presenting {
-//                
-//                //                y.frame = self.containerView.frame
-//                //                y.layoutIfNeeded()
-//                //                z.alpha = 1
-////                if let tvc : TabbarController = self.fromVC.topmostVC() as? TabbarController {
-////                    tvc.setTabBarVisible(false, animated:true)
-////                    tvc.view.layoutSubviews()
-////                }
-//                
-//                ////                self.toVC.view.frame.origin.y = 0
-//                //                self.toVC.view.frame = self.fromVC.view.frame
-//                //                let translate = CGAffineTransformTranslate(x.transform, 100, 0)
-//                //                x.transform = CGAffineTransformIdentity
-//                //                x.transform = CGAffineTransformScale(translate, 1, 1)
-////                self.toVC.view.frame = self.containerView.frame
-//                //                self.toVC.view.layoutIfNeeded()
-//                ////                self.toVC.view.alpha = 1
-//                //                print("sector")
-//            } else {
-////                if let tvc : TabbarController = self.fromVC.topmostVC() as? TabbarController {
-////                    tvc.setTabBarVisible(true, animated:true)
-////                    tvc.view.layoutSubviews()
-////                }
-////                
-//                
-//                //                containerView.addSubview(self.toVC.view)
-//                //                if let nvc = self.fromVC as? MyStreamBaseNavigationController, let vc = nvc.viewControllers.last {
-//                //                    vc.view.alpha = 0
-//                //                }
-//                //                print("CENTER Y SHIT:", self.containerView.center.y + self.containerView.frame.height, self.fromVC)
-//                //                self.toVC.view.alpha = 0
-//                //                self.animatedView.backgroundColor = UIColor.blueColor()
-////                self.fromVC.view.frame = self.initialFrame
-////                self.fromVC.view.layoutIfNeeded()
-//                //                    center.y = self.containerView.center.y + self.containerView.frame.height
-//            }
-//            
-//            }, completion: {
-//                
-//                completed in
-//                
-//                //                self.animatedView.removeFromSuperview()
-//                
-//                if !transitionContext.transitionWasCancelled() {
-//                    if self.presenting {
-//                        //                        y.removeFromSuperview()
-//                        //                        self.fromVC.view.removeFromSuperview()
-//                    } else {
-//                        //                        self.fromVC.view.removeFromSuperview()
-//                    }
-//                } else {
-//                    
-//                }
-//                
-//                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
-//
-//        })
     }
     override func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
         return 0.5

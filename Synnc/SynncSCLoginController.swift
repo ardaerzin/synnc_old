@@ -30,7 +30,7 @@ class SynncSCLoginController : SoundcloudLoginViewController {
         super.viewWillLayoutSubviews()
         self.loadingNode.frame = self.view.bounds
         
-        self.loadingNode.measureWithSizeRange(ASSizeRange(min: self.view.frame.size, max: self.view.frame.size))
+        self.loadingNode.measureWithSizeRange(ASSizeRangeMake(self.view.frame.size, self.view.frame.size))
     }
     
     override func webViewDidFinishLoad(webView: UIWebView) {

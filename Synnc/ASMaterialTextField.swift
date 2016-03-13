@@ -37,10 +37,8 @@ class WCLMaterialTextField : ASDisplayNode {
     var placeholderState : WCLMaterialTextFieldPlaceholderState! {
         didSet {
             if placeholderState == .FullSize {
-                print("sector")
                 placeholderAnimation.toValue = 0
             } else {
-                print("za")
                 placeholderAnimation.toValue = 1
             }
         }
@@ -149,7 +147,6 @@ extension WCLMaterialTextField : ASEditableTextNodeDelegate {
             return
         }
         self.placeholderState = .FullSize
-        print("did update text", editableTextNode.attributedText?.string)
     }
     func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {

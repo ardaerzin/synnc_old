@@ -109,7 +109,7 @@ class RootViewController : ASViewController {
         
         initialPopup = InitialViewController(size: UIScreen.mainScreen().bounds.size)
         WCLPopupManager.sharedInstance.newPopup(initialPopup)
-        
+    
         // Node Related
         self.screenNode.tabbar.delegate = self
     }
@@ -169,6 +169,8 @@ extension RootViewController : TabbarDelegate {
             return false
         }
         
+        AnalyticsEvent.new(category : "ui_action", action: "tabButton_tap", label: item.identifier, value: nil)
+        
         if item.identifier == "MyStreamController" {
             
             Synnc.sharedInstance.streamNavigationController.displayMyStream()
@@ -187,6 +189,7 @@ extension RootViewController : TabbarDelegate {
     }
     func didSetTabItem(tabbar: TabNode!, item: TabItem) {
         if let vc = item as? TabItemController, let rvc = self.rootViewController {
+        
             let nvc = vc.navController
             
             self.addChildViewController(nvc)
@@ -201,6 +204,8 @@ extension RootViewController : TabbarDelegate {
             nvc.view.setNeedsLayout()
             
             rvc.displayStatusBar = !vc.prefersStatusBarHidden()
+            
+            vc.isActive = true
         }
     }
 }
