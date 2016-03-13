@@ -11,7 +11,7 @@ import WCLLocationManager
 import AsyncDisplayKit
 
 class SynncLocationAuthVC : WCLLocationManagerAuthVC {
-    var node : ASDisplayNode!
+    var node : LocationAuthNode!
     var callback : ((status : Bool) -> Void)?
     
     override init(size: CGSize) {

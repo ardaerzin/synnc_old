@@ -78,8 +78,9 @@ class NotificationRequestPopupVC : WCLPopupViewController {
     
 }
 
-class NotificationRequestPopupNode : ASDisplayNode {
+class NotificationRequestPopupNode : ASDisplayNode, TrackedView {
     
+    var title : String! = "NotificationRequestView"
     var messageNode : ASTextNode!
     var imageNode : ASNetworkImageNode!
     var infoNode : ASTextNode!
