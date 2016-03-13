@@ -26,11 +26,16 @@ class EmptyVC : ASViewController {
     }
 }
 
-class ControllerNotAvailableNode : ASDisplayNode {
+class ControllerNotAvailableNode : ASDisplayNode, TrackedView {
     var mainTextNode : ASTextNode!
     var subTextNode : ASTextNode!
-    var controllerName : String! = "test"
+    var controllerName : String! = "test" {
+        didSet {
+            self.title = controllerName
+        }
+    }
     var box : ASDisplayNode!
+    var title : String! = "LoginView"
     
     override init() {
         super.init()

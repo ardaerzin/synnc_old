@@ -22,7 +22,6 @@ class MyPlaylistsController : TabSubsectionController {
         return "My Playlists"
     }
     deinit {
-        print("ADHSAKDAS")
     }
     override init(){
         let listNode = MyPlaylistsNode()
@@ -38,8 +37,6 @@ class MyPlaylistsController : TabSubsectionController {
         let nn = self.screenNode as! MyPlaylistsNode
         nn.collectionNode.view.asyncDataSource = self
         nn.collectionNode.view.asyncDelegate = self
-        
-        print("init shit")
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -49,13 +46,16 @@ class MyPlaylistsController : TabSubsectionController {
 extension MyPlaylistsController {
     func displayPlaylist(playlist: SynncPlaylist?){
         self.playlistController = PlaylistController(playlist: playlist)
-        
-        print(self.parentViewController)
-        print(self.navigationController)
         self.navigationController?.pushViewController(self.playlistController, animated: true)
     }
-    func newPlaylistAction(sender : ButtonNode){
+    func newPlaylistAction(sender : AnyObject){
         self.displayPlaylist(nil)
+        
+        if let _ = sender as? ASTextNode {
+            AnalyticsEvent.new(category : "ui_action", action: "newPlaylist", label: "textButton", value: nil)
+        } else {
+            AnalyticsEvent.new(category : "ui_action", action: "newPlaylist", label: "topButton", value: nil)
+        }
     }
 }
 
@@ -83,6 +83,7 @@ extension MyPlaylistsController : ASCollectionDelegate {
         let playlist = SharedPlaylistDataSource.allItems[indexPath.item]
         self.selectedPlaylist = playlist
         self.displayPlaylist(playlist)
+        AnalyticsEvent.new(category : "ui_action", action: "playlist_tap", label: nil, value: nil)
     }
 }
 

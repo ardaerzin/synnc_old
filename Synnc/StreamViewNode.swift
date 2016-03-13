@@ -17,7 +17,9 @@ import WCLLocationManager
 import WCLNotificationManager
 import WCLUserManager
 
-class StreamViewNode : ParallaxNode {
+class StreamViewNode : ParallaxNode, TrackedView {
+    
+    var title: String! = "StreamView"
     var chatbar : ChatBarNode!
     var chatNode : ASDisplayNode!
     var contentNode : StreamContentNode!
@@ -81,14 +83,10 @@ class StreamViewNode : ParallaxNode {
         var a = TitleColorButton(normalTitleString: "STOP STREAM", selectedTitleString: "STOP STREAM", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
         return a
     }()
-    lazy var editButton : TitleColorButton = {
-        var a = TitleColorButton(normalTitleString: "EDIT", selectedTitleString: "SAVE", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
-        return a
-    }()
     
     var buttons : [ButtonNode] {
         get {
-            return [stopStreamButton, shareStreamButton, editButton]
+            return [stopStreamButton, shareStreamButton]
         }
     }
     

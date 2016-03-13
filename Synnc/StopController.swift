@@ -33,12 +33,14 @@ extension StopController {
     func noAction(sender: ButtonNode) {
         if let p = self.parentViewController as? PopController {
             p.hideWithTouch()
+            AnalyticsEvent.new(category: "StreamSubsection", action: "stop", label: "cancel", value: nil)
         }
     }
     func yesAction(sender: ButtonNode) {
         if let p = self.parentViewController as? PopController {
             p.hideWithTouch()
         }
+        AnalyticsEvent.new(category: "StreamSubsection", action: "stop", label: "true", value: nil)
         StreamManager.sharedInstance.stopStream(StreamManager.sharedInstance.activeStream!, completion: nil)
     }
 }

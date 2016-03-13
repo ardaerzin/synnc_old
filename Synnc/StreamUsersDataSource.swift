@@ -17,7 +17,6 @@ class StreamUsersDataSource : WCLAsyncCollectionViewDataSource {
         if let data = self.data[indexPath.item] as? WCLUser {
             node.imageURL = data.avatarURL(WCLUserLoginType(rawValue: data.provider)!, frame: CGRectMake(0, 0, 40, 40), scale: UIScreen.mainScreen().scale)
         } else {
-            print("NO USER")
         }
         node.fetchData()
         return node

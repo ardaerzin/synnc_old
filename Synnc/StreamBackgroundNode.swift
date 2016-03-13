@@ -24,13 +24,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     
     var scrollPosition : CGFloat = 0
     var trackTitlePositionY : CGFloat!
-//        {
-//        didSet {
-//            if oldValue != nil && trackTitlePositionY != oldValue {
-//                print("trackTitle position y has changed")
-//            }
-//        }
-//    }
     var trackTranslationY : CGFloat = 0
     
     
@@ -64,8 +57,6 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
     var state : StreamVCState = .Hidden {
         didSet {
             if state != oldValue {
-//                print("did set state:", state.rawValue)
-//                self.stateAnimation.fromValue = oldValue.rawValue
                 self.stateAnimation.toValue = state.rawValue
                 if state == StreamVCState.Syncing {
                     self.infoNode.syncShimmer.shimmering = true

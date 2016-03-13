@@ -69,7 +69,7 @@ class TabNode : ASDisplayNode {
             let button = TabbarButton(item: item)
             self.tabbarButtons.append(button)
             button.preferredFrameSize = CGSizeMake(50, 50)
-            button.addTarget(self, action: Selector("sex:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            button.addTarget(self, action: Selector("tabbuttonAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
             self.addSubnode(button)
             
             let x = (UIScreen.mainScreen().bounds.width - CGFloat(tabbarItems.count * 50)) / CGFloat(tabbarItems.count + 1)
@@ -107,10 +107,11 @@ class TabNode : ASDisplayNode {
             }
         }
     }
-    func sex(sender : TabbarButton) {
+    func tabbuttonAction(sender : TabbarButton) {
         
         if let del = self.delegate where del.willSetTabItem(self, item: sender.item) {
 //            self.selectedButton = sender
+            
         }
     }
     

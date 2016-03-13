@@ -63,7 +63,6 @@ class PlaylistSelectorController : TabSubsectionController {
     }
     weak var plist : SynncPlaylist?
     deinit {
-        print("ADHSAKDAS")
     }
     init(playlist : SynncPlaylist? = nil){
         let layout = UICollectionViewFlowLayout()

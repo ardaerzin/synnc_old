@@ -114,16 +114,18 @@ class WildTwitterUser : WCLUserExtension {
     private func loadTwitterSession() {
         var status : Bool = false
         if let b = Twitter.sharedInstance().sessionStore.session() {
-            Twitter.sharedInstance().sessionStore.logOutUserID(b.userID)
             self.session = b
             self.accessTokenSecret = b.authTokenSecret
             self.accessToken = b.authToken
             status = true
+            AnalyticsEvent.new(category : "login_handler", action: "twitter", label: "true", value: 0)
+            
         } else {
             self.session = nil
             self.accessToken = ""
             self.accessTokenSecret = ""
             status = false
+            AnalyticsEvent.new(category : "login_handler", action: "twitter", label: "false", value: 0)
         }
         
         self.loginData = ["accessToken" : self.accessToken!, "accessTokenSecret" : self.accessTokenSecret!]
@@ -138,11 +140,12 @@ class WildTwitterUser : WCLUserExtension {
     private func loginWithTwitter(){
         
         Twitter.sharedInstance().logInWithCompletion { (session, error) -> Void in
+            
+            if let _ = error {
+                AnalyticsEvent.new(category : "login_action", action: "twitter", label: "error", value: nil)
+            }
             self.loadTwitterSession()
         }
-//        Twitter.sharedInstance().logInWithViewController(nil) { (session, error) -> Void in
-//            self.loadTwitterSession()
-//        }
     }
     
     //Mark: Logout

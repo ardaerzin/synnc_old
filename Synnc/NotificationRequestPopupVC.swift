@@ -48,15 +48,28 @@ class NotificationRequestPopupVC : WCLPopupViewController {
             }
         }
     }
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.node)
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.node.fetchData()
     }
     func requestNotification(sender : ButtonNode){
         WCLNotificationManager.sharedInstance().settingsManager.requestNotificationPermissions()
+        AnalyticsEvent.new(category: "NotificationPopup", action: "buttonTap", label: "request", value: nil)
         self.closeView(true)
     }
     func dismissNotificationAccess(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "NotificationPopup", action: "buttonTap", label: "dismiss", value: nil)
         self.closeView(true)
     }
     override func closeView(animated: Bool) {

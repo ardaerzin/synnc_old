@@ -19,7 +19,6 @@ extension SynncArtist {
 //    }
 //    internal func parseSpotify(data : AnyObject?) {
 //        guard let user = data as? SPTPartialArtist else {
-//            print("data cannot be converted to SPTPartialArtist")
 //            return
 //        }
 //        self.source = SynncExternalSource.Spotify.rawValue

@@ -56,7 +56,6 @@ class ShareController : PopContentController {
 
 extension ShareController {
     func facebookShare(sender : ASButtonNode!){
-        print("facebook share")
         let content = FBSDKShareLinkContent()
         content.contentTitle = self.shareTitle
         content.contentURL = self.shareUrl
@@ -69,16 +68,19 @@ extension ShareController {
         
         dialog.fromViewController = self
         dialog.show()
+        
+        AnalyticsEvent.new(category: "StreamSubsection", action: "share", label: "facebook", value: nil)
     }
     func twitterShare(sender : ASButtonNode!){
-        print("twitter share")
         let tweetComposeViewController = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
         tweetComposeViewController.setInitialText(self.shareDescription)
         tweetComposeViewController.addURL(self.shareUrl)
         
         self.presentViewController(tweetComposeViewController, animated: true, completion: nil)
+        
+        AnalyticsEvent.new(category: "StreamSubsection", action: "share", label: "twitter", value: nil)
     }
     func smsShare(sender : ASButtonNode!){
-        print("sms share")
+        AnalyticsEvent.new(category: "StreamSubsection", action: "share", label: "SMS", value: nil)
     }
 }

@@ -33,6 +33,17 @@ class SynncLocationAuthVC : WCLLocationManagerAuthVC {
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.node)
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if let n = self.node {
@@ -53,15 +64,18 @@ class SynncLocationAuthVC : WCLLocationManagerAuthVC {
     }
     
     func getLocationAccess(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "LocationPopup", action: "buttonTap", label: "request", value: nil)
         WCLLocationManager.sharedInstance().requestAuth(false)
     }
     func dismissLocationAccess(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "LocationPopup", action: "buttonTap", label: "dismiss", value: nil)
         self.closeView(true)
     }
 }
 
-class LocationAuthNode : ASDisplayNode {
+class LocationAuthNode : ASDisplayNode, TrackedView {
     
+    var title: String! = "LocationAuthPopup"
     var messageNode : ASTextNode!
     var imageNode : ASImageNode!
     var infoNode : ASTextNode!

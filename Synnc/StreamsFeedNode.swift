@@ -13,8 +13,9 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 
-class StreamsFeedNode : ASCellNode {
+class StreamsFeedNode : ASCellNode, TrackedView {
     
+    var title : String! = "StreamsFeed"
     var streamCollection : ASCollectionNode!
     
     override init() {

@@ -39,9 +39,6 @@ class FormSwitcherNode : ASDisplayNode {
             return
         }
         
-//        print("ZA", self.constrainedSizeForCalculatedLayout)
-//        self.textNode.transitionLayoutWithSizeRange(self.constrainedSizeForCalculatedLayout, animated: true)
-        
         self.setNeedsLayout()
     }
     override init() {

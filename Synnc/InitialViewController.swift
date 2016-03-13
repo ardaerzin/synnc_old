@@ -47,20 +47,16 @@ class InitialViewController : WCLPopupViewController {
         
         self.screenNode.loginNode = loginController.node as! LoginNode
         self.screenNode.onboardingNode = onboardingController.node as! OnboardingVCNode
+        self.screenNode.delegate = self
         
+        var screen : AnalyticsScreen!
         if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
             state = .Login
             self.screenNode.addSubnode(self.screenNode.loginNode)
-            print("already seen onboarding")
         } else {
             state = .Onboarding
             self.screenNode.addSubnode(self.screenNode.onboardingNode)
-            print("not seen onboarding")
         }
-        
-//        state = .Login
-//        self.screenNode.addSubnode(self.screenNode.loginNode)
-        
         self.screenNode.state = self.state
     }
     required init?(coder aDecoder: NSCoder) {
@@ -75,26 +71,39 @@ class InitialViewController : WCLPopupViewController {
         self.screenNode = node
         self.view.addSubnode(node)
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
-//        node.skipButton.addTarget(self, action: Selector("skipToLogin:"), forControlEvents: .TouchUpInside)
     }
-    
-//    func skipToLogin(sender: ButtonNode) {
-////        print("skip action")
-////        
-////        self.closeView(true)
-//    }
-    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-////        node.pager.setDataSource(self)
-////        node.pager.view.asyncDelegate = self
-//    }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if let n = self.screenNode {
             n.measureWithSizeRange(ASSizeRangeMake(self.size, self.size))
         }
     }
+    
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        if self.state == .Onboarding {
+            self.didChangeStateScreen(self.screenNode.onboardingNode)
+        } else {
+            self.didChangeStateScreen(self.screenNode.loginNode)
+        }
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
+}
+
+extension InitialViewController : NodeTransitionDelegate {
+    func didChangeStateScreen(node: ASDisplayNode) {
+        AnalyticsScreen.new(node: node as! TrackedView)
+    }
+}
+
+protocol NodeTransitionDelegate {
+    func didChangeStateScreen(node : ASDisplayNode)
 }
 
 class InitialControllerNode : ASDisplayNode {
@@ -102,51 +111,50 @@ class InitialControllerNode : ASDisplayNode {
     var state : InitialVCState! {
         didSet {
             if oldValue != nil {
-                self.transitionLayoutWithAnimation(true)
+                self.transitionLayoutWithAnimation(true, shouldMeasureAsync: false, measurementCompletion: nil)
+//                self.transitionLayoutWithSizeRange(<#T##constrainedSize: ASSizeRange##ASSizeRange#>, animated: <#T##Bool#>, shouldMeasureAsync: <#T##Bool#>, measurementCompletion: <#T##(() -> Void)!##(() -> Void)!##() -> Void#>)
+//                    transitionLayoutWithAnimation(true)
             }
         }
     }
     var loginNode : LoginNode!
-//        {
-//        didSet {
-//            self.addSubnode(loginNode)
-//        }
-//    }
     var onboardingNode : OnboardingVCNode!
-//        {
-//        didSet {
-//            self.addSubnode(onboardingNode)
-//        }
-//    }
-    
-//    var switcher : ButtonNode!
-    
+    var delegate : NodeTransitionDelegate!
+
     override init() {
         super.init()
         self.backgroundColor = UIColor.whiteColor()
     }
     
-    
     override func animateLayoutTransition(context: ASContextTransitioning!) {
-        if self.state == .Login {
-            
-//            let onboardingFrame = context.initialFrameForNode(self.onboardingNode)
-//            let loginFrame = context.initialFrameForNode(self.loginNode)
-    
+        if self.state == .Login {            
             self.loginNode.alpha = 0
             self.onboardingNode.hideAnimation.toValue = 0
             
             
             UIView.animateWithDuration(0.4, animations: {
             
-                self.loginNode.frame.origin.y = 0
                 self.loginNode.alpha = 1
                 
             }, completion: {
             
                     finished in
                     context.completeTransition(finished)
-//                    (UIApplication.sharedApplication().windows.first?.rootViewController as! RootViewController).initialController.loginController.didMoveToParentViewController((UIApplication.sharedApplication().windows.first?.rootViewController as! RootViewController).initialController)
+                    self.delegate?.didChangeStateScreen(self.loginNode)
+            })
+        } else {
+            self.onboardingNode.hideAnimation.toValue = 1
+            
+            
+            UIView.animateWithDuration(0.4, animations: {
+                
+                self.loginNode.alpha = 0
+                
+                }, completion: {
+                    
+                    finished in
+                    context.completeTransition(finished)
+                    self.delegate?.didChangeStateScreen(self.onboardingNode)
             })
         }
     }
@@ -162,10 +170,6 @@ class InitialControllerNode : ASDisplayNode {
         }
         
         node.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        
-        
-//        node.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 0.5), ASRelativeDimension(type: .Percent, value: 0.5))
-        
         return ASStaticLayoutSpec(children: [node])
     }
 }

@@ -25,10 +25,10 @@ import Crashlytics
 
 #if DEBUG
 let serverURLString = "https://digital-reform.codio.io:9500"
-let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
+let analyticsId = "UA-65806539-3"
 #else
 let serverURLString = "https://synnc.herokuapp.com"
-let appSeeKey = "86ad476123434fe0a2b616f443f0f1a3"
+let analyticsId = "UA-65806539-4"
 #endif
 
 @UIApplicationMain
@@ -84,20 +84,20 @@ class Synnc : UIResponder, UIApplicationDelegate {
     override init() {
         super.init()
         
+        var gai = GAI.sharedInstance()
+        let tracker = gai.trackerWithName("SynncTracker", trackingId: analyticsId)
+        gai.trackUncaughtExceptions = true  // report uncaught exceptions
+        gai.logger.logLevel = GAILogLevel.Error  // remove before app release
+        gai.dispatchInterval = 10
+        
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Answers(), Crashlytics.sharedInstance(), Twitter.sharedInstance()])
         
-        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         self.socket = initSocket()
         WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        
-//                Appsee.start(appSeeKey)
-//        Appsee.
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("detectedScreen:"), name: AppseeScreenDetectedNotification, object: nil)
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -120,27 +120,12 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         //Initialize rootViewController for main window
         rootVC = RootViewController()
-//        let nvc = RootNavigationController(rootViewController: rootVC)
-//        nvc.rootViewController = rootVC
         
         self.window?.makeKeyAndVisible()
         self.window?.rootViewController = rootVC
-//        self.window?.backgroundColor = UIColor.whiteColor()
-        
         
         self.streamManager.setSocket(self.socket)
         performNTPCheck()
-//        let d = NSDate()
-//        NHNetworkClock.sharedNetworkClock().syncWithComplete({
-////            let networkDate = NSDate.networkDate()
-////            let normalDate = NSDate()
-////            
-//            let x = NSDate().timeIntervalSince1970 - d.timeIntervalSince1970
-//            print("sorgu:", x)
-//////            self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-////            let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-////            print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
-//        })
         
         return true
     }
@@ -148,8 +133,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
     var ntpShit : NSDate!
     func performNTPCheck(){
         ntpShit = NSDate()
-//        NHNetworkClock.sharedNetworkClock().remo
-            //.shouldUseSavedSynchronizedTime = false
         NHNetworkClock.sharedNetworkClock().syncWithComplete(nil)
     }
     
@@ -160,22 +143,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
             self.performNTPCheck()
             NHNetworkClock.sharedNetworkClock().networkOffset
         }
-        
-        print("sorgu:", x)
-        
-//        let networkDate = NSDate.networkDate()
-//        let normalDate = NSDate()
-//        let networkDate = NSDate.networkDate()
-//        let normalDate = NSDate()
-//
-////        let x = normalDate.timeIntervalSince1970 - d.timeIntervalSince1970
-////        print("sorgu:", x)
-//        //            self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-//        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-//        print("normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
-//        self.streamManager.player.syncManager.offSet = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-//        let diff = normalDate.timeIntervalSince1970 - networkDate.timeIntervalSince1970
-//        print("********NOTIF normal date:", normalDate.timeIntervalSince1970, "network date:", networkDate.timeIntervalSince1970, "diff is:", diff)
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
@@ -193,22 +160,9 @@ class Synnc : UIResponder, UIApplicationDelegate {
         }
     }
     
-    func detectedScreen(notification: NSNotification) {
-        
-//        var userInfo = notification.userInfo
-//        let screenName = userInfo![kAppseeScreenName] as! String
-//        // To ignore a new screen set its value to nil
-//        
-//        print("detected screenName", screenName)
-//        
-//        userInfo![kAppseeScreenName] = nil
-    }
-    
     func willChangeStatusBarFrame(notification : NSNotification!){
-        print("willChangeStatusBarFrame")
     }
     func didChangeStatusBarFrame(notification : NSNotification!){
-        print("didChangeStatusBarFrame")
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -299,7 +253,6 @@ extension Synnc : WCLNotificationManagerDelegate {
 
 extension Synnc {
     func initSocket() -> SocketIOClient! {
-        print(serverURLString)
         guard let url = NSURL(string: serverURLString) else {
             assertionFailure("not a valid server address")
             return nil

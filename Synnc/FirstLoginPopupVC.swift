@@ -30,7 +30,7 @@ class FirstLoginPopupVC : WCLPopupViewController {
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.yesButton.addTarget(self, action: Selector("profileAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         n.noButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
@@ -45,11 +45,27 @@ class FirstLoginPopupVC : WCLPopupViewController {
             }
         }
     }
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.node)
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.node.fetchData()
     }
+    func profileAction(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "InitialPopup", action: "buttonTap", label: "profile", value: nil)
+    }
     func dismissLocationAccess(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "InitialPopup", action: "buttonTap", label: "dismiss", value: nil)
         self.closeView(true)
     }
     override func closeView(animated: Bool) {
@@ -61,8 +77,9 @@ class FirstLoginPopupVC : WCLPopupViewController {
     
 }
 
-class FirstLoginPopupNode : ASDisplayNode {
+class FirstLoginPopupNode : ASDisplayNode, TrackedView {
     
+    var title : String! = "FirstLoginPopup"
     var messageNode : ASTextNode!
     var imageNode : ASNetworkImageNode!
     var infoNode : ASTextNode!

@@ -64,8 +64,9 @@ class EmptyStateNode : ASDisplayNode {
     
 }
 
-class TrackSearchNode : ASDisplayNode {
+class TrackSearchNode : ASDisplayNode, TrackedView {
     
+    var title : String! = "TrackSearch"
     var sourceSelectionNode : SourceSelectionNode!
     
     var coverNode : ASDisplayNode!

@@ -48,7 +48,6 @@ class GenreCellNode : ASCellNode {
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
         cellStateAnimationProgress = self.selected ? 1 : 0
-        print("WILL ENTER HIERARCHY", self.selected)
     }
     var cellStateAnimation : POPSpringAnimation {
         get {
@@ -70,11 +69,7 @@ class GenreCellNode : ASCellNode {
     }
     override var selected : Bool {
         didSet {
-            print("did set selected", selected)
-//            if selected != oldValue {
-                self.cellStateAnimation.toValue = selected ? 1 : 0
-//                print("did change selected")
-//            }
+            self.cellStateAnimation.toValue = selected ? 1 : 0
         }
     }
     var genreTitleNode : ASTextNode!

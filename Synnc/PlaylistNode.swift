@@ -14,8 +14,9 @@ import SpinKit
 import WCLUIKit
 import Shimmer
 
-class PlaylistNode : ParallaxNode {
+class PlaylistNode : ParallaxNode, TrackedView {
     
+    var title: String! = "PlaylistNode"
     var emptyStateNode : PlaylistEmptyNode!
     var emptyState : Bool = false {
         didSet {
@@ -49,14 +50,12 @@ class PlaylistNode : ParallaxNode {
     var editing : Bool = false {
         didSet {
             if editing != oldValue {
-                self.playlistTitleNode.userInteractionEnabled = editing
-                
-                self.titleShimmer.shimmeringHighlightLength = 0.7
-                self.titleShimmer.shimmeringPauseDuration = 0
-                
-                self.titleShimmer.shimmering = editing
+//                self.playlistTitleNode.userInteractionEnabled = editing
+//                self.titleShimmer.shimmeringHighlightLength = 0.7
+//                self.titleShimmer.shimmeringPauseDuration = 0
+//                
+//                self.titleShimmer.shimmering = editing
                 self.mainScrollNode.backgroundNode.editing = editing
-            
             }
         }
     }
@@ -86,7 +85,6 @@ class PlaylistNode : ParallaxNode {
         if let p = self.playlist {
             countString = "\(p.songs.count) Tracks"
         } else {
-            print("YOKH PLAYLIST")
         }
         countTextNode.attributedString = NSAttributedString(string: countString, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.26)])
         self.setNeedsLayout()
@@ -116,7 +114,6 @@ class PlaylistNode : ParallaxNode {
         playlistTitleNode = MyTextNode()
         playlistTitleNode.layoutDelegate = self
         playlistTitleNode.returnKeyType = UIReturnKeyType.Done
-        playlistTitleNode.userInteractionEnabled = false
         playlistTitleNode.attributedPlaceholderText = NSAttributedString(string: "New Playlist", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)])
         playlistTitleNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size: 26)!, NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.74)]
         

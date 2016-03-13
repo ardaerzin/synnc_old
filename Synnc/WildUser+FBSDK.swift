@@ -58,7 +58,6 @@ class WildFacebookUser : WCLUserExtension {
             var x : String? = nil
             if self.profileInfo != nil {
                 var json = JSON(self.profileInfo!)
-                //                print("json", json)
                 x = json["userID"].string
             }
             return x
@@ -132,7 +131,6 @@ class WildFacebookUser : WCLUserExtension {
         
     }
     override func profileInfoChanged() {
-        //        print("profile info changed for Facbeook")
         super.profileInfoChanged()
     }
     func profileInfoObserver(notification: NSNotification!){
@@ -157,6 +155,8 @@ class WildFacebookUser : WCLUserExtension {
     }
     func accessTokenObserver(notification: NSNotification!){
         ENTRY_LOG()
+        
+        let prevStatus = self.loginStatus
         let token = FBSDKAccessToken.currentAccessToken()
         self.isLoggingIn = false
         if token == nil {
@@ -165,13 +165,17 @@ class WildFacebookUser : WCLUserExtension {
             SLogVerbose("cannot find access token")
         } else {
             self.accessToken = token.tokenString
-            //            print("login status is set")
             self.loginStatus = true
-            //            print("login status is set 2")
             self.profileInfoObserver(nil)
-            
             SLogVerbose("access token found")
         }
+        
+        if prevStatus == nil && loginStatus == false {
+            return
+        }
+        
+        let s = loginStatus!
+        AnalyticsEvent.new(category : "login_handler", action: "facebook", label: s ? "true" : "false", value: nil)
         EXIT_LOG()
         
     }
@@ -181,15 +185,14 @@ class WildFacebookUser : WCLUserExtension {
         
         self.isLoggingIn = true
         
-//        print(, UIApplication.sharedApplication().windows.last?.rootViewController)
-        
         FBSDKLoginManager().logInWithReadPermissions(permissions, fromViewController: nil, handler: {
             
             (result, error) in
-            
             if error != nil {
+                AnalyticsEvent.new(category : "login_action", action: "facebook", label: "error", value: error!.code)
                 SLogError("Error with FBLogin process")
             } else if result.isCancelled {
+                AnalyticsEvent.new(category : "login_action", action: "facebook", label: "cancelled", value: nil)
                 SLogWarning("Cancelled FBLogin process")
             } else {
                 SLogVerbose("given permissions : \(result.grantedPermissions)")

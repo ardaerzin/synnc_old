@@ -81,10 +81,20 @@ class TrackSearchController : WCLPopupViewController {
         self.screenNode.view.frame = CGRect(origin: CGPointZero, size: self.size)
         
     }
-    
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.screenNode)
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
     func toggleSourceSelector(sender : ButtonNode){
         self.screenNode.sourceSelectionNode.toggle(self.selectedSource)
-//            .displayStatus = !self.screenNode.sourceSelectionNode.displayStatus
+        AnalyticsEvent.new(category: "trackSearch", action: "sourceSelect", label: nil, value: nil)
     }
     
     override func viewWillLayoutSubviews() {
@@ -129,6 +139,7 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
             var str = (fieldStr as NSString).stringByReplacingCharactersInRange(range, withString: text)
             str = (str as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
             self.searchStringChanged(fieldStr, toString: str)
+            AnalyticsEvent.new(category: "trackSearch", action: "queryChange", label: nil, value: nil)
         }
         return true
     }
@@ -137,11 +148,13 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
 extension TrackSearchController : ASTableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
+            AnalyticsEvent.new(category: "trackSearch", action: "itemSelect", label: "track", value: nil)
             self.delegate?.didSelectTrack(data)
         }
     }
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
+            AnalyticsEvent.new(category: "trackSearch", action: "itemDeselect", label: "track", value: nil)
             self.delegate?.didDeselectTrack(data)
         }
     }
@@ -159,6 +172,7 @@ extension TrackSearchController : ASCollectionDelegate {
     }
     func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.tracksManager.batchContext = context
+        AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "track", value: nil)
         self.tracksDataSource.loadMore()
     }
     func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
@@ -166,6 +180,7 @@ extension TrackSearchController : ASCollectionDelegate {
     }
     func collectionView(collectionView: ASCollectionView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.artistsManager.batchContext = context
+        AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "artist", value: nil)
         self.artistsDataSource.loadMore()
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -253,6 +268,7 @@ extension TrackSearchController {
                                 
                                 if type == .Tracks {
                                     self.tracksDataSource.nextAction = cb.next
+                                    print("NEXT", cb.next)
                                 } else {
                                     self.artistsDataSource.nextAction = cb.next
                                 }
@@ -318,9 +334,12 @@ extension TrackSearchController {
     
     func artistSearch(){
         guard let id = self.selectedArtist?.id else {
+            AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: nil, value: nil)
             self.searchStringChanged("", toString: self.screenNode.inputNode.textView.text)
             return
         }
+        
+        AnalyticsEvent.new(category: "trackSearch", action: "selectArtist", label: nil, value: nil)
         
         last_search = NSDate()
         let ts = last_search

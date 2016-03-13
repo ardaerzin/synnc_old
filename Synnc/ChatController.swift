@@ -123,6 +123,7 @@ class ChatController : ASViewController {
         screenNode.delegate = self
         self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hide:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.chatbar.sendButton.addTarget(self, action: Selector("newMessage:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        AnalyticsEvent.new(category: "StreamChat", action: "newItem", label: "button", value: nil)
         self.chatbar.textNode.delegate = self
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillChangeFrame:"), name: UIKeyboardWillChangeFrameNotification, object: nil)
@@ -220,7 +221,6 @@ class ChatController : ASViewController {
 }
 extension ChatController : WCLAsyncTableViewDataSourceDelegate {
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItemAtIndexPath indexPAth: NSIndexPath) {
-        print("update at indexPath", indexPAth)
         self.manager.updateItem(self.screenNode.chatCollection.view, indexPath: indexPAth, animated: true)
     }
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
@@ -346,6 +346,7 @@ extension ChatController : ASEditableTextNodeDelegate {
         if let _ = text.rangeOfString("\n") {
             editableTextNode.resignFirstResponder()
             self.newMessage(nil)
+            AnalyticsEvent.new(category: "StreamChat", action: "newItem", label: "keyboard", value: nil)
             return false
         }
         if let fieldStr = editableTextNode.textView.text {

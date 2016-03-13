@@ -102,6 +102,9 @@ class ChatManager : NSObject {
     }
     
     func sendMessage(var dict: [String : AnyObject]){
+        
+        
+        
         dict["timestamp"] = NSDate().timeIntervalSince1970
         dict["user_id"] = Synnc.sharedInstance.user._id
         

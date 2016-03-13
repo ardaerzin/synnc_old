@@ -55,7 +55,20 @@ class StreamInProgressPopup : WCLPopupViewController {
         self.node.fetchData()
     }
     
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.node)
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
+    
     func endCurrentStream(sender : ButtonNode!) {
+        AnalyticsEvent.new(category: "StreamPopup", action: "buttonTap", label: "endCurrentStream", value: nil)
         if let activeStr = StreamManager.sharedInstance.activeStream {
             StreamManager.sharedInstance.stopStream(activeStr, completion: {
                 [weak self]
@@ -75,6 +88,7 @@ class StreamInProgressPopup : WCLPopupViewController {
     }
     
     func dismissNotificationAccess(sender : ButtonNode) {
+        AnalyticsEvent.new(category: "StreamPopup", action: "buttonTap", label: "dismiss", value: nil)
         self.closeView(true)
     }
     override func closeView(animated: Bool) {
@@ -83,8 +97,9 @@ class StreamInProgressPopup : WCLPopupViewController {
     
 }
 
-class StreamInProgressPopupNode : ASDisplayNode {
+class StreamInProgressPopupNode : ASDisplayNode, TrackedView {
     
+    var title: String! = "StreamInProgressPopup"
     var messageNode : ASTextNode!
     var imageNode : ASNetworkImageNode!
     var infoNode : ASTextNode!

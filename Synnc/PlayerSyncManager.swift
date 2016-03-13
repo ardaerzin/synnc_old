@@ -23,7 +23,6 @@ class WildPlayerSyncManager {
     var timestamp : StreamTimeStamp! {
         didSet {
             if timestamp != oldValue {
-                print("updated timestamp")
                 if !player.stream!.isUserStream {
                     self.handleTimeStampChange(timestamp)
                 }
@@ -43,18 +42,13 @@ class WildPlayerSyncManager {
             if timeS == 0 || (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
                 return
             }
-//            print("update time", time)
+            
             if needsUpdate {
                 let timestamp = StreamTimeStamp()
                 timestamp.stream_id = player.stream!.o_id
                 timestamp.player_time = CMTimeGetSeconds(time)
-                
-                print("playerTime", timestamp.player_time)
-                
                 timestamp.timeStamp = NSDate.networkDate().timeIntervalSince1970
                 
-                
-//                timestamp.timeStamp = NSDate().timeIntervalSince1970 - offSet
                 timestamp.playlist_index = player.currentIndex
                 
                 player.stream?.update(["timestamp" : timestamp])
@@ -65,7 +59,6 @@ class WildPlayerSyncManager {
             if (self.oldUpdate != nil && (abs(timeS - self.oldUpdate!) < updateInterval)){
                 return
             } else {
-//                print("check time sync")
                 self.checkTimeSync()
             }
         }
@@ -110,8 +103,6 @@ extension WildPlayerSyncManager {
         
         if let item = self.player.currentItem where !self.player.isPlaying && self.player.readyToPlay {
             
-            print("nope")
-            
             self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime+5), item.asset.duration.timescale), completionHandler: {
                 
                 cb in
@@ -130,11 +121,7 @@ extension WildPlayerSyncManager {
             
         } else if self.player.isPlaying {
             
-//            print("shit", playerNewTime - actualTime)
-            
             if abs(playerNewTime - actualTime) > 0.01 {
-                
-//                print("yo")
                 
                 self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
                 self.player.isSyncing = true
@@ -144,8 +131,6 @@ extension WildPlayerSyncManager {
                 self.player.isSyncing = false
             
             }
-        } else {
-            print("!81*!*!*!*!**!*!*!*!*!*!**!")
         }
     }
 }

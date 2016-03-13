@@ -25,6 +25,7 @@ protocol TabbarContentScrollerDelegate {
 
 class TabbarContentScroller : ASPagerNode {
     
+    var identifier : String!
     var contentDelegate : TabbarContentLoaderDelegate?
     var scrollerDelegate : TabbarContentScrollerDelegate?
     
@@ -132,6 +133,9 @@ extension TabbarContentScroller : ASCollectionDelegate {
     func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let x = targetContentOffset.memory.x
         let ci = Int(x / self.view.frame.width)
+        
+        AnalyticsEvent.new(category : "ui_action", action: "pan", label: "\(self.identifier) subsection", value: nil)
+        
         self.currentIndex = ci
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
