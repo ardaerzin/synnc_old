@@ -66,11 +66,11 @@ class PlaylistController : ASViewController, WildAnimated {
         }
     }
     
-    var playlistEditing : Bool = false {
-        didSet {
-            self.screenNode.tracksTable.view.setEditing(playlistEditing, animated: true)
-        }
-    }
+//    var playlistEditing : Bool = false {
+//        didSet {
+//            self.screenNode.tracksTable.view.setEditing(playlistEditing, animated: true)
+//        }
+//    }
     
     var displayAnimatableProperty : POPAnimatableProperty {
         get {
@@ -141,7 +141,6 @@ class PlaylistController : ASViewController, WildAnimated {
         }
         
         self.editing = true
-//        self.screenNode.tracksTable.view.setEditing(self.editing, animated: true)
         
         self.screenNode.playlist = self.playlist
         
@@ -151,12 +150,14 @@ class PlaylistController : ASViewController, WildAnimated {
         node.playlistTitleNode.delegate = self
         (node.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
-        node.editButton.addTarget(self, action: Selector("togglePlaylistEdit:"), forControlEvents: .TouchUpInside)
         node.addSongsButton.addTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
         node.streamButton.addTarget(self, action: Selector("streamPlaylist:"), forControlEvents: .TouchUpInside)
         node.headerNode.closeButton.addTarget(self, action: Selector("closeAction:"), forControlEvents: .TouchUpInside)
     }
-    
+    func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
+        let a = tableView.nodeForRowAtIndexPath(indexPath)
+        a.view.hidden = false
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -206,9 +207,6 @@ extension PlaylistController : ASTableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
     func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return false
     }
@@ -219,7 +217,7 @@ extension PlaylistController : ASTableViewDataSource {
         AnalyticsEvent.new(category : "playlistAction", action: "moveTrack", label: nil, value: nil)
     }
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return tableView.editing
+        return true
     }
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         switch editingStyle {
@@ -303,9 +301,6 @@ extension PlaylistController : ASEditableTextNodeDelegate {
     }
 }
 extension PlaylistController {
-    func togglePlaylistEdit(sender: ButtonNode) {
-        self.playlistEditing = !self.playlistEditing
-    }
     func closeAction(sender: ButtonNode) {
         self.navigationController?.popViewControllerAnimated(true)
         
