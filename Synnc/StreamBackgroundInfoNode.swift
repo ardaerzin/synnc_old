@@ -228,7 +228,7 @@ class StreamBackgroundInfoNode : ASDisplayNode {
             }
             
             if let x = self.supernode as? StreamBackgroundNode {
-                x.updateScrollPositions(x.scrollPosition)
+                x.updateScrollPositions(x.scrollPosition, ratioProgress: 0)
             }
             self.trackUpdateAnimation.toValue = 1
         }

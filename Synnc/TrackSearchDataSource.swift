@@ -231,7 +231,6 @@ class SynncTrackNode : ASCellNode {
         self.iconNode = TrackStatusButton()
         
         self.selectedSeperatorNode = ASDisplayNode()
-//        self.selectedSeperatorNode.backgroundColor = UIColor.orangeColor()
         
         self.addSubnode(self.trackNameNode)
         self.addSubnode(self.artistNameNode)

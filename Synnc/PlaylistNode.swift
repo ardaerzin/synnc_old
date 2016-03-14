@@ -121,8 +121,6 @@ class PlaylistNode : ParallaxNode, TrackedView {
             playlistTitleNode.attributedText = NSAttributedString(string: title, attributes: (self.playlistTitleNode.typingAttributes as [String : AnyObject]!))
         }
         countTextNode = ASTextNode()
-
-        self.backgroundColor = UIColor.whiteColor()
      
         self.titleShimmer = FBShimmeringView()
         self.titleShimmer.contentView = self.playlistTitleNode.view
@@ -146,7 +144,7 @@ class PlaylistNode : ParallaxNode, TrackedView {
     override func layout() {
         super.layout()
         
-        emptyStateNode?.position.y = self.calculatedSize.width + (emptyStateNode.calculatedSize.height / 2)
+        emptyStateNode?.position.y = self.mainScrollNode.backgroundNode.calculatedSize.height + (emptyStateNode.calculatedSize.height / 2)
         
         countTextNode.position.x = (countTextNode.calculatedSize.width / 2) + 20
         countTextNode.position.y = (((playlistTitleNode.calculatedSize.height / 2) + 50) + (playlistTitleNode.calculatedSize.height / 2)) + 10 + (countTextNode.calculatedSize.height / 2)
@@ -155,16 +153,22 @@ class PlaylistNode : ParallaxNode, TrackedView {
     }
 
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        
         let x = super.layoutSpecThatFits(constrainedSize)
         playlistTitleNode.sizeRange = ASRelativeSizeRangeMake(ASRelativeSize(width: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 40), height: ASRelativeDimension(type: .Points, value: 30)), ASRelativeSize(width: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 40), height: ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 100)))
         
-        self.emptyStateNode?.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - constrainedSize.max.width - 50))
+        self.emptyStateNode?.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - 125 - 50))
         
         if self.emptyStateNode == nil {
             return ASStaticLayoutSpec(children: [x, playlistTitleNode, countTextNode])
         } else {
             return ASStaticLayoutSpec(children: [x, playlistTitleNode, countTextNode, self.emptyStateNode])
         }
+    }
+    
+    override func backgroundSizeRange(forConstrainedSize constrainedSize : ASSizeRange) -> ASRelativeSizeRange? {
+        self.mainScrollNode.topLimit = 125
+        return ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width), ASRelativeDimension(type: .Points, value: 125))
     }
 }
 extension PlaylistNode : MyTextNodeDelegate{
@@ -182,11 +186,50 @@ extension PlaylistNode : MyTextNodeDelegate{
 
 
 class PlaylistBackgroundNode : ParallaxBackgroundNode {
+    var blurView : UIVisualEffectView!
     override init(){
         super.init()
+        
+        let eff = UIBlurEffect(style: .Dark)
+        blurView = UIVisualEffectView(effect: eff)
+        self.view.addSubview(blurView)
+        print("DID LOAD BACKGROUND NODE")
+    }
+    
+    override func didLoad() {
+        super.didLoad()
+    }
+    
+    
+    override func layout() {
+        super.layout()
+        blurView.bounds = CGRectMake(0,0, self.scrollNode.calculatedSize.width, self.scrollNode.calculatedSize.height)
+        blurView.center = self.scrollNode.position
+    }
+    
+    override func updateScrollPositions(position: CGFloat, ratioProgress: CGFloat) {
+        super.updateScrollPositions(position, ratioProgress: ratioProgress)
+        
+        if ratioProgress < 1 {
+            POPLayerSetTranslationY(self.blurView.layer, 0)
+            POPLayerSetScaleXY(self.blurView.layer, CGPointMake(1, 1))
+        } else {
+            POPLayerSetTranslationY(self.blurView.layer, self.backgroundTranslation)
+            POPLayerSetScaleXY(self.blurView.layer, CGPointMake(backgroundScale, backgroundScale))
+        }
+        
+        let initialProgress = self.calculatedSize.height / self.scrollNode.calculatedSize.height
+//        print("progress", ratioProgress, initialProgress)
+        
+        let a = 1 / (1 - initialProgress) * (ratioProgress - initialProgress)
+//        POPTransition(ratioProgress, startValue: 1, endValue: 0)
+//        print(a)
+        self.blurView.alpha = 1 - a
+//            1 - (ratioProgress - initialProgress)
     }
 }
-
+//0.4 1
+//1  0
 
 
 

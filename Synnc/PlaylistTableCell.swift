@@ -56,7 +56,6 @@ class PlaylistTableCell : ASCellNode {
         self.seperatorNode.backgroundColor = UIColor.lightGrayColor()
         
         self.selectedSeperatorNode = ASDisplayNode()
-        self.selectedSeperatorNode.backgroundColor = UIColor.orangeColor()
         
         self.addSubnode(self.trackNameNode)
         self.addSubnode(self.artistNameNode)

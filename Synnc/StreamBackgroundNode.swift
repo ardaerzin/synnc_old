@@ -399,10 +399,10 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         return ASStaticLayoutSpec(children: [x, self.infoNode])
     }
     
-    override func updateScrollPositions(position: CGFloat) {
+    override func updateScrollPositions(position: CGFloat, ratioProgress: CGFloat) {
         
         self.scrollPosition = position
-        super.updateScrollPositions(position)
+        super.updateScrollPositions(position,ratioProgress: ratioProgress)
         
         var delta : CGFloat = 0
         let limit : CGFloat = self.calculatedSize.width - 150

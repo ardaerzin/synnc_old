@@ -10,28 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/ParallaxBackgroundNode.swift"
-            timestampString = "478050544.745449"
+            timestampString = "479668538.221105"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "updateScrollPositions(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/ParallaxContentScroller.swift"
-            timestampString = "477023076.23077"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
-            landmarkName = "scrollViewDidScroll(_:)"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "updateScrollPositions(_:ratioProgress:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

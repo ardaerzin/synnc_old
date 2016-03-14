@@ -89,7 +89,18 @@ class ParallaxBackgroundNode : ASScrollNode {
             }
         }
     }
-    
+    var backgroundTranslation : CGFloat! {
+        didSet {
+            POPLayerSetTranslationY(self.scrollNode.imageGradientNode.layer, backgroundTranslation)
+            POPLayerSetTranslationY(self.scrollNode.imageNode.layer, backgroundTranslation)
+        }
+    }
+    var backgroundScale : CGFloat! {
+        didSet {
+            POPLayerSetScaleXY(self.imageGradientNode.layer, CGPointMake(backgroundScale, backgroundScale))
+            POPLayerSetScaleXY(self.imageNode.layer, CGPointMake(backgroundScale, backgroundScale))
+        }
+    }
     override init() {
         super.init()
         
@@ -118,20 +129,36 @@ class ParallaxBackgroundNode : ASScrollNode {
         self.addSubnode(imageSelector)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(constrainedSize.max)
-        return ASStaticLayoutSpec(children: [self.scrollNode, imageSelector])
+        print("LAYOUT SPEC SIZE", constrainedSize.max)
+        self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width, constrainedSize.max.width))
+        
+//        ASStaticLayoutSpec(children: [self.scrollNode, imageSelector])
+        let a = ASStaticLayoutSpec(children: [self.scrollNode, imageSelector])
+        return a
+//            ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: a)
     }
     
     override func layout() {
         super.layout()
         
+        if self.scrollNode.calculatedSize.height > self.calculatedSize.height {
+            let diff = self.scrollNode.calculatedSize.height - self.calculatedSize.height
+            self.scrollNode.position.y = self.calculatedSize.height - (self.scrollNode.calculatedSize.height / 2)
+        }
         self.imageSelector.position.x = self.calculatedSize.width - (self.imageSelector.calculatedSize.width / 2)
         self.imageSelector.position.y = self.calculatedSize.height - (self.imageSelector.calculatedSize.height / 2)
     }
     
-    func updateScrollPositions(position: CGFloat){
+    func updateScrollPositions(position: CGFloat, ratioProgress: CGFloat = 0){
+        
         if position < 0 {
-            POPLayerSetTranslationY(self.imageSelector.layer, -position/2)
+            if ratioProgress < 1 {
+                POPLayerSetTranslationY(self.imageSelector.layer, 0)
+            } else {
+                let a = self.scrollNode.calculatedSize.height - self.calculatedSize.height
+                POPLayerSetTranslationY(self.imageSelector.layer, (position + a) / 4)
+            }
+            
         } else {
             POPLayerSetTranslationY(self.imageSelector.layer, 0)
         }
