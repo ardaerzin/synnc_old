@@ -89,5 +89,8 @@ class ParallaxNode : ASDisplayNode {
     func didScroll(position: CGFloat){
         
     }
-
+    
+    func backgroundSizeRange(forConstrainedSize constrainedSize : ASSizeRange) -> ASRelativeSizeRange? {
+        return nil
+    }
 }

@@ -1390,6 +1390,13 @@
 			name = Popups;
 			sourceTree = "<group>";
 		};
+		4741F11A1C957CC50004CFEF /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
 		4777052A1C3EB62D007089D0 /* StreamsFeed */ = {
 			isa = PBXGroup;
 			children = (
@@ -1725,6 +1732,7 @@
 			isa = PBXGroup;
 			children = (
 				47C8F9841C1D140500333492 /* PlaylistController.swift */,
+				4741F11A1C957CC50004CFEF /* Nodes */,
 				47B37B7B1C2F05FE001CC6D2 /* PlaylistAnimatior.swift */,
 				47B37B881C2F21D1001CC6D2 /* PlaylistNode.swift */,
 				477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */,
