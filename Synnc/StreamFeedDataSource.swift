@@ -32,7 +32,7 @@ class StreamFeedNode : ASCellNode {
     var genreStr : String!
     var imgId : String!
     
-        override init() {
+    override init() {
         super.init()
         
         streamInfoNode = StreamCellInfoNode()
@@ -103,7 +103,7 @@ class StreamFeedNode : ASCellNode {
         overlay.alignSelf = .Stretch
 
         let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [overlay, streamInfoNode])
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25), child: vStack)
+        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20), child: vStack)
     }
 }
 

@@ -30,6 +30,7 @@ class PlaylistNode : ParallaxNode, TrackedView {
                     emptyStateNode.removeFromSupernode()
                     emptyStateNode = nil
                 }
+                self.emptyStateNode?.setNeedsLayout()
                 self.setNeedsLayout()
             }
         }

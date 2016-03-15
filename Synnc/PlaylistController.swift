@@ -52,6 +52,8 @@ class PlaylistController : ASViewController, WildAnimated {
                 } else {
                     self.screenNode.emptyStateNode?.subTextNode.removeTarget(self, action: Selector("displayTrackSearch:"), forControlEvents: .TouchUpInside)
                 }
+                
+                self.screenNode.emptyStateNode?.setNeedsLayout()
             }
         }
     }

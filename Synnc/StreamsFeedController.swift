@@ -18,7 +18,7 @@ class StreamsFeedController : TabSubsectionController {
     var dataSource : StreamFeedDataSource! = StreamFeedDataSource()
     var collectionManager : WCLCollectionViewManager! = WCLCollectionViewManager()
     override var _title : String! {
-        return "Streams"
+        return "Recommended"
     }
     
     override init() {
@@ -66,6 +66,8 @@ class StreamsFeedController : TabSubsectionController {
     func updatedFeed(notification: NSNotification) {
         self.dataSource.refresh = true
         self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
+        
+        (self.screenNode as! StreamsFeedNode).emptyState = StreamManager.sharedInstance.userFeed.isEmpty
     }
 }
 extension StreamsFeedController : ASCollectionDelegate {
@@ -83,7 +85,7 @@ extension StreamsFeedController : ASCollectionDelegate {
 }
 extension StreamsFeedController : WCLAsyncCollectionViewDataSourceDelegate {
     func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
-        return (min: CGSizeMake(self.view.frame.width, 100), max: CGSizeMake(self.view.frame.width, 200))
+        return (min: CGSizeMake(self.view.frame.width, CGFloat.min), max: CGSizeMake(self.view.frame.width, CGFloat.max))
     }
     func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
         self.collectionManager.performUpdates((self.screenNode as! StreamsFeedNode).streamCollection.view, updates: updatedData, animated: true)

@@ -13,25 +13,85 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 
-class StreamsFeedNode : ASCellNode, TrackedView {
+class StreamFeedHolder : ASDisplayNode {
+    var collectionNode : ASCollectionNode!
     
-    var title : String! = "StreamsFeed"
-    var streamCollection : ASCollectionNode!
-    
-    override init() {
+    override init(){
         super.init()
-        self.backgroundColor = UIColor.redColor()
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .Vertical
-        streamCollection = ASCollectionNode(collectionViewLayout: layout)
-        streamCollection.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        streamCollection.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
+        collectionNode = ASCollectionNode(collectionViewLayout: layout)
+        collectionNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
-        self.addSubnode(streamCollection)
+        collectionNode.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
+        
+        collectionNode.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
+        
+        self.addSubnode(collectionNode)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASStaticLayoutSpec(children: [self.streamCollection])
+        return ASStaticLayoutSpec(children: [collectionNode])
+    }
+}
+
+class StreamsFeedNode : ASDisplayNode, TrackedView {
+    
+    
+    var emptyState : Bool = true {
+        didSet {
+            if emptyState != oldValue {
+                self.transitionLayoutWithAnimation(false, shouldMeasureAsync: false, measurementCompletion: nil)
+            }
+        }
+    }
+    var title : String! = "StreamsFeed"
+    var streamCollection : ASCollectionNode! {
+        get {
+            return self.feedHolder.collectionNode
+        }
+    }
+    
+    var feedHolder : StreamFeedHolder!
+    var otherNode : ASDisplayNode!
+    var _emptyStateNode : EmptyStateNode!
+    var emptyStateNode : EmptyStateNode!
+        {
+        get {
+            if _emptyStateNode == nil {
+                _emptyStateNode = EmptyStateNode()
+                _emptyStateNode.backgroundColor = .blueColor()
+                _emptyStateNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+                _emptyStateNode.alpha = 1
+                
+                self.addSubnode(_emptyStateNode)
+            }
+            return _emptyStateNode
+        }
+    }
+    
+    override init() {
+        super.init()
+        
+        feedHolder = StreamFeedHolder()
+        feedHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+//        let layout = UICollectionViewFlowLayout()
+//        layout.scrollDirection = .Vertical
+//        streamCollection = ASCollectionNode(collectionViewLayout: layout)
+//        streamCollection.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+//        streamCollection.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
+        
+//        otherNode = ASDisplayNode()
+//        otherNode.backgroundColor = .greenColor()
+//        otherNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+        
+//        self.addSubnode(streamCollection)
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let visibleNode : ASLayoutable = emptyState ? emptyStateNode : feedHolder
+        print(visibleNode)
+        return ASStaticLayoutSpec(children: [visibleNode])
     }
 }
