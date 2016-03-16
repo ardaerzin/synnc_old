@@ -43,6 +43,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         }
     }
     
+    let version: String = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
     var bgTime : NSTimer!
     var backgroundTask : UIBackgroundTaskIdentifier!
     
@@ -271,6 +272,12 @@ extension Synnc {
             if self == nil {
                 return
             }
+            
+
+//            let x = NotCompatiblePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+//            WCLPopupManager.sharedInstance.newPopup(x)
+            
+            print("connected", self!.version)
             
             Genre.socketSync(self!.socket, inStack: nil)
         }

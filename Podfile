@@ -8,7 +8,7 @@ target 'Synnc' do
 
 pod 'WCLUtilities'
 pod 'pop'
-pod 'WCLPopupManager'
+pod 'WCLPopupManager', :git => 'https://github.com/doguhanokumus/WCLPopupManager.git', :branch => 'master'
 pod 'WCLUIKit'
 pod 'WCLUserManager/Core'
 pod 'WCLUserManager/SoundcloudUser’

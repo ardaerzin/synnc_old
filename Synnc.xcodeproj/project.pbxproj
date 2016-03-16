@@ -295,6 +295,7 @@
 		475286E41C37372300731008 /* WCLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 475286E31C37372300731008 /* WCLScrollNode.m */; };
 		475286E61C3737D900731008 /* WCLScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286E51C3737D900731008 /* WCLScrollView.swift */; };
 		475E22A21C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */; };
+		475E22A41C99A79100F6D211 /* NotCompatiblePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */; };
 		477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */; };
 		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
 		4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705191C3DB7E9007089D0 /* StreamContentNode.swift */; };
@@ -743,6 +744,7 @@
 		475286E31C37372300731008 /* WCLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLScrollNode.m; sourceTree = "<group>"; };
 		475286E51C3737D900731008 /* WCLScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCLScrollView.swift; sourceTree = "<group>"; };
 		475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedEmptyStateNode.swift; sourceTree = "<group>"; };
+		475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotCompatiblePopup.swift; sourceTree = "<group>"; };
 		477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistEmptyNode.swift; sourceTree = "<group>"; };
 		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
 		477705191C3DB7E9007089D0 /* StreamContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamContentNode.swift; sourceTree = "<group>"; };
@@ -1382,6 +1384,7 @@
 			isa = PBXGroup;
 			children = (
 				47B808CD1C834BDF00312C96 /* InitialViewController.swift */,
+				475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */,
 				47B808CA1C8245D200312C96 /* Onboarding Popup */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				472CB2F91C416EC100F82523 /* FirstLoginPopupVC.swift */,
@@ -2433,6 +2436,7 @@
 				47C8F9921C20F37800333492 /* TrackSearchDataSource.swift in Sources */,
 				4714D2491C8909DB00F6F5AD /* NSDate+NetworkClock.m in Sources */,
 				47DE5CFB1C6CB5F6006876E6 /* SynncNotificationView.swift in Sources */,
+				475E22A41C99A79100F6D211 /* NotCompatiblePopup.swift in Sources */,
 				47EBDF891C1BD8A80075CF0B /* Playlist.swift in Sources */,
 				47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */,
 				4728F9421C3199E200B427EA /* PopController.swift in Sources */,

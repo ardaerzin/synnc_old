@@ -79,7 +79,7 @@ class SettingsContentNode : ASScrollNode {
     var aboutSection : AboutNode!
     var feedbackSection : FeedbackSectionNode!
     var disconnectSection : DisconnectSectionNode!
-    var endLine : ASDisplayNode!
+//    var endLine : ASDisplayNode!
     
     override init() {
         super.init()
@@ -91,10 +91,10 @@ class SettingsContentNode : ASScrollNode {
         self.feedbackSection = FeedbackSectionNode()
         self.disconnectSection = DisconnectSectionNode()
         
-        self.endLine = ASDisplayNode()
-        self.endLine.flexBasis = ASRelativeDimension(type: .Points, value: 1/UIScreen.mainScreen().scale)
-        self.endLine.backgroundColor = UIColor.lightGrayColor()
-        self.endLine.alignSelf = .Stretch
+//        self.endLine = ASDisplayNode()
+//        self.endLine.flexBasis = ASRelativeDimension(type: .Points, value: 1/UIScreen.mainScreen().scale)
+//        self.endLine.backgroundColor = UIColor.lightGrayColor()
+//        self.endLine.alignSelf = .Stretch
         
         self.view.delaysContentTouches = false
         
@@ -112,7 +112,7 @@ class SettingsContentNode : ASScrollNode {
     override func layout() {
         super.layout()
         
-        self.view.contentSize = CGSizeMake(calculatedSize.width, self.endLine.calculatedSize.height / 2 + self.endLine.position.y)
+        self.view.contentSize = CGSizeMake(calculatedSize.width, self.disconnectSection.calculatedSize.height / 2 + self.disconnectSection.position.y)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

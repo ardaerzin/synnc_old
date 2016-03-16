@@ -75,6 +75,7 @@
 		<string>fb-messenger-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+        <string>itms-beta</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
