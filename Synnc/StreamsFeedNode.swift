@@ -55,13 +55,12 @@ class StreamsFeedNode : ASDisplayNode, TrackedView {
     
     var feedHolder : StreamFeedHolder!
     var otherNode : ASDisplayNode!
-    var _emptyStateNode : EmptyStateNode!
-    var emptyStateNode : EmptyStateNode!
+    var _emptyStateNode : StreamsFeedEmptyStateNode!
+    var emptyStateNode : StreamsFeedEmptyStateNode!
         {
         get {
             if _emptyStateNode == nil {
-                _emptyStateNode = EmptyStateNode()
-                _emptyStateNode.backgroundColor = .blueColor()
+                _emptyStateNode = StreamsFeedEmptyStateNode()
                 _emptyStateNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
                 _emptyStateNode.alpha = 1
                 

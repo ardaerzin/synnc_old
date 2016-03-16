@@ -519,37 +519,30 @@ extension StreamViewController {
         
         if sender.selected {
             
-            if let c = contentController {
-                self.popContentController.screenNode.topMargin = sender.calculatedSize.height / 2 + sender.position.y + 20
-                self.popContentController.setContent(c)
+//            if !self.popContentController.displayed {
+                self.addChildViewController(self.popContentController)
+                self.popContentController.setContent(contentController)
+                let x = contentController.screenNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(self.view.frame.width, 0), CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30)))
                 
-                let x = c.screenNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(self.view.frame.width, 0), CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30)))
-                var s = x.size
-                s.height += 20
+                self.popContentController.constrainedSize = ASSizeRangeMakeExactSize(CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30))
                 
-            
-                if !self.popContentController.displayed {
-                    self.addChildViewController(self.popContentController)
-                    if self.popContentController.view.frame == CGRectZero {
-                        self.popContentController.view.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
-                    }
-                    self.popContentController.screenNode.displayAnimation.completionBlock = {
-                        anim, finished in
-                        self.popContentController.screenNode.pop_removeAnimationForKey("displayAnimation")
-                    }
-                    self.screenNode.addSubnode(self.popContentController.screenNode)
-                    
-                    self.popContentController.didMoveToParentViewController(self)
-                    self.popContentController.screenNode.displayAnimation.toValue = 1
-                    self.popContentController.displayed = true
+                if self.popContentController.view.bounds.height != self.view.frame.height - 50 - 30 {
+                    self.popContentController.view.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
                 }
-            }
-            
+                self.popContentController.screenNode.displayAnimation.completionBlock = {
+                    anim, finished in
+                    self.popContentController.screenNode.pop_removeAnimationForKey("displayAnimation")
+                }
+                self.screenNode.addSubnode(self.popContentController.screenNode)
+                self.popContentController.didMoveToParentViewController(self)
+                
+                self.popContentController.screenNode.displayAnimation.toValue = 1
+                self.popContentController.displayed = true
+//            }
         } else {
             self.popContentController.hidePopover(nil)
         }
     }
-    
 }
 
 extension StreamViewController : PopControllerDelegate {

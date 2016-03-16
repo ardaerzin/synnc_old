@@ -52,6 +52,8 @@ class SettingsNode : ASDisplayNode {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
+        print("constrainedSize settings", constrainedSize.min, constrainedSize.max)
+        
         let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
         buttonSpec.spacingAfter = 10
         
@@ -60,10 +62,12 @@ class SettingsNode : ASDisplayNode {
         headerSpec.alignSelf = .Stretch
         
         if constrainedSize.max.height.isFinite {
-            contentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - (50 + 1/UIScreen.mainScreen().scale) ))
+//            contentNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: constrainedSize.max.height - (50 + 1/UIScreen.mainScreen().scale) ))
         }
         
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, ASStaticLayoutSpec(children: [contentNode])])
+        print("contentSize", contentNode.view.contentSize)
+        
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerSpec, separator, contentNode])
     }
 }
 
@@ -77,12 +81,12 @@ class SettingsContentNode : ASScrollNode {
     var disconnectSection : DisconnectSectionNode!
     var endLine : ASDisplayNode!
     
-        override init() {
+    override init() {
         super.init()
         
         self.sourcesSection = SettingsSourcesNode()
 //        self.securitySection = SecurityPrivacyNode()
-        self.notificationsSection = NotificationsNode()
+//        self.notificationsSection = NotificationsNode()
         self.aboutSection = AboutNode()
         self.feedbackSection = FeedbackSectionNode()
         self.disconnectSection = DisconnectSectionNode()
@@ -95,12 +99,14 @@ class SettingsContentNode : ASScrollNode {
         self.view.delaysContentTouches = false
         
         self.addSubnode(self.sourcesSection)
-        self.addSubnode(self.notificationsSection)
+//        self.addSubnode(self.notificationsSection)
         self.addSubnode(self.aboutSection)
         self.addSubnode(self.feedbackSection)
         self.addSubnode(self.disconnectSection)
         
-        self.addSubnode(self.endLine)
+//        self.addSubnode(self.endLine)
+        
+        self.backgroundColor = .whiteColor()
     }
     
     override func layout() {
@@ -114,9 +120,9 @@ class SettingsContentNode : ASScrollNode {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
-        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 32, justifyContent: .Start, alignItems: .Start, children: [sourcesSection, notificationsSection, aboutSection, feedbackSection, disconnectSection, endLine])
+        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 32, justifyContent: .Start, alignItems: .Start, children: [sourcesSection, aboutSection, feedbackSection, disconnectSection])
         
-        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 0, 22), child: vStack)
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 22, 22, 22), child: vStack)
     }
     
 }
@@ -397,9 +403,9 @@ class SettingsSourcesNode : SettingsSectionNode {
     
     var soundcloudButton : SourceLoginButtonNode!
     var spotifyButton : SourceLoginButtonNode!
-    var youtubeButton : SourceLoginButtonNode!
-    var googleplayButton : SourceLoginButtonNode!
-    var groovesharkButton : SourceLoginButtonNode!
+//    var youtubeButton : SourceLoginButtonNode!
+//    var googleplayButton : SourceLoginButtonNode!
+//    var groovesharkButton : SourceLoginButtonNode!
     
     var sources : [String] = ["Soundcloud", "Spotify", "YouTube", "Grooveshark", "Googleplay"]
     
@@ -415,17 +421,18 @@ class SettingsSourcesNode : SettingsSectionNode {
         
         self.soundcloudButton = SourceLoginButtonNode(source: .Soundcloud)
         self.spotifyButton = SourceLoginButtonNode(source: SynncExternalSource.Spotify)
-        self.youtubeButton = SourceLoginButtonNode(source: SynncExternalSource.YouTube)
-        self.googleplayButton = SourceLoginButtonNode(source: SynncExternalSource.GooglePlay)
-        self.groovesharkButton = SourceLoginButtonNode(source: SynncExternalSource.Grooveshark)
+//        self.youtubeButton = SourceLoginButtonNode(source: SynncExternalSource.YouTube)
+//        self.googleplayButton = SourceLoginButtonNode(source: SynncExternalSource.GooglePlay)
+//        self.groovesharkButton = SourceLoginButtonNode(source: SynncExternalSource.Grooveshark)
         
-        self.sourceButtons = [soundcloudButton, spotifyButton, youtubeButton, googleplayButton, groovesharkButton]
+        self.sourceButtons = [soundcloudButton, spotifyButton]
+//            [soundcloudButton, spotifyButton, youtubeButton, googleplayButton, groovesharkButton]
         
         self.addSubnode(soundcloudButton)
         self.addSubnode(spotifyButton)
-        self.addSubnode(youtubeButton)
-        self.addSubnode(googleplayButton)
-        self.addSubnode(groovesharkButton)
+//        self.addSubnode(youtubeButton)
+//        self.addSubnode(googleplayButton)
+//        self.addSubnode(groovesharkButton)
 
         self.addSubnode(self.title)
     }

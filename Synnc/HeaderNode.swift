@@ -39,7 +39,7 @@ class TitleHolderNode : ASDisplayNode {
             return ASLayoutSpec()
         } else {
             if let w = self.constrainedSize {
-                titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: w.width-100), ASRelativeDimension(type: .Points, value: 33))
+//                titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: w.width - 100), ASRelativeDimension(type: .Points, value: 33))
             }
             let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [titleItem])])
             return x
@@ -86,6 +86,10 @@ class HeaderNode : ASDisplayNode {
             if selectedItem.identifier != oldValue.identifier {
             }
         }
+    }
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+        self.titleHolderNode.titleItem.resignFirstResponder()
     }
     override init() {
         super.init()
@@ -136,7 +140,7 @@ class HeaderNode : ASDisplayNode {
         self.nowPlayingIcon.position.x = self.calculatedSize.width - (self.nowPlayingIcon.calculatedSize.width / 2)
         
         if self.iconHolderNode.iconItem == nil {
-            self.titleHolderNode.position.x = (self.calculatedSize.width / 2 - 25)
+            self.titleHolderNode.position.x = (self.calculatedSize.width / 2)
         } else {
             self.titleHolderNode.position.x = (self.calculatedSize.width / 2)
         }
@@ -151,11 +155,18 @@ class HeaderNode : ASDisplayNode {
         statusSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 20)
         
         self.titleHolderNode.constrainedSize = constrainedSize.max
+        
         let titleSpec = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [iconHolderNode, self.titleHolderNode, nowPlayingIcon])])
         titleSpec.spacingBefore = 17
         titleSpec.flexBasis = ASRelativeDimension(type: .Points, value: 66)
-        
+        titleSpec.flexGrow = true
         let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [statusSpacer, titleSpec, subSectionArea, separator])
+        
+        if self.iconHolderNode.iconItem == nil {
+            self.titleHolderNode.titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 50), ASRelativeDimension(type: .Points, value: 33))
+        } else {
+            self.titleHolderNode.titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 100), ASRelativeDimension(type: .Points, value: 33))
+        }
         
         return x
     }

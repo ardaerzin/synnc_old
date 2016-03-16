@@ -43,13 +43,7 @@ class ControllerNotAvailableNode : ASDisplayNode, TrackedView {
         mainTextNode = ASTextNode()
         mainTextNode.maximumNumberOfLines = 2
       
-//        box = ASDisplayNode()
-//        box.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 100, height: 100))
-//        box.backgroundColor = .orangeColor()
-        
         self.addSubnode(mainTextNode)
-//        self.addSubnode(box)
-//        self.backgroundColor = .blueColor()
     }
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
@@ -65,7 +59,8 @@ class ControllerNotAvailableNode : ASDisplayNode, TrackedView {
         
         mainTextNode.attributedString = NSAttributedString(string: "\"" + controllerName + "\" will be here soon...", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1, NSParagraphStyleAttributeName : paragraphStyle])
 //        self.layoutSpecThatFits(ASSizeRange(min: UIScreen.mainScreen().bounds.size, max: UIScreen.mainScreen().bounds.size))
-//            setNeedsLayout()
+        
+        setNeedsLayout()
         
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

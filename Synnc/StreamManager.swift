@@ -379,6 +379,7 @@ extension StreamManager {
     
     func findStreams(searchString : String? = "", genres: [Genre]? = [], callback: StreamSearchCallback?) -> [Stream] {
         let cachedStreams = self.findLocalStreams(searchString, genres: genres, callback: callback)
+        print("local streams:", cachedStreams)
         self.findRemoteStreams(searchString, genres: genres, callback: callback)
         return cachedStreams
     }

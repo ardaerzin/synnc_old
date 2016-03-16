@@ -12,4 +12,16 @@ class SearchUsersController : TabSubsectionController {
     override var _title : String! {
         return "Users"
     }
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+        if let x = self.parentViewController as? SearchController {
+            x.titleItem.resignFirstResponder()
+        }
+    }
+}
+
+extension SearchUsersController : SubSearchController {
+    func subSearchController(updatedSearchString: String!) {
+        print("search users: q:", updatedSearchString)
+    }
 }

@@ -294,6 +294,7 @@
 		475286DF1C35AB9600731008 /* PlaylistSelectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */; };
 		475286E41C37372300731008 /* WCLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 475286E31C37372300731008 /* WCLScrollNode.m */; };
 		475286E61C3737D900731008 /* WCLScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286E51C3737D900731008 /* WCLScrollView.swift */; };
+		475E22A21C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */; };
 		477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */; };
 		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
 		4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705191C3DB7E9007089D0 /* StreamContentNode.swift */; };
@@ -741,6 +742,7 @@
 		475286E21C37371600731008 /* WCLScrollNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCLScrollNode.h; sourceTree = "<group>"; };
 		475286E31C37372300731008 /* WCLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLScrollNode.m; sourceTree = "<group>"; };
 		475286E51C3737D900731008 /* WCLScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCLScrollView.swift; sourceTree = "<group>"; };
+		475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedEmptyStateNode.swift; sourceTree = "<group>"; };
 		477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistEmptyNode.swift; sourceTree = "<group>"; };
 		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
 		477705191C3DB7E9007089D0 /* StreamContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamContentNode.swift; sourceTree = "<group>"; };
@@ -1403,6 +1405,7 @@
 				47EBDF7F1C1BBBEB0075CF0B /* StreamsFeedController.swift */,
 				4777052B1C3EBAF7007089D0 /* StreamFeedDataSource.swift */,
 				477705281C3EB628007089D0 /* StreamsFeedNode.swift */,
+				475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */,
 			);
 			name = StreamsFeed;
 			sourceTree = "<group>";
@@ -1452,7 +1455,6 @@
 				479AF8141C91A327001C9F4F /* AnalyticsManager.swift */,
 				4712B63A1C11149800C49522 /* Utilities.swift */,
 				47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */,
-				47B899BD1C485421007C2B7F /* NHNetworkTime */,
 				47380A601C7BE7B70028EA38 /* Popups */,
 				4728F94D1C34D13D00B427EA /* StreamRelated */,
 				47EBDF841C1BD89D0075CF0B /* Data Model */,
@@ -1658,13 +1660,6 @@
 				47B808C81C8245CC00312C96 /* OnboardingVC.swift */,
 			);
 			name = "Onboarding Popup";
-			sourceTree = "<group>";
-		};
-		47B899BD1C485421007C2B7F /* NHNetworkTime */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = NHNetworkTime;
 			sourceTree = "<group>";
 		};
 		47B899C91C4866B1007C2B7F /* Nodes */ = {
@@ -2463,6 +2458,7 @@
 				47EBDF801C1BBBEB0075CF0B /* StreamsFeedController.swift in Sources */,
 				47EBDF7C1C1BBBD30075CF0B /* SearchUsersController.swift in Sources */,
 				470F8C0F1C4985AB00624F0F /* ShareController.swift in Sources */,
+				475E22A21C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift in Sources */,
 				47EBDF9A1C1BE1470075CF0B /* SynncArtist.swift in Sources */,
 				47A4E6B11C0CB4D600354EA8 /* MainUser.swift in Sources */,
 				47D7636E1C38B55F008E0334 /* StreamBackgroundNode.swift in Sources */,

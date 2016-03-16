@@ -129,7 +129,6 @@ class ParallaxBackgroundNode : ASScrollNode {
         self.addSubnode(imageSelector)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        print("LAYOUT SPEC SIZE", constrainedSize.max)
         self.scrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width, constrainedSize.max.width))
         
 //        ASStaticLayoutSpec(children: [self.scrollNode, imageSelector])

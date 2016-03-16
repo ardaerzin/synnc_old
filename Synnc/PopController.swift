@@ -19,6 +19,7 @@ class PopController : ASViewController {
     var delegate : PopControllerDelegate?
     var screenNode : PopoverNode!
     var displayed : Bool = false
+    var constrainedSize : ASSizeRange!
     
     init(){
         let node = PopoverNode(delegate: nil)
@@ -58,6 +59,10 @@ class PopController : ASViewController {
         
         self.screenNode.displayAnimation.toValue = 0
         self.displayed = false
+    }
+    
+    override func nodeConstrainedSize() -> ASSizeRange {
+        return self.constrainedSize
     }
 }
 

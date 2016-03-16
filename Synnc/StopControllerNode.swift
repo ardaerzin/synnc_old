@@ -24,8 +24,6 @@ class StopControllerNode : ASDisplayNode {
     override init() {
         super.init()
         
-        self.backgroundColor = UIColor.whiteColor()
-        
         titleNode = ASTextNode()
         titleNode.attributedString = NSAttributedString(string: "Are you sure you want to stop your active stream?", attributes: titleAttributes)
         titleNode.flexGrow = true
@@ -52,6 +50,7 @@ class StopControllerNode : ASDisplayNode {
         let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [yesStack, noStack])
         titleNode.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 10 - 75 - 25)
         let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [titleNode, vStack])
+        
         return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 20, 5, 5), child: x)
     }
 }

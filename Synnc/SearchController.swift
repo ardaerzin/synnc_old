@@ -13,6 +13,10 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 
+protocol SubSearchController {
+    func subSearchController(updatedSearchString : String!)
+}
+
 class SearchController : TabItemController {
     
     override var identifier : String! {
@@ -37,7 +41,8 @@ class SearchController : TabItemController {
                 item.textContainerInset = UIEdgeInsetsMake(6, 6, 6, 6)
                 item.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
                 item.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor(), NSKernAttributeName : -0.09]
-                item.userInteractionEnabled = false
+                item.delegate = self
+//                item.userInteractionEnabled = false
                 _titleItem = item
             }
             return _titleItem
@@ -45,13 +50,35 @@ class SearchController : TabItemController {
     }
     override var iconItem : ASDisplayNode! {
         get {
-            if _iconItem == nil {
-                let item = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
-                item.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(34, 34))
-                item.setImage(UIImage(named: "settings"), forState: ASControlState.Normal)
-                _iconItem = item
-            }
+//            if _iconItem == nil {
+//                let item = ButtonNode(normalColor: UIColor.clearColor(), selectedColor: UIColor.clearColor())
+//                item.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(34, 34))
+//                item.setImage(UIImage(named: "settings"), forState: ASControlState.Normal)
+//                _iconItem = item
+//            }
             return _iconItem
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+}
+
+extension SearchController : ASEditableTextNodeDelegate {
+    func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            editableTextNode.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+    func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode) {
+        print("did update text", editableTextNode.attributedText?.string)
+        for section in self.subsections {
+            if let ssn = section as? SubSearchController {
+                ssn.subSearchController(editableTextNode.attributedText?.string)
+            }
         }
     }
 }

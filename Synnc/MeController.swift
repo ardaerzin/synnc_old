@@ -91,12 +91,10 @@ class MeController : TabItemController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         
         node.editButton.addTarget(self, action: Selector("toggleEditMode:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.inboxButton.addTarget(self, action: Selector("toggleInbox:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.settingsButton.addTarget(self, action: Selector("toggleSettings:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.usernameNode.delegate = self
         
         node.mainScrollNode.backgroundNode.imageSelector.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-//        (node.mainScrollNode.backgroundNode as! PlaylistBackgroundNode).imageSelector.addTarget(self, action: Selector("imageTap:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
     }
     
     func imageTap(sender : ButtonNode){
@@ -130,16 +128,6 @@ class MeController : TabItemController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.screenNode.backgroundColor = UIColor.whiteColor()
-    }
-    
-    var _inboxController : InboxController!
-    var inboxController : InboxController! {
-        get {
-            if _inboxController == nil {
-                _inboxController = InboxController()
-            }
-            return _inboxController
-        }
     }
     var _settingsController : SettingsController!
     var settingsController : SettingsController! {
@@ -196,7 +184,7 @@ extension MeController {
     func toggleEditMode(sender : ButtonNode) {
         if let popover = self.selectedPopoverButton where popover.selected {
             popover.selected = !popover.selected
-            self.hidePopover()
+            self.popContentController.hidePopover(self)
         }
         
         self.editing = !self.editing
@@ -205,10 +193,6 @@ extension MeController {
     func toggleSettings(sender : ButtonNode) {
         sender.selected = !sender.selected
         togglePopover(sender, contentController: self.settingsController)
-    }
-    func toggleInbox(sender : ButtonNode){
-        sender.selected = !sender.selected
-        togglePopover(sender, contentController: self.inboxController)
     }
     
     func togglePopover(sender : ButtonNode, contentController : PopContentController!){
@@ -224,13 +208,15 @@ extension MeController {
         
         if sender.selected {
             
-            self.popContentController.setContent(contentController)
-            let x = contentController.screenNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(self.view.frame.width, 0), CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30)))
-            var s = x.size
-            s.height += 20
-            if !self.popContentController.displayed {
+//            if !self.popContentController.displayed {
                 self.addChildViewController(self.popContentController)
-                if self.popContentController.view.frame == CGRectZero {
+                self.popContentController.setContent(contentController)
+                let x = contentController.screenNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(self.view.frame.width, 0), CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30)))
+                
+                self.popContentController.constrainedSize = ASSizeRangeMakeExactSize(CGSizeMake(self.view.frame.width, self.view.frame.height - 50 - 30))
+            
+        
+                if self.popContentController.view.bounds.height != self.view.frame.height - 50 - 30 {
                     self.popContentController.view.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - 50 - 30)
                 }
                 self.popContentController.screenNode.displayAnimation.completionBlock = {
@@ -239,24 +225,13 @@ extension MeController {
                 }
                 self.screenNode.addSubnode(self.popContentController.screenNode)
                 self.popContentController.didMoveToParentViewController(self)
+                
                 self.popContentController.screenNode.displayAnimation.toValue = 1
                 self.popContentController.displayed = true
-            }
+//            }
         } else {
             self.popContentController.hidePopover(nil)
         }
-    }
-    
-    func hidePopover(){
-        self.popContentController.screenNode.displayAnimation.completionBlock = {
-            anim, finished in
-            self.popContentController.willMoveToParentViewController(nil)
-            self.popContentController.screenNode.removeFromSupernode()
-            self.popContentController.removeFromParentViewController()
-            self.popContentController.screenNode.pop_removeAnimationForKey("displayAnimation")
-        }
-        self.popContentController.screenNode.displayAnimation.toValue = 0
-        self.popContentController.displayed = false
     }
 }
 

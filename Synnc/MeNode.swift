@@ -45,10 +45,6 @@ class MeNode : ParallaxNode, TrackedView {
         var a = TitleColorButton(normalTitleString: "SETTINGS", selectedTitleString: "SETTINGS", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
         return a
         }()
-    lazy var inboxButton : TitleColorButton = {
-        var a = TitleColorButton(normalTitleString: "INBOX", selectedTitleString: "INBOX", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
-        return a
-        }()
     lazy var editButton : TitleColorButton = {
         var a = TitleColorButton(normalTitleString: "EDIT", selectedTitleString: "SAVE", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!], normalColor: .whiteColor(), selectedColor: .SynncColor())
         return a
@@ -56,7 +52,7 @@ class MeNode : ParallaxNode, TrackedView {
     
     var buttons : [ButtonNode] {
         get {
-            return [settingsButton, inboxButton, editButton]
+            return [settingsButton, editButton]
         }
     }
     

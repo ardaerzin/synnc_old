@@ -51,6 +51,8 @@ class EmptyStateNode : ASDisplayNode {
         
         self.alpha = 0
         self.userInteractionEnabled = false
+        
+        self.backgroundColor = .lightGrayColor()
     }
     
     func setMessage(msg: String) {

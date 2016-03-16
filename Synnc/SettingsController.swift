@@ -31,16 +31,16 @@ class SettingsController : PopContentController {
         node.contentNode.aboutSection.termsAndConditionsButton.addTarget(self, action: Selector("termsAndConditionsAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.contentNode.aboutSection.librariesButton.addTarget(self, action: Selector("librariesAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
-        node.contentNode.notificationsSection.followsNotificationCheckbox.addTarget(self, action: Selector("toggleFollowsNotification:"), forControlEvents: .TouchUpInside)
-        node.contentNode.notificationsSection.streamsNotificationCheckbox.addTarget(self, action: Selector("toggleStreamsNotification:"), forControlEvents: .TouchUpInside)
-        node.contentNode.notificationsSection.newUserNotificationCheckbox.addTarget(self, action: Selector("toggleNewUserNotification:"), forControlEvents: .TouchUpInside)
-        node.contentNode.notificationsSection.myStreamNotificationCheckbox.addTarget(self, action: Selector("toggleMyStreamNotification:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.notificationsSection.followsNotificationCheckbox.addTarget(self, action: Selector("toggleFollowsNotification:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.notificationsSection.streamsNotificationCheckbox.addTarget(self, action: Selector("toggleStreamsNotification:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.notificationsSection.newUserNotificationCheckbox.addTarget(self, action: Selector("toggleNewUserNotification:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.notificationsSection.myStreamNotificationCheckbox.addTarget(self, action: Selector("toggleMyStreamNotification:"), forControlEvents: .TouchUpInside)
         
         node.contentNode.sourcesSection.soundcloudButton.addTarget(self, action: Selector("toggleSoundcloudLogin:"), forControlEvents: .TouchUpInside)
         node.contentNode.sourcesSection.spotifyButton.addTarget(self, action: Selector("toggleSpotifyLogin:"), forControlEvents: .TouchUpInside)
-        node.contentNode.sourcesSection.youtubeButton.addTarget(self, action: Selector("toggleYoutubeLogin:"), forControlEvents: .TouchUpInside)
-        node.contentNode.sourcesSection.googleplayButton.addTarget(self, action: Selector("toggleGoogleplayLogin:"), forControlEvents: .TouchUpInside)
-        node.contentNode.sourcesSection.groovesharkButton.addTarget(self, action: Selector("toggleGroovesharkLogin:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.sourcesSection.youtubeButton.addTarget(self, action: Selector("toggleYoutubeLogin:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.sourcesSection.googleplayButton.addTarget(self, action: Selector("toggleGoogleplayLogin:"), forControlEvents: .TouchUpInside)
+//        node.contentNode.sourcesSection.groovesharkButton.addTarget(self, action: Selector("toggleGroovesharkLogin:"), forControlEvents: .TouchUpInside)
         
     }
     
