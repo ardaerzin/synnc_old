@@ -22,18 +22,26 @@ import AsyncDisplayKit
 import WCLUserManager
 import WCLNotificationManager
 import Crashlytics
+import SwiftyJSON
+import WCLUIKit
 
 #if DEBUG
-let serverURLString = "https://digital-reform.codio.io:9500"
+//let socketURLString = "https://digital-reform.codio.io:9500"
+let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-3"
 #else
-let serverURLString = "https://synnc.herokuapp.com"
+let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-4"
 #endif
 
 @UIApplicationMain
 class Synnc : UIResponder, UIApplicationDelegate {
     
+    var serverAvailable : Bool = false {
+        didSet {
+            NSNotificationCenter.defaultCenter().postNotificationName("SERVER STATUS CHANGED", object: nil, userInfo: ["status" : serverAvailable])
+        }
+    }
     class var appIcon : UIImage! {
         get {
             let primaryIconsDictionary = NSBundle.mainBundle().infoDictionary?["CFBundleIcons"]?["CFBundlePrimaryIcon"] as? NSDictionary
@@ -43,29 +51,31 @@ class Synnc : UIResponder, UIApplicationDelegate {
         }
     }
     
+    var topPopupManager : WCLPopupManager!
     let version: String = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
     var bgTime : NSTimer!
     var backgroundTask : UIBackgroundTaskIdentifier!
     
-    lazy var streamNavigationController : StreamNavigationController! = {
-        if let rvc = self.window?.rootViewController as? RootViewController {
-            let a = StreamNavigationController()
-            a.view.frame = UIScreen.mainScreen().bounds
-            rvc.addChildViewController(a)
-            rvc.view.addSubview(a.view)
-            a.didMoveToParentViewController(rvc)
-            return a
-        } else {
-            return nil
-        }
-    }()
+//    lazy var streamNavigationController : StreamNavigationController! = {
+//        if let rvc = self.window?.rootViewController as? RootViewController {
+//            let a = StreamNavigationController()
+//            a.view.frame = UIScreen.mainScreen().bounds
+//            rvc.addChildViewController(a)
+//            rvc.view.addSubview(a.view)
+//            a.didMoveToParentViewController(rvc)
+//            return a
+//        } else {
+//            return nil
+//        }
+//    }()
+    
+    
     var locationManager : WCLLocationManager = WCLLocationManager.sharedInstance()
     var chatManager : ChatManager!
     var imageUploader : CLUploader!
-    var user : MainUser!
+    dynamic var user : MainUser!
     var socket: SocketIOClient!
     var window: UIWindow?
-    var rootVC : RootViewController!
     
     var streamManager : StreamManager! {
         return StreamManager.sharedInstance
@@ -85,50 +95,107 @@ class Synnc : UIResponder, UIApplicationDelegate {
     override init() {
         super.init()
         
-        var gai = GAI.sharedInstance()
-        let tracker = gai.trackerWithName("SynncTracker", trackingId: analyticsId)
+        let gai = GAI.sharedInstance()
+        gai.trackerWithName("SynncTracker", trackingId: analyticsId)
         gai.trackUncaughtExceptions = true  // report uncaught exceptions
         gai.logger.logLevel = GAILogLevel.Error  // remove before app release
         gai.dispatchInterval = 10
         
         Twitter.sharedInstance().startWithConsumerKey("gcHZAHdyyw3DaTZmgqqj8ySlH", consumerSecret: "mf1qWT6crYL7h3MUhaNeV7A7tByqdMx1AXjFqBzUnuIo1c8OES")
         Fabric.with([Answers(), Crashlytics.sharedInstance(), Twitter.sharedInstance()])
-        
-        self.socket = initSocket()
-        WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        let request = NSMutableURLRequest(URL: NSURL(string: socketURLString+"/api/settings")!)
+        request.HTTPMethod = "GET"
         
-        self.chatManager = ChatManager.sharedInstance()
-        self.chatManager.setupSocket(self.socket)
+        
+        NSURLSession.sharedSession().dataTaskWithRequest(request) {
+            (data, response, error) in
+        
+            guard let d = data else {
+                print("NO RESPONSE FROM SERVER")
+                return
+            }
+        
+            let json = JSON(data: d)
+            Async.main {
+                if let minReqVersion = json["minCompatibleVersion"].string where self.version.compareToMinRequiredVersion(minReqVersion) >= 0 {
+                    self.serverAvailable = true
+                    self.socket?.connect()
+                } else {
+                    let x = NotCompatiblePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+                    self.topPopupManager.newPopup(x)
+                }
+            }
+            
+        }.resume()
+        
+        
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
         self.locationManager.delegate = self
         self.locationManager.initLocationManager()
         
         WildDataManager.sharedInstance().setCoreDataStack(dbName: "SynncDB", modelName: "SynncDataModel", bundle: nil, iCloudSync: false)
         
-        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        self.user = MainUser(socket: self.socket)
+        let x = RootWindowController()
+        
+        let opts = WCLWindowOptions(link: true, draggable: false, windowLevel : 0, limit: 0)
+        
+        let a = WCLWindowManager.sharedInstance.newWindow(x, animated: false, options: opts)
+        
+        self.window = a
+        
+//        a.panRecognizer.enabled = false
+        
+//        a.alpha = 1
+//        UIWindow(frame: UIScreen.mainScreen().bounds)
+//        self.window?.rootViewController = x
+//        a
+        a.display(false)
+        
+//        a.transitionProgress = 1
+//        print("window frame", self.window!.frame)
+//            UIWindow(frame: UIScreen.mainScreen().bounds)
+//            WCLWindowManager.sharedInstance.newWindow()
+//            WCLWindow(frame: UIScreen.mainScreen().bounds)
+//            UIWindow(frame: UIScreen.mainScreen().bounds)
         
         //Notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("willChangeStatusBarFrame:"), name: UIApplicationWillChangeStatusBarFrameNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didChangeStatusBarFrame:"), name: UIApplicationDidChangeStatusBarFrameNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userProfileInfoChanged:"), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("syncCompleteNotification:"), name: kNHNetworkTimeSyncCompleteNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.willChangeStatusBarFrame(_:)), name: UIApplicationWillChangeStatusBarFrameNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.didChangeStatusBarFrame(_:)), name: UIApplicationDidChangeStatusBarFrameNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.userProfileInfoChanged(_:)), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.syncCompleteNotification(_:)), name: kNHNetworkTimeSyncCompleteNotification, object: nil)
         
         //Initialize rootViewController for main window
-        rootVC = RootViewController()
+//        rootVC = RootViewController()
         
+//        self.window?.makeKeyAndVisible()
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = rootVC
+//            makeKeyWindow()
+//        self.window?.rootViewController = RootWindowController()
         
-        self.streamManager.setSocket(self.socket)
+//        a.transitionProgress = 0
+        
+        self.initSynnc()
+        
         performNTPCheck()
         
+        topPopupManager = WCLPopupManager()
         return true
+    }
+    
+    func initSynnc(){
+        self.socket = self.initSocket()
+        WCLUserManager.sharedInstance.configure(self.socket, cloudinaryInstance : _cloudinary)
+        
+        self.chatManager = ChatManager.sharedInstance()
+        self.chatManager.setupSocket(self.socket)
+        
+        self.user = MainUser(socket: self.socket)
+        self.streamManager.setSocket(self.socket)
     }
     
     var ntpShit : NSDate!
@@ -177,7 +244,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         bgTime = NSTimer.scheduledTimerWithTimeInterval(1.0,
             target: self,
-            selector: "timerMethod:",
+            selector: #selector(Synnc.timerMethod(_:)),
             userInfo: nil,
             repeats: true)
         
@@ -254,14 +321,17 @@ extension Synnc : WCLNotificationManagerDelegate {
 
 extension Synnc {
     func initSocket() -> SocketIOClient! {
-        guard let url = NSURL(string: serverURLString) else {
+        guard let url = NSURL(string: socketURLString) else {
             assertionFailure("not a valid server address")
             return nil
         }
         
         let socket = SocketIOClient(socketURL: url, options: [SocketIOClientOption.Reconnects(true), SocketIOClientOption.ForceWebsockets(true)])
         socket.on("connect", callback: connectCallback)
-        socket.connect()
+        
+        if self.serverAvailable {
+            socket.connect()
+        }
         return socket
     }
     var connectCallback : NormalCallback {
@@ -273,12 +343,6 @@ extension Synnc {
                 return
             }
             
-
-//            let x = NotCompatiblePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-//            WCLPopupManager.sharedInstance.newPopup(x)
-            
-            print("connected", self!.version)
-            
             Genre.socketSync(self!.socket, inStack: nil)
         }
     }
@@ -289,18 +353,12 @@ extension Synnc {
         if self.user._id != nil {
             
             if self.user.generatedUsername {
-                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-                x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-                WCLPopupManager.sharedInstance.newPopup(x)
+//                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+//                x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+//                WCLPopupManager.sharedInstance.newPopup(x)
             }
             StreamManager.sharedInstance.updateUserFeed()
             SynncPlaylist.socketSync(self.socket, inStack: nil, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
-        }
-    }
-    
-    func goToProfile(sender : ButtonNode!) {
-        if let rvc = self.window?.rootViewController as? RootViewController {
-            rvc.willSetTabItem(rvc.screenNode.tabbar, item: rvc.meTab)
         }
     }
 }

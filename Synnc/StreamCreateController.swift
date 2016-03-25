@@ -16,6 +16,7 @@ import Cloudinary
 import WCLPopupManager
 import WCLLocationManager
 import WCLNotificationManager
+import DKImagePickerController
 
 protocol StreamCreateControllerDelegate {
     func updatedData()
@@ -74,7 +75,7 @@ class StreamCreateController : NSObject {
     
     var streamCity : String!
     var selectedImage : UIImage!
-    var imagePicker : SynncImagePicker!
+    var imagePicker : DKImagePickerController!
     var parentController : ASViewController?
     
     var streamName : String!
@@ -96,25 +97,26 @@ class StreamCreateController : NSObject {
     var backgroundNode : StreamBackgroundNode!
     var contentNode : ASDisplayNode! {
         get {
-            return playlistSelector.screenNode
+            return ASDisplayNode()
+//            return playlistSelector.screenNode
         }
     }
     
-    var playlistSelector : PlaylistSelectorController!
+//    var playlistSelector : PlaylistSelectorController!
     
     init(backgroundNode : StreamBackgroundNode!, playlist : SynncPlaylist? = nil){
         super.init()
         
-        self.playlistSelector = PlaylistSelectorController(playlist: playlist)
+//        self.playlistSelector = PlaylistSelectorController(playlist: playlist)
         
         self.backgroundNode = backgroundNode
-        self.playlistSelector.delegate = self
+//        self.playlistSelector.delegate = self
         self.backgroundNode.editing = true
         
-        self.backgroundNode.imageSelector.addTarget(self, action: Selector("imageSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        self.backgroundNode.infoNode.genreToggle.addTarget(self, action: Selector("genreSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        self.backgroundNode.infoNode.startStreamButton.addTarget(self, action: Selector("createStreamAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        self.backgroundNode.infoNode.locationToggle.addTarget(self, action: Selector("toggleLocation:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.backgroundNode.imageSelector.addTarget(self, action: #selector(StreamCreateController.imageSelector(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.backgroundNode.infoNode.genreToggle.addTarget(self, action: #selector(StreamCreateController.genreSelector(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.backgroundNode.infoNode.startStreamButton.addTarget(self, action: #selector(StreamCreateController.createStreamAction(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.backgroundNode.infoNode.locationToggle.addTarget(self, action: #selector(StreamCreateController.toggleLocation(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.backgroundNode.infoNode.streamTitle.delegate = self
         self.tempStream = Stream(user: Synnc.sharedInstance.user)
@@ -128,7 +130,7 @@ class StreamCreateController : NSObject {
     }
     
     func imageSelector(sender : ButtonNode) {
-        imagePicker = SynncImagePicker()
+        imagePicker = DKImagePickerController()
         imagePicker.assetType = .AllPhotos
         imagePicker.showsEmptyAlbums = false
         imagePicker.maxSelectableCount = 1
@@ -267,7 +269,7 @@ class StreamCreateController : NSObject {
                 
                 (successResult, errorString, code, context)  in
                 
-                if let err = errorString {
+                if let _ = errorString {
                     if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
                         WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Please try to create your stream once again", title: "Couldn't Upload Stream Image", sound: nil, fireDate: nil, showLocalNotification: false, object: nil, id: nil))
                     }
@@ -356,18 +358,18 @@ extension StreamCreateController : GenrePickerDelegate {
     }
 }
 
-extension StreamCreateController : PlaylistSelectorDelegate {
-    func didSelectPlaylist(playlist: SynncPlaylist) {
-        self.playlist = playlist
-        
-        if !updatedName {
-            streamName = playlist.name!
-            self.backgroundNode.infoNode.streamTitle.attributedText = NSAttributedString(string: streamName, attributes: self.backgroundNode.infoNode.streamTitle.typingAttributes)
-        }
-        
-        self.delegate?.updatedData()
-    }
-}
+//extension StreamCreateController : PlaylistSelectorDelegate {
+//    func didSelectPlaylist(playlist: SynncPlaylist) {
+//        self.playlist = playlist
+//        
+//        if !updatedName {
+//            streamName = playlist.name!
+//            self.backgroundNode.infoNode.streamTitle.attributedText = NSAttributedString(string: streamName, attributes: self.backgroundNode.infoNode.streamTitle.typingAttributes)
+//        }
+//        
+//        self.delegate?.updatedData()
+//    }
+//}
 
 extension StreamCreateController : ASEditableTextNodeDelegate {
     func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {

@@ -141,7 +141,7 @@ class ParallaxBackgroundNode : ASScrollNode {
         super.layout()
         
         if self.scrollNode.calculatedSize.height > self.calculatedSize.height {
-            let diff = self.scrollNode.calculatedSize.height - self.calculatedSize.height
+//            let diff = self.scrollNode.calculatedSize.height - self.calculatedSize.height
             self.scrollNode.position.y = self.calculatedSize.height - (self.scrollNode.calculatedSize.height / 2)
         }
         self.imageSelector.position.x = self.calculatedSize.width - (self.imageSelector.calculatedSize.width / 2)

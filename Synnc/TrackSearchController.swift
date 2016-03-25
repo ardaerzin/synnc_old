@@ -54,7 +54,6 @@ class TrackSearchController : WCLPopupViewController {
         let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = opts
-        self.configureView()
     }
     override func loadView() {
         super.loadView()
@@ -65,8 +64,8 @@ class TrackSearchController : WCLPopupViewController {
         self.screenNode.sourceSelectionNode.delegate = self
         
         self.screenNode.inputNode.delegate = self
-        self.screenNode.closeButton.addTarget(self, action: Selector("closeTrackSearch:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        self.screenNode.sourceOptionsButton.addTarget(self, action: Selector("toggleSourceSelector:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.screenNode.closeButton.addTarget(self, action: #selector(TrackSearchController.closeTrackSearch(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.screenNode.sourceOptionsButton.addTarget(self, action: #selector(TrackSearchController.toggleSourceSelector(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         self.screenNode.artistsCollection.view.asyncDataSource = artistsDataSource
         self.screenNode.artistsCollection.view.asyncDelegate = self

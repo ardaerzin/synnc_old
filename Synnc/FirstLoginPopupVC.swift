@@ -30,8 +30,8 @@ class FirstLoginPopupVC : WCLPopupViewController {
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: Selector("profileAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.yesButton.addTarget(self, action: #selector(FirstLoginPopupVC.profileAction(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.noButton.addTarget(self, action: #selector(FirstLoginPopupVC.dismissLocationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }

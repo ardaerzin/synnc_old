@@ -113,7 +113,7 @@ class ChatController : ASViewController {
         let n = ChatNode()
         super.init(node: n)
         self.chatbar = bar
-        panRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handlePanRecognizer:"))
+        panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ChatController.handlePanRecognizer(_:)))
         panRecognizer.delegate = self
         screenNode = n
         screenNode.view.addGestureRecognizer(panRecognizer)
@@ -121,12 +121,12 @@ class ChatController : ASViewController {
         
         
         screenNode.delegate = self
-        self.screenNode.headerNode.closeButton.addTarget(self, action: Selector("hide:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        self.chatbar.sendButton.addTarget(self, action: Selector("newMessage:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.screenNode.headerNode.closeButton.addTarget(self, action: #selector(ChatController.hide(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.chatbar.sendButton.addTarget(self, action: #selector(ChatController.newMessage(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         AnalyticsEvent.new(category: "StreamChat", action: "newItem", label: "button", value: nil)
         self.chatbar.textNode.delegate = self
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillChangeFrame:"), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatController.keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     func handlePanRecognizer(recognizer: UIPanGestureRecognizer){
         switch (recognizer.state) {

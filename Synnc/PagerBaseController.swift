@@ -1,0 +1,101 @@
+//
+//  PagerBaseController.swift
+//  Synnc
+//
+//  Created by Arda Erzin on 3/22/16.
+//  Copyright © 2016 Arda Erzin. All rights reserved.
+//
+
+import Foundation
+import AsyncDisplayKit
+
+class PagerBaseController : ASViewController {
+    
+    var screenNode : PagerBaseControllerNode!
+    var currentIndex : Int = 0
+    var subControllers : [ASViewController]! {
+        get {
+            return []
+        }
+    }
+    
+    init(pagerNode node: PagerBaseControllerNode) {
+        super.init(node: node)
+        self.screenNode = node
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        screenNode.pager.delegate = self
+        screenNode.pager.setDataSource(self)
+        
+        var leftItems : [ASImageNode?] = []
+        var rightItems : [ASImageNode?] = []
+        var titleItems : [ASDisplayNode?] = []
+        for sub in subControllers {
+            if let x = sub as? PagerSubcontroller {
+                leftItems.append(x.leftHeaderIcon)
+                rightItems.append(x.rightHeaderIcon)
+                titleItems.append(x.titleItem)
+            }
+        }
+        
+        screenNode.headerNode.leftButtonHolder.items = leftItems
+        screenNode.headerNode.rightButtonHolder.items = rightItems
+        screenNode.headerNode.titleHolder.items = titleItems
+        
+        self.scrollViewDidScroll(screenNode.pager.view)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+    }
+}
+
+extension PagerBaseController : ASCollectionDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let pagerPosition = scrollView.contentOffset.x / (scrollView.contentSize.width - scrollView.bounds.width)
+        
+        if pagerPosition.isFinite {
+            self.screenNode.headerNode.update(pagerPosition)
+        } else {
+            self.screenNode.headerNode.update(0)
+        }
+    }
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        let cp = Int(scrollView.contentOffset.x / scrollView.frame.width)
+        screenNode.headerNode.pageControl.currentPage = cp
+        currentIndex = cp
+        screenNode.headerNode.pageControl.updateCurrentPageDisplay()
+    }
+    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        let cp = Int(scrollView.contentOffset.x / scrollView.frame.width)
+        currentIndex = cp
+        screenNode.headerNode.pageControl.updateCurrentPageDisplay()
+    }
+}
+extension PagerBaseController : ASPagerNodeDataSource {
+    func numberOfPagesInPagerNode(pagerNode: ASPagerNode!) -> Int {
+        
+        let count = subControllers.count
+        screenNode.headerNode.pageControl.numberOfPages = count
+        
+        return count
+    }
+    func pagerNode(pagerNode: ASPagerNode!, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath!) -> ASSizeRange {
+        return ASSizeRangeMake(pagerNode.calculatedSize, pagerNode.calculatedSize)
+    }
+    func pagerNode(pagerNode: ASPagerNode!, nodeBlockAtIndex index: Int) -> ASCellNodeBlock! {
+        return {
+            let node = ASCellNode(viewControllerBlock: { () -> UIViewController in
+                return self.subControllers[index]
+                }, didLoadBlock: nil)
+            return node
+        }
+    }
+}

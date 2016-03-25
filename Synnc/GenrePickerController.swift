@@ -48,8 +48,8 @@ class GenrePicker : WCLPopupViewController {
         node.genreCollection.view.asyncDataSource = self
         node.genreCollection.view.asyncDelegate = self
         
-        node.buttonHolder.yesButton.addTarget(self, action: Selector("selectGenres:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.buttonHolder.noButton.addTarget(self, action: Selector("cancelGenrePicker:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.buttonHolder.yesButton.addTarget(self, action: #selector(GenrePicker.selectGenres(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.buttonHolder.noButton.addTarget(self, action: #selector(GenrePicker.cancelGenrePicker(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()

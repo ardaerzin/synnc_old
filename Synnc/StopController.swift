@@ -10,37 +10,21 @@ import Foundation
 import AsyncDisplayKit
 import BFPaperCheckbox
 
-class StopController : PopContentController {
+class StopController : ASViewController {
     
-//    var stream : Stream?
+    var screenNode : ASDisplayNode!
     
     init(){
         let node = StopControllerNode()
         super.init(node: node)
         self.screenNode = node
         
-        node.noButton.addTarget(self, action: Selector("noAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.yesButton.addTarget(self, action: Selector("yesAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+//        node.noButton.addTarget(self, action: Selector("noAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+//        node.yesButton.addTarget(self, action: Selector("yesAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
     }
     
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension StopController {
-    func noAction(sender: ButtonNode) {
-        if let p = self.parentViewController as? PopController {
-            p.hideWithTouch()
-            AnalyticsEvent.new(category: "StreamSubsection", action: "stop", label: "cancel", value: nil)
-        }
-    }
-    func yesAction(sender: ButtonNode) {
-        if let p = self.parentViewController as? PopController {
-            p.hideWithTouch()
-        }
-        AnalyticsEvent.new(category: "StreamSubsection", action: "stop", label: "true", value: nil)
-        StreamManager.sharedInstance.stopStream(StreamManager.sharedInstance.activeStream!, completion: nil)
     }
 }

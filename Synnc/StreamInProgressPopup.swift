@@ -35,8 +35,8 @@ class StreamInProgressPopup : WCLPopupViewController {
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: Selector("endCurrentStream:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: Selector("dismissNotificationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.yesButton.addTarget(self, action: #selector(StreamInProgressPopup.endCurrentStream(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.noButton.addTarget(self, action: #selector(StreamInProgressPopup.dismissNotificationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
@@ -80,8 +80,8 @@ class StreamInProgressPopup : WCLPopupViewController {
                 
                 self?.closeView(true)
                 
-                Synnc.sharedInstance.streamNavigationController.clearUserStreamController()
-                Synnc.sharedInstance.streamNavigationController.displayStreamCreateController(self?.playlist)
+//                Synnc.sharedInstance.streamNavigationController.clearUserStreamController()
+//                Synnc.sharedInstance.streamNavigationController.displayStreamCreateController(self?.playlist)
                 self?.playlist = nil
             })
         }

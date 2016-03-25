@@ -28,8 +28,8 @@ class SynncLocationAuthVC : WCLLocationManagerAuthVC {
         self.node = node
         self.view.addSubnode(node)
         
-        node.yesButton.addTarget(self, action: Selector("getLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.noButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.yesButton.addTarget(self, action: #selector(SynncLocationAuthVC.getLocationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.noButton.addTarget(self, action: #selector(SynncLocationAuthVC.dismissLocationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }

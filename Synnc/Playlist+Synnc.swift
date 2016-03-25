@@ -52,7 +52,7 @@ extension SynncPlaylist {
         var indexPaths : [NSIndexPath] = []
         
         for _ in songArr {
-            previousLastIndex++
+            previousLastIndex += 1
             indexPaths.append(NSIndexPath(forItem: previousLastIndex, inSection: 0))
         }
         NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["addedSongs" : ["songs" : songArr, "indexPaths" : indexPaths]])

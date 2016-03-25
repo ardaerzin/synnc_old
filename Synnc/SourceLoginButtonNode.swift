@@ -22,7 +22,7 @@ class SourceLoginButtonNode : SourceButton {
         if let type = WCLUserLoginType(rawValue: source.rawValue.lowercaseString) {
             
             if let ext = Synnc.sharedInstance.user.userExtension(type) {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "loginStatusChanged:", name: "\(type.rawValue)LoginStatusChanged", object: ext)
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SourceLoginButtonNode.loginStatusChanged(_:)), name: "\(type.rawValue)LoginStatusChanged", object: ext)
                 self.selected = ext.loginStatus
             }
         }

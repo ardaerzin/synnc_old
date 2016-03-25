@@ -15,10 +15,7 @@ import pop
 class NotCompatiblePopup : WCLPopupViewController {
     
     var screenNode : NotCompatibleNode!
-    
-    var onboardingController : OnboardingVC!
-    var loginController : LoginViewController!
-    
+
     init(size: CGSize) {
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
@@ -32,7 +29,7 @@ class NotCompatiblePopup : WCLPopupViewController {
         self.dismissable = false
         
         let node = NotCompatibleNode()
-        node.yesButton.addTarget(self, action: Selector("goToAppStore:"), forControlEvents: .TouchUpInside)
+        node.yesButton.addTarget(self, action: #selector(NotCompatiblePopup.goToAppStore(_:)), forControlEvents: .TouchUpInside)
         self.screenNode = node
         self.view.addSubnode(node)
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)

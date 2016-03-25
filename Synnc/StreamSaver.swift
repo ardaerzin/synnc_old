@@ -32,8 +32,9 @@ class BatchStreamSaver {
         
     }
     
-    func saveBatch(var batch : StreamSaveBatch){
-        if let data = batch.data.first {
+    func saveBatch(batch : StreamSaveBatch){
+        var b = batch
+        if let data = b.data.first {
             
             if let id = data["_id"].string {
                 if let str = StreamManager.sharedInstance.findStream(id) {
@@ -42,16 +43,16 @@ class BatchStreamSaver {
                         stream in
                         
                         self.savedStreams.append(stream)
-                        batch.data.removeFirst()
+                        b.data.removeFirst()
                         
-                        if batch.data.isEmpty {
-                            batch.completionHandler?(streams: self.savedStreams)
+                        if b.data.isEmpty {
+                            b.completionHandler?(streams: self.savedStreams)
                             self.savedStreams.removeAll()
                             
                             self.isLocked = false
                             self.batches.removeFirst()
                         } else {
-                            self.saveBatch(batch)
+                            self.saveBatch(b)
                         }
                     })
                 } else {
@@ -60,16 +61,16 @@ class BatchStreamSaver {
                         
                         StreamManager.sharedInstance.streams.append(stream)
                         self.savedStreams.append(stream)
-                        batch.data.removeFirst()
+                        b.data.removeFirst()
                         
-                        if batch.data.isEmpty {
-                            batch.completionHandler?(streams: self.savedStreams)
+                        if b.data.isEmpty {
+                            b.completionHandler?(streams: self.savedStreams)
                             self.savedStreams.removeAll()
                             
                             self.isLocked = false
                             self.batches.removeFirst()
                         } else {
-                            self.saveBatch(batch)
+                            self.saveBatch(b)
                         }
                     })
                 }

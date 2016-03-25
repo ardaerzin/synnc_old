@@ -2,48 +2,54 @@
 //  HomeController.swift
 //  Synnc
 //
-//  Created by Arda Erzin on 12/11/15.
-//  Copyright © 2015 Arda Erzin. All rights reserved.
+//  Created by Arda Erzin on 3/21/16.
+//  Copyright © 2016 Arda Erzin. All rights reserved.
 //
 
 import Foundation
-import UIKit
-import WCLUIKit
-import WCLUtilities
 import AsyncDisplayKit
-import pop
 import WCLUserManager
+import WCLUIKit
+import pop
 
-class HomeController : TabItemController {
+protocol PagerSubcontroller {
+    var leftHeaderIcon : ASImageNode! {get}
+    var rightHeaderIcon : ASImageNode! {get}
+    var titleItem : ASTextNode! {get}
+}
 
-    override var identifier : String! {
-        return "HomeController"
-    }
-    override var imageName : String! {
-        return "Home"
-    }
-    override var subsections : [TabSubsectionController]! {
+class HomeController : PagerBaseController {
+    lazy var feedController : StreamsFeedController = {
+        return StreamsFeedController()
+    }()
+    lazy var playlistsController : MyPlaylistsController = {
+        return MyPlaylistsController()
+    }()
+    override var subControllers : [ASViewController]! {
         get {
-            if _subsections == nil {
-                _subsections = [StreamsFeedController(), SocialFeedController()]
-//                    [StreamsFeedController(), SocialFeedController(), RecommendedFeedController()]
-            }
-            return _subsections
-        }
-    }
-    override var titleItem : ASDisplayNode! {
-        get {
-            if _titleItem == nil {
-                let item = ASTextNode()
-                item.attributedString = NSAttributedString(string: "Home", attributes: self.titleAttributes)
-                _titleItem = item
-            }
-            return _titleItem
+            return [feedController, playlistsController]
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-//        self.screenNode.backgroundColor = UIColor.redColor()
+    init(){
+        let node = HomeNode()
+        super.init(pagerNode: node)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+extension HomeController : WCLWindowAnimationDelegate {
+    func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
+        let x = 1-window.lowerPercentage
+        let za = (1 - progress - x) / (1-x)
+        
+        self.screenNode.headerNode.leftButtonHolder.alpha = za
+        self.screenNode.headerNode.rightButtonHolder.alpha = za
+        self.screenNode.headerNode.pageControl.alpha = za
+        
+        let z = POPTransition(za, startValue: 10, endValue: 0)
+        POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
     }
 }

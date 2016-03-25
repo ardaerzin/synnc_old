@@ -13,28 +13,56 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 
-class StreamsFeedController : TabSubsectionController {
+class StreamsFeedController : ASViewController, PagerSubcontroller {
     
-    var dataSource : StreamFeedDataSource! = StreamFeedDataSource()
-    var collectionManager : WCLCollectionViewManager! = WCLCollectionViewManager()
-    override var _title : String! {
-        return "Recommended"
+    lazy var _leftHeaderIcon : ASImageNode! = {
+        let x = ASImageNode()
+        x.image = UIImage(named: "magnifier-white")
+        x.contentMode = .Center
+        return x
+    }()
+    var leftHeaderIcon : ASImageNode! {
+        get {
+            return _leftHeaderIcon
+        }
+    }
+    lazy var _rightHeaderIcon : ASImageNode! = {
+        return nil
+    }()
+    var rightHeaderIcon : ASImageNode! {
+        get {
+            return _rightHeaderIcon
+        }
+    }
+    lazy var _titleItem : ASTextNode = {
+        let x = ASTextNode()
+        x.attributedString = NSAttributedString(string: "feed", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor.whiteColor()])
+        return x
+    }()
+    var titleItem : ASTextNode! {
+        get {
+            return _titleItem
+        }
     }
     
-    override init() {
+    var screenNode : StreamsFeedNode!
+    var dataSource : StreamFeedDataSource! = StreamFeedDataSource()
+    var collectionManager : WCLCollectionViewManager! = WCLCollectionViewManager()
+    
+    init() {
         let node = StreamsFeedNode()
         super.init(node: node)
         self.screenNode = node
         dataSource.delegate = self
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("updatedFeed:"), name: "UpdatedUserFeed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamsFeedController.updatedFeed(_:)), name: "UpdatedUserFeed", object: nil)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let s = self.screenNode as? StreamsFeedNode {
-            s.streamCollection.view.asyncDataSource = self.dataSource
-            s.streamCollection.view.asyncDelegate = self
-        }
+        screenNode.streamCollection.view.asyncDataSource = self.dataSource
+        screenNode.streamCollection.view.asyncDelegate = self
+
     }
+   
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -67,7 +95,7 @@ class StreamsFeedController : TabSubsectionController {
         self.dataSource.refresh = true
         self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
         
-        (self.screenNode as! StreamsFeedNode).emptyState = StreamManager.sharedInstance.userFeed.isEmpty
+        self.screenNode.emptyState = StreamManager.sharedInstance.userFeed.isEmpty
     }
 }
 extension StreamsFeedController : ASCollectionDelegate {
@@ -78,9 +106,9 @@ extension StreamsFeedController : ASCollectionDelegate {
         self.collectionManager.batchContext = context
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if let stream = self.dataSource.data[indexPath.item] as? Stream {
-            Synnc.sharedInstance.streamNavigationController.displayStream(stream)
-        }
+//        if let stream = self.dataSource.data[indexPath.item] as? Stream {
+//            Synnc.sharedInstance.streamNavigationController.displayStream(stream)
+//        }
     }
 }
 extension StreamsFeedController : WCLAsyncCollectionViewDataSourceDelegate {
@@ -88,6 +116,6 @@ extension StreamsFeedController : WCLAsyncCollectionViewDataSourceDelegate {
         return (min: CGSizeMake(self.view.frame.width, CGFloat.min), max: CGSizeMake(self.view.frame.width, CGFloat.max))
     }
     func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
-        self.collectionManager.performUpdates((self.screenNode as! StreamsFeedNode).streamCollection.view, updates: updatedData, animated: true)
+        self.collectionManager.performUpdates(self.screenNode.streamCollection.view, updates: updatedData, animated: true)
     }
 }

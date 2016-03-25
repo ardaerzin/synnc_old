@@ -75,22 +75,10 @@ class StreamsFeedNode : ASDisplayNode, TrackedView {
         
         feedHolder = StreamFeedHolder()
         feedHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-//        let layout = UICollectionViewFlowLayout()
-//        layout.scrollDirection = .Vertical
-//        streamCollection = ASCollectionNode(collectionViewLayout: layout)
-//        streamCollection.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-//        streamCollection.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
-        
-//        otherNode = ASDisplayNode()
-//        otherNode.backgroundColor = .greenColor()
-//        otherNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        
-//        self.addSubnode(streamCollection)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let visibleNode : ASLayoutable = emptyState ? emptyStateNode : feedHolder
-        print(visibleNode)
         return ASStaticLayoutSpec(children: [visibleNode])
     }
 }

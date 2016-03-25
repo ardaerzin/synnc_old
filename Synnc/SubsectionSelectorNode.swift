@@ -116,7 +116,7 @@ class SubsectionSelectorNode : ASDisplayNode {
         let subSectionCount = tabItem.subsections.count
         for (index,item) in tabItem.subsections.enumerate() {
             let button = SubsectionButtonNode(item: tabItem, index: index)
-            button.addTarget(self, action: Selector("didSelectSubsection:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            button.addTarget(self, action: #selector(SubsectionSelectorNode.didSelectSubsection(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
             let title = NSAttributedString(string: item.title, attributes: self.titleAttributes)
             button.setAttributedTitle(title, forState: ASControlState.Normal)
             button.flexGrow = true

@@ -307,23 +307,24 @@ extension StreamManager {
 
 extension StreamManager {
     func updateUserFeed(){
-        Synnc.sharedInstance.socket.emitWithAck("Stream", [])(timeoutAfter: 0) {
-            ack in
-            Async.background {
-                if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
-                    self.findOrCreateFromData(jsonArr, completionBlock: {
-                        streams in
-                        let newItems = $.difference(streams, self.userFeed)
-                        for item in newItems {
-                            if let id = item.user._id {
-                                Synnc.sharedInstance.user.joinUserRoom(id, callback: nil)
-                            }
-                        }
-                        self.userFeed = $.union(self.userFeed, streams)
-                    })
-                }
-            }
-        }
+//        Synnc.sharedInstance.socket.emitWithAck("Stream", [])(timeoutAfter: 0) {
+//            ack in
+//            Async.background {
+//                if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
+//                    print(jsonArr)
+//                    self.findOrCreateFromData(jsonArr, completionBlock: {
+//                        streams in
+//                        let newItems = $.difference(streams, self.userFeed)
+//                        for item in newItems {
+//                            if let id = item.user._id {
+//                                Synnc.sharedInstance.user.joinUserRoom(id, callback: nil)
+//                            }
+//                        }
+//                        self.userFeed = $.union(self.userFeed, streams)
+//                    })
+//                }
+//            }
+//        }
     }
     
     internal func findOrCreateFromData(serverData : [JSON], completionBlock : ((streams: [Stream]) -> Void)?) {
@@ -399,7 +400,7 @@ extension StreamManager {
                 let x : String = $0.name
                 let y : String = $1.name
                 
-                let range = Range<String.Index>(start: x.startIndex, end: x.endIndex)
+                let range = x.startIndex..<x.endIndex
                 let res = x.compare(y, options: comparisonOptions, range: range, locale: nil)
                 return res == NSComparisonResult.OrderedAscending
             })

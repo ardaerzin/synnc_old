@@ -248,7 +248,7 @@ class PlaylistNode : ParallaxNode, TrackedView {
         self.view.addSubview(self.titleShimmer)
         self.addSubnode(countTextNode)
         
-        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("longPressRecognized:"))
+        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(PlaylistNode.longPressRecognized(_:)))
         self.tracksTable.view.addGestureRecognizer(longPressGestureRecognizer)
     }
     
@@ -464,7 +464,7 @@ extension PlaylistNode {
             self.timerToAutoscroll?.invalidate()
             self.timerToAutoscroll = nil
         } else if self.timerToAutoscroll == nil {
-            self.timerToAutoscroll = CADisplayLink(target: self, selector: Selector("autoscrollTimerFired:"))
+            self.timerToAutoscroll = CADisplayLink(target: self, selector: #selector(PlaylistNode.autoscrollTimerFired(_:)))
             self.timerToAutoscroll.addToRunLoop(NSRunLoop.mainRunLoop(), forMode:NSDefaultRunLoopMode)
         }
     }

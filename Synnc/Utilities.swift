@@ -8,6 +8,42 @@
 
 import Foundation
 
+// MARK: - Version Checker
+extension String {
+    func versionToInt() -> [Int] {
+        return self.componentsSeparatedByString(".")
+            .map {
+                Int.init($0) ?? 0
+        }
+    }
+    func compareToMinRequiredVersion(version: String) -> Int {
+        var a = self.versionToInt()
+        var b = version.versionToInt()
+        
+        var c = b
+        
+        var status : Int = 0
+        for (ind, val) in a.enumerate(){
+            if val < b[ind] {
+                status = -1
+                break
+            }
+            if val > b[ind] {
+                status = 1
+                break
+            }
+            a.removeAtIndex(0)
+            c.removeAtIndex(0)
+        }
+        
+        if c.count > a.count {
+            status = -1
+        }
+        return status
+    }
+}
+
+
 extension String {
     func NSRangeFromRange(range : Range<String.Index>) -> NSRange {
         let utf16view = self.utf16
