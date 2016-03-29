@@ -77,17 +77,11 @@ class RootNode : PagerBaseControllerNode {
             let x = POPTransition(stateAnimationProgress, startValue: 0, endValue: self.headerNode.calculatedSize.height)
             POPLayerSetTranslationY(headerNode.layer, x)
             
-//            POPLayerSetScaleXY(self.pagerHolder.layer, CGPointMake(stateAnimationProgress, stateAnimationProgress))
-            
-            if stateAnimationProgress <= 0 {
-                return
-            }
             let y = self.pager.view.nodeForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0))
             if let pn = y.subnodes.first as? ProfileHolder {
-                POPLayerSetScaleXY(pn.layer, CGPointMake(stateAnimationProgress, stateAnimationProgress))
+                let p = max(0,stateAnimationProgress)
+                POPLayerSetScaleXY(pn.layer, CGPointMake(p, p))
             }
-            //            let profileScale = CGPointMake(stateAnimationProgress,stateAnimationProgress)
-            //            POPLayerSetScaleXY(self.profileHolder.layer, profileScale)
         }
     }
     
@@ -99,12 +93,6 @@ class RootNode : PagerBaseControllerNode {
     
     func didSetState() {
         self.stateAnimation.toValue = state == .Login ? 0 : 1
-    }
-    
-    override func layoutDidFinish() {
-        super.layoutDidFinish()
-        
-//        POPLayerSetScaleXY(self.pager.layer, CGPointMake(0,0))
     }
     
     override func layout() {

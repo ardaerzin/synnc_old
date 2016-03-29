@@ -137,7 +137,6 @@ class StreamViewController : ASViewController {
         (self.screenNode.mainScrollNode.backgroundNode as! StreamBackgroundNode).infoNode.closeButton.addTarget(self, action: #selector(StreamViewController.dismissStreamView(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         
-        self.screenNode.headerNode.closeButton.addTarget(self, action: #selector(StreamViewController.hideAction(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.shareStreamButton.addTarget(self, action: #selector(StreamViewController.shareStream(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         self.screenNode.stopStreamButton.addTarget(self, action: #selector(StreamViewController.stopStream(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
@@ -398,12 +397,12 @@ extension StreamViewController : StreamCreateControllerDelegate {
     func createdStream(stream: Stream) {
         self.stream = stream
         
-        if StreamManager.canSetActiveStream(self.stream!) {
-            if self.stream == StreamManager.sharedInstance.userStream {
-                StreamManager.setActiveStream(self.stream!)
-                StreamManager.playStream(self.stream!)
-            }
-        }
+//        if StreamManager.canSetActiveStream(self.stream!) {
+//            if self.stream == StreamManager.sharedInstance.userStream {
+//                StreamManager.setActiveStream(self.stream!)
+//                StreamManager.playStream(self.stream!)
+//            }
+//        }
     }
     func updatedData() {
         self.screenNode.fetchData()

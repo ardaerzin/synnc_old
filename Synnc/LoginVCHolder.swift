@@ -24,9 +24,10 @@ class LoginVCHolder : ASDisplayNode {
             
             if state == .Onboarding {
                 self.loginNode.panRecognizer.enabled = true
-            } else {
-                self.loginNode.panRecognizer.enabled = false
             }
+//            else {
+//                self.loginNode.panRecognizer.enabled = false
+//            }
         }
     }
     var stateAnimatableProperty : POPAnimatableProperty {
@@ -73,7 +74,10 @@ class LoginVCHolder : ASDisplayNode {
             
             let size = self.calculatedSize == CGSizeZero ? UIScreen.mainScreen().bounds.size : self.calculatedSize
             let a = POPTransition(stateAnimationProgress, startValue: (size.height - 60), endValue: -60)
+            
             loginNode.translationY = a
+            loginNode.toggleButton.alpha = 1-stateAnimationProgress
+            loginNode.toggleIndicator.alpha = 1-stateAnimationProgress
         }
     }
     
@@ -82,6 +86,7 @@ class LoginVCHolder : ASDisplayNode {
         let x = LoginNode()
         let a = UIPanGestureRecognizer(target: self, action: #selector(LoginVCHolder.loginNodeDidPan(_:)))
         x.panRecognizer = a
+        a.enabled = false
         return x
     }()
     var onboardingNode : ASDisplayNode! {
@@ -116,6 +121,7 @@ class LoginVCHolder : ASDisplayNode {
     var gestureInitPoint : CGFloat!
     
     func loginNodeDidPan(sender : UIPanGestureRecognizer) {
+    
         let translation = sender.translationInView(self.view)
         switch sender.state {
         case .Began :

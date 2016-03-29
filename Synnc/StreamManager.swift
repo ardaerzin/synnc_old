@@ -76,6 +76,7 @@ extension StreamManager {
         
         if isActiveStream(stream) {
             
+            print("play stream", stream.o_id)
             Synnc.sharedInstance.socket.emitWithAck("Stream:start", stream.o_id)(timeoutAfter: 0) {
                 data in
                 
@@ -213,10 +214,12 @@ extension StreamManager {
                     ack in
                     if let data = ack.first {
                         let json = JSON(data)
-                        self.userStream?.fromJSON(json)
-                        self.userStream?.createCallback?(status: true)
-                        if $.find(self.streams, callback: {$0 == self.userStream!}) == nil {
-                            self.streams.append(self.userStream!)
+                        self.userStream?.fromJSON(json) {
+                            stream in
+                            stream.createCallback?(status: true)
+                            if $.find(self.streams, callback: {$0 == stream}) == nil {
+                                self.streams.append(stream)
+                            }
                         }
                     } else {
                         self.userStream?.createCallback?(status: false)

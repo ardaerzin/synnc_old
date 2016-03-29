@@ -21,16 +21,18 @@ import SwiftyJSON
 
 class SynncPlaylist: NSManagedObject {
     
-    @NSManaged var id: String?
-    @NSManaged var v: NSNumber?
+    @NSManaged var cover_id: String?
     @NSManaged var createdAt: NSDate?
+    @NSManaged var id: String?
+    @NSManaged var last_update: NSDate?
     @NSManaged var name: String?
-    @NSManaged var user: String?
+    @NSManaged var songs: [SynncTrack]
     @NSManaged var source: String?
     @NSManaged var sources: [String]?
-    @NSManaged var last_update: NSDate?
-    @NSManaged var songs: [SynncTrack]
-    @NSManaged var cover_id: String?
+    @NSManaged var user: String?
+    @NSManaged var v: NSNumber?
+    @NSManaged var location: String?
+    @NSManaged var genres: Set<Genre>
     
     var delegate : PlaylistDelegate?
     var needsNotifySocket : Bool = false

@@ -169,32 +169,6 @@ class ButtonNode : ASButtonNode {
         
         self.backgroundColor = normalColor
     }
-//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-//        
-//        let spacer = ASLayoutSpec()
-//        spacer.flexGrow = true
-//        
-//        var imgSpec : ASLayoutable!
-//        
-//        if self.imageNode.image != nil {
-//            imgSpec = ASRatioLayoutSpec(ratio: 1, child: self.imageNode)
-//            imgSpec.flexGrow = false
-//            self.imageNode.contentMode = UIViewContentMode.Center
-//            imgSpec.spacingBefore = 20
-//            
-//            let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [imgSpec, self.titleNode])
-//            return a
-//        } else {
-//            let x = super.layoutSpecThatFits(ASSizeRange(min: self.frame.size, max: self.frame.size))
-//            return x
-//        }
-    
-//        let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [imgSpec, self.titleNode])
-//        let x = super.layoutSpecThatFits(ASSizeRange(min: self.frame.size, max: self.frame.size))
-//        x.flexBasis = ASRelativeDimension(type: .Percent, value: 1)
-//        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [x])
-//        return a
-//    }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
@@ -211,15 +185,12 @@ class ButtonNode : ASButtonNode {
         scaleAnimation.toValue = 0
         self.backgroundAnimation.toValue = self.selected ? self.selectedBgColor : self.normalBgColor
     }
+    
+    
+    
     func showSpinView(){
-        
-        //        self.view.addSubview(spinView)
         spinView.startAnimating()
         self.spinStateAnimation.toValue = 1
-        //        let anim = POPBasicAnimation(propertyNamed: kPOPLayerOpacity)
-        //        anim.toValue = 0
-        //
-        //        self.titleNode.alpha = 1
     }
     func hideSpinView(){
         self.spinStateAnimation.completionBlock = {
@@ -231,6 +202,5 @@ class ButtonNode : ASButtonNode {
             self.pop_removeAnimationForKey("spinStateAnimation")
         }
         self.spinStateAnimation.toValue = 1
-        //        self.titleNode.alpha = 0
     }
 }

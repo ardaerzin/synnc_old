@@ -22,9 +22,9 @@ enum EntityType : String {
 }
 
 protocol TrackSearchControllerDelegate {
-    func hasSong(song : SynncTrack) -> Bool
-    func didSelectTrack(song: SynncTrack)
-    func didDeselectTrack(song: SynncTrack)
+    func trackSearcher(controller : TrackSearchController, hasTrack track : SynncTrack) -> Bool
+    func trackSearcher(controller : TrackSearchController, didSelect track : SynncTrack)
+    func trackSearcher(controller : TrackSearchController, didDeselect track : SynncTrack)
 }
 
 class TrackSearchController : WCLPopupViewController {
@@ -81,16 +81,16 @@ class TrackSearchController : WCLPopupViewController {
         
     }
     var oldScreen : AnalyticsScreen!
-    override func didDisplay() {
-        super.didDisplay()
-        
-        oldScreen = AnalyticsManager.sharedInstance.screens.last
-        AnalyticsScreen.new(node: self.screenNode)
-    }
-    override func didHide() {
-        super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
-    }
+//    override func didDisplay() {
+//        super.didDisplay()
+//        
+//        oldScreen = AnalyticsManager.sharedInstance.screens.last
+//        AnalyticsScreen.new(node: self.screenNode)
+//    }
+//    override func didHide() {
+//        super.didHide()
+//        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+//    }
     func toggleSourceSelector(sender : ButtonNode){
         self.screenNode.sourceSelectionNode.toggle(self.selectedSource)
         AnalyticsEvent.new(category: "trackSearch", action: "sourceSelect", label: nil, value: nil)
@@ -148,18 +148,19 @@ extension TrackSearchController : ASTableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             AnalyticsEvent.new(category: "trackSearch", action: "itemSelect", label: "track", value: nil)
-            self.delegate?.didSelectTrack(data)
+            self.delegate?.trackSearcher(self, didSelect: data)
         }
     }
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             AnalyticsEvent.new(category: "trackSearch", action: "itemDeselect", label: "track", value: nil)
-            self.delegate?.didDeselectTrack(data)
+            self.delegate?.trackSearcher(self, didDeselect: data)
         }
     }
     func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
+        
         Async.background {
-            if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.hasSong(data) {
+            if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.trackSearcher(self, hasTrack: data) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }
         }
@@ -267,7 +268,6 @@ extension TrackSearchController {
                                 
                                 if type == .Tracks {
                                     self.tracksDataSource.nextAction = cb.next
-                                    print("NEXT", cb.next)
                                 } else {
                                     self.artistsDataSource.nextAction = cb.next
                                 }

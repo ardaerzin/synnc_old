@@ -37,19 +37,21 @@ class PagerBaseController : ASViewController {
         var leftItems : [ASImageNode?] = []
         var rightItems : [ASImageNode?] = []
         var titleItems : [ASDisplayNode?] = []
+        var pagerStyles : [[String : UIColor]?] = []
         for sub in subControllers {
             if let x = sub as? PagerSubcontroller {
                 leftItems.append(x.leftHeaderIcon)
                 rightItems.append(x.rightHeaderIcon)
                 titleItems.append(x.titleItem)
+                pagerStyles.append(x.pageControlStyle)
             }
         }
         
         screenNode.headerNode.leftButtonHolder.items = leftItems
         screenNode.headerNode.rightButtonHolder.items = rightItems
         screenNode.headerNode.titleHolder.items = titleItems
+        screenNode.headerNode.pageControl.styles = pagerStyles
         
-        self.scrollViewDidScroll(screenNode.pager.view)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -84,6 +86,8 @@ extension PagerBaseController : ASPagerNodeDataSource {
         
         let count = subControllers.count
         screenNode.headerNode.pageControl.numberOfPages = count
+        
+        self.scrollViewDidScroll(pagerNode.view)
         
         return count
     }

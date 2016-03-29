@@ -64,7 +64,7 @@ class PlaylistTableCell : ASCellNode {
         self.addSubnode(self.seperatorNode)
         self.selectionStyle = .None
         
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
     }
     func configureForTrack(track : SynncTrack) {
         var artistStr : String?

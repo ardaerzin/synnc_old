@@ -14,8 +14,8 @@ import WCLUIKit
 
 class ButtonHolder : ASDisplayNode {
     
-    var facebookLoginButton : LoginButtonNode!
-    var twitterLoginButton : LoginButtonNode!
+    var facebookLoginButton : ButtonNode!
+    var twitterLoginButton : ButtonNode!
     
     var buttonHeight : CGFloat = 50
 
@@ -29,14 +29,14 @@ class ButtonHolder : ASDisplayNode {
         p.alignment = .Center
         let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSParagraphStyleAttributeName : p]
               
-        self.facebookLoginButton = LoginButtonNode(normalColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1), selectedColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1))
+        self.facebookLoginButton = ButtonNode(normalColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1), selectedColor: UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1))
         self.facebookLoginButton.alpha = 1
         self.facebookLoginButton.minScale = 0.85
         self.facebookLoginButton.setImage(UIImage(named: "facebook"), forState: ASControlState.Normal)
         self.facebookLoginButton.cornerRadius = 3
         self.facebookLoginButton.setAttributedTitle(NSAttributedString(string: "Sign in with Facebook", attributes: attributes), forState: .Normal)
         
-        self.twitterLoginButton = LoginButtonNode(normalColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1), selectedColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1))
+        self.twitterLoginButton = ButtonNode(normalColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1), selectedColor: UIColor(red: 0/255, green: 172/255, blue: 237/255, alpha: 1))
         self.twitterLoginButton.alpha = 1
         self.twitterLoginButton.minScale = 0.85
         self.twitterLoginButton.setImage(UIImage(named: "twitter"), forState: ASControlState.Normal)

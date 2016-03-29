@@ -16,4 +16,5 @@ class Genre: NSManagedObject {
     @NSManaged var last_update: NSDate
     @NSManaged var v: NSNumber
     @NSManaged var name: String
+    @NSManaged var playlists: NSSet?
 }

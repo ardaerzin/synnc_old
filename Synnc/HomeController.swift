@@ -16,6 +16,7 @@ protocol PagerSubcontroller {
     var leftHeaderIcon : ASImageNode! {get}
     var rightHeaderIcon : ASImageNode! {get}
     var titleItem : ASTextNode! {get}
+    var pageControlStyle : [String : UIColor]? {get}
 }
 
 class HomeController : PagerBaseController {
@@ -40,7 +41,7 @@ class HomeController : PagerBaseController {
         fatalError("init(coder:) has not been implemented")
     }
 }
-extension HomeController : WCLWindowAnimationDelegate {
+extension HomeController : WCLWindowDelegate {
     func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
         let x = 1-window.lowerPercentage
         let za = (1 - progress - x) / (1-x)
@@ -51,5 +52,8 @@ extension HomeController : WCLWindowAnimationDelegate {
         
         let z = POPTransition(za, startValue: 10, endValue: 0)
         POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
+    }
+    func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
+        
     }
 }

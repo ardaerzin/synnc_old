@@ -63,10 +63,24 @@ class StreamEndPopupVC : WCLPopupViewController {
         super.closeView(animated)
     }
     
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.node)
+    }
+    override func didHide() {
+        super.didHide()
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
+    }
 }
 
-class StreamEndPopupNode : ASDisplayNode {
+class StreamEndPopupNode : ASDisplayNode, TrackedView {
     
+    var title : String! = "StreamEndPopup"
     var messageNode : ASTextNode!
     var imageNode : ASNetworkImageNode!
     var infoNode : ASTextNode!

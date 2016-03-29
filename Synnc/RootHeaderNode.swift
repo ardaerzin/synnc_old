@@ -12,7 +12,8 @@ import AsyncDisplayKit
 class RootHeaderNode : PagerHeaderNode {
     
     init(){
-        super.init(backgroundColor: UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1), height: 75, pageControlColor: UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1), pageControlSelectedColor: UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1))
+//        pageControlColor: UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1), pageControlSelectedColor: UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1)
+        super.init(backgroundColor: UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1), height: 75)
     }
     
     override func layout() {

@@ -36,13 +36,14 @@ class SynncLocationAuthVC : WCLLocationManagerAuthVC {
     var oldScreen : AnalyticsScreen!
     override func didDisplay() {
         super.didDisplay()
-        
         oldScreen = AnalyticsManager.sharedInstance.screens.last
         AnalyticsScreen.new(node: self.node)
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()

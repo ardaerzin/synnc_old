@@ -15,17 +15,16 @@ import pop
 struct OnboardingItem {
     var title : String = "Title"
     var mainText : String = "Description"
+    var imageName : String = "yo"
 }
 
 class OnboardingVC : ASViewController {
   
     var currentIndex : Int = 0
     var pages : [OnboardingItem] = [
-        OnboardingItem(title: "Onboarding 1", mainText: "wadap"),
-        OnboardingItem(title: "Onboarding 2", mainText: "wadap"),
-        OnboardingItem(title: "Onboarding 3", mainText: "wadap"),
-        OnboardingItem(title: "Onboarding 4", mainText: "wadap"),
-        OnboardingItem(title: "Onboarding 5", mainText: "wadap")
+        OnboardingItem(title: "LISTEN", mainText: "Connect to streams that resonate with you.", imageName: "earPlugs"),
+        OnboardingItem(title: "STREAM", mainText: "Create and stream your own playlists, enhance your musical insight", imageName: "equalizer"),
+        OnboardingItem(title: "SHARE", mainText: "Synnc is a social platform. Follow, get notified, listen and discover new streamers", imageName: "cable")
     ]
     
     init(){
@@ -39,8 +38,17 @@ class OnboardingVC : ASViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         (node as! OnboardingVCNode).pageControl.addTarget(self, action: #selector(OnboardingVC.didSelectPageControl(_:)), forControlEvents: .ValueChanged)
+        
+        (node as! OnboardingVCNode).stateAnimationProgress = 0
         (node as! OnboardingVCNode).pager.setDataSource(self)
         (node as! OnboardingVCNode).pager.view.asyncDelegate = self
+    }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        (node as! OnboardingVCNode).stateAnimation.toValue = 1
     }
     func didSelectPageControl(sender: UIPageControl) {
         
@@ -85,7 +93,7 @@ extension OnboardingVC : ASPagerNodeDataSource {
     }
     func pagerNode(pagerNode: ASPagerNode!, nodeBlockAtIndex index: Int) -> ASCellNodeBlock! {
         return {
-            return OnboardingItemPage(item: self.pages[index])
+            return OnboardingPageItem(item: self.pages[index])
         }
     }
 }

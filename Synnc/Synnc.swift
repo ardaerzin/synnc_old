@@ -120,6 +120,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
             }
         
             let json = JSON(data: d)
+            print("json", json)
             Async.main {
                 if let minReqVersion = json["minCompatibleVersion"].string where self.version.compareToMinRequiredVersion(minReqVersion) >= 0 {
                     self.serverAvailable = true
@@ -184,6 +185,16 @@ class Synnc : UIResponder, UIApplicationDelegate {
         performNTPCheck()
         
         topPopupManager = WCLPopupManager()
+        
+        
+        let lagFreeField: UITextField = UITextField()
+        self.window?.addSubview(lagFreeField)
+        lagFreeField.becomeFirstResponder()
+        lagFreeField.resignFirstResponder()
+        lagFreeField.removeFromSuperview()
+        
+        
+        
         return true
     }
     

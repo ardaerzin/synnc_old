@@ -34,6 +34,8 @@ class MyPlaylistsEmptyStateNode : ASDisplayNode {
         
         self.addSubnode(mainTextNode)
         self.addSubnode(subTextNode)
+        
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
     }
     override func fetchData() {
         

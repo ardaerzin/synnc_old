@@ -72,6 +72,31 @@ class Stream : Serializable {
         }
     }
     
+    class func create(playlist : SynncPlaylist, callback : ((status : Bool) -> Void)?) -> Stream {
+        
+        let stream = Stream(user: Synnc.sharedInstance.user)
+        stream.createCallback = callback
+        
+        var info : [String : AnyObject] = [String : AnyObject]()
+        info["playlist"] = playlist
+        info["genres"] = Array(playlist.genres)
+        info["lat"] = 0
+        info["lon"] = 0
+    
+        if let name = playlist.name {
+            info["name"] = name
+        }
+        if let coverid = playlist.cover_id {
+            info["img"] = coverid
+        }
+        if let location = playlist.location {
+            info["city"] = location
+        }
+        stream.update(info)
+        Synnc.sharedInstance.streamManager.userStream = stream
+        
+        return stream
+    }
     
     internal func keys() -> [String] {
         return self.propertyNames(Stream)

@@ -16,8 +16,9 @@ class PagerHeaderNode : ASDisplayNode {
     var rightButtonHolder : PagerHeaderIconNode!
     var titleHolder : PagerHeaderTitleNode!
     var pageControl : PageControlNode!
-    
-    init(backgroundColor : UIColor? = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), height: CGFloat? = 60, pageControlColor : UIColor? = UIColor.lightGrayColor(), pageControlSelectedColor : UIColor? = UIColor.blackColor()) {
+
+    init(backgroundColor : UIColor? = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), height: CGFloat? = 60) {
+//    init(backgroundColor : UIColor? = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), height: CGFloat? = 60, pageControlColor : UIColor? = UIColor.lightGrayColor(), pageControlSelectedColor : UIColor? = UIColor.blackColor()) {
         super.init()
         
         self.backgroundColor = backgroundColor
@@ -30,8 +31,8 @@ class PagerHeaderNode : ASDisplayNode {
         titleHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 20))
         self.addSubnode(titleHolder)
         
-        pageControl.pageIndicatorTintColor = pageControlColor
-        pageControl.currentPageIndicatorTintColor = pageControlSelectedColor
+//        pageControl.pageIndicatorTintColor = pageControlColor
+//        pageControl.currentPageIndicatorTintColor = pageControlSelectedColor
         
         leftButtonHolder = PagerHeaderIconNode()
         leftButtonHolder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(30,30))
@@ -66,6 +67,7 @@ class PagerHeaderNode : ASDisplayNode {
         self.leftButtonHolder.update(scrollPosition: scrollPosition)
         self.rightButtonHolder.update(scrollPosition: scrollPosition)
         self.titleHolder.update(scrollPosition: scrollPosition)
+        self.pageControl.update(scrollPosition: scrollPosition)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

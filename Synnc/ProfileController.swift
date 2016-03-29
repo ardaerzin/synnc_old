@@ -91,12 +91,17 @@ class ProfileController : ASViewController, PagerSubcontroller {
     }
     lazy var _titleItem : ASTextNode = {
         let x = ASTextNode()
-        x.attributedString = NSAttributedString(string: "Profile", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.4])
+        x.attributedString = NSAttributedString(string: "Profile", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5])
         return x
     }()
     var titleItem : ASTextNode! {
         get {
             return _titleItem
+        }
+    }
+    var pageControlStyle : [String : UIColor]? {
+        get {
+            return [ "pageControlColor" : UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1), "pageControlSelectedColor" : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1)]
         }
     }
     
@@ -218,7 +223,6 @@ class ProfileController : ASViewController, PagerSubcontroller {
             if let pvc = self.parentViewController as? RootWindowController {
                 pvc.toggleFeed(true)
             }
-            self.screenNode.view.wclWindow?.tapRecognizer.enabled = false
         }
         imagePicker.didSelectAssets = {
             assets in
@@ -237,7 +241,6 @@ class ProfileController : ASViewController, PagerSubcontroller {
             }
         }
         
-        self.screenNode.view.wclWindow?.tapRecognizer.enabled = false
         self.navigationController?.presentViewController(imagePicker, animated: true) {}
         if let pvc = self.parentViewController as? RootWindowController {
             pvc.toggleFeed(false)

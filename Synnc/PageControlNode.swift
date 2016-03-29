@@ -27,30 +27,62 @@ class PageControlNode : ASDisplayNode {
         }
         var isActive : Bool = false {
             didSet {
+                
+                if selectedColor == nil || normalColor == nil {
+                    return
+                }
+                
                 self.animation.toValue = isActive ? selectedColor : normalColor
             }
         }
         
-        var selectedColor : UIColor!
-        var normalColor : UIColor!
-        init(tintColor : UIColor, selectedColor: UIColor) {
+        var selectedColor : UIColor! {
+            didSet {
+                if self.isActive {
+                    self.backgroundColor = selectedColor
+                }
+            }
+        }
+        var normalColor : UIColor! {
+            didSet {
+                if !self.isActive {
+                    self.backgroundColor = normalColor
+                }
+            }
+        }
+        
+//        init(tintColor : UIColor?, selectedColor: UIColor?) {
+        override init() {
             super.init()
             
             self.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(6,6))
-            self.backgroundColor = .orangeColor()
             self.cornerRadius = 6/2
             
-            self.selectedColor = selectedColor
-            self.normalColor = tintColor
+//            self.selectedColor = selectedColor
+//            self.normalColor = tintColor
             
-            self.backgroundColor = self.normalColor
+            self.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0)
         }
     }
     
     var items : [PageControlItemNode] = []
-    var pageIndicatorTintColor : UIColor!
-    var currentPageIndicatorTintColor : UIColor!
+    var pageIndicatorTintColor : UIColor! {
+        didSet {
+            for item in items {
+                item.normalColor = pageIndicatorTintColor
+            }
+        }
+    }
+    var currentPageIndicatorTintColor : UIColor! {
+        didSet {
+            for item in items {
+                item.selectedColor = currentPageIndicatorTintColor
+            }
+        }
+    }
     var currentPage : Int = 0
+    var styles : [[String : UIColor]?] = []
+    var styleIndex : Int = -1
     
     var numberOfPages : Int! {
         didSet {
@@ -62,7 +94,8 @@ class PageControlNode : ASDisplayNode {
             items = []
             
             for ind in 0..<numberOfPages {
-                let item = PageControlItemNode(tintColor: pageIndicatorTintColor, selectedColor: currentPageIndicatorTintColor)
+//                tintColor: pageIndicatorTintColor, selectedColor: currentPageIndicatorTintColor
+                let item = PageControlItemNode()
                 self.addSubnode(item)
                 items.append(item)
                 
@@ -92,6 +125,28 @@ class PageControlNode : ASDisplayNode {
     func updateCurrentPageDisplay() {
         for (ind,item) in items.enumerate() {
             item.isActive = ind == self.currentPage
+        }
+    }
+    
+    
+    func update(scrollPosition position: CGFloat) {
+        var prevPos : CGFloat = 0
+        
+        if position > 1 || position < 0 {
+            return
+        }
+        
+        for (ind,item) in items.enumerate() {
+            
+            let a = CGFloat((1 / CGFloat(items.count)) * CGFloat(ind+1))
+            if position >= prevPos && position <=  a {
+                if ind != styleIndex {
+                    self.pageIndicatorTintColor = self.styles[ind]!["pageControlColor"]
+                    self.currentPageIndicatorTintColor = self.styles[ind]!["pageControlSelectedColor"]
+                    styleIndex = ind
+                }
+            } 
+            prevPos = a
         }
     }
 }

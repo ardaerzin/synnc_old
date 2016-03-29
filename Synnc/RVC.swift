@@ -96,14 +96,19 @@ class RootWindowController : PagerBaseController {
     
     func toggleFeed(status : Bool? = nil){
         guard let s = status else {
+            
+            if let window = self.homeWindow {
+                window.animation.toValue = window.lowerPercentage
+                return
+            }
+            
             let vc = HomeController()
             let opts = WCLWindowOptions(link: false, draggable: true, windowLevel : UIWindowLevelStatusBar, limit: UIScreen.mainScreen().bounds.height - 60, dismissable : false)
             
             let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
             a.delegate = vc
-            a.roundCorners([UIRectCorner.TopLeft, UIRectCorner.TopRight], radius: 10)
+//            a.roundCorners([UIRectCorner.TopLeft, UIRectCorner.TopRight], radius: 10)
             a.animation.toValue = a.lowerPercentage
-            
             self.homeWindow = a
             
             return

@@ -53,6 +53,8 @@ class LoginNode : ASDisplayNode, TrackedView {
             return self.toggleButtonHolder.toggleButton
         }
     }
+    var toggleIndicator : ASImageNode!
+    
     var translationY : CGFloat! {
         didSet{
             POPLayerSetTranslationY(self.layer, translationY)
@@ -84,12 +86,18 @@ class LoginNode : ASDisplayNode, TrackedView {
         self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         toggleButtonHolder = LoginToggleButtonHolder()
-        toggleButtonHolder.backgroundColor = .blueColor()
+        toggleButtonHolder.backgroundColor = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)
         toggleButtonHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 60))
         self.addSubnode(toggleButtonHolder)
         
+        toggleIndicator = ASImageNode()
+        toggleIndicator.image = UIImage(named: "chevron-up")
+        toggleIndicator.contentMode = .ScaleAspectFit
+        toggleIndicator.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(15,15))
+        
         self.addSubnode(self.brandNode)
         self.addSubnode(self.buttonHolder)
+        self.addSubnode(toggleIndicator)
         self.addSubnode(self.spinnerNode)
         self.addSubnode(legal)
         
@@ -102,7 +110,7 @@ class LoginNode : ASDisplayNode, TrackedView {
         serverCheckStatusAnimationProgress = 1
     }
     override func fetchData() {
-        let str = NSAttributedString(string: "login", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.whiteColor()])
+        let str = NSAttributedString(string: "Login", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName: 0.5])
         toggleButton.setAttributedTitle(str, forState: .Normal)
         
         
@@ -158,6 +166,9 @@ class LoginNode : ASDisplayNode, TrackedView {
     
     override func layout() {
         super.layout()
+        
+        toggleIndicator.position.y = toggleButtonHolder.position.y
+        toggleIndicator.position.x = self.calculatedSize.width - (toggleIndicator.calculatedSize.width / 2) - 20
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStaticLayoutSpec(children: [self.spinnerNode])
@@ -173,7 +184,7 @@ class LoginNode : ASDisplayNode, TrackedView {
         let l = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 50, 0, 50), child: legal)
         l.spacingAfter = 10
         
-        let x = ASStaticLayoutSpec(children: [toggleButtonHolder])
+        let x = ASStaticLayoutSpec(children: [toggleButtonHolder, toggleIndicator])
         
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [x, brandNode, spacerTop, b, l])
     }

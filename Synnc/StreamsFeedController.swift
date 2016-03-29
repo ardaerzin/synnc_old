@@ -36,7 +36,7 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
     }
     lazy var _titleItem : ASTextNode = {
         let x = ASTextNode()
-        x.attributedString = NSAttributedString(string: "feed", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor.whiteColor()])
+        x.attributedString = NSAttributedString(string: "Discover", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 0.5])
         return x
     }()
     var titleItem : ASTextNode! {
@@ -44,6 +44,12 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
             return _titleItem
         }
     }
+    var pageControlStyle : [String : UIColor]? {
+        get {
+            return [ "pageControlColor" : UIColor.whiteColor().colorWithAlphaComponent(0.27), "pageControlSelectedColor" : UIColor.whiteColor()]
+        }
+    }
+    
     
     var screenNode : StreamsFeedNode!
     var dataSource : StreamFeedDataSource! = StreamFeedDataSource()

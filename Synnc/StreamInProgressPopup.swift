@@ -64,7 +64,9 @@ class StreamInProgressPopup : WCLPopupViewController {
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     
     func endCurrentStream(sender : ButtonNode!) {

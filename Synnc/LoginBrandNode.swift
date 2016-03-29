@@ -22,9 +22,6 @@ class LoginBrandNode : ASDisplayNode {
         self.iconNode = ASImageNode()
         self.iconNode.image = Synnc.appIcon
         
-//        self.logoHolder = AnimatedLogoNode(barCount: 5)
-//        self.logoHolder.startAnimation()
-        
         self.titleNode = ASTextNode()
         self.titleNode.attributedString = NSAttributedString(string: "synnc", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 48)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1), NSKernAttributeName : -0.2])
         
@@ -43,8 +40,6 @@ class LoginBrandNode : ASDisplayNode {
         self.titleNode.position.x = self.calculatedSize.width / 2
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        
-//        self.logoHolder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
         
         let a = ASStaticLayoutSpec(children: [self.titleNode])
         let b = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 25, 0, 25), child: subtextNode)

@@ -57,7 +57,9 @@ class NotificationRequestPopupVC : WCLPopupViewController {
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

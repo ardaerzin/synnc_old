@@ -89,7 +89,7 @@ class SettingsController : ASViewController, PagerSubcontroller {
     }
     lazy var _titleItem : ASTextNode = {
         let x = ASTextNode()
-        x.attributedString = NSAttributedString(string: "Settings", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.4])
+        x.attributedString = NSAttributedString(string: "Settings", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5])
         return x
     }()
     var titleItem : ASTextNode! {
@@ -97,6 +97,14 @@ class SettingsController : ASViewController, PagerSubcontroller {
             return _titleItem
         }
     }
+    
+    var pageControlStyle : [String : UIColor]? {
+        get {
+            return [ "pageControlColor" : UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1), "pageControlSelectedColor" : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1)]
+        }
+    }
+    
+    
     var screenNode : SettingsHolder!
     var keyboardTranslation : CGFloat! = 0
     
@@ -186,9 +194,22 @@ extension SettingsController {
 extension SettingsController {
     func sendFeedback(sender : ButtonNode) {
         self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "sendFeedback", value: nil)
+        
+        print("send feedback shit", self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string)
+        
+        if let feedbackMsg = self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string {
+//            Synnc.sharedInstance.socket.emit("feedback", [
+//                "user" : Synnc.sharedInstance.user._id,
+//                "version" : Synnc.sharedInstance.version,
+//                "timestamp" : NSDate().timeIntervalSince1970,
+//                "feedback" : feedbackMsg
+//            ])
+        }
     }
     func cancelFeedback(sender : ButtonNode) {
         self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "cancelFeedback", value: nil)
     }
 }
 

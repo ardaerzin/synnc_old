@@ -48,6 +48,11 @@ class MyPlaylistsController : ASViewController, PagerSubcontroller {
             return _titleItem
         }
     }
+    var pageControlStyle : [String : UIColor]? {
+        get {
+            return [ "pageControlColor" : UIColor.whiteColor().colorWithAlphaComponent(0.27), "pageControlSelectedColor" : UIColor.whiteColor()]
+        }
+    }
     
     var selectedPlaylist : SynncPlaylist!
     var playlistController : PlaylistController!
@@ -64,6 +69,8 @@ class MyPlaylistsController : ASViewController, PagerSubcontroller {
             listNode.emptyState = true
             listNode.emptyStateNode.subTextNode.addTarget(self, action: #selector(MyPlaylistsController.newPlaylistAction(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         }
+        
+        SharedPlaylistDataSource.delegate = self
         
         listNode.tableNode.view.asyncDataSource = self
         listNode.tableNode.view.asyncDelegate = self
@@ -82,24 +89,11 @@ extension MyPlaylistsController {
     }
     
     func newPlaylistAction(sender : AnyObject){
-        
-        print("NEW PLAYLIST ACTION")
-        
-        let vc = PlaylistController()
-        let opts = WCLWindowOptions(link: false, draggable: true, dismissable : true)
-        
+        let vc = PlaylistController(playlist: nil)
+        let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
-//        a.delegate = vc
-        a.roundCorners([UIRectCorner.TopLeft, UIRectCorner.TopRight], radius: 10)
-//        a.animation.toValue = a.lowerPercentage
+        a.delegate = vc
         a.display(true)
-        
-//        self.displayPlaylist(nil)
-//        if let _ = sender as? ASTextNode {
-//            AnalyticsEvent.new(category : "ui_action", action: "newPlaylist", label: "textButton", value: nil)
-//        } else {
-//            AnalyticsEvent.new(category : "ui_action", action: "newPlaylist", label: "topButton", value: nil)
-//        }
     }
 }
 
@@ -120,7 +114,13 @@ extension MyPlaylistsController : ASTableViewDataSource {
 
 extension MyPlaylistsController : ASTableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        print("did select shit")
+        let playlist = SharedPlaylistDataSource.allItems[indexPath.item]
+        let vc = PlaylistController(playlist: playlist)
+        let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
+        
+        let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
+        a.delegate = vc
+        a.display(true)
     }
 }
 
@@ -135,33 +135,32 @@ extension MyPlaylistsController : ASTableViewDelegate {
 
 extension MyPlaylistsController : PlaylistsDataSourceDelegate {
     func playlistsDataSource(addedItem item: SynncPlaylist, newIndexPath indexPath: NSIndexPath) {
-//        let collectionNode = self.screenNode.tableNode.view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.insertItemsAtIndexPaths([indexPath])
-//        }, completion: nil)
-//        updatedPlaylists()
+        
+        self.screenNode.tableNode.view.beginUpdates()
+        self.screenNode.tableNode.view.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        self.screenNode.tableNode.view.endUpdates()
+        updatedPlaylists()
     }
     func playlistsDataSource(removedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath) {
-//        let collectionNode = self.screenNode.tableNode.view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.deleteItemsAtIndexPaths([indexPath])
-//        }, completion: nil)
-//        updatedPlaylists()
+        
+        self.screenNode.tableNode.view.beginUpdates()
+        self.screenNode.tableNode.view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        self.screenNode.tableNode.view.endUpdates()
+        updatedPlaylists()
     }
     func playlistsDataSource(updatedItem item: SynncPlaylist, atIndexPath indexPath: NSIndexPath) {
-//        let collectionNode = self.screenNode.tableNode.view
         
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.reloadItemsAtIndexPaths([indexPath])
-//        }, completion: nil)
-//        updatedPlaylists()
+        self.screenNode.tableNode.view.beginUpdates()
+        self.screenNode.tableNode.view.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        self.screenNode.tableNode.view.endUpdates()
+        updatedPlaylists()
     }
     func playlistsDataSource(movedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
-//        let collectionNode = self.screenNode.tableNode.view
-//        collectionNode.performBatchAnimated(true, updates: {
-//            collectionNode.moveItemAtIndexPath(indexPath, toIndexPath: newIndexPath)
-//            }, completion: nil)
-//        updatedPlaylists()
+        
+        self.screenNode.tableNode.view.beginUpdates()
+        self.screenNode.tableNode.view.moveRowAtIndexPath(indexPath, toIndexPath: newIndexPath)
+        self.screenNode.tableNode.view.endUpdates()
+        updatedPlaylists()
     }
     
     func updatedPlaylists(){
@@ -170,9 +169,5 @@ extension MyPlaylistsController : PlaylistsDataSourceDelegate {
         } else {
             self.screenNode.emptyState = false
         }
-        
-//        if let x = self.playlistController {
-//            x.updatedPlaylist()
-//        }
     }
 }
