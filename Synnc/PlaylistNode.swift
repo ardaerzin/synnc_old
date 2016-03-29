@@ -64,8 +64,9 @@ class PlaylistTracksHeader : ASDisplayNode {
     }
 }
 
-class PlaylistTracksNode : ASDisplayNode {
+class PlaylistTracksNode : ASDisplayNode, TrackedView {
 
+    var title: String! = "Playlist Tracks"
     var emptyStateNode : PlaylistEmptyNode!
     var emptyState : Bool = false {
         didSet {

@@ -83,13 +83,13 @@ class MyPlaylistsController : ASViewController, PagerSubcontroller {
 }
 
 extension MyPlaylistsController {
-    func displayPlaylist(playlist: SynncPlaylist?){
-//        self.playlistController = PlaylistController(playlist: playlist)
-//        self.navigationController?.pushViewController(self.playlistController, animated: true)
+    func newPlaylistAction(sender : AnyObject){
+        displayPlaylist(nil)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "New Playlist", value: nil)
     }
     
-    func newPlaylistAction(sender : AnyObject){
-        let vc = PlaylistController(playlist: nil)
+    func displayPlaylist(playlist: SynncPlaylist?) {
+        let vc = PlaylistController(playlist: playlist)
         let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
         a.delegate = vc
@@ -115,12 +115,8 @@ extension MyPlaylistsController : ASTableViewDataSource {
 extension MyPlaylistsController : ASTableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let playlist = SharedPlaylistDataSource.allItems[indexPath.item]
-        let vc = PlaylistController(playlist: playlist)
-        let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
-        
-        let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
-        a.delegate = vc
-        a.display(true)
+        self.displayPlaylist(playlist)
+        AnalyticsEvent.new(category : "ui_action", action: "cell_tap", label: "playlist", value: nil)
     }
 }
 

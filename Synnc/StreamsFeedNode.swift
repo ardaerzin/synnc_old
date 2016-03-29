@@ -46,7 +46,7 @@ class StreamsFeedNode : ASDisplayNode, TrackedView {
             }
         }
     }
-    var title : String! = "StreamsFeed"
+    var title : String! = "Streams Feed"
     var streamCollection : ASCollectionNode! {
         get {
             return self.feedHolder.collectionNode

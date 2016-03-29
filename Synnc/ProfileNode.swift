@@ -11,7 +11,8 @@ import AsyncDisplayKit
 import WCLUserManager
 import pop
 
-class ProfileHolder : ASDisplayNode {
+class ProfileHolder : ASDisplayNode, TrackedView {
+    var title : String! = "Profile Node"
     var profile : ProfileNode!
     override init() {
         super.init()

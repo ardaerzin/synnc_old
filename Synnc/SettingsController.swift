@@ -11,6 +11,7 @@ import AsyncDisplayKit
 import BFPaperCheckbox
 import pop
 import SafariServices
+import WCLNotificationManager
 
 class SettingsInputAccessoryNode : ASDisplayNode {
     var yesButton : ButtonNode!
@@ -123,7 +124,12 @@ class SettingsController : ASViewController, PagerSubcontroller {
         self.screenNode.settingsNode.aboutNode.librariesButton.addTarget(self, action: #selector(SettingsController.librariesButtonAction(_:)), forControlEvents: .TouchUpInside)
         
         self.screenNode.settingsNode.feedbackNode.feedbackArea.delegate = self
-        self.screenNode.settingsNode.loginSourcesNode.scButton.addTarget(self, action: #selector(SettingsController.toggleSoundcloudLogin(_:)), forControlEvents: .TouchUpInside)
+        
+        self.screenNode.settingsNode.loginSourcesNode.youtubeButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.loginSourcesNode.spotifyButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.loginSourcesNode.scButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
+        
+        self.screenNode.settingsNode.disconnectButton.addTarget(self, action: #selector(SettingsController.disconnect(_:)), forControlEvents: .TouchUpInside)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SettingsController.keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
@@ -157,12 +163,15 @@ class SettingsController : ASViewController, PagerSubcontroller {
 extension SettingsController {
     func infoButtonAction(sender: ButtonNode) {
         self.openURL("https://synnc.live")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "About Us", value: nil)
     }
     func termsButtonAction(sender: ButtonNode) {
         self.openURL("https://synnc.live/terms")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Terms", value: nil)
     }
     func librariesButtonAction(sender: ButtonNode) {
         self.openURL("https://synnc.live/terms")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Libraries", value: nil)
     }
     func openURL(string: String) {
         if let url = NSURL(string: string) {
@@ -173,6 +182,21 @@ extension SettingsController {
             
             if let pvc = self.parentViewController as? RootWindowController {
                 pvc.toggleFeed(false)
+            }
+        }
+    }
+    
+    func toggleSocialLogin(sender: SourceLoginButtonNode) {
+        
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: sender.source.rawValue + " Login", value: nil)
+        
+        if sender.source == .Soundcloud {
+            toggleSoundcloudLogin(sender)
+        } else {
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                
+                let info = WCLNotificationInfo(defaultActionName: "", body: "\(sender.source.rawValue) Login is not available yet.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
             }
         }
     }
@@ -188,6 +212,10 @@ extension SettingsController {
             Synnc.sharedInstance.user.socialLogout(.Soundcloud)
         }
         
+    }
+    
+    func disconnect(sender : ButtonNode) {
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Disconnect", value: nil)
     }
 }
 

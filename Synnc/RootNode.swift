@@ -14,8 +14,9 @@ import WCLUIKit
 import WCLPopupManager
 import WCLDataManager
 
-class RootNode : PagerBaseControllerNode {
+class RootNode : PagerBaseControllerNode, TrackedView {
     
+    var title: String! = "Root View"
     var loginNode : ASDisplayNode! {
         didSet {
             if let n = loginNode {

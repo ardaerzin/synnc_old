@@ -19,19 +19,6 @@ enum RootWindowControllerState : Int {
     case LoggedIn = 2
 }
 
-//class RootWindowController : ASViewController {
-//    init(){
-//        let a = ASDisplayNode()
-//        super.init(node: a)
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-//        super.touchesBegan(touches, withEvent: event)
-//    }
-//}
 class RootWindowController : PagerBaseController {
     
     var displayFeed : Bool = false {
@@ -50,9 +37,9 @@ class RootWindowController : PagerBaseController {
     var state : RootWindowControllerState! = .Login {
         didSet {
             (self.screenNode as! RootNode).state = state
+            AnalyticsScreen.new(node: state == .Login ? loginVC.analyticsScreen : (self.currentScreen()))
         }
     }
-    
     lazy var profileController : ProfileController = {
         return ProfileController()
     }()
@@ -106,6 +93,7 @@ class RootWindowController : PagerBaseController {
             let opts = WCLWindowOptions(link: false, draggable: true, windowLevel : UIWindowLevelStatusBar, limit: UIScreen.mainScreen().bounds.height - 60, dismissable : false)
             
             let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
+            
             a.delegate = vc
 //            a.roundCorners([UIRectCorner.TopLeft, UIRectCorner.TopRight], radius: 10)
             a.animation.toValue = a.lowerPercentage
@@ -131,5 +119,27 @@ class RootWindowController : PagerBaseController {
         
         self.screenNode.pager.setDataSource(self)
         self.screenNode.pager.delegate = self
+        
+        self.profileController.leftHeaderIcon.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        self.settingsController.leftHeaderIcon.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+    }
+    
+    func displaySearch(sender : AnyObject) {
+        print("display search")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Display Search", value: nil)
+    }
+}
+
+extension RootWindowController : WCLWindowDelegate {
+    func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
+    }
+    func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
+    }
+    func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
+        if self.screenNode.interfaceState != ASInterfaceState.None {
+            if position == .Displayed {
+                AnalyticsScreen.new(node: self.currentScreen())
+            }
+        }
     }
 }

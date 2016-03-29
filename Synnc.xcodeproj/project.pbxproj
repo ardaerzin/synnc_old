@@ -309,6 +309,7 @@
 		476CC8111CA9675900CBA0E3 /* StreamVCNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8101CA9675900CBA0E3 /* StreamVCNode.swift */; };
 		476CC8131CA967D400CBA0E3 /* StreamInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8121CA967D400CBA0E3 /* StreamInfoController.swift */; };
 		476CC8171CA967F800CBA0E3 /* StreamTracklistController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8161CA967F800CBA0E3 /* StreamTracklistController.swift */; };
+		476CC81A1CAB228F00CBA0E3 /* StreamInfoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8191CAB228F00CBA0E3 /* StreamInfoNode.swift */; };
 		477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */; };
 		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
 		4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705191C3DB7E9007089D0 /* StreamContentNode.swift */; };
@@ -768,6 +769,7 @@
 		476CC8101CA9675900CBA0E3 /* StreamVCNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamVCNode.swift; sourceTree = "<group>"; };
 		476CC8121CA967D400CBA0E3 /* StreamInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamInfoController.swift; sourceTree = "<group>"; };
 		476CC8161CA967F800CBA0E3 /* StreamTracklistController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTracklistController.swift; sourceTree = "<group>"; };
+		476CC8191CAB228F00CBA0E3 /* StreamInfoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamInfoNode.swift; sourceTree = "<group>"; };
 		477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistEmptyNode.swift; sourceTree = "<group>"; };
 		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
 		477705191C3DB7E9007089D0 /* StreamContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamContentNode.swift; sourceTree = "<group>"; };
@@ -1490,8 +1492,8 @@
 		4741E85F1C9CD670007DE80E /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
-				4741E8601C9CD683007DE80E /* OnboardingItemPage.swift */,
 				4797B14C1CA2F62D00AE2936 /* OnboardingVCNode.swift */,
+				4741E8601C9CD683007DE80E /* OnboardingItemPage.swift */,
 				4741E8621C9D67D2007DE80E /* OnboardingPager.swift */,
 			);
 			name = Nodes;
@@ -1547,8 +1549,8 @@
 		476CC80E1CA9673100CBA0E3 /* SubControllers */ = {
 			isa = PBXGroup;
 			children = (
-				476CC8151CA967E500CBA0E3 /* TracklistController */,
 				476CC8141CA967D800CBA0E3 /* InfoController */,
+				476CC8151CA967E500CBA0E3 /* TracklistController */,
 			);
 			name = SubControllers;
 			sourceTree = "<group>";
@@ -1565,6 +1567,7 @@
 			isa = PBXGroup;
 			children = (
 				476CC8121CA967D400CBA0E3 /* StreamInfoController.swift */,
+				476CC8181CAB220C00CBA0E3 /* Nodes */,
 			);
 			name = InfoController;
 			sourceTree = "<group>";
@@ -1575,6 +1578,14 @@
 				476CC8161CA967F800CBA0E3 /* StreamTracklistController.swift */,
 			);
 			name = TracklistController;
+			sourceTree = "<group>";
+		};
+		476CC8181CAB220C00CBA0E3 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				476CC8191CAB228F00CBA0E3 /* StreamInfoNode.swift */,
+			);
+			name = Nodes;
 			sourceTree = "<group>";
 		};
 		4777052A1C3EB62D007089D0 /* StreamsFeed */ = {
@@ -2649,6 +2660,7 @@
 				477705221C3DF4F6007089D0 /* ChatController.swift in Sources */,
 				47D7637B1C3A283B008E0334 /* WildPlayerItem.swift in Sources */,
 				47B37B891C2F21D1001CC6D2 /* PlaylistNode.swift in Sources */,
+				476CC81A1CAB228F00CBA0E3 /* StreamInfoNode.swift in Sources */,
 				470F8C171C49B20D00624F0F /* StopControllerNode.swift in Sources */,
 				477705241C3E00ED007089D0 /* ChatNode.swift in Sources */,
 				4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */,

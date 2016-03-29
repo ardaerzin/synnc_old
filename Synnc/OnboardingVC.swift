@@ -20,6 +20,7 @@ struct OnboardingItem {
 
 class OnboardingVC : ASViewController {
   
+    var screenNode : OnboardingVCNode!
     var currentIndex : Int = 0
     var pages : [OnboardingItem] = [
         OnboardingItem(title: "LISTEN", mainText: "Connect to streams that resonate with you.", imageName: "earPlugs"),
@@ -30,6 +31,7 @@ class OnboardingVC : ASViewController {
     init(){
         let node = OnboardingVCNode()
         super.init(node: node)
+        screenNode = node
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

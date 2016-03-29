@@ -53,7 +53,7 @@ class StreamInfoController : ASViewController, PagerSubcontroller {
     }()
     var titleItem : ASTextNode! {
         get {
-            return _titleItem
+            return nil
         }
     }
     var pageControlStyle : [String : UIColor]? {
@@ -64,7 +64,7 @@ class StreamInfoController : ASViewController, PagerSubcontroller {
     
     
     init(){
-        let n = ASDisplayNode()
+        let n = StreamInfoHolder()
         super.init(node: n)
 //        self.screenNode = n
 //        n.infoNode.infoDelegate = self

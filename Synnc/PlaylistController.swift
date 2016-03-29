@@ -83,7 +83,9 @@ extension PlaylistController {
                         if self == nil {
                             return
                         }
-                        
+                    
+                        AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Notification", value: nil)
+                    
                         self!.screenNode.pager.scrollToPageAtIndex(1, animated: true)
                 }
                 WCLNotificationManager.sharedInstance().newNotification(a, info: info)
@@ -98,10 +100,10 @@ extension PlaylistController {
             return
         }
         
-        let vc = StreamVC()
+        let vc = StreamVC(stream: nil)
         let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
-        
+        a.delegate = vc
         let stream = Stream.create(self.playlist) {
             created in
             
@@ -126,5 +128,10 @@ extension PlaylistController : WCLWindowDelegate {
     }
     func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
         
+    }
+    func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
+        if position == .Displayed {
+            AnalyticsScreen.new(node: self.currentScreen())
+        }
     }
 }

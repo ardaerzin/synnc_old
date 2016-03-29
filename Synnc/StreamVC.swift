@@ -42,7 +42,7 @@ class StreamVC : PagerBaseController {
         }
     }
     
-    init(){
+    init(stream : Stream?){
         let node = StreamVCNode()
         super.init(pagerNode: node)
         
@@ -59,6 +59,22 @@ class StreamVC : PagerBaseController {
                 StreamManager.setActiveStream(stream)
                 StreamManager.playStream(stream)
             }
+        }
+        
+        (self.screenNode as! StreamVCNode).imageHeader.imageId = stream.img as String
+        (self.screenNode as! StreamVCNode).imageHeader.fetchData()
+    }
+}
+
+extension StreamVC : WCLWindowDelegate {
+    func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
+        
+    }
+    func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
+    }
+    func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
+        if position == .Displayed {
+            AnalyticsScreen.new(node: self.currentScreen())
         }
     }
 }

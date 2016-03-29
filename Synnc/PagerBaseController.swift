@@ -12,7 +12,13 @@ import AsyncDisplayKit
 class PagerBaseController : ASViewController {
     
     var screenNode : PagerBaseControllerNode!
-    var currentIndex : Int = 0
+    var currentIndex : Int = 0 {
+        didSet {
+            if currentIndex != oldValue {
+                AnalyticsScreen.new(node: self.currentScreen())
+            }
+        }
+    }
     var subControllers : [ASViewController]! {
         get {
             return []
@@ -56,6 +62,10 @@ class PagerBaseController : ASViewController {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
+    }
+    
+    func currentScreen() -> TrackedView {
+        return self.subControllers[self.currentIndex].node as! TrackedView
     }
 }
 

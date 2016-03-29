@@ -10,7 +10,8 @@ import Foundation
 import AsyncDisplayKit
 import BFPaperCheckbox
 
-class SettingsHolder : ASDisplayNode {
+class SettingsHolder : ASDisplayNode, TrackedView {
+    var title : String! = "Settings Node"
     var settingsNode : SettingsNode!
     override init() {
         super.init()

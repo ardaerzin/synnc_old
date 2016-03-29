@@ -43,7 +43,7 @@ class StreamTracklistController : ASViewController, PagerSubcontroller {
     }()
     var titleItem : ASTextNode! {
         get {
-            return _titleItem
+            return nil
         }
     }
     var pageControlStyle : [String : UIColor]? {
@@ -54,7 +54,7 @@ class StreamTracklistController : ASViewController, PagerSubcontroller {
     
     
     init(){
-        let n = ASDisplayNode()
+        let n = StreamTracklistNode()
         super.init(node: n)
         //        self.screenNode = n
         //        n.infoNode.infoDelegate = self
@@ -68,5 +68,8 @@ class StreamTracklistController : ASViewController, PagerSubcontroller {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+}
+
+class StreamTracklistNode : ASDisplayNode, TrackedView {
+    var title: String! = "Stream Tracklist"
 }

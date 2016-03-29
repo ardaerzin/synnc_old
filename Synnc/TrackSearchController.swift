@@ -108,6 +108,7 @@ class TrackSearchController : WCLPopupViewController {
     
     func closeTrackSearch(sender : ButtonNode) {
         self.closeView(true)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Close TrackSearch", value: nil)
     }
     
     override func closeView(animated: Bool) {

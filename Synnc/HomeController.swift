@@ -40,6 +40,18 @@ class HomeController : PagerBaseController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.feedController.leftHeaderIcon.addTarget(self, action: #selector(HomeController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        self.playlistsController.leftHeaderIcon.addTarget(self, action: #selector(HomeController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+    }
+    
+    func displaySearch(sender : AnyObject) {
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Display Search", value: nil)
+    }
+
 }
 extension HomeController : WCLWindowDelegate {
     func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
@@ -54,6 +66,11 @@ extension HomeController : WCLWindowDelegate {
         POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
     }
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
-        
+        print("did dismiss window")
+    }
+    func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
+        if position == .Displayed {
+            AnalyticsScreen.new(node: self.currentScreen())
+        }
     }
 }

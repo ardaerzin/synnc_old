@@ -24,10 +24,8 @@ class LoginVCHolder : ASDisplayNode {
             
             if state == .Onboarding {
                 self.loginNode.panRecognizer.enabled = true
+                
             }
-//            else {
-//                self.loginNode.panRecognizer.enabled = false
-//            }
         }
     }
     var stateAnimatableProperty : POPAnimatableProperty {
@@ -84,7 +82,7 @@ class LoginVCHolder : ASDisplayNode {
     
     lazy var loginNode : LoginNode = {
         let x = LoginNode()
-        let a = UIPanGestureRecognizer(target: self, action: #selector(LoginVCHolder.loginNodeDidPan(_:)))
+        let a = UIPanGestureRecognizer()
         x.panRecognizer = a
         a.enabled = false
         return x
@@ -100,8 +98,6 @@ class LoginVCHolder : ASDisplayNode {
     
     override init() {
         super.init()
-        loginNode.toggleButton.addTarget(self, action: #selector(LoginVCHolder.toggleLogin(_:)), forControlEvents: .TouchUpInside)
-        
         self.addSubnode(loginNode)
     }
     
@@ -116,46 +112,5 @@ class LoginVCHolder : ASDisplayNode {
         } else {
             return ASStaticLayoutSpec(children: [loginNode])
         }
-    }
-    
-    var gestureInitPoint : CGFloat!
-    
-    func loginNodeDidPan(sender : UIPanGestureRecognizer) {
-    
-        let translation = sender.translationInView(self.view)
-        switch sender.state {
-        case .Began :
-            gestureInitPoint = loginNode.translationY
-            break
-        case .Changed:
-            let x = gestureInitPoint + translation.y
-            let progress = POPProgress(x, startValue: self.calculatedSize.height - 60, endValue: -60)
-            self.stateAnimationProgress = progress
-            break
-        case .Ended, .Cancelled :
-            
-            let vel = sender.velocityInView(self.view)
-            let v = vel.y / (self.calculatedSize.height)
-            self.endedPanGesture(self.stateAnimationProgress, velocity: v)
-            break
-        default:
-            break
-        }
-    }
-    
-    func endedPanGesture(progress: CGFloat, velocity : CGFloat) {
-        
-        self.stateAnimation.velocity = -velocity
-        if progress > 0.5 || velocity < -3 {
-            toggleLogin(nil)
-        } else {
-            self.state = .Onboarding
-        }
-    }
-    
-    func toggleLogin(sender: ButtonNode!) {
-        self.state = .Login
-        WildDataManager.sharedInstance().updateUserDefaultsValue("seenOnboarding", value: true)
-        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Get Started", value: nil)
     }
 }

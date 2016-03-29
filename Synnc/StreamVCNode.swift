@@ -10,6 +10,7 @@ import Foundation
 import AsyncDisplayKit
 import pop
 import WCLUIKit
+import Cloudinary
 
 class StreamHeaderNode : PagerHeaderNode {
     
@@ -18,9 +19,20 @@ class StreamHeaderNode : PagerHeaderNode {
     init(){
         super.init(backgroundColor: nil)
     }
+    
+    
+    override func layout() {
+        super.layout()
+        pageControl.position.y = titleHolder.position.y + (titleHolder.calculatedSize.height / 2) + 25
+    }    
+//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+//        return ASStaticLayoutSpec(children: [pageControl, leftButtonHolder, rightButtonHolder, titleHolder])
+//    }
 }
 
 class StreamImageHeader : ASDisplayNode {
+    
+    var imageId : String!
     var imageNode : ASNetworkImageNode!
     var tintNode : ASDisplayNode!
     
@@ -34,9 +46,26 @@ class StreamImageHeader : ASDisplayNode {
         tintNode.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
         self.addSubnode(tintNode)
         
-        self.backgroundColor = .purpleColor()
+        self.backgroundColor = .clearColor()
         
         self.clipsToBounds = true
+    }
+    
+    override func fetchData() {
+        
+        if imageId == nil {
+            return
+        }
+        
+        let transformation = CLTransformation()
+        
+        transformation.width = self.imageNode.calculatedSize.width * UIScreen.mainScreen().scale
+        transformation.height = self.imageNode.calculatedSize.height * UIScreen.mainScreen().scale
+        transformation.crop = "fill"
+        
+        if let x = _cloudinary.url(imageId, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+            self.imageNode.URL = url
+        }
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

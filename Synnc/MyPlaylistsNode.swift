@@ -16,7 +16,7 @@ import WCLUserManager
 
 class MyPlaylistsNode : ASDisplayNode, TrackedView {
     
-    var title : String! = "MyPlaylists"
+    var title : String! = "My Playlists"
     var tableNode : ASTableNode!
     var emptyStateNode : MyPlaylistsEmptyStateNode!
     

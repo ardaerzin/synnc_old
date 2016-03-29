@@ -213,6 +213,8 @@ class ProfileController : ASViewController, PagerSubcontroller {
     
     func imageTapAction(sender: ASImageNode) {
         
+        AnalyticsEvent.new(category : "ui_action", action: "image_tap", label: "My Profile", value: nil)
+        
         imagePicker = DKImagePickerController()
         imagePicker.assetType = .AllPhotos
         imagePicker.showsEmptyAlbums = false
@@ -255,6 +257,9 @@ extension ProfileController : ASEditableTextNodeDelegate {
         }
     }
     func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode) {
+        
+        AnalyticsEvent.new(category : "ui_action", action: "text_tap", label: "My Username", value: nil)
+        
         if self.screenNode.profile.profileCard.usernameBorder.calculatedSize == CGSizeZero {
             self.screenNode.profile.profileCard.usernameBorder.setNeedsLayout()
             let size = self.screenNode.profile.profileCard.ghostLabel.measure(self.screenNode.profile.profileCard.usernameNode.calculatedSize)

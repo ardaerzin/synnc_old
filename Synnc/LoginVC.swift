@@ -30,6 +30,8 @@ class LoginVC : ASViewController {
             return Synnc.sharedInstance.user
         }
     }
+    var gestureInitPoint : CGFloat!
+    
     var screenNode : LoginVCHolder!
     var state : LoginVCState! {
         didSet {
@@ -37,6 +39,13 @@ class LoginVC : ASViewController {
                 self.screenNode.onboardingNode = onboardingController.node
             }
             self.screenNode.state = state
+            AnalyticsScreen.new(node: self.analyticsScreen)
+        }
+    }
+    
+    var analyticsScreen : TrackedView {
+        get {
+            return state == .Onboarding ? onboardingController.screenNode : self.screenNode.loginNode
         }
     }
     
@@ -59,6 +68,9 @@ class LoginVC : ASViewController {
         
         node.loginNode.buttonHolder.facebookLoginButton.addTarget(self, action: #selector(LoginVC.loginWithFacebook(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         node.loginNode.buttonHolder.twitterLoginButton.addTarget(self, action: #selector(LoginVC.loginWithTwitter(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        
+        node.loginNode.toggleButton.addTarget(self, action: #selector(LoginVC.toggleLogin(_:)), forControlEvents: .TouchUpInside)
+        node.loginNode.panRecognizer.addTarget(self, action: #selector(LoginVC.loginNodeDidPan(_:)))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -82,13 +94,7 @@ class LoginVC : ASViewController {
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         Synnc.sharedInstance.user.delegate = self
     }
-    
-    func toggleLogin(sender: ButtonNode!) {
-        self.state = .Login
-        WildDataManager.sharedInstance().updateUserDefaultsValue("seenOnboarding", value: true)
-        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Get Started", value: nil)
-    }
-    
+
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
     }
@@ -103,6 +109,47 @@ extension LoginVC : ASTextNodeDelegate {
             self.presentViewController(x, animated: true, completion: nil)
             AnalyticsEvent.new(category : "ui_action", action: "text_tap", label: a, value: nil)
         }
+    }
+}
+
+extension LoginVC {
+    func loginNodeDidPan(sender : UIPanGestureRecognizer) {
+        
+        let translation = sender.translationInView(self.view)
+        switch sender.state {
+        case .Began :
+            gestureInitPoint = screenNode.loginNode.translationY
+            break
+        case .Changed:
+            let x = gestureInitPoint + translation.y
+            let progress = POPProgress(x, startValue: self.screenNode.calculatedSize.height - 60, endValue: -60)
+            self.screenNode.stateAnimationProgress = progress
+            break
+        case .Ended, .Cancelled :
+            
+            let vel = sender.velocityInView(self.view)
+            let v = vel.y / (self.screenNode.calculatedSize.height)
+            self.endedPanGesture(self.screenNode.stateAnimationProgress, velocity: v)
+            break
+        default:
+            break
+        }
+    }
+    
+    func endedPanGesture(progress: CGFloat, velocity : CGFloat) {
+        
+        self.screenNode.stateAnimation.velocity = -velocity
+        if progress > 0.5 || velocity < -3 {
+            toggleLogin(nil)
+        } else {
+            self.state = .Onboarding
+        }
+    }
+    
+    func toggleLogin(sender: ButtonNode!) {
+        self.state = .Login
+        WildDataManager.sharedInstance().updateUserDefaultsValue("seenOnboarding", value: true)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Get Started", value: nil)
     }
 }
 

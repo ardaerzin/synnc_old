@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pods/WCLUIKit/Pod/Classes/WCLWindowManager/WCLWindowManager.swift"
-            timestampString = "480712239.64487"
+            timestampString = "480956835.850943"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
             landmarkName = "windowDidTap(_:recognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -96,6 +96,22 @@
             startingLineNumber = "117"
             endingLineNumber = "117"
             landmarkName = "collectionView(_:willDisplayNodeForItemAtIndexPath:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/PlaylistInfoController.swift"
+            timestampString = "480962658.364276"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "editableTextNodeDidFinishEditing(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

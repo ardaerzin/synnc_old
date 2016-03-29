@@ -20,8 +20,6 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
         playlistUpdated()
         
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
-        
-        AnalyticsEvent.new(category : "playlistAction", action: "editInfo", label: "name", value: nil)
     }
     func trackSearcher(controller: TrackSearchController, hasTrack track: SynncTrack) -> Bool {
         return self.playlist!.hasTrack(track)
@@ -31,9 +29,6 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
         playlistUpdated()
         
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
-        
-        AnalyticsEvent.new(category : "playlistAction", action: "editInfo", label: "name", value: nil)
-
     }
 }
 

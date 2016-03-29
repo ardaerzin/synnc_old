@@ -146,7 +146,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         let opts = WCLWindowOptions(link: true, draggable: false, windowLevel : 0, limit: 0)
         
         let a = WCLWindowManager.sharedInstance.newWindow(x, animated: false, options: opts)
-        
+        a.delegate = x
         self.window = a
         
 //        a.panRecognizer.enabled = false

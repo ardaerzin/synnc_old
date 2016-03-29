@@ -92,6 +92,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     }
     
     func displayImagePicker(sender : AnyObject){
+        
         imagePicker = DKImagePickerController()
         imagePicker.assetType = .AllPhotos
         imagePicker.singleSelect = true
@@ -121,6 +122,9 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
 
 extension PlaylistInfoController : ASEditableTextNodeDelegate {
     func editableTextNodeDidFinishEditing(editableTextNode: ASEditableTextNode) {
+        if editableTextNode != self.screenNode.infoNode.titleNode {
+            return
+        }
         if let str = editableTextNode.attributedText?.string {
             self.editedTitle = str
         }
@@ -200,7 +204,7 @@ extension PlaylistInfoController : PlaylistInfoDelegate {
             return
         }
         
-        if self.editedTitle != nil {
+        if self.editedTitle != nil && editedTitle != "" {
             playlist.name = self.editedTitle
             self.editedTitle = nil
             
@@ -328,6 +332,9 @@ extension PlaylistInfoController {
 
 extension PlaylistInfoController : GenrePickerDelegate {
     func genrePicker(picker: GenrePicker, dismissedWithGenres genres: [Genre]) {
+        
+        AnalyticsEvent.new(category: "PlaylistAction", action: "infoEdit", label: "genre", value: nil)
+        
         self.playlist!.genres = Set(genres)
         saveChanges()
     }

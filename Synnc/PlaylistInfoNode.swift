@@ -10,10 +10,10 @@ import Foundation
 import AsyncDisplayKit
 import Shimmer
 
-class PlaylistInfoHolder : ASDisplayNode {
+class PlaylistInfoHolder : ASDisplayNode, TrackedView {
     var infoNode : PlaylistInfoNode!
     var headerSpacer : ASDisplayNode!
-    
+    var title: String! = "Playlist Info"
     override init() {
         super.init()
         infoNode = PlaylistInfoNode()

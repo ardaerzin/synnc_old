@@ -25,19 +25,11 @@ enum LoginNodeState : Int {
 class LoginNode : ASDisplayNode, TrackedView {
     
     var title : String! = "LoginView"
-    
-    
     var brandNode : LoginBrandNode!
     var buttonHolder : ButtonHolder!
     var spinnerNode : SpinnerNode!
     var legal : ASTextNode!
 
-    var state : LoginNodeState! = .None {
-        didSet {
-//            self.buttonHolder.state = state
-        }
-    }
-    
     var panRecognizer : UIPanGestureRecognizer! {
         didSet {
             if let p = panRecognizer {
