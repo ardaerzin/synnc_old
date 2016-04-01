@@ -38,7 +38,6 @@ class NotCompatiblePopup : WCLPopupViewController {
         super.viewWillLayoutSubviews()
         if let n = self.screenNode {
             let x = n.measureWithSizeRange(ASSizeRangeMake(CGSizeZero, self.view.frame.size))
-            print("X size", x.size)
             if x.size != self.size {
                 self.size = x.size
                 screenNode.view.frame = CGRect(origin: CGPointZero, size: self.size)

@@ -120,7 +120,7 @@ class LocationHolder : PlaylistInfoSubArea {
     optional func trackCountForPlaylist() -> Int
 }
 
-class PlaylistInfoNode : ASScrollNode {
+class PlaylistInfoNode : WCLScrollNode {
     
     var infoDelegate : PlaylistInfoDelegate?
     
@@ -210,10 +210,10 @@ class PlaylistInfoNode : ASScrollNode {
             
             if var img = x as? UIImage {
 
-                if img == Synnc.appIcon {
-                    img = UIImage(named: "cameraPlaceholder")!
-                }
-                
+//                if img == Synnc.appIcon {
+//                    img = UIImage(named: "cameraPlaceholder")!
+//                }
+//
                 if img != self.imageNode.image {
                     self.imageNode.URL = nil
                     self.imageNode.image = img
@@ -231,6 +231,9 @@ class PlaylistInfoNode : ASScrollNode {
                     self.imageNode.contentMode = .ScaleAspectFill
                 }
             }
+        } else {
+            self.imageNode.image = UIImage(named: "cameraPlaceholder")!
+            self.imageNode.contentMode = .Center
         }
         
         if let title = self.infoDelegate?.titleForPlaylist!() {

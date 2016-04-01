@@ -101,7 +101,6 @@ class MainUser : WCLUser {
     }
     
     override func updateUserInfo(info: JSON) {
-//        print(info)
         super.updateUserInfo(info)
     }
     

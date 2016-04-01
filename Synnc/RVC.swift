@@ -95,9 +95,9 @@ class RootWindowController : PagerBaseController {
             let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
             
             a.delegate = vc
-//            a.roundCorners([UIRectCorner.TopLeft, UIRectCorner.TopRight], radius: 10)
-            a.animation.toValue = a.lowerPercentage
             self.homeWindow = a
+            
+            a.animation.toValue = Synnc.sharedInstance.firstLogin ? a.lowerPercentage : 0
             
             return
         }
@@ -120,8 +120,8 @@ class RootWindowController : PagerBaseController {
         self.screenNode.pager.setDataSource(self)
         self.screenNode.pager.delegate = self
         
-        self.profileController.leftHeaderIcon.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
-        self.settingsController.leftHeaderIcon.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        self.profileController.leftHeaderIcon?.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        self.settingsController.leftHeaderIcon?.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
     }
     
     func displaySearch(sender : AnyObject) {

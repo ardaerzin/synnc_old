@@ -70,11 +70,11 @@ class ProfileController : ASViewController, PagerSubcontroller {
         }
     }
     
-    lazy var _leftHeaderIcon : ASImageNode = {
+    lazy var _leftHeaderIcon : ASImageNode! = {
         let x = ASImageNode()
         x.image = UIImage(named: "magnifier")
         x.contentMode = .Center
-        return x
+        return nil
     }()
     var leftHeaderIcon : ASImageNode! {
         get {

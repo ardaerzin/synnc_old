@@ -105,9 +105,6 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         let n = PlaylistTracksNode()
         super.init(node: n)
         self.screenNode = n
-//        self.screenNode.header.imageNode.
-//        self.screenNode.header.imageNode.image =
-//        self.screenNode.tracksTable.view.addObserver(self, forKeyPath: "contentSize", options: [], context: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -121,30 +118,12 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         
         self.screenNode.tracksTable.view.asyncDataSource = self
         self.screenNode.tracksTable.view.asyncDelegate = self
-        
-//        if let pvc = self.parentViewController as? PlaylistController {
-//            
-//            let x = pvc.infoController
-//            let y = x.imageForPlaylist()
-//            if let img = y as? UIImage {
-//                self.screenNode.header.imageNode.image = img
-//            } else if let url = y as? NSURL {
-//                self.screenNode.header.imageNode.URL = url
-//            }
-//            
-//        }
+    
+        if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist == fav {
+            self.rightHeaderIcon.hidden = true
+        }
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        self.updateScrollSizes()
-    }
-    func updateScrollSizes(){
-//        let csh = max(self.screenNode.tracksTable.view.contentSize.height, self.screenNode.tracksTable.calculatedSize.height)
-//        let totalCs = csh + self.screenNode.mainScrollNode.backgroundNode.calculatedSize.height + 50
-//        if totalCs != self.screenNode.mainScrollNode.view.contentSize.height {
-//            self.screenNode.mainScrollNode.view.contentSize = CGSizeMake(self.view.frame.size.width, totalCs)
-//        }
-    }
     func playlistUpdated(){
         
         playlist!.save()
@@ -206,7 +185,22 @@ extension PlaylistTracklistController : ASTableViewDataSource {
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        self.screenNode.scrollPosition = scrollView.contentOffset.y
+        self.screenNode.scrollPosition = scrollView.contentOffset.y        
+//        if let s = self.screenNode.tracksTable.view {
+//            print("DID SCROLL", s.contentOffset.y, self.screenNode.calculatedSize.width - 100)
+//            
+//            if s.contentOffset.y  < -(self.screenNode.calculatedSize.width - 100) {
+//                s.programaticScrollEnabled = false
+//                s.panGestureRecognizer.enabled = false
+//                s.programaticScrollEnabled = true
+//                
+//                let animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
+//                s.pop_addAnimation(animation, forKey: "offsetAnim")
+//                animation.toValue = NSValue(CGPoint: CGPoint(x: 0, y: 0))
+//            } else {
+//                s.panGestureRecognizer.enabled = true
+//            }
+//        }
     }
 }
 

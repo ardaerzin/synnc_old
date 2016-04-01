@@ -153,7 +153,7 @@ class GenrePickerNode : ASDisplayNode {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 5
         layout.minimumLineSpacing = 5
-        layout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5)
+        layout.sectionInset = UIEdgeInsetsMake(5, 5, 65, 5)
         layout.scrollDirection = .Vertical
         
         genreCollection = ASCollectionNode(collectionViewLayout: layout)

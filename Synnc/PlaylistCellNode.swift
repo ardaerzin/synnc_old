@@ -72,6 +72,7 @@ class PlaylistCellInfoHolder : ASDisplayNode {
 }
 
 class PlaylistCell : ASDisplayNode {
+    
     var imageNode : ASNetworkImageNode!
     var infoNode : PlaylistCellInfoHolder!
     var img : AnyObject!
@@ -100,6 +101,7 @@ class PlaylistCell : ASDisplayNode {
         super.init()
         
         self.imageNode = ASNetworkImageNode()
+        self.imageNode.backgroundColor = UIColor.whiteColor()
         self.imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 70))
         self.imageNode.image = Synnc.appIcon
         self.imageNode.contentMode = UIViewContentMode.Center

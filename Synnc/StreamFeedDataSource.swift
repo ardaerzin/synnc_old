@@ -10,109 +10,285 @@ import Foundation
 import WCLUIKit
 import AsyncDisplayKit
 import Cloudinary
+import WCLUserManager
+import WCLPopupManager
 
-class StreamFeedDataSource : WCLAsyncCollectionViewDataSource {
-    override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
-        let node = StreamFeedNode()
+class StreamFeedDataSource : WCLAsyncTableViewDataSource {
+    override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
+        let node = StreamCellNode()
         if let stream = self.data[indexPath.item] as? Stream {
-            node.configure(stream)
+            node.configureForStream(stream)
         }
         return node
     }
 }
 
-class StreamFeedNode : ASCellNode {
-    
-    var titleNode : ASTextNode!
-    var imageNode : ASNetworkImageNode!
-    var streamInfoNode : StreamCellInfoNode!
-    var genresNode : ASTextNode!
-    
-    var genreAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 230.255, green: 228/255, blue: 228/255, alpha: 1), NSKernAttributeName : 0.1]
-    var genreStr : String!
-    var imgId : String!
+class UserImageNode : ASNetworkImageNode {
+    var userId : String!
+}
+
+class StreamStoryNode : ASDisplayNode {
+    var imageNode : UserImageNode!
+    var textNode : ASTextNode!
     
     override init() {
         super.init()
         
-        streamInfoNode = StreamCellInfoNode()
-        streamInfoNode.alignSelf = .Stretch
-        streamInfoNode.spacingBefore = 8
+        imageNode = UserImageNode()
+        imageNode.preferredFrameSize = CGSize(width: 25,height: 25)
+        self.addSubnode(imageNode)
         
-        genresNode = ASTextNode()
+        textNode = ASTextNode()
+        textNode.userInteractionEnabled = true
+        self.addSubnode(textNode)
+    }
+    
+    
+    
+    func configureForStream(stream : Stream) {
+        if let type = WCLUserLoginType(rawValue: stream.user.provider), let url = stream.user.avatarURL(type, frame: CGRect(x: 0, y: 0, width: 25, height: 25), scale: UIScreen.mainScreen().scale) {
+            imageNode.URL = url
+            imageNode.userId = stream.user._id
+        }
+        
+        let attributes = [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 117/255, green: 117/255, blue: 117/255, alpha: 1)]
+        let linkAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), NSLinkAttributeName : stream.user._id]
+        
+        let usernameStr = NSAttributedString(string: stream.user.username, attributes: linkAttributes)
+        
+        let storyString = NSAttributedString(string: " started a new stream", attributes: attributes)
+        
+        let mutableStr = NSMutableAttributedString()
+        mutableStr.appendAttributedString(usernameStr)
+        mutableStr.appendAttributedString(storyString)
+        
+        let r = mutableStr.string.NSRangeFromRange(mutableStr.string.rangeOfString(mutableStr.string)!)
+        mutableStr.addAttribute(NSUnderlineColorAttributeName, value: UIColor.clearColor(), range: r)
+        
+        textNode.attributedString = mutableStr
+        self.setNeedsLayout()
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        
+        textNode.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 35)
+        return ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [imageNode, textNode])
+    }
+}
+
+class StreamCellButton : ButtonNode {
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        self.titleNode.flexGrow = true
+        return ASStackLayoutSpec(direction: .Horizontal, spacing: 6, justifyContent: .Start, alignItems: .Center, children: [self.imageNode, self.titleNode])
+    }
+}
+
+class StreamCellContentNode : ASDisplayNode {
+    
+    var imageNode : ASNetworkImageNode!
+    var titleNode : ASTextNode!
+    var genresNode : ASTextNode!
+    var listenersNode : StreamCellButton!
+    var reactionsNode : StreamCellButton!
+    
+    var imageId : String?
+    var streamTitle : String?
+    var streamGenres : String?
+    var listeners : Int = 0
+    var reactions : Int = 0
+    
+    override init() {
+        super.init()
         
         imageNode = ASNetworkImageNode()
-        imageNode.contentMode = UIViewContentMode.ScaleAspectFill
-        
         self.addSubnode(imageNode)
-        self.addSubnode(streamInfoNode)
+        
+        titleNode = ASTextNode()
+        self.addSubnode(titleNode)
+        
+        genresNode = ASTextNode()
+        genresNode.maximumNumberOfLines = 1
         self.addSubnode(genresNode)
+        
+        listenersNode = StreamCellButton()
+        listenersNode.setImage(UIImage(named: "listeners-icon"), forState: .Normal)
+        listenersNode.flexGrow = true
+        self.addSubnode(listenersNode)
+        
+        reactionsNode = StreamCellButton()
+        reactionsNode.setImage(UIImage(named: "reactions-icon"), forState: .Normal)
+        reactionsNode.flexGrow = true
+        reactionsNode.hidden = true
+        self.addSubnode(reactionsNode)
     }
     
     override func fetchData() {
-        super.fetchData()
-        
         let transformation = CLTransformation()
+        
         transformation.width = self.imageNode.calculatedSize.width * UIScreen.mainScreen().scale
         transformation.height = self.imageNode.calculatedSize.height * UIScreen.mainScreen().scale
         transformation.crop = "fill"
         
-        if let id = self.imgId, let x = _cloudinary.url(id, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+        
+        if let img = imageId, let x = _cloudinary.url(img, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             self.imageNode.URL = url
-            self.imageNode.contentMode = .ScaleAspectFill
+            self.imageNode.contentMode = .ScaleAspectFit
         } else {
-            self.imageNode.image = Synnc.appIcon
             self.imageNode.contentMode = .Center
+            self.imageNode.image = Synnc.appIcon
         }
         
-        self.genresNode.attributedString = NSAttributedString(string: genreStr, attributes: self.genreAttributes)
+        titleNode.attributedString = NSAttributedString(string: streamTitle!, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5])
+        
+        genresNode.attributedString = NSAttributedString(string: "Still / Missing / Genres", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 1)])
+        
+        
+        let x = NSAttributedString(string: "\(self.listeners)", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 117/255, green: 117/255, blue: 117/255, alpha: 1)])
+        listenersNode.setAttributedTitle(x, forState: .Normal)
+        
+        self.setNeedsLayout()
     }
     
-    func configure(stream : Stream) {
-        let transformation = CLTransformation()
-        transformation.width = self.calculatedSize.width * UIScreen.mainScreen().scale
-        transformation.height = self.calculatedSize.height * UIScreen.mainScreen().scale
-        transformation.crop = "fill"
+    func configureForStream(stream : Stream) {
         
-        genreStr = ""
-        for (index,genre) in stream.genres.enumerate() {
-            if index == 0 {
-                genreStr! += genre.name
+        if let img = stream.img {
+            self.imageId = img as String
+        }
+        
+        var genreText : String!
+        for (ind,genre) in stream.playlist.genres.enumerate() {
+            
+            if ind == 0 {
+                genreText = genre.name
             } else {
-                genreStr! += (" / " + genre.name)
+                genreText! += (" / " + genre.name)
             }
         }
+        streamGenres = genreText
+        streamTitle = stream.name
         
-        if let id = stream.img {
-            self.imgId = id as String
-        }
+        listeners = stream.users.count
         
-        self.streamInfoNode.configure(stream)
         self.fetchData()
     }
     
-    override func layout() {
-        super.layout()
-        
-        self.genresNode.position.y = self.imageNode.calculatedSize.height - 5 - self.genresNode.calculatedSize.height / 2
-        self.genresNode.position.x = self.imageNode.calculatedSize.width - 5 - self.genresNode.calculatedSize.width / 2 + 25
-    }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let overlay = ASOverlayLayoutSpec(child: ASStaticLayoutSpec(children: [genresNode]), overlay: imageNode)
-        overlay.flexBasis = ASRelativeDimension(type: .Points, value: 110)
-        overlay.alignSelf = .Stretch
-
-        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [overlay, streamInfoNode])
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20), child: vStack)
+        
+        let imageStack = ASStaticLayoutSpec(children: [imageNode])
+        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width * 0.23, constrainedSize.max.width * 0.23))
+        imageStack.spacingBefore = 20
+        imageStack.spacingAfter = 25
+        
+        titleNode.alignSelf = .Stretch
+        
+        let buttonStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [listenersNode, reactionsNode])
+        buttonStack.alignSelf = .Stretch
+        buttonStack.spacingBefore = 23
+        
+        let textStack = ASStackLayoutSpec(direction: .Vertical, spacing: 3, justifyContent: .Start, alignItems: .Start, children: [titleNode, genresNode, buttonStack])
+        textStack.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - constrainedSize.max.width * 0.23 - 50)
+        textStack.spacingAfter = 10
+        
+        return ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [imageStack, textStack])
     }
 }
 
-class StreamCellInfoNode : StreamTitleNode {
+class StreamCell : ASDisplayNode {
+    var storyNode : StreamStoryNode!
+    var streamNode : StreamCellContentNode!
+    var separator : ASDisplayNode!
+    
+    override init() {
+        super.init()
+        
+        storyNode = StreamStoryNode()
+        storyNode.alignSelf = .Stretch
+        self.addSubnode(storyNode)
+        
+        separator = ASDisplayNode()
+        separator.alignSelf = .Stretch
+        separator.flexBasis = ASRelativeDimension(type: .Points, value: 1/UIScreen.mainScreen().scale)
+        separator.backgroundColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
+        self.addSubnode(separator)
+        
+        streamNode = StreamCellContentNode()
+        streamNode.alignSelf = .Stretch
+        self.addSubnode(streamNode)
+        
+        self.cornerRadius = 8
+        self.backgroundColor = .whiteColor()
+    }
+    
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        if let x = super.layoutSpecThatFits(constrainedSize) as? ASInsetLayoutSpec {
-            x.insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            return x
+        
+        let storySpec = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 12, 0, 12), child: storyNode)
+        storySpec.alignSelf = .Stretch
+        storySpec.spacingBefore = 10
+        storySpec.spacingAfter = 12
+        
+        streamNode.spacingBefore = 16
+        streamNode.spacingAfter = 15
+        
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [storySpec, separator, streamNode])
+    }
+    
+    func configureForStream(stream : Stream) {
+        self.storyNode.configureForStream(stream)
+        self.streamNode.configureForStream(stream)
+    }
+}
+
+class StreamCellNode : ASCellNode {
+    var contentNode : StreamCell!
+    
+    override init() {
+        
+        super.init()
+        
+        self.contentNode = StreamCell()
+        self.contentNode.alignSelf = .Stretch
+        self.addSubnode(contentNode)
+        
+        self.selectionStyle = .None
+        
+        self.shadowColor = UIColor(red: 203/255, green: 203/255, blue: 203/255, alpha: 0.5).CGColor
+        self.shadowOpacity = 1
+        self.shadowOffset = CGSizeMake(0, 1)
+        self.shadowRadius = 2
+        
+        self.contentNode.storyNode.textNode.delegate = self
+        self.contentNode.storyNode.imageNode.addTarget(self, action: #selector(StreamCellNode.tappedOnUserImage(_:)), forControlEvents: .TouchUpInside)
+        self.userInteractionEnabled = true
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [contentNode])
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(5, 15, 5, 15), child: a)
+    }
+    
+    func configureForStream(stream : Stream) {
+        self.contentNode.configureForStream(stream)
+    }
+}
+
+extension StreamCellNode : ASTextNodeDelegate {
+    func textNode(textNode: ASTextNode, tappedLinkAttribute attribute: String, value: AnyObject, atPoint point: CGPoint, textRange: NSRange) {
+        if let id = value as? String {
+            displayUserPopup(id)
         }
-        return super.layoutSpecThatFits(constrainedSize)
+        AnalyticsEvent.new(category: "ui_action", action: "text_tap", label: "streamCell_user", value: nil)
+    }
+    func tappedOnUserImage(image: UserImageNode) {
+        if let id = image.userId {
+            displayUserPopup(id)
+        }
+        AnalyticsEvent.new(category: "ui_action", action: "image_tap", label: "streamCell_user", value: nil)
+    }
+    func displayUserPopup(id : String){
+        if let user = WCLUserManager.sharedInstance.findUser(id) {
+            let size = CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200)
+            let x = UserProfilePopup(size: size, user: user)
+            WCLPopupManager.sharedInstance.newPopup(x)
+        }
     }
 }

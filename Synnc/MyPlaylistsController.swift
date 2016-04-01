@@ -19,7 +19,7 @@ class MyPlaylistsController : ASViewController, PagerSubcontroller {
         let x = ASImageNode()
         x.image = UIImage(named: "magnifier-white")
         x.contentMode = .Center
-        return x
+        return nil
     }()
     var leftHeaderIcon : ASImageNode! {
         get {
@@ -90,9 +90,10 @@ extension MyPlaylistsController {
     
     func displayPlaylist(playlist: SynncPlaylist?) {
         let vc = PlaylistController(playlist: playlist)
-        let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
+        let opts = WCLWindowOptions(link: false, draggable: true, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
         a.delegate = vc
+        a.panRecognizer.delegate = vc
         a.display(true)
     }
 }

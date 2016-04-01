@@ -80,10 +80,10 @@ class LoginVC : ASViewController {
     override func loadView() {
         super.loadView()
         
-        if let seenOnboarding = WildDataManager.sharedInstance().getUserDefaultsValue("seenOnboarding") as? Bool where seenOnboarding {
-            self.state = .Login
-        } else {
+        if Synnc.sharedInstance.firstLogin {
             self.state = .Onboarding
+        } else {
+            self.state = .Login
         }
     }
 
@@ -148,7 +148,8 @@ extension LoginVC {
     
     func toggleLogin(sender: ButtonNode!) {
         self.state = .Login
-        WildDataManager.sharedInstance().updateUserDefaultsValue("seenOnboarding", value: true)
+        
+        WildDataManager.sharedInstance().updateUserDefaultsValue("firstLogin", value: false)
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Get Started", value: nil)
     }
 }

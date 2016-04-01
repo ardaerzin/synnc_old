@@ -25,8 +25,6 @@ class PlaylistTracksHeader : ASDisplayNode {
         tintNode.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
         self.addSubnode(tintNode)
         
-        self.backgroundColor = .purpleColor()
-        
         self.clipsToBounds = true
     }
     
@@ -92,7 +90,7 @@ class PlaylistTracksNode : ASDisplayNode, TrackedView {
             return header.imageNode
         }
     }
-    var tracksTable : ASTableNode!
+    var tracksTable : WCLTableNode!
     var scrollPosition : CGFloat! {
         didSet {
             header.updateScrollPosition(scrollPosition)
@@ -103,7 +101,7 @@ class PlaylistTracksNode : ASDisplayNode, TrackedView {
     
     override init() {
         
-        let table = ASTableNode(style: UITableViewStyle.Plain)
+        let table = WCLTableNode(style: UITableViewStyle.Plain)
         table.alignSelf = .Stretch
         table.flexGrow = true
         table.view.separatorStyle = .None

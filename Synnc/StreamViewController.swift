@@ -75,7 +75,6 @@ class StreamViewController : ASViewController {
     var screenNode : StreamViewNode!
     var createController : StreamCreateController!
     
-    
     var stream : Stream? {
         didSet {
             if stream != oldValue {

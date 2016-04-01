@@ -46,9 +46,6 @@ class SynncPlaylist: NSManagedObject {
             if let id = cover_id where id != "" {
                 return nil
             } else {
-                if _coverImage == nil {
-                    return Synnc.appIcon
-                }
                 return _coverImage
             }
         }

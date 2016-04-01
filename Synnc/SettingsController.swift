@@ -73,7 +73,7 @@ class SettingsController : ASViewController, PagerSubcontroller {
         let x = ASImageNode()
         x.image = UIImage(named: "magnifier")
         x.contentMode = .Center
-        return x
+        return nil
     }()
     var leftHeaderIcon : ASImageNode! {
         get {
@@ -227,12 +227,12 @@ extension SettingsController {
         print("send feedback shit", self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string)
         
         if let feedbackMsg = self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string {
-//            Synnc.sharedInstance.socket.emit("feedback", [
-//                "user" : Synnc.sharedInstance.user._id,
-//                "version" : Synnc.sharedInstance.version,
-//                "timestamp" : NSDate().timeIntervalSince1970,
-//                "feedback" : feedbackMsg
-//            ])
+            Synnc.sharedInstance.socket.emit("Feedback:create", [
+                "user" : Synnc.sharedInstance.user._id,
+                "version" : Synnc.sharedInstance.version,
+                "timestamp" : NSDate().timeIntervalSince1970,
+                "feedback" : feedbackMsg
+            ])
         }
     }
     func cancelFeedback(sender : ButtonNode) {

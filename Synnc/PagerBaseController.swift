@@ -57,7 +57,6 @@ class PagerBaseController : ASViewController {
         screenNode.headerNode.rightButtonHolder.items = rightItems
         screenNode.headerNode.titleHolder.items = titleItems
         screenNode.headerNode.pageControl.styles = pagerStyles
-        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

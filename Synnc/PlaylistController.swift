@@ -60,12 +60,45 @@ class PlaylistController : PagerBaseController {
         }
         
         node.streamButtonHolder.streamButton.addTarget(self, action: #selector(PlaylistController.streamPlaylist(_:)) , forControlEvents: .TouchUpInside)
+        
+        if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist == fav {
+            self.infoController.screenNode.infoNode.titleNode.userInteractionEnabled = false
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let window = self.view.wclWindow {
+            window.panRecognizer.delegate = self
+        }
+    }
+}
+
+extension PlaylistController : UIGestureRecognizerDelegate {
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer == self.screenNode.pager.view.panGestureRecognizer {
+            return false
+        }
+        return true
+    }
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
+            return true
+        } else {
+            return false
+        }
+    }
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 extension PlaylistController {
@@ -100,19 +133,45 @@ extension PlaylistController {
             return
         }
         
-        let vc = StreamVC(stream: nil)
-        let opts = WCLWindowOptions(link: false, draggable: true, limit: 300, dismissable: true)
+        
+        let stream = Stream(user: Synnc.sharedInstance.user)
+        stream.playlist = playlist
+        stream.genres = Array(playlist.genres)
+        stream.lat = 0
+        stream.lon = 0
+        if let name = playlist.name {
+            stream.name = name
+        }
+        if let coverid = playlist.cover_id {
+            stream.img = coverid
+        }
+        if let location = playlist.location {
+            stream.city = location
+        }
+        Synnc.sharedInstance.streamManager.userStream = stream
+        let vc = StreamVC(stream: stream)
+        
+        let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height - 70, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
         a.delegate = vc
-        let stream = Stream.create(self.playlist) {
+        a.panRecognizer.delegate = vc
+        stream.createCallback = {
             created in
-            
-            if created {
-                vc.createdStream()                
+            if StreamManager.canSetActiveStream(stream) {
+                if stream == StreamManager.sharedInstance.userStream {
+                    StreamManager.setActiveStream(stream)
+                    StreamManager.playStream(stream)
+                }
             }
         }
-        vc.stream = stream
-        
+        stream.update([NSObject : AnyObject]())
+//        let stream = Stream.create(self.playlist) {
+//            created in
+//            
+//            if created {
+//                vc.createdStream()                
+//            }
+//        }
         a.display(true)
     }
 }

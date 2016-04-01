@@ -72,6 +72,10 @@ class Stream : Serializable {
         }
     }
     
+//    func create(info: [NSObject : AnyObject]) {
+//        
+//    }
+    
     class func create(playlist : SynncPlaylist, callback : ((status : Bool) -> Void)?) -> Stream {
         
         let stream = Stream(user: Synnc.sharedInstance.user)

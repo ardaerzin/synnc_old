@@ -18,8 +18,8 @@ class MyPlaylistsNode : ASDisplayNode, TrackedView {
     
     var title : String! = "My Playlists"
     var tableNode : ASTableNode!
-    var emptyStateNode : MyPlaylistsEmptyStateNode!
     
+    var emptyStateNode : MyPlaylistsEmptyStateNode!
     var emptyState : Bool = false {
         didSet {
             if emptyState != oldValue {
@@ -48,9 +48,9 @@ class MyPlaylistsNode : ASDisplayNode, TrackedView {
         self.addSubnode(tableNode)
     }
     
-    override func calculatedLayoutDidChange() {
-        super.calculatedLayoutDidChange()
-    }
+//    override func calculatedLayoutDidChange() {
+//        super.calculatedLayoutDidChange()
+//    }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStaticLayoutSpec(children: [self.tableNode])

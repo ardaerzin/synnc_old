@@ -99,10 +99,14 @@ class StreamPlayer : WildPlayer {
     }
     
     override func play() {
+        checkActiveSession()
+        super.play()
+    }
+    
+    func checkActiveSession() {
         if !self.isActiveSession {
             setActiveAudioSession()
         }
-        super.play()
     }
     
     //Mark: Player Controls
@@ -151,7 +155,7 @@ class StreamPlayer : WildPlayer {
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
         
         nowPlayingInfo.updateValue(track.name, forKey: MPMediaItemPropertyTitle)
-        nowPlayingInfo.updateValue(st.name + ", by" + st.user.username, forKey: MPMediaItemPropertyArtist)
+        nowPlayingInfo.updateValue(st.name + ", by " + st.user.username, forKey: MPMediaItemPropertyArtist)
         
         
         let downloader = ASPINRemoteImageDownloader.sharedDownloader()

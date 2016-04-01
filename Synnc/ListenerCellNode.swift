@@ -17,8 +17,8 @@ import WCLLocationManager
 import WCLUserManager
 
 class ListenerCellNode : ASCellNode {
-    var imageNode : ASNetworkImageNode!
     
+    var imageNode : ASNetworkImageNode!
     var imageURL : NSURL!
     
     override init() {
@@ -36,6 +36,11 @@ class ListenerCellNode : ASCellNode {
         if let url = imageURL {
             imageNode.URL = url
         }
+    }
+    
+    
+    func configureForUser(user : WCLUser) {
+        self.imageURL = user.avatarURL(WCLUserLoginType(rawValue: user.provider)!, frame: CGRectMake(0, 0, 40, 40), scale: UIScreen.mainScreen().scale)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

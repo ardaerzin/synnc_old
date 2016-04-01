@@ -91,6 +91,15 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+//        if let window = self.parentViewController!.view.wclWindow {
+//            window.panRecognizer.delegate = self
+//        }
+        self.screenNode.infoNode.view.delegate = self
+    }
+    
     func displayImagePicker(sender : AnyObject){
         
         imagePicker = DKImagePickerController()
@@ -120,6 +129,48 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     }
 }
 
+extension PlaylistInfoController : UIScrollViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        if let s = self.screenNode.infoNode.view {
+            if s.contentOffset.y  < -50 {
+                s.programaticScrollEnabled = false
+                s.panGestureRecognizer.enabled = false
+                s.programaticScrollEnabled = true
+                
+                let animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
+                s.pop_addAnimation(animation, forKey: "offsetAnim")
+                animation.toValue = NSValue(CGPoint: CGPoint(x: 0, y: 0))
+            } else {
+                s.panGestureRecognizer.enabled = true
+            }
+        }
+    }
+}
+
+extension PlaylistInfoController : UIGestureRecognizerDelegate {
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer == (self.parentViewController as? PlaylistController)?.screenNode.pager.view.panGestureRecognizer {
+            return false
+        }
+        return true
+    }
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer == self.screenNode.infoNode.view.panGestureRecognizer {
+            return true
+        } else {
+            return false
+        }
+    }
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer == self.screenNode.infoNode.view.panGestureRecognizer {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
 extension PlaylistInfoController : ASEditableTextNodeDelegate {
     func editableTextNodeDidFinishEditing(editableTextNode: ASEditableTextNode) {
         if editableTextNode != self.screenNode.infoNode.titleNode {
@@ -143,6 +194,10 @@ extension PlaylistInfoController : PlaylistInfoDelegate {
         
         guard let playlist = self.playlist else {
             return nil
+        }
+        
+        if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist == fav {
+            return Synnc.appIcon
         }
         
         if self.editedImage == nil && playlist.coverImage == nil {

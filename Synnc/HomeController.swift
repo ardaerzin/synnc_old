@@ -35,6 +35,8 @@ class HomeController : PagerBaseController {
     init(){
         let node = HomeNode()
         super.init(pagerNode: node)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeController.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -44,14 +46,28 @@ class HomeController : PagerBaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.feedController.leftHeaderIcon.addTarget(self, action: #selector(HomeController.displaySearch(_:)), forControlEvents: .TouchUpInside)
-        self.playlistsController.leftHeaderIcon.addTarget(self, action: #selector(HomeController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        self.feedController.leftHeaderIcon?.addTarget(self, action: #selector(HomeController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        self.playlistsController.leftHeaderIcon?.addTarget(self, action: #selector(HomeController.displaySearch(_:)), forControlEvents: .TouchUpInside)
     }
     
     func displaySearch(sender : AnyObject) {
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Display Search", value: nil)
     }
-
+    
+    func checkActiveStream(notification : NSNotification) {
+        if let window = self.screenNode.view.wclWindow {
+            
+            var lowerLimit : CGFloat = 0
+            
+            if let activeStream = notification.object as? Stream {
+                lowerLimit = UIScreen.mainScreen().bounds.height - 60 - 70
+            } else {
+                lowerLimit = UIScreen.mainScreen().bounds.height - 60
+            }
+            
+            window.lowerPercentage = lowerLimit
+        }
+    }
 }
 extension HomeController : WCLWindowDelegate {
     func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {

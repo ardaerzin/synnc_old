@@ -13,72 +13,63 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 
-class StreamFeedHolder : ASDisplayNode {
-    var collectionNode : ASCollectionNode!
-    
-    override init(){
-        super.init()
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .Vertical
-        collectionNode = ASCollectionNode(collectionViewLayout: layout)
-        collectionNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        
-        collectionNode.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
-        
-        collectionNode.view.contentInset = UIEdgeInsetsMake(145, 0, 50, 0)
-        
-        self.addSubnode(collectionNode)
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASStaticLayoutSpec(children: [collectionNode])
-    }
-}
-
 class StreamsFeedNode : ASDisplayNode, TrackedView {
     
     
-    var emptyState : Bool = true {
+    var title : String! = "Streams Feed"
+//    var streamCollection : ASCollectionNode! {
+//        get {
+//            return self.feedHolder.collectionNode
+//        }
+//    }
+    
+//    var feedHolder : StreamFeedHolder!
+//    var otherNode : ASDisplayNode!
+    
+    var tableNode : ASTableNode!
+    
+    var emptyStateNode : StreamsFeedEmptyStateNode!
+    var emptyState : Bool = false {
         didSet {
             if emptyState != oldValue {
-                self.transitionLayoutWithAnimation(false, shouldMeasureAsync: false, measurementCompletion: nil)
+                if self.emptyStateNode == nil {
+                    emptyStateNode = StreamsFeedEmptyStateNode()
+                }
+                if emptyState {
+                    self.addSubnode(emptyStateNode)
+                } else {
+                    emptyStateNode.removeFromSupernode()
+                    emptyStateNode = nil
+                }
+                self.setNeedsLayout()
             }
-        }
-    }
-    var title : String! = "Streams Feed"
-    var streamCollection : ASCollectionNode! {
-        get {
-            return self.feedHolder.collectionNode
-        }
-    }
-    
-    var feedHolder : StreamFeedHolder!
-    var otherNode : ASDisplayNode!
-    var _emptyStateNode : StreamsFeedEmptyStateNode!
-    var emptyStateNode : StreamsFeedEmptyStateNode!
-        {
-        get {
-            if _emptyStateNode == nil {
-                _emptyStateNode = StreamsFeedEmptyStateNode()
-                _emptyStateNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-                _emptyStateNode.alpha = 1
-                
-                self.addSubnode(_emptyStateNode)
-            }
-            return _emptyStateNode
         }
     }
     
     override init() {
         super.init()
+
+        tableNode = ASTableNode()
+        tableNode.view.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        tableNode.alignSelf = .Stretch
+        tableNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+        tableNode.view.separatorStyle = .None
+        self.addSubnode(tableNode)
         
-        feedHolder = StreamFeedHolder()
-        feedHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+//        feedHolder = StreamFeedHolder()
+//        feedHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+    }
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        tableNode.view.tableFooterView = UIView(frame: CGRectZero)
+        tableNode.view.tableHeaderView = UIView(frame: CGRectMake(0,0,1,70))
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let visibleNode : ASLayoutable = emptyState ? emptyStateNode : feedHolder
-        return ASStaticLayoutSpec(children: [visibleNode])
+        let a = ASStaticLayoutSpec(children: [self.tableNode])
+        let o = ASOverlayLayoutSpec(child: a, overlay: self.emptyStateNode)
+        return o
     }
 }

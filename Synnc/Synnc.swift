@@ -56,27 +56,19 @@ class Synnc : UIResponder, UIApplicationDelegate {
     var bgTime : NSTimer!
     var backgroundTask : UIBackgroundTaskIdentifier!
     
-//    lazy var streamNavigationController : StreamNavigationController! = {
-//        if let rvc = self.window?.rootViewController as? RootViewController {
-//            let a = StreamNavigationController()
-//            a.view.frame = UIScreen.mainScreen().bounds
-//            rvc.addChildViewController(a)
-//            rvc.view.addSubview(a.view)
-//            a.didMoveToParentViewController(rvc)
-//            return a
-//        } else {
-//            return nil
-//        }
-//    }()
-    
-    
     var locationManager : WCLLocationManager = WCLLocationManager.sharedInstance()
     var chatManager : ChatManager!
     var imageUploader : CLUploader!
     dynamic var user : MainUser!
     var socket: SocketIOClient!
     var window: UIWindow?
-    
+    lazy var firstLogin : Bool = {
+        if let x = WildDataManager.sharedInstance().getUserDefaultsValue("firstLogin") as? Bool {
+            return x
+        } else {
+            return true
+        }
+    }()
     var streamManager : StreamManager! {
         return StreamManager.sharedInstance
     }
@@ -120,7 +112,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
             }
         
             let json = JSON(data: d)
-            print("json", json)
             Async.main {
                 if let minReqVersion = json["minCompatibleVersion"].string where self.version.compareToMinRequiredVersion(minReqVersion) >= 0 {
                     self.serverAvailable = true
@@ -148,21 +139,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         let a = WCLWindowManager.sharedInstance.newWindow(x, animated: false, options: opts)
         a.delegate = x
         self.window = a
-        
-//        a.panRecognizer.enabled = false
-        
-//        a.alpha = 1
-//        UIWindow(frame: UIScreen.mainScreen().bounds)
-//        self.window?.rootViewController = x
-//        a
         a.display(false)
-        
-//        a.transitionProgress = 1
-//        print("window frame", self.window!.frame)
-//            UIWindow(frame: UIScreen.mainScreen().bounds)
-//            WCLWindowManager.sharedInstance.newWindow()
-//            WCLWindow(frame: UIScreen.mainScreen().bounds)
-//            UIWindow(frame: UIScreen.mainScreen().bounds)
         
         //Notifications
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.willChangeStatusBarFrame(_:)), name: UIApplicationWillChangeStatusBarFrameNotification, object: nil)
@@ -170,18 +147,9 @@ class Synnc : UIResponder, UIApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.userProfileInfoChanged(_:)), name: "profileInfoChanged", object: Synnc.sharedInstance.user)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(Synnc.syncCompleteNotification(_:)), name: kNHNetworkTimeSyncCompleteNotification, object: nil)
         
-        //Initialize rootViewController for main window
-//        rootVC = RootViewController()
-        
-//        self.window?.makeKeyAndVisible()
         self.window?.makeKeyAndVisible()
-//            makeKeyWindow()
-//        self.window?.rootViewController = RootWindowController()
-        
-//        a.transitionProgress = 0
-        
+
         self.initSynnc()
-        
         performNTPCheck()
         
         topPopupManager = WCLPopupManager()
@@ -192,8 +160,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
         lagFreeField.becomeFirstResponder()
         lagFreeField.resignFirstResponder()
         lagFreeField.removeFromSuperview()
-        
-        
         
         return true
     }
@@ -314,22 +280,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
     }
 }
 
-extension Synnc : WCLNotificationManagerDelegate {
-    func notificationManager(manager: WCLNotificationManager, didTapInappNotification notification: WCLNotificationView) {
-        //        if let info = notification.info {
-        //            switch info.defaultActionName {
-        //            case "OpenTab" :
-        //                if let rvc = self.window?.rootViewController as? RootViewController {
-        //                    rvc.willSetTabItem(rvc.screenNode.tabbar, item: info.object as! TabItem)
-        //                }
-        //                break
-        //            default:
-        //                return
-        //            }
-        //        }
-    }
-}
-
 extension Synnc {
     func initSocket() -> SocketIOClient! {
         guard let url = NSURL(string: socketURLString) else {
@@ -362,7 +312,7 @@ extension Synnc {
 extension Synnc {
     func userProfileInfoChanged(notification: NSNotification) {
         if self.user._id != nil {
-            
+            socket!.emit("user:update", [ "id" : self.user._id, "lat" : 0, "lon" : 0])
             if self.user.generatedUsername {
 //                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
 //                x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)

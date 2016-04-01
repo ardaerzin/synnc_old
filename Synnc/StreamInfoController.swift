@@ -17,6 +17,7 @@ import WCLLocationManager
 import WCLNotificationManager
 import Cloudinary
 import DKImagePickerController
+import WCLUserManager
 
 class StreamInfoController : ASViewController, PagerSubcontroller {
     
@@ -61,21 +62,87 @@ class StreamInfoController : ASViewController, PagerSubcontroller {
             return [ "pageControlColor" : UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1), "pageControlSelectedColor" : UIColor.whiteColor()]
         }
     }
-    
+    var screenNode : StreamInfoHolder!
+    var listenersController : StreamListenersController! = StreamListenersController()
     
     init(){
-        let n = StreamInfoHolder()
+        let n = StreamInfoHolder(usersSection: listenersController.screenNode)
         super.init(node: n)
-//        self.screenNode = n
-//        n.infoNode.infoDelegate = self
-//        n.infoNode.titleNode.delegate = self
-//        
-//        screenNode.infoNode.genreHolder.tapGestureRecognizer.addTarget(self, action: #selector(PlaylistInfoController.displayGenrePicker(_:)))
-//        screenNode.infoNode.locationHolder.tapGestureRecognizer.addTarget(self, action: #selector(PlaylistInfoController.toggleLocation(_:)))
-//        screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode = n
+        
+        self.addChildViewController(self.listenersController)
+        self.screenNode.infoNode.view.delegate = self
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.screenNode.infoNode.topSection.joinButton.addTarget(self, action: #selector(StreamInfoController.joinStream(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.infoNode.topSection.userArea.addTarget(self, action: #selector(StreamInfoController.tappedOnUserArea(_:)), forControlEvents: .TouchUpInside)
+    }
+    
+    func tappedOnUserArea(sender : TappableUserArea) {
+        self.displayUserPopup(sender.userId)
+    }
+    func displayUserPopup(userId : String) {
+        if let user = WCLUserManager.sharedInstance.findUser(userId) {
+            let size = CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200)
+            let x = UserProfilePopup(size: size, user: user)
+            WCLPopupManager.sharedInstance.newPopup(x)
+        }
+    }
+    
+    
+    func joinStream(sender : AnyObject){
+        
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
+        
+        if let stream = StreamManager.sharedInstance.activeStream {
+            
+            let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
+            WCLPopupManager.sharedInstance.newPopup(x)
+            
+            return
+        }
+        
+        if let s = self.stream {
+            StreamManager.sharedInstance.joinStream(s) {
+                success in
+                if success {
+                    //                StreamManager.sharedInstance.player.delegate = self
+                }
+            }
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(stream : Stream) {
+        self.listenersController.update(stream)
+        self.screenNode.infoNode.configure(stream)
+    }
+}
+
+extension StreamInfoController : UIScrollViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if let pvc = self.parentViewController as?  StreamVC {
+            pvc.updateScrollPosition(scrollView.contentOffset.y)
+        }
+        
+        if let s = (self.screenNode).infoNode.view {
+            if s.contentOffset.y  < -(self.node.calculatedSize.width - 100) {
+                s.programaticScrollEnabled = false
+                s.panGestureRecognizer.enabled = false
+                s.programaticScrollEnabled = true
+                
+                let animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
+                s.pop_addAnimation(animation, forKey: "offsetAnim")
+                animation.toValue = NSValue(CGPoint: CGPoint(x: 0, y: 0))
+            } else {
+                s.panGestureRecognizer.enabled = true
+            }
+        }
     }
 }

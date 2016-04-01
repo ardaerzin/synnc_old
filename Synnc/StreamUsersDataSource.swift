@@ -14,11 +14,12 @@ class StreamUsersDataSource : WCLAsyncCollectionViewDataSource {
     
     override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = ListenerCellNode()
-        if let data = self.data[indexPath.item] as? WCLUser {
-            node.imageURL = data.avatarURL(WCLUserLoginType(rawValue: data.provider)!, frame: CGRectMake(0, 0, 40, 40), scale: UIScreen.mainScreen().scale)
-        } else {
+        
+        
+        if let user = self.data[indexPath.item] as? WCLUser {
+            node.configureForUser(user)
         }
-        node.fetchData()
+        
         return node
     }
     

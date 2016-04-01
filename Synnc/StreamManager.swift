@@ -17,7 +17,9 @@ class StreamManager : NSObject, StreamDelegate {
     
     var userFeed : [Stream] = [] {
         didSet {
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedUserFeed", object: userStream, userInfo: nil)
+            Async.main {
+                NSNotificationCenter.defaultCenter().postNotificationName("UpdatedUserFeed", object: self.userStream, userInfo: nil)
+            }
         }
     }
     var streams : [Stream] = [] {
@@ -112,6 +114,7 @@ extension StreamManager {
             return
         }
         self.activeStream = nil
+        completion?(status: true)
     }
     
     func finishedStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
@@ -195,10 +198,9 @@ extension StreamManager {
                 self?.activeStream = stream
                 self?.player.isSyncing = true
                 self?.player.syncManager.timestamp = stream.timestamp
+                self?.player.checkActiveSession()
                 
-                if stream.isUserStream {
-                } else {
-                }
+        
             } else {
                 completion?(status: false)
             }
@@ -310,24 +312,23 @@ extension StreamManager {
 
 extension StreamManager {
     func updateUserFeed(){
-//        Synnc.sharedInstance.socket.emitWithAck("Stream", [])(timeoutAfter: 0) {
-//            ack in
-//            Async.background {
-//                if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
-//                    print(jsonArr)
-//                    self.findOrCreateFromData(jsonArr, completionBlock: {
-//                        streams in
-//                        let newItems = $.difference(streams, self.userFeed)
-//                        for item in newItems {
-//                            if let id = item.user._id {
-//                                Synnc.sharedInstance.user.joinUserRoom(id, callback: nil)
-//                            }
-//                        }
-//                        self.userFeed = $.union(self.userFeed, streams)
-//                    })
-//                }
-//            }
-//        }
+        Synnc.sharedInstance.socket.emitWithAck("Stream", [])(timeoutAfter: 0) {
+            ack in
+            Async.background {
+                if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
+                    self.findOrCreateFromData(jsonArr, completionBlock: {
+                        streams in
+                        let newItems = $.difference(streams, self.userFeed)
+                        for item in newItems {
+                            if let id = item.user._id {
+                                Synnc.sharedInstance.user.joinUserRoom(id, callback: nil)
+                            }
+                        }
+                        self.userFeed = $.union(self.userFeed, streams)
+                    })
+                }
+            }
+        }
     }
     
     internal func findOrCreateFromData(serverData : [JSON], completionBlock : ((streams: [Stream]) -> Void)?) {
@@ -423,6 +424,17 @@ extension StreamManager {
         socket.on("Streams", callback: refreshStreamsCallback())
         socket.on("Stream:save", callback: streamSaveCallback())
         socket.on("Stream:delete", callback: streamDeleteCallback())
+        socket.on("Stream:end", callback: streamEndCallback())
+    }
+    func streamEndCallback() -> NormalCallback {
+        return {
+            (dataArr, ack) in
+            if let data = dataArr.first {
+                var json = JSON(data)
+                let stream = self.findStream(json["_id"].string)
+                print("STREAM ENDED")
+            }
+        }
     }
     func streamDeleteCallback() -> NormalCallback {
         return {
@@ -439,6 +451,10 @@ extension StreamManager {
                     
                     let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
                     NSNotificationCenter.defaultCenter().postNotification(notification)
+                    
+                    if let ind = self.userFeed.indexOf(stream!) {
+                        self.userFeed.removeAtIndex(ind)
+                    }
                 }
             }
         }
@@ -452,7 +468,18 @@ extension StreamManager {
                 let id = json["_id"].string
                 let oldStream = self.findStream(id)
                 if oldStream != nil {
-                    oldStream!.fromJSON(json)
+                    oldStream!.fromJSON(json) {
+                        stream in
+                        if stream.status {
+                            if self.userFeed.indexOf(stream) == nil {
+                                self.userFeed.append(stream)
+                            }
+                        } else {
+                            if let ind = self.userFeed.indexOf(stream) {
+                                self.userFeed.removeAtIndex(ind)
+                            }
+                        }
+                    }
                 } else {
                     
                     self.findOrCreateFromData([json], completionBlock: {

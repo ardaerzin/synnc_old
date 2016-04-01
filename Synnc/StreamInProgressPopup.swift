@@ -81,9 +81,6 @@ class StreamInProgressPopup : WCLPopupViewController {
                 }
                 
                 self?.closeView(true)
-                
-//                Synnc.sharedInstance.streamNavigationController.clearUserStreamController()
-//                Synnc.sharedInstance.streamNavigationController.displayStreamCreateController(self?.playlist)
                 self?.playlist = nil
             })
         }

@@ -15,19 +15,34 @@ import Cloudinary
 class StreamHeaderNode : PagerHeaderNode {
     
     var gradientLayer : CAGradientLayer!
+    var streamTitleNode : ASTextNode!
+    var shareButton : ButtonNode!
     
     init(){
         super.init(backgroundColor: nil)
+        streamTitleNode = ASTextNode()
+        self.addSubnode(streamTitleNode)
+        
+        shareButton = ButtonNode()
+        shareButton.setImage(UIImage(named: "share-icon"), forState: .Normal)
+        shareButton.hidden = true
+        self.addSubnode(shareButton)
     }
     
     
     override func layout() {
         super.layout()
-        pageControl.position.y = titleHolder.position.y + (titleHolder.calculatedSize.height / 2) + 25
-    }    
-//    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-//        return ASStaticLayoutSpec(children: [pageControl, leftButtonHolder, rightButtonHolder, titleHolder])
-//    }
+        streamTitleNode.position.x = titleHolder.position.x
+        streamTitleNode.position.y = titleHolder.position.y + 10
+        
+        shareButton.position.x = self.calculatedSize.width - (shareButton.calculatedSize.width / 2) - 20
+        shareButton.position.y = self.calculatedSize.height / 2
+        
+        pageControl.position.y = streamTitleNode.position.y + (streamTitleNode.calculatedSize.height / 2) + 20
+    }
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASStaticLayoutSpec(children: [pageControl, leftButtonHolder, rightButtonHolder, titleHolder, streamTitleNode, shareButton])
+    }
 }
 
 class StreamImageHeader : ASDisplayNode {
@@ -104,6 +119,65 @@ class StreamImageHeader : ASDisplayNode {
 
 class StreamVCNode : PagerBaseControllerNode {
     
+    var state : StreamControllerState! = .Inactive {
+        didSet {
+            stateAnimation.toValue = state.rawValue
+        }
+    }
+    var stateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("stateAnimatableProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! StreamVCNode).stateAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! StreamVCNode).stateAnimationProgress = values[0]
+                }
+                prop.threshold = 0.01
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var stateAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("stateAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    
+                    self.pop_removeAnimationForKey("stateAnimation")
+                }
+                x.springSpeed = 10
+                x.springBounciness = 0
+                x.property = self.stateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "stateAnimation")
+                return x
+            }
+        }
+    }
+    var stateAnimationProgress : CGFloat = 0 {
+        didSet {
+            
+//            let transition = POPTransition(stateAnimationProgress, startValue: 0, endValue: -nowPlayingArea.calculatedSize.height)
+//            POPLayerSetTranslationY(nowPlayingArea.layer, transition)
+//            let a = POPTransition(serverCheckStatusAnimationProgress, startValue: 1, endValue: 0)
+//            self.buttonHolder.alpha = a
+            //            self.legal.alpha = a
+            
+//            self.spinnerNode.alpha = 1-a
+        }
+    }
+    
+    
+    var nowPlayingArea : NowPlayingNode!
     var imageHeader : StreamImageHeader!
     var imageNode : ASNetworkImageNode! {
         get {
@@ -121,15 +195,19 @@ class StreamVCNode : PagerBaseControllerNode {
         let header = StreamHeaderNode()
         super.init(header: header, pager: nil)
         
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        
         imageHeader = StreamImageHeader()
         self.addSubnode(imageHeader)
         
-        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        nowPlayingArea = NowPlayingNode()
+        self.addSubnode(nowPlayingArea)
     }
     
     override func didLoad() {
         super.didLoad()
         self.view.bringSubviewToFront(self.headerNode.view)
+        self.view.bringSubviewToFront(self.nowPlayingArea.view)
     }
     
     override func layoutDidFinish() {
@@ -143,6 +221,8 @@ class StreamVCNode : PagerBaseControllerNode {
     override func layout() {
         super.layout()
         imageHeader.position.y = (imageHeader.calculatedSize.width / 2) - imageHeader.calculatedSize.width + 100
+        
+        nowPlayingArea.position.y = self.calculatedSize.height - (nowPlayingArea.calculatedSize.height / 2)
     }
     
     
@@ -152,32 +232,11 @@ class StreamVCNode : PagerBaseControllerNode {
         
         self.imageHeader.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width, constrainedSize.max.width))
         
-        return ASStaticLayoutSpec(children: [x, imageHeader])
+        nowPlayingArea.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(constrainedSize.max.width, 70))
+        
+        return ASStaticLayoutSpec(children: [x, imageHeader, nowPlayingArea])
     }
-    
-    override func fetchData() {
-        super.fetchData()
-//        if let x = self.infoDelegate?.imageForPlaylist!() {
-//            
-//            if let img = x as? UIImage {
-//                
-//                if img != self.imageNode.image {
-//                    self.imageNode.URL = nil
-//                    self.imageNode.image = img
-//                    
-//                    if img.size.height < self.imageNode.calculatedSize.height && img.size.width < self.imageNode.calculatedSize.width {
-//                        self.imageNode.contentMode = .Center
-//                    } else {
-//                        self.imageNode.contentMode = .ScaleAspectFill
-//                    }
-//                }
-//            } else if let url = x as? NSURL {
-//                if let prevURL = self.imageNode.URL where prevURL.absoluteString == url.absoluteString {
-//                } else {
-//                    self.imageNode.URL = url
-//                    self.imageNode.contentMode = .ScaleAspectFill
-//                }
-//            }
-//        }
-    }
+//    override func fetchData() {
+//        super.fetchData()
+//    }
 }

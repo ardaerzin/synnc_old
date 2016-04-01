@@ -310,6 +310,8 @@
 		476CC8131CA967D400CBA0E3 /* StreamInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8121CA967D400CBA0E3 /* StreamInfoController.swift */; };
 		476CC8171CA967F800CBA0E3 /* StreamTracklistController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8161CA967F800CBA0E3 /* StreamTracklistController.swift */; };
 		476CC81A1CAB228F00CBA0E3 /* StreamInfoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC8191CAB228F00CBA0E3 /* StreamInfoNode.swift */; };
+		476CC81C1CAC542C00CBA0E3 /* NowPlayingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC81B1CAC542C00CBA0E3 /* NowPlayingNode.swift */; };
+		476CC81E1CAF1BDE00CBA0E3 /* UserProfilePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */; };
 		477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */; };
 		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
 		4777051A1C3DB7E9007089D0 /* StreamContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705191C3DB7E9007089D0 /* StreamContentNode.swift */; };
@@ -770,6 +772,8 @@
 		476CC8121CA967D400CBA0E3 /* StreamInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamInfoController.swift; sourceTree = "<group>"; };
 		476CC8161CA967F800CBA0E3 /* StreamTracklistController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTracklistController.swift; sourceTree = "<group>"; };
 		476CC8191CAB228F00CBA0E3 /* StreamInfoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamInfoNode.swift; sourceTree = "<group>"; };
+		476CC81B1CAC542C00CBA0E3 /* NowPlayingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingNode.swift; sourceTree = "<group>"; };
+		476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfilePopup.swift; sourceTree = "<group>"; };
 		477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistEmptyNode.swift; sourceTree = "<group>"; };
 		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
 		477705191C3DB7E9007089D0 /* StreamContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamContentNode.swift; sourceTree = "<group>"; };
@@ -1389,6 +1393,7 @@
 			isa = PBXGroup;
 			children = (
 				475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */,
+				476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
 				47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */,
@@ -1559,6 +1564,7 @@
 			isa = PBXGroup;
 			children = (
 				476CC8101CA9675900CBA0E3 /* StreamVCNode.swift */,
+				476CC81B1CAC542C00CBA0E3 /* NowPlayingNode.swift */,
 			);
 			name = Nodes;
 			sourceTree = "<group>";
@@ -1567,6 +1573,7 @@
 			isa = PBXGroup;
 			children = (
 				476CC8121CA967D400CBA0E3 /* StreamInfoController.swift */,
+				47B899CC1C486800007C2B7F /* Listeners Controller */,
 				476CC8181CAB220C00CBA0E3 /* Nodes */,
 			);
 			name = InfoController;
@@ -1898,7 +1905,6 @@
 			children = (
 				470F8C131C49B1F700624F0F /* Stop Controller */,
 				470F8C0D1C49859F00624F0F /* Share Controller */,
-				47B899CC1C486800007C2B7F /* Listeners Controller */,
 				47B899CB1C4867E3007C2B7F /* Chat Controller */,
 			);
 			name = SubControllers;
@@ -2582,6 +2588,7 @@
 				47354E361C4F37A900A5F03E /* ControllerNotAvailableNode.swift in Sources */,
 				4728F94A1C34494000B427EA /* WildUser+SpotifyUser.swift in Sources */,
 				4728F9471C343AD600B427EA /* SettingsNode.swift in Sources */,
+				476CC81E1CAF1BDE00CBA0E3 /* UserProfilePopup.swift in Sources */,
 				470F8C061C4880D200624F0F /* StreamListenersController.swift in Sources */,
 				47B37B7A1C2F044E001CC6D2 /* WildTransitioning.swift in Sources */,
 				471834271C18893C005C9533 /* SubsectionSelectorNode.swift in Sources */,
@@ -2657,6 +2664,7 @@
 				470F8C091C48825000624F0F /* ChatTableManager.swift in Sources */,
 				472379351C9F033C00D79C55 /* ProfileController.swift in Sources */,
 				471834231C187F59005C9533 /* HeaderNode.swift in Sources */,
+				476CC81C1CAC542C00CBA0E3 /* NowPlayingNode.swift in Sources */,
 				477705221C3DF4F6007089D0 /* ChatController.swift in Sources */,
 				47D7637B1C3A283B008E0334 /* WildPlayerItem.swift in Sources */,
 				47B37B891C2F21D1001CC6D2 /* PlaylistNode.swift in Sources */,
