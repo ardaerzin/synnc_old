@@ -170,7 +170,7 @@ extension SettingsController {
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Terms", value: nil)
     }
     func librariesButtonAction(sender: ButtonNode) {
-        self.openURL("https://synnc.live/terms")
+        self.openURL("https://synnc.live/libraries")
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Libraries", value: nil)
     }
     func openURL(string: String) {
