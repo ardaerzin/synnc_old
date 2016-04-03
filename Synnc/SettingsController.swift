@@ -227,6 +227,10 @@ extension SettingsController {
         print("send feedback shit", self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string)
         
         if let feedbackMsg = self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string {
+            
+            self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText = NSAttributedString(string: "")
+            editableTextNodeDidUpdateText(self.screenNode.settingsNode.feedbackNode.feedbackArea)
+            
             Synnc.sharedInstance.socket.emit("Feedback:create", [
                 "user" : Synnc.sharedInstance.user._id,
                 "version" : Synnc.sharedInstance.version,

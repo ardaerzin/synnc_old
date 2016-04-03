@@ -88,7 +88,10 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         
         screenNode.infoNode.genreHolder.tapGestureRecognizer.addTarget(self, action: #selector(PlaylistInfoController.displayGenrePicker(_:)))
         screenNode.infoNode.locationHolder.tapGestureRecognizer.addTarget(self, action: #selector(PlaylistInfoController.toggleLocation(_:)))
-        screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
+        
+        if playlist != SharedPlaylistDataSource.findUserFavoritesPlaylist() {
+            screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
+        }
     }
     
     override func viewDidLoad() {

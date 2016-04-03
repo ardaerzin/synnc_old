@@ -91,6 +91,7 @@ extension PlaylistController : UIGestureRecognizerDelegate {
         return true
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        
         if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
             return true
         } else {
