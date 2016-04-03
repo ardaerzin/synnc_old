@@ -76,6 +76,7 @@ class SettingsNode : ASScrollNode {
         self.addSubnode(feedbackNode)
         
         disconnectButton = ButtonNode()
+        disconnectButton.hidden = true
         let title = NSAttributedString(string: "logout", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1), NSKernAttributeName : 0.7])
         disconnectButton.setAttributedTitle(title, forState: .Normal)
         disconnectButton.spacingBefore = 20
