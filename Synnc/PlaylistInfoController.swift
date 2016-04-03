@@ -108,6 +108,9 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         imagePicker.showsEmptyAlbums = false
         imagePicker.showsCancelButton = true
         
+        imagePicker.didCancel = {
+            self.imagePicker = nil
+        }
         imagePicker.didSelectAssets = {
             assets in
             if let img = assets.first {
@@ -119,6 +122,8 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
                     }
                 }
             }
+            
+            self.imagePicker = nil
         }
         
         self.parentViewController?.presentViewController(imagePicker, animated: true) {}

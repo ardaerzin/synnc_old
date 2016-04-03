@@ -19,6 +19,7 @@ import AssetsLibrary
 import Cloudinary
 import Shimmer
 import WCLNotificationManager
+import DKImagePickerController
 
 class PlaylistController : PagerBaseController {
     
@@ -80,6 +81,10 @@ class PlaylistController : PagerBaseController {
 
 extension PlaylistController : UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        if let ip = self.infoController.imagePicker {
+            return false
+        }
         if otherGestureRecognizer == self.screenNode.pager.view.panGestureRecognizer {
             return false
         }
@@ -93,6 +98,9 @@ extension PlaylistController : UIGestureRecognizerDelegate {
         }
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let ip = self.infoController.imagePicker {
+            return false
+        }
         if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
             return true
         } else {
