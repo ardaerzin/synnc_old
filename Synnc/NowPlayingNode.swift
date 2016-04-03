@@ -41,6 +41,7 @@ class NowPlayingNode : ASDisplayNode {
         volumeButton = ButtonNode()
         volumeButton.setImage(UIImage(named: "vol"), forState: .Normal)
         volumeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50, 50))
+        volumeButton.hidden = true
         self.addSubnode(volumeButton)
         
         trackNameNode = ASTextNode()
