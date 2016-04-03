@@ -176,7 +176,7 @@ class PlaylistInfoNode : WCLScrollNode {
         self.addSubnode(titleNode)
         
         trackCountNode = ASTextNode()
-        trackCountNode.attributedString = NSAttributedString(string: "A------------A", attributes: self.trackCountAttributes)
+        trackCountNode.attributedString = NSAttributedString(string: "", attributes: self.trackCountAttributes)
         trackCountNode.spacingAfter = 25
         self.addSubnode(trackCountNode)
         
@@ -262,7 +262,7 @@ class PlaylistInfoNode : WCLScrollNode {
         let trackText = "\(trackCount) Tracks"
         
         self.trackCountNode.attributedString = NSAttributedString(string: trackText, attributes: self.trackCountAttributes)
-        
+        self.setNeedsLayout()
     }
     
     override func layout() {
