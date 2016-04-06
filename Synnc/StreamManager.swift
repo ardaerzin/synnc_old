@@ -113,7 +113,22 @@ extension StreamManager {
         if stream != self.activeStream {
             return
         }
+        print("STOP")
         self.activeStream = nil
+        Synnc.sharedInstance.socket.emitWithAck("Stream:leave", stream.o_id)(timeoutAfter: 0) {
+            
+            [weak self]
+            data in
+            
+            if self == nil {
+                return
+            }
+            
+            if let ind = stream.users.indexOf(Synnc.sharedInstance.user) {
+                stream.users.removeAtIndex(ind)
+                self?.updatedStreamFromServer(stream, changedKeys: ["users"])
+            }
+        }
         completion?(status: true)
     }
     
@@ -123,6 +138,7 @@ extension StreamManager {
             
         } else {
             
+            print("FINISHED STREAM")
             self.activeStream = nil
             
             var info : WCLNotificationInfo!
@@ -242,6 +258,7 @@ extension StreamManager {
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
+            print("updated timestamp from server")
             self.player.syncManager.timestamp = stream.timestamp
         }
         
@@ -316,6 +333,7 @@ extension StreamManager {
             ack in
             Async.background {
                 if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
+//                    print(jsonArr)
                     self.findOrCreateFromData(jsonArr, completionBlock: {
                         streams in
                         let newItems = $.difference(streams, self.userFeed)
@@ -432,7 +450,21 @@ extension StreamManager {
             if let data = dataArr.first {
                 var json = JSON(data)
                 let stream = self.findStream(json["_id"].string)
-                print("STREAM ENDED")
+                
+                if stream != nil {
+                    stream!.delegate = nil
+                    if stream == self.activeStream {
+                        self.activeStream = nil
+                    }
+                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
+                    
+                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
+                    NSNotificationCenter.defaultCenter().postNotification(notification)
+                    
+                    if let ind = self.userFeed.indexOf(stream!) {
+                        self.userFeed.removeAtIndex(ind)
+                    }
+                }
             }
         }
     }

@@ -37,6 +37,8 @@ class WildPlayerItem : AVPlayerItem {
             }
         }
         
+        print("deinit player item", self.index, self)
+        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemPlaybackStalledNotification, object: self)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: self)
     }
@@ -76,6 +78,7 @@ class WildPlayerItem : AVPlayerItem {
         if keyPath == "timedMetadata" {
             self.delegate?.wildPlayerItem?(metadataUpdatedForItem: self)
         } else if keyPath == "status" {
+            print("status changed for item", self, self.index, self.status.rawValue)
             self.delegate?.wildPlayerItem?(itemStatusChangedForItem: self)
         } else if keyPath == "loadedTimeRanges" {
             self.delegate?.wildPlayerItem?(loadedItemTimeRangesForItem: self)
@@ -92,7 +95,7 @@ class WildPlayerItem : AVPlayerItem {
     func playbackStalled(notification: NSNotification){
         
         self.delegate?.wildPlayerItem?(playbackStalledForItem: self)
-        //        println("PLAYBACK STALLED")
+                print("PLAYBACK STALLED")
         //        println(notification)
     }
     func didPlayToEnd(notification: NSNotification) {

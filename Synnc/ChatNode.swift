@@ -19,6 +19,59 @@ import WCLUserManager
 protocol ChatNodeDelegate {
     func hideKeyboard()
 }
+
+extension ChatNotAvailableNode {
+    func newPlaylistAction(sender: ButtonNode) {
+        sender.alpha = 0
+    }
+}
+
+class ChatNotAvailableNode : ASDisplayNode {
+    
+    var mainTextNode : ASTextNode!
+    var subTextNode : ASTextNode!
+    
+    override init() {
+        super.init()
+        
+        mainTextNode = ASTextNode()
+        
+        subTextNode = ASTextNode()
+        subTextNode.spacingBefore = 20
+        
+        self.addSubnode(mainTextNode)
+        self.addSubnode(subTextNode)
+        
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+    }
+    override func fetchData() {
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = NSTextAlignment.Center
+        paragraphStyle.lineHeightMultiple = 1.25
+        
+        mainTextNode.attributedString = NSAttributedString(string: "You need to join this stream to see the chat", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1), NSKernAttributeName : -0.1, NSParagraphStyleAttributeName : paragraphStyle])
+        
+        let b = NSAttributedString(string: "Join Now", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 15)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : -0.1])
+        subTextNode.attributedString = b
+        
+        self.setNeedsLayout()
+    }
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let headerSpacer = ASLayoutSpec()
+        headerSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 130)
+        
+        let spacerBefore = ASLayoutSpec()
+        spacerBefore.flexBasis = ASRelativeDimension(type: .Percent, value: 0.15)
+        
+        let spacerAfter = ASLayoutSpec()
+        spacerAfter.flexGrow = true
+        
+        mainTextNode.flexBasis = ASRelativeDimension(type: .Percent, value: 0.5)
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerSpacer, spacerBefore, ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [mainTextNode]), subTextNode, spacerAfter])
+    }
+}
+
 class ChatTableHolder : ASDisplayNode {
     var chatCollection : WCLTableNode!
     
@@ -26,6 +79,8 @@ class ChatTableHolder : ASDisplayNode {
         super.init()
         
         chatCollection = WCLTableNode(style: .Plain)
+            let a = ASRangeTuningParameters(leadingBufferScreenfuls: 0, trailingBufferScreenfuls: 0.1)
+            self.chatCollection.view.setTuningParameters(a, forRangeMode: .Full, rangeType: ASLayoutRangeType.FetchData)
         chatCollection.alignSelf = .Stretch
         chatCollection.flexGrow = true
         
@@ -34,6 +89,10 @@ class ChatTableHolder : ASDisplayNode {
     override func didLoad() {
         super.didLoad()
         
+        self.chatCollection.view.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+//        (self.chatCollection.view as ASTableView).scrollDirection
+//        self.chatCollection.view.leadingScreensForBatching = -1
+//        ASScrollDirection
         self.chatCollection.view.separatorStyle = UITableViewCellSeparatorStyle.None
         self.chatCollection.view.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
         self.chatCollection.view.tableFooterView = UIView(frame: CGRectZero)
@@ -42,22 +101,37 @@ class ChatTableHolder : ASDisplayNode {
         return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [chatCollection])
     }
 }
-class ChatNode : ASDisplayNode {
+class ChatNode : ASDisplayNode, TrackedView {
     
-    var headerNode : ChatHeaderNode!
+    var title : String! = "Chat View"
     var collectionHolder : ChatTableHolder!
     var chatCollection : WCLTableNode! {
         get {
             return self.collectionHolder.chatCollection
         }
     }
+    var availableStateNode : ChatNotAvailableNode!
+    var availableState : Bool = false {
+        didSet {
+            if availableState != oldValue {
+                if self.availableStateNode == nil {
+                    availableStateNode = ChatNotAvailableNode()
+                }
+                if availableState {
+                    self.addSubnode(availableStateNode)
+                } else {
+                    availableStateNode.removeFromSupernode()
+                    availableStateNode = nil
+                }
+                self.setNeedsLayout()
+            }
+        }
+    }
     var delegate : ChatNodeDelegate?
     
         override init() {
         super.init()
-        self.backgroundColor = UIColor.whiteColor()
-        headerNode = ChatHeaderNode()
-        headerNode.alignSelf = .Stretch
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         collectionHolder = ChatTableHolder()
         collectionHolder.backgroundColor = UIColor.redColor()
@@ -65,7 +139,6 @@ class ChatNode : ASDisplayNode {
         collectionHolder.flexGrow = true
         
         self.addSubnode(collectionHolder)
-        self.addSubnode(headerNode)
         
         self.clipsToBounds = true
     }
@@ -73,43 +146,14 @@ class ChatNode : ASDisplayNode {
         super.touchesBegan(touches, withEvent: event)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.flexBasis = ASRelativeDimension(type: .Points, value: 44)
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [headerNode, collectionHolder, spacer])
-    }
-}
-
-class ChatHeaderNode : StreamTitleNode {
-    
-    var closeButton : ButtonNode!
-    
-        override init() {
-        super.init()
-        self.sourcesNode.alpha = 0
         
-        self.backgroundColor = UIColor.whiteColor()
+        var spacer = ASLayoutSpec()
+        spacer.alignSelf = .Stretch
+        spacer.flexBasis = ASRelativeDimension(type: .Points, value: 100)
         
-        closeButton = ButtonNode()
-        closeButton.setImage(UIImage(named : "close"), forState: ASControlState.Normal)
-        closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(32, 32))
-        closeButton.imageNode.preferredFrameSize = CGSizeMake(12, 12)
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [spacer, collectionHolder])
         
-        self.addSubnode(closeButton)
-    }
-    
-    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let buttonSpec = ASStaticLayoutSpec(children: [self.closeButton])
-        buttonSpec.spacingAfter = 20
-        
-        let imageSpec = ASStaticLayoutSpec(children: [self.userImage])
-        let titleSpec = ASStackLayoutSpec(direction: .Vertical, spacing: 3, justifyContent: .Start, alignItems: .Start, children: [self.streamTitle, self.usernameNode])
-        titleSpec.flexGrow = true
-        imageSpec.spacingBefore = 25
-        
-        let hStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 12, justifyContent: .Center, alignItems: .Center, children: [imageSpec, titleSpec, buttonSpec])
-        hStack.alignSelf = .Stretch
-        
-        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [hStack, borderNode])
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: vStack)
+        let o = ASOverlayLayoutSpec(child: a, overlay: self.availableStateNode)
+        return o
     }
 }

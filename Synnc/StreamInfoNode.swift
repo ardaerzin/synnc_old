@@ -119,7 +119,7 @@ class TappableUserArea : ASControlNode {
             userImage.URL = url
         }
         
-        usernameNode.attributedString = NSAttributedString(string: user.username, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), NSKernAttributeName : 0.4])
+        usernameNode.attributedString = NSAttributedString(string: user.username, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.4])
         
         self.setNeedsLayout()
     }
@@ -141,7 +141,7 @@ class StreamTopSection : ASDisplayNode {
         self.addSubnode(userArea)
         
         joinButton = ButtonNode()
-        joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)]), forState: .Normal)
+        joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: .Normal)
         joinButton.spacingAfter = 21
         
         self.addSubnode(joinButton)

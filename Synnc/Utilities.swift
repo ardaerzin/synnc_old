@@ -55,7 +55,7 @@ extension String {
 
 extension UIColor {
     class func SynncColor() -> UIColor {
-        return UIColor(red: 236/255, green: 102/255, blue: 88/255, alpha: 1)
+        return UIColor(red: 234/255, green: 119/255, blue: 35/255, alpha: 1)
     }
 }
 

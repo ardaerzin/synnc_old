@@ -32,8 +32,9 @@ class PlaylistCellInfoHolder : ASDisplayNode {
         
         
         self.genresNode = ASTextNode()
-        self.genresNode.flexGrow = true
         self.genresNode.maximumNumberOfLines = 1
+        self.genresNode.truncationMode = .ByTruncatingTail
+        self.genresNode.flexShrink = true
         self.addSubnode(genresNode)
         
         backgroundColor = .whiteColor()
@@ -54,12 +55,16 @@ class PlaylistCellInfoHolder : ASDisplayNode {
                 genreText += (" / " + genre.name)
             }
         }
-        self.genresNode.attributedString = NSAttributedString(string: genreText, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)])
+        self.genresNode.attributedString = NSAttributedString(string: genreText, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()])
+        
+        self.genresNode.setNeedsLayout()
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
-        let bottomStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 8, justifyContent: .Center, alignItems: .Center, children: [trackCountNode, genresNode])
+        let spacer = ASLayoutSpec()
+        spacer.flexGrow = true
+        let bottomStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 8, justifyContent: .Center, alignItems: .Center, children: [trackCountNode, genresNode, spacer])
         
         bottomStack.spacingBefore = 5
         bottomStack.spacingAfter = 24

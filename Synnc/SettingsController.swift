@@ -28,7 +28,7 @@ class SettingsInputAccessoryNode : ASDisplayNode {
         let b = NSAttributedString(string: "Cancel", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 140/255, green: 185/255, blue: 189/255, alpha: 1)])
         noButton.setAttributedTitle(b, forState: .Normal)
         
-        backgroundColor = .blueColor()
+        backgroundColor = UIColor(red: 206/255, green: 206/255, blue: 206/255, alpha: 1)
         
         self.addSubnode(yesButton)
         self.addSubnode(noButton)

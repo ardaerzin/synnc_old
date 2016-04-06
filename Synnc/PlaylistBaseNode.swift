@@ -27,12 +27,12 @@ class PlaylistStreamButtonHolder : ASDisplayNode {
         self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         streamButton = ButtonNode()
-        streamButton.borderColor = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1).CGColor
+        streamButton.borderColor = UIColor.SynncColor().CGColor
         streamButton.borderWidth = 3
         streamButton.cornerRadius = 15
         streamButton.contentEdgeInsets = UIEdgeInsetsMake(8, 53, 12, 53)
         
-        let title = NSAttributedString(string: "STREAM", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)])
+        let title = NSAttributedString(string: "STREAM", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()])
         streamButton.setAttributedTitle(title, forState: .Normal)
         self.addSubnode(streamButton)
         

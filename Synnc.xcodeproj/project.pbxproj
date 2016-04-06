@@ -1554,6 +1554,7 @@
 		476CC80E1CA9673100CBA0E3 /* SubControllers */ = {
 			isa = PBXGroup;
 			children = (
+				47B899CB1C4867E3007C2B7F /* Chat Controller */,
 				476CC8141CA967D800CBA0E3 /* InfoController */,
 				476CC8151CA967E500CBA0E3 /* TracklistController */,
 			);
@@ -1905,7 +1906,6 @@
 			children = (
 				470F8C131C49B1F700624F0F /* Stop Controller */,
 				470F8C0D1C49859F00624F0F /* Share Controller */,
-				47B899CB1C4867E3007C2B7F /* Chat Controller */,
 			);
 			name = SubControllers;
 			sourceTree = "<group>";

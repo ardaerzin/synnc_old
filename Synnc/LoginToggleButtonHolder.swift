@@ -20,6 +20,8 @@ class LoginToggleButtonHolder : ASDisplayNode {
         toggleButton.minScale = 0.85
         
         self.addSubnode(toggleButton)
+        
+        self.backgroundColor = .SynncColor()
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         return ASStaticLayoutSpec(children: [toggleButton])

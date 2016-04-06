@@ -32,14 +32,16 @@ class AboutNode : CardNodeBase {
     override init() {
         super.init()
         
+        let buttonTitleAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 100)]
+        
         infoButton = AboutButton()
         infoButton.setImage(UIImage(named: "info")!, forState: .Normal)
-        let infoTitle = NSAttributedString(string: "About Us", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 115/255, green: 115/255, blue: 115/255, alpha: 0.5)])
+        let infoTitle = NSAttributedString(string: "About Us", attributes: buttonTitleAttributes)
         infoButton.setAttributedTitle(infoTitle, forState: .Normal)
         self.addSubnode(infoButton)
         
         termsAndConditionsButton = AboutButton()
-        let termsTitle = NSAttributedString(string: "Terms", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 115/255, green: 115/255, blue: 115/255, alpha: 0.5)])
+        let termsTitle = NSAttributedString(string: "Terms", attributes: buttonTitleAttributes)
         termsAndConditionsButton.setAttributedTitle(termsTitle, forState: .Normal)
         termsAndConditionsButton.setImage(UIImage(named: "termsAndCon")!, forState: .Normal)
         self.addSubnode(termsAndConditionsButton)

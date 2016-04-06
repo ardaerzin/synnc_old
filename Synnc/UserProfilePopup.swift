@@ -43,7 +43,8 @@ class UserProfilePopup : WCLPopupViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if let n = self.screenNode {
-            let x = n.measureWithSizeRange(ASSizeRangeMake(CGSizeZero, self.view.frame.size))
+            let x = n.measureWithSizeRange(ASSizeRangeMake(CGSizeZero, CGSizeMake(275, UIScreen.mainScreen().bounds.height)))
+            
             if x.size != self.size {
                 self.size = x.size
                 screenNode.view.frame = CGRect(origin: CGPointZero, size: self.size)

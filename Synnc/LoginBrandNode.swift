@@ -28,7 +28,7 @@ class LoginBrandNode : ASDisplayNode {
         self.subtextNode = ASTextNode()
         let p = NSMutableParagraphStyle()
         p.alignment = .Center
-        self.subtextNode.attributedString = NSAttributedString(string: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1), NSKernAttributeName : 0, NSParagraphStyleAttributeName : p])
+        self.subtextNode.attributedString = NSAttributedString(string: "Share the moment through music.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 85/255, green: 85/255, blue: 85/255, alpha: 1), NSKernAttributeName : 0, NSParagraphStyleAttributeName : p])
         
         self.addSubnode(self.iconNode)
         self.addSubnode(self.titleNode)

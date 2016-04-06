@@ -463,18 +463,20 @@ extension StreamViewController : UIGestureRecognizerDelegate {
         return true
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if otherGestureRecognizer == self.screenNode.mainScrollNode.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.panRecognizer {
-            return true
-        } else {
-            return false
-        }
+//        if otherGestureRecognizer == self.screenNode.mainScrollNode.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.panRecognizer {
+//            return true
+//        } else {
+//            return false
+//        }
+        return true
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if otherGestureRecognizer == self.screenNode.mainScrollNode.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.panRecognizer {
-            return true
-        } else {
-            return false
-        }
+//        if otherGestureRecognizer == self.screenNode.mainScrollNode.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.panRecognizer {
+//            return true
+//        } else {
+//            return false
+//        }
+        return true
     }
 }
 

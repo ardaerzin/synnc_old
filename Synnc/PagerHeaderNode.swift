@@ -17,7 +17,7 @@ class PagerHeaderNode : ASDisplayNode {
     var titleHolder : PagerHeaderTitleNode!
     var pageControl : PageControlNode!
 
-    init(backgroundColor : UIColor? = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), height: CGFloat? = 60) {
+    init(backgroundColor : UIColor? = UIColor.SynncColor(), height: CGFloat? = 60) {
         
         super.init()
         
@@ -38,6 +38,11 @@ class PagerHeaderNode : ASDisplayNode {
         rightButtonHolder = PagerHeaderIconNode()
         rightButtonHolder.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(30,30))
         self.addSubnode(rightButtonHolder)
+    }
+    
+    override func didLoad() {
+        super.didLoad()
+//        self.view.roundCorners([UIRectCorner.TopLeft,UIRectCorner.TopRight], radius: 15)
     }
     
     override func layout() {

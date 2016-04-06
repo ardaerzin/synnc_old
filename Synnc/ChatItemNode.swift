@@ -14,6 +14,7 @@ import SwiftyJSON
 import AsyncDisplayKit
 import WCLUIKit
 import Shimmer
+import WCLPopupManager
 
 class MyChatItemNode : ChatItemNode {
     
@@ -86,7 +87,7 @@ class ChatTextHolder : ASDisplayNode {
     
     var bubble : ChatTextBubble!
     
-    var usernameNode : ASTextNode!
+    var usernameNode : UserNameNode!
     var textNode : ASTextNode! {
         get {
             return self.bubble.textNode
@@ -96,7 +97,7 @@ class ChatTextHolder : ASDisplayNode {
         super.init()
   
         bubble = ChatTextBubble()
-        usernameNode = ASTextNode()
+        usernameNode = UserNameNode()
 
         self.addSubnode(usernameNode)
         self.addSubnode(bubble)
@@ -117,7 +118,7 @@ class ChatTextHolder : ASDisplayNode {
 
 class ChatItemNode : ASCellNode {
     
-    var imageNode : ASNetworkImageNode!
+    var imageNode : UserImageNode!
     var textHolder : ChatTextHolder!
     
     //Data
@@ -131,7 +132,7 @@ class ChatItemNode : ASCellNode {
     override init(){
         super.init()
         
-        imageNode = ASNetworkImageNode()
+        imageNode = UserImageNode()
         imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(30, 30))
         
         self.textHolder = ChatTextHolder()
@@ -141,6 +142,12 @@ class ChatItemNode : ASCellNode {
         
         self.addSubnode(imageNode)
         self.addSubnode(textHolder)
+        
+        self.imageNode.userInteractionEnabled = true
+        self.textHolder.usernameNode.userInteractionEnabled = true
+        
+//        self.imageNode.addTarget(self, action: #selector(ChatItemNode.didTapUserInfo(_:)) , forControlEvents: .TouchUpInside)
+//        self.textHolder.usernameNode.addTarget(self, action: #selector(ChatItemNode.didTapUserInfo(_:)), forControlEvents: .TouchUpInside)
     }
     
     override func layout() {
@@ -165,9 +172,13 @@ class ChatItemNode : ASCellNode {
         if let msg = self.messageString {
             self.textHolder.textNode.attributedString = NSAttributedString(string: msg, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSKernAttributeName : -0.1, NSForegroundColorAttributeName : UIColor(red: 95/255, green: 95/255, blue: 95/255, alpha: 1)])
         }
-        self.textHolder.usernameNode.attributedString = NSAttributedString(string: self.username, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSKernAttributeName : -0.1, NSForegroundColorAttributeName : UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1)])
+        self.textHolder.usernameNode.attributedString = NSAttributedString(string: self.username, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSKernAttributeName : -0.1, NSForegroundColorAttributeName : UIColor.SynncColor()])
     }
     func configure(item: ChatItem){
+        
+        self.textHolder.usernameNode.userId = item.user._id
+        self.imageNode.userId = item.user._id
+        
         self.messageString = item.message.stringByRemovingPercentEncoding
         self.messageUserAvatar = item.user.avatarURL(WCLUserLoginType(rawValue: item.user.provider)!, frame: CGRectMake(0, 0, 40, 40), scale: UIScreen.mainScreen().scale)
         

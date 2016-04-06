@@ -64,9 +64,8 @@ class AnalyticsManager {
     var screens : [AnalyticsScreen] = [] {
         didSet {
             if let ls = self.screens.last {
-                print("appended screen", ls.name)
-//                GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: ls.name)
-//                GAI.sharedInstance().defaultTracker.send(GAIDictionaryBuilder.createScreenView().build() as [NSObject : AnyObject])
+                GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: ls.name)
+                GAI.sharedInstance().defaultTracker.send(GAIDictionaryBuilder.createScreenView().build() as [NSObject : AnyObject])
             }
         }
     }
@@ -84,9 +83,8 @@ class AnalyticsManager {
     
     func newEvent(event : AnalyticsEvent) {
         
-        print("new event", event)
-//        let dict = GAIDictionaryBuilder.createEventWithCategory(event.category, action: event.action, label: event.label, value: event.value).build() as [NSObject : AnyObject]
-//        GAI.sharedInstance().defaultTracker.send(dict)
+        let dict = GAIDictionaryBuilder.createEventWithCategory(event.category, action: event.action, label: event.label, value: event.value).build() as [NSObject : AnyObject]
+        GAI.sharedInstance().defaultTracker.send(dict)
         
     }
 }

@@ -115,6 +115,14 @@ extension PlaylistController {
         
         AnalyticsEvent.new(category : "PlaylistAction", action: "button_tap", label: "stream", value: nil)
         
+        if let stream = StreamManager.sharedInstance.activeStream {
+            
+            let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
+            WCLPopupManager.sharedInstance.newPopup(x)
+            
+            return
+        }
+        
         if self.playlist.songs.isEmpty {
             if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
                 
@@ -145,7 +153,6 @@ extension PlaylistController {
         
         let stream = Stream(user: Synnc.sharedInstance.user)
         stream.playlist = playlist
-        stream.genres = Array(playlist.genres)
         stream.lat = 0
         stream.lon = 0
         if let name = playlist.name {
@@ -164,6 +171,7 @@ extension PlaylistController {
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
         a.delegate = vc
         a.panRecognizer.delegate = vc
+        a.clipsToBounds = false
         stream.createCallback = {
             created in
             if StreamManager.canSetActiveStream(stream) {

@@ -51,7 +51,7 @@ class OnboardingPageItem : ASCellNode {
             let paragraphAtrributes = NSMutableParagraphStyle()
             paragraphAtrributes.alignment = .Center
             
-            let color = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)
+            let color = UIColor.SynncColor()
             
             return [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size : 18)!, NSForegroundColorAttributeName : color, NSKernAttributeName : 1, NSParagraphStyleAttributeName : paragraphAtrributes]
         }

@@ -24,8 +24,8 @@ class ProfileCardNode : CardNodeBase, TrackedView {
     
     var ghostLabel : ASTextNode!
     
-    var followAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.19)]
-    var followNumberAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 160/255, green: 211/255, blue: 216/255, alpha: 1)]
+    var followAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 94/255, green: 93/255, blue: 93/255, alpha: 0.19)]
+    var followNumberAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 16)!, NSForegroundColorAttributeName : UIColor.SynncColor()]
     
     var usernameBorderAnimation : POPBasicAnimation {
         get {
@@ -53,7 +53,7 @@ class ProfileCardNode : CardNodeBase, TrackedView {
         p.alignment = .Center
         
         imageNode = ASNetworkImageNode()
-        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(100,100))
+        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(120,120))
         imageNode.shadowColor = UIColor(red: 178/255, green: 178/255, blue: 178/255, alpha: 1).CGColor
         imageNode.shadowOpacity = 1
         imageNode.shadowOffset = CGSizeMake(0, 3)
@@ -63,7 +63,7 @@ class ProfileCardNode : CardNodeBase, TrackedView {
         usernameNode = ASEditableTextNode()
         usernameNode.spacingBefore = 40
         usernameNode.spacingAfter = 2
-        usernameNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 140/255, green: 185/255, blue: 189/255, alpha: 1), NSParagraphStyleAttributeName : p]
+        usernameNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSParagraphStyleAttributeName : p]
         usernameNode.returnKeyType = UIReturnKeyType.Done
         self.addSubnode(usernameNode)
         
@@ -85,7 +85,7 @@ class ProfileCardNode : CardNodeBase, TrackedView {
         followButton.borderWidth = 3
         followButton.cornerRadius = 15
         followButton.spacingBefore = 30
-        followButton.contentEdgeInsets = UIEdgeInsetsMake(8, 53, 12, 53)
+        followButton.contentEdgeInsets = UIEdgeInsetsMake(8, 30, 12, 30)
         
         let buttonNormalAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.whiteColor()]
         let buttonSelectedAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)]
@@ -108,7 +108,7 @@ class ProfileCardNode : CardNodeBase, TrackedView {
             ghostLabel.attributedString = NSMutableAttributedString(string: uname, attributes: (usernameNode.typingAttributes as [String : AnyObject]!))
         }
         
-        if let provider = user.provider, let type = WCLUserLoginType(rawValue: provider), let url = user.avatarURL(type, frame: CGRectMake(0, 0, 100, 100), scale: UIScreen.mainScreen().scale) {
+        if let provider = user.provider, let type = WCLUserLoginType(rawValue: provider), let url = user.avatarURL(type, frame: CGRectMake(0, 0, 120, 120), scale: UIScreen.mainScreen().scale) {
             imageNode.URL = url
         }
         
@@ -144,7 +144,7 @@ class ProfileCardNode : CardNodeBase, TrackedView {
         }
         
         let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: nodes)
-        
-        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(50, 30, 50, 30), child: x)
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(30, 30, 50, 30), child: x)
+//        return ASRatioLayoutSpec(ratio: 1/4, child: x)
     }
 }

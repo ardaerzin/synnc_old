@@ -71,9 +71,10 @@ class PlaylistInfoSubArea : ASDisplayNode {
         self.addSubnode(titleNode)
         
         contentTextNode = ASEditableTextNode()
-        contentTextNode.spacingAfter = 25
         contentTextNode.scrollEnabled = false
         contentTextNode.userInteractionEnabled = false
+        contentTextNode.alignSelf = .Stretch
+        contentTextNode.flexGrow = true
         
         self.addSubnode(contentTextNode)
      
@@ -86,7 +87,11 @@ class PlaylistInfoSubArea : ASDisplayNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [titleNode, contentTextNode])
+        contentTextNode.flexBasis = ASRelativeDimension(type: .Percent, value: 0.9)
+        let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [contentTextNode])
+        a.spacingAfter = 25
+        let c = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [titleNode, a])
+        return c
     }
 }
 
@@ -152,7 +157,7 @@ class PlaylistInfoNode : WCLScrollNode {
         let p = NSMutableParagraphStyle()
         p.alignment = .Center
         
-        return [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), NSKernAttributeName : 0.5, NSParagraphStyleAttributeName : p]
+        return [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.5, NSParagraphStyleAttributeName : p]
     }()
     
     override init() {
@@ -171,8 +176,8 @@ class PlaylistInfoNode : WCLScrollNode {
         titleNode.spacingAfter = 10
         let p = NSMutableParagraphStyle()
         p.alignment = .Center
-        titleNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), NSKernAttributeName : 0.5, NSParagraphStyleAttributeName : p]
-        titleNode.attributedPlaceholderText = NSAttributedString(string: "Name Your Playlist", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 0.5), NSKernAttributeName : 0.5, NSParagraphStyleAttributeName : p])
+        titleNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.45, NSParagraphStyleAttributeName : p]
+        titleNode.attributedPlaceholderText = NSAttributedString(string: "Name Your Playlist", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor.SynncColor().colorWithAlphaComponent(0.5), NSKernAttributeName : 0.45, NSParagraphStyleAttributeName : p])
         self.addSubnode(titleNode)
         
         trackCountNode = ASTextNode()
@@ -232,7 +237,7 @@ class PlaylistInfoNode : WCLScrollNode {
                 }
             }
         } else {
-            self.imageNode.image = UIImage(named: "cameraPlaceholder")!
+            self.imageNode.image = UIImage(named: "camera-placeholder")!
             self.imageNode.contentMode = .Center
         }
         
@@ -256,7 +261,7 @@ class PlaylistInfoNode : WCLScrollNode {
             }
         }
         self.genreHolder.contentTextNode.attributedText = NSAttributedString(string: genreText, attributes: self.genreHolder.contentAttributes)
-        
+        genreHolder.setNeedsLayout()
         
         let trackCount = self.infoDelegate!.trackCountForPlaylist!()
         let trackText = "\(trackCount) Tracks"

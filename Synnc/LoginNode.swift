@@ -78,7 +78,6 @@ class LoginNode : ASDisplayNode, TrackedView {
         self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         toggleButtonHolder = LoginToggleButtonHolder()
-        toggleButtonHolder.backgroundColor = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)
         toggleButtonHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 60))
         self.addSubnode(toggleButtonHolder)
         
@@ -110,7 +109,7 @@ class LoginNode : ASDisplayNode, TrackedView {
         p.alignment = .Center
         
         let attributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6)]
-        let linkAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+        let linkAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 12)!, NSForegroundColorAttributeName : UIColor.SynncColor()]
         
         let str1 = NSAttributedString(string: "By using Synnc, you agree to the ", attributes: attributes)
         

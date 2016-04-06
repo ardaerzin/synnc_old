@@ -15,6 +15,7 @@ class PagerBaseController : ASViewController {
     var currentIndex : Int = 0 {
         didSet {
             if currentIndex != oldValue {
+                updatedCurrentIndex(currentIndex)
                 AnalyticsScreen.new(node: self.currentScreen())
             }
         }
@@ -66,6 +67,9 @@ class PagerBaseController : ASViewController {
     func currentScreen() -> TrackedView {
         return self.subControllers[self.currentIndex].node as! TrackedView
     }
+    
+    func updatedCurrentIndex(index : Int) {
+    }
 }
 
 extension PagerBaseController : ASCollectionDelegate {
@@ -73,11 +77,16 @@ extension PagerBaseController : ASCollectionDelegate {
         let pagerPosition = scrollView.contentOffset.x / (scrollView.contentSize.width - scrollView.bounds.width)
         
         if pagerPosition.isFinite {
-            self.screenNode.headerNode.update(pagerPosition)
+            self.updatedPagerPosition(pagerPosition)
         } else {
-            self.screenNode.headerNode.update(0)
+            self.updatedPagerPosition(0)
         }
     }
+    
+    func updatedPagerPosition(position : CGFloat) {
+        self.screenNode.headerNode.update(position)
+    }
+    
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let cp = Int(scrollView.contentOffset.x / scrollView.frame.width)
         screenNode.headerNode.pageControl.currentPage = cp

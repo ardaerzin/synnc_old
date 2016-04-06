@@ -23,7 +23,7 @@ class OnboardingVC : ASViewController {
     var screenNode : OnboardingVCNode!
     var currentIndex : Int = 0
     var pages : [OnboardingItem] = [
-        OnboardingItem(title: "LISTEN", mainText: "Connect to streams that resonate with you.", imageName: "earPlugs"),
+        OnboardingItem(title: "LISTEN", mainText: "Connect to streams that resonate with you.", imageName: "ear-plugs"),
         OnboardingItem(title: "STREAM", mainText: "Create and stream your own playlists, enhance your musical insight", imageName: "equalizer"),
         OnboardingItem(title: "SHARE", mainText: "Synnc is a social platform. Follow, get notified, listen and discover new streamers", imageName: "cable")
     ]

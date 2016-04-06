@@ -93,10 +93,11 @@ class RootWindowController : PagerBaseController {
             let opts = WCLWindowOptions(link: false, draggable: true, windowLevel : UIWindowLevelStatusBar, limit: UIScreen.mainScreen().bounds.height - 60, dismissable : false)
             
             let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
-            
             a.delegate = vc
             self.homeWindow = a
             
+            
+            print("FIRST LOGIN? :", Synnc.sharedInstance.firstLogin)
             a.animation.toValue = Synnc.sharedInstance.firstLogin ? a.lowerPercentage : 0
             
             return
@@ -125,7 +126,6 @@ class RootWindowController : PagerBaseController {
     }
     
     func displaySearch(sender : AnyObject) {
-        print("display search")
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Display Search", value: nil)
     }
 }

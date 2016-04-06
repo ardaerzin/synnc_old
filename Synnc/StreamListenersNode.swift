@@ -93,10 +93,10 @@ class StreamListenersNode : ASDisplayNode {
         self.emptyState = stream.users.isEmpty
      
         if stream == StreamManager.sharedInstance.userStream {
-            emptyStateNode?.msgNode.attributedString = NSAttributedString(string: "Share your stream and get listeners", attributes: emptyStateNode?.msgAttributes)
+            emptyStateNode?.msgNode.attributedString = NSAttributedString(string: "No listeners", attributes: emptyStateNode?.msgAttributes)
         } else {
             
-            emptyStateNode?.msgNode.attributedString = NSAttributedString(string: "This stream does not have any listeners", attributes: emptyStateNode?.msgAttributes)
+            emptyStateNode?.msgNode.attributedString = NSAttributedString(string: "No listeners", attributes: emptyStateNode?.msgAttributes)
         }
 
         

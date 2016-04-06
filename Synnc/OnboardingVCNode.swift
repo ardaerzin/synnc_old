@@ -102,12 +102,14 @@ class OnboardingVCNode : ASDisplayNode, TrackedView {
         self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         decorationOuter = ASDisplayNode()
-        decorationOuter.backgroundColor = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 0.3)
+        decorationOuter.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.3)
+//            UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 0.3)
         decorationOuter.layerBacked = true
         self.addSubnode(decorationOuter)
         
         decorationInner = ASDisplayNode()
-        decorationInner.backgroundColor = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)
+        decorationInner.backgroundColor = UIColor.SynncColor()
+//            UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)
         decorationInner.layerBacked = true
         self.addSubnode(decorationInner)
         

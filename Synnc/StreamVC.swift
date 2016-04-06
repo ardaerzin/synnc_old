@@ -41,6 +41,10 @@ class StreamVC : PagerBaseController {
     lazy var tracklistController : StreamTracklistController = {
         return StreamTracklistController()
     }()
+    lazy var chatController : ChatController = {
+        return ChatController()
+    }()
+    
     override var subControllers : [ASViewController]! {
         get {
             if self.childViewControllers.indexOf(infoController) == nil {
@@ -49,22 +53,30 @@ class StreamVC : PagerBaseController {
             if self.childViewControllers.indexOf(tracklistController) == nil {
                 self.addChildViewController(tracklistController)
             }
-            return [infoController, tracklistController]
+            if self.childViewControllers.indexOf(chatController) == nil {
+                self.addChildViewController(chatController)
+            }
+            return [infoController, tracklistController, chatController]
         }
     }
     
     init(stream : Stream?){
         let node = StreamVCNode()
         super.init(pagerNode: node)
+        node.clipsToBounds = false
         
         if let s = stream {
             self.stream = s
-            self.configure(s)
         }
         
         node.nowPlayingArea.likeButton.addTarget(self, action: #selector(StreamVC.toggleTrackFav(_:)), forControlEvents: .TouchUpInside)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamViewController.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.configure(stream)
     }
     
     func toggleTrackFav(sender: ButtonNode) {
@@ -84,7 +96,7 @@ class StreamVC : PagerBaseController {
             AnalyticsEvent.new(category: "Stream", action: "FavSong", label: status ? "add" : "remove", value: nil)
         })
     }
-    
+
     func userFavPlaylistUpdated(notification: NSNotification){
         guard let st = self.stream, let ind = st.currentSongIndex else {
             return
@@ -108,6 +120,35 @@ class StreamVC : PagerBaseController {
         }
         
         anim.toValue = 1
+    }
+    
+    override func updatedPagerPosition(position : CGFloat) {
+        super.updatedPagerPosition(position)
+        if position <= 0.5 {
+            Async.main {
+                self.chatController.chatbar.textNode.view.endEditing(true)
+                self.chatController.chatbar.view.endEditing(true)
+                self.chatController.chatbar.textNode.resignFirstResponder()
+                self.chatController.shouldFirstRespond = false
+                self.chatController.resignFirstResponder()
+                (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = 0
+                
+                let anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+                self.chatController.chatbar.pop_addAnimation(anim, forKey: "alpha")
+                anim.duration = 0.1
+                anim.toValue = 0
+            }
+        } else {
+            (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = (self.screenNode as! StreamVCNode).nowPlayingArea.calculatedSize.height
+            chatController.shouldFirstRespond = true
+            chatController.becomeFirstResponder()
+            
+            let anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+            self.chatController.chatbar.pop_addAnimation(anim, forKey: "alpha")
+            anim.duration = 0.1
+            anim.toValue = 1
+        }
+        self.screenNode.headerNode.update(position)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -137,10 +178,13 @@ class StreamVC : PagerBaseController {
             self.state = .Active
         }
         
+        self.chatController.configure(stream)
+        
         updateTrack(stream)
     }
     
     func endedActiveStream(notification: NSNotification!){
+        print("WADAP SON")
 //        if self.stream == StreamManager.sharedInstance.userStream {
 //            self.state = .Finished
 //        } else {
@@ -162,7 +206,14 @@ class StreamVC : PagerBaseController {
             self.state = .Inactive
         }
         
+        self.chatController.configure(stream)
+        self.chatController.isEnabled = self.state == .Active ? true : false
         self.infoController.screenNode.infoNode.topSection.configure(self.stream!)
+        if let w = self.view.wclWindow {
+            if let pos = w.position where pos == .LowerLinked {
+                w.transitionProgress = 1
+            }
+        }
     }
     func updatedStream(notification: NSNotification){
         if let keys = notification.userInfo?["updatedKeys"] as? [String]{
@@ -193,13 +244,21 @@ class StreamVC : PagerBaseController {
             }
         }
     }
+    
+    override func updatedCurrentIndex(index: Int) {
+        if self.stream != StreamManager.sharedInstance.activeStream {
+            return
+        }
+    }
 }
 
 extension StreamVC : StreamerDelegate {
     func streamer(streamer: WildPlayer!, updatedToPosition position: CGFloat) {
-//        Async.main {
-//            (self.screenNode as! StreamVCNode).nowPlayingArea.updateProgress(position)
-//        }
+        Async.main {
+            if position.isFinite {
+                (self.screenNode as! StreamVCNode).nowPlayingArea.updateProgress(position)
+            }
+        }
     }
     func streamer(streamer: WildPlayer!, updatedPlaylistIndex index: Int) {
         Async.main {
@@ -214,15 +273,58 @@ extension StreamVC : WCLWindowDelegate {
             let screenNode = (self.screenNode as! StreamVCNode)
             
             let p = POPProgress(progress, startValue: 0, endValue: window.lowerPercentage)
-            let transition = POPTransition(p, startValue: 0, endValue: -screenNode.calculatedSize.height*window.lowerPercentage)
-            POPLayerSetTranslationY(screenNode.nowPlayingArea.layer, transition)
+            let transition = POPTransition(p, startValue: 0, endValue: -screenNode.calculatedSize.height*window.lowerPercentage)            
+            screenNode.nowPlayingArea.windowTransition = transition
         }
+        
+        Async.main {
+//            self.chatController.chatbar.textNode.view.endEditing(true)
+//            self.chatController.chatbar.view.endEditing(true)
+//            self.chatController.chatbar.textNode.resignFirstResponder()
+//            self.chatController.shouldFirstRespond = false
+//            self.chatController.resignFirstResponder()
+            (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = 0
+        }
+        
+//        self.chatController.chatbar.textNode.view.endEditing(true)
+//        self.chatController.chatbar.view.endEditing(true)
+//        self.chatController.chatbar.textNode.resignFirstResponder()
+//        self.chatController.shouldFirstRespond = false
+//        self.chatController.resignFirstResponder()
+//        (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = 0
     }
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
     }
     func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
         if position == .Displayed {
             AnalyticsScreen.new(node: self.currentScreen())
+        }
+        
+        if position != .Displayed {
+            Async.main {
+                self.chatController.chatbar.textNode.view.endEditing(true)
+                self.chatController.chatbar.view.endEditing(true)
+                self.chatController.chatbar.textNode.resignFirstResponder()
+                self.chatController.shouldFirstRespond = false
+                self.chatController.resignFirstResponder()
+                
+                let anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+                self.chatController.chatbar.pop_addAnimation(anim, forKey: "alpha")
+                anim.duration = 0.1
+                anim.toValue = 0
+            }
+        } else {
+            if self.currentIndex == 2 {
+                (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = (self.screenNode as! StreamVCNode).nowPlayingArea.calculatedSize.height
+                chatController.shouldFirstRespond = true
+                chatController.becomeFirstResponder()
+                
+                let anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+                self.chatController.chatbar.pop_addAnimation(anim, forKey: "alpha")
+                anim.duration = 0.1
+                anim.toValue = 1
+            }
+//            if self.
         }
     }
 }
@@ -241,14 +343,15 @@ extension StreamVC : UIGestureRecognizerDelegate {
         return true
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == (self.tracklistController.node as! StreamTracklistNode).tracksTable.view.panGestureRecognizer {
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == (self.tracklistController.node as! StreamTracklistNode).tracksTable.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.screenNode.chatCollection.view.panGestureRecognizer {
             return true
         } else {
             return false
         }
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == (self.tracklistController.node as! StreamTracklistNode).tracksTable.view.panGestureRecognizer {
+        
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == (self.tracklistController.node as! StreamTracklistNode).tracksTable.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.screenNode.chatCollection.view.panGestureRecognizer {
             return true
         } else {
             return false

@@ -132,6 +132,7 @@ extension StreamsFeedController : ASTableDelegate {
         
             let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
             a.delegate = vc
+            a.clipsToBounds = false
             a.panRecognizer.delegate = vc
             a.display(true)
             

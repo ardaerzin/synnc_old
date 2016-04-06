@@ -121,9 +121,18 @@ extension LoginVC {
             gestureInitPoint = screenNode.loginNode.translationY
             break
         case .Changed:
+            
             let x = gestureInitPoint + translation.y
-            let progress = POPProgress(x, startValue: self.screenNode.calculatedSize.height - 60, endValue: -60)
+            var progress = POPProgress(x, startValue: self.screenNode.calculatedSize.height - 60, endValue: -60)
+            var y = progress - 1
+            if y > 0 {
+                y = y/8
+                progress = 1 + y
+            }
+            
             self.screenNode.stateAnimationProgress = progress
+            
+            
             break
         case .Ended, .Cancelled :
             

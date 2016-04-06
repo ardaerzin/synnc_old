@@ -327,19 +327,19 @@ class StreamBackgroundNode : ParallaxBackgroundNode {
         self.infoNode.locationToggle.selectedTitle = NSAttributedString(string: cityString, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 18)!, NSKernAttributeName : 0.3, NSForegroundColorAttributeName : UIColor.whiteColor()])
         self.infoNode.locationToggle.selected = true
         
-        var genreString : String = ""
-        if !stream.genres.isEmpty {
-            for (index,genre) in stream.genres.enumerate() {
-                if index == 0 {
-                    genreString += genre.name
-                } else {
-                    genreString += (" / " + genre.name)
-                }
-            }
-        } else {
-            genreString = "No Genre Info"
-        }
-        self.infoNode.genreToggle.setAttributedTitle(NSAttributedString(string: genreString, attributes: self.infoNode.genreAttributes), forState: ASControlState.Normal)
+//        var genreString : String = ""
+//        if !stream.genres.isEmpty {
+//            for (index,genre) in stream.genres.enumerate() {
+//                if index == 0 {
+//                    genreString += genre.name
+//                } else {
+//                    genreString += (" / " + genre.name)
+//                }
+//            }
+//        } else {
+//            genreString = "No Genre Info"
+//        }
+//        self.infoNode.genreToggle.setAttributedTitle(NSAttributedString(string: genreString, attributes: self.infoNode.genreAttributes), forState: ASControlState.Normal)
     }
     func updateGenres(genres: [Genre]) {
         genreUpdateAnimation.completionBlock = {

@@ -23,7 +23,13 @@ class StreamFeedDataSource : WCLAsyncTableViewDataSource {
     }
 }
 
-class UserImageNode : ASNetworkImageNode {
+protocol UserUIElement {
+    var userId : String! {get set}
+}
+class UserImageNode : ASNetworkImageNode, UserUIElement {
+    var userId : String!
+}
+class UserNameNode : ASTextNode, UserUIElement {
     var userId : String!
 }
 
@@ -52,7 +58,7 @@ class StreamStoryNode : ASDisplayNode {
         }
         
         let attributes = [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 117/255, green: 117/255, blue: 117/255, alpha: 1)]
-        let linkAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1), NSLinkAttributeName : stream.user._id]
+        let linkAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSLinkAttributeName : stream.user._id]
         
         let usernameStr = NSAttributedString(string: stream.user.username, attributes: linkAttributes)
         
@@ -93,7 +99,7 @@ class StreamCellContentNode : ASDisplayNode {
     
     var imageId : String?
     var streamTitle : String?
-    var streamGenres : String?
+    var streamGenres : String = ""
     var listeners : Int = 0
     var reactions : Int = 0
     
@@ -140,7 +146,7 @@ class StreamCellContentNode : ASDisplayNode {
         
         titleNode.attributedString = NSAttributedString(string: streamTitle!, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5])
         
-        genresNode.attributedString = NSAttributedString(string: "Still / Missing / Genres", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 1)])
+        genresNode.attributedString = NSAttributedString(string: streamGenres, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 1)])
         
         
         let x = NSAttributedString(string: "\(self.listeners)", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 117/255, green: 117/255, blue: 117/255, alpha: 1)])
@@ -155,13 +161,13 @@ class StreamCellContentNode : ASDisplayNode {
             self.imageId = img as String
         }
         
-        var genreText : String!
+        var genreText : String = ""
         for (ind,genre) in stream.playlist.genres.enumerate() {
             
             if ind == 0 {
                 genreText = genre.name
             } else {
-                genreText! += (" / " + genre.name)
+                genreText += (" / " + genre.name)
             }
         }
         streamGenres = genreText
