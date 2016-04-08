@@ -158,6 +158,27 @@ extension PlaylistController {
             return
         }
         
+        
+        if self.playlist.name == nil || self.playlist.name == "" {
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                
+                let info = WCLNotificationInfo(defaultActionName: "", body: "You need to name your playlist before sharing it with others.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                    [weak self]
+                    notif in
+                    
+                    if self == nil {
+                        return
+                    }
+                    
+                    AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Name Notification", value: nil)
+                    
+                    self!.screenNode.pager.scrollToPageAtIndex(0, animated: true)
+                }
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+            return
+        }
+        
         if self.infoController.uploadingImage {
             if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
                 WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Image upload in progress. Try again once it is finished", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
