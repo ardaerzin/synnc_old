@@ -79,10 +79,9 @@ class PlaylistController : PagerBaseController {
     }
     
     func deleteAction(sender : AnyObject){
-        playlist.delete()
         var plist = self.playlist
+        let json = plist.toJSON(nil, populate: true)
         Async.background {
-            let json = plist.toJSON(nil)
             Async.main {
                 Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
             }
@@ -90,6 +89,7 @@ class PlaylistController : PagerBaseController {
         if let window = self.view.wclWindow {
             window.hide(true)
         }
+        playlist.delete()
         self.playlist = nil
     }
 }
@@ -107,7 +107,10 @@ extension PlaylistController : UIGestureRecognizerDelegate {
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         
-        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
+        if self.tracklistController.editMode {
+            return true
+        }
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || (otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer && !self.tracklistController.editMode){
             return true
         } else {
             return false
@@ -117,7 +120,10 @@ extension PlaylistController : UIGestureRecognizerDelegate {
         if let ip = self.infoController.imagePicker {
             return false
         }
-        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
+        if self.tracklistController.editMode {
+            return true
+        }
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || (otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer && !self.tracklistController.editMode) {
             return true
         } else {
             return false
