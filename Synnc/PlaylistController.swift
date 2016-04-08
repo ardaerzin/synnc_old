@@ -79,10 +79,9 @@ class PlaylistController : PagerBaseController {
     }
     
     func deleteAction(sender : AnyObject){
-        playlist.delete()
         var plist = self.playlist
+        let json = plist.toJSON(nil, populate: true)
         Async.background {
-            let json = plist.toJSON(nil)
             Async.main {
                 Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
             }
@@ -90,6 +89,7 @@ class PlaylistController : PagerBaseController {
         if let window = self.view.wclWindow {
             window.hide(true)
         }
+        playlist.delete()
         self.playlist = nil
     }
 }
@@ -107,7 +107,10 @@ extension PlaylistController : UIGestureRecognizerDelegate {
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         
-        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
+        if self.tracklistController.editMode {
+            return true
+        }
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || (otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer && !self.tracklistController.editMode){
             return true
         } else {
             return false
@@ -117,7 +120,10 @@ extension PlaylistController : UIGestureRecognizerDelegate {
         if let ip = self.infoController.imagePicker {
             return false
         }
-        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer {
+        if self.tracklistController.editMode {
+            return true
+        }
+        if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || (otherGestureRecognizer == self.tracklistController.screenNode.tracksTable.view.panGestureRecognizer && !self.tracklistController.editMode) {
             return true
         } else {
             return false
@@ -152,6 +158,27 @@ extension PlaylistController {
                         AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Notification", value: nil)
                     
                         self!.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+                }
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+            return
+        }
+        
+        
+        if self.playlist.name == nil || self.playlist.name == "" {
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                
+                let info = WCLNotificationInfo(defaultActionName: "", body: "You need to name your playlist before sharing it with others.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                    [weak self]
+                    notif in
+                    
+                    if self == nil {
+                        return
+                    }
+                    
+                    AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Name Notification", value: nil)
+                    
+                    self!.screenNode.pager.scrollToPageAtIndex(0, animated: true)
                 }
                 WCLNotificationManager.sharedInstance().newNotification(a, info: info)
             }

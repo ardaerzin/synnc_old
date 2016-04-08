@@ -26,8 +26,8 @@ import SwiftyJSON
 import WCLUIKit
 
 #if DEBUG
-//let socketURLString = "https://digital-reform.codio.io:9500"
-let socketURLString = "https://synnc.herokuapp.com"
+let socketURLString = "https://digital-reform.codio.io:9500"
+//let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-3"
 #else
 let socketURLString = "https://synnc.herokuapp.com"
@@ -304,7 +304,7 @@ extension Synnc {
                 return
             }
             
-            Genre.socketSync(self!.socket, inStack: nil)
+            Genre.socketSync(self!.socket, inStack: WildDataManager.sharedInstance().coreDataStack)
         }
     }
 }
@@ -319,7 +319,7 @@ extension Synnc {
 //                WCLPopupManager.sharedInstance.newPopup(x)
             }
             StreamManager.sharedInstance.updateUserFeed()
-            SynncPlaylist.socketSync(self.socket, inStack: nil, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
+            SynncPlaylist.socketSync(self.socket, inStack: WildDataManager.sharedInstance().coreDataStack, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
         }
     }
 }

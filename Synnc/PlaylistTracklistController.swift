@@ -34,6 +34,15 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
 
 class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     
+    var editMode : Bool = false {
+        didSet {
+            self.screenNode.tracksTable.view.setEditing(editMode, animated: true)
+        }
+    }
+    func toggleEditMode(sender : AnyObject) {
+        print("toggle edit mode")
+        editMode = !editMode
+    }
     func displayTrackSearch(sender : ASButtonNode!) {
         let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
         lc.delegate = self
@@ -54,7 +63,11 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     }
     
     lazy var _leftHeaderIcon : ASImageNode! = {
-        return nil
+        let x = ASImageNode()
+        x.image = UIImage(named: "newPlaylist")
+        x.contentMode = .Center
+        x.addTarget(self, action: #selector(PlaylistTracklistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
+        return x
     }()
     var leftHeaderIcon : ASImageNode! {
         get {
@@ -166,8 +179,11 @@ extension PlaylistTracklistController : ASTableViewDataSource {
         switch editingStyle {
         case .Delete:
             
-//            self.playlist.removeSong(atIndexPath: indexPath)
-//            updateScrollSizes()
+            if let plist = self.playlist {
+                plist.removeSong(atIndexPath: indexPath)
+                plist.save()
+            }
+            
             
             self.screenNode.tracksTable.view.beginUpdates()
             self.screenNode.tracksTable.view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
