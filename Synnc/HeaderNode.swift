@@ -38,7 +38,7 @@ class TitleHolderNode : ASDisplayNode {
         if titleItem == nil {
             return ASLayoutSpec()
         } else {
-            if let w = self.constrainedSize {
+            if let _ = self.constrainedSize {
 //                titleItem.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: w.width - 100), ASRelativeDimension(type: .Points, value: 33))
             }
             let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [ASStaticLayoutSpec(children: [titleItem])])
@@ -100,7 +100,7 @@ class HeaderNode : ASDisplayNode {
         
         self.nowPlayingIcon = AnimatedLogoNode(barCount: 5)
         nowPlayingIcon.preferredFrameSize = CGSizeMake(40, 34)
-        nowPlayingIcon.addTarget(self, action: Selector("displayActiveStream:") , forControlEvents: .TouchUpInside)
+        nowPlayingIcon.addTarget(self, action: #selector(HeaderNode.displayActiveStream(_:)) , forControlEvents: .TouchUpInside)
         
         self.subSectionArea = SubsectionSelectorNode()
         
@@ -118,11 +118,11 @@ class HeaderNode : ASDisplayNode {
         
         self.backgroundColor = UIColor.whiteColor()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didSetActiveStream:"), name: "DidSetActiveStream", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HeaderNode.didSetActiveStream(_:)), name: "DidSetActiveStream", object: nil)
     }
     
     func displayActiveStream(sender: AnimatedLogoNode) {
-        Synnc.sharedInstance.streamNavigationController.displayActiveStream(nil)
+//        Synnc.sharedInstance.streamNavigationController.displayActiveStream(nil)
     }
     
     func didSetActiveStream(notification : NSNotification!) {

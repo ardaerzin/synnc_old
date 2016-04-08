@@ -52,18 +52,18 @@ class TabNavigationController : UINavigationController, UINavigationControllerDe
         case .Push:
             if let vc = toVC as? WildAnimated {
                 vc.animator.presenting = true
-                if let rvc = self.rootViewController {
-                    rvc.displayStatusBar = !toVC.prefersStatusBarHidden()
-                }
+//                if let rvc = self.rootViewController {
+//                    rvc.displayStatusBar = !toVC.prefersStatusBarHidden()
+//                }
                 return vc.animator
             }
             break
         case .Pop:
             if let vc = fromVC as? WildAnimated {
                 vc.animator.presenting = false
-                if let rvc = self.rootViewController {
-                    rvc.displayStatusBar = !toVC.prefersStatusBarHidden()
-                }
+//                if let rvc = self.rootViewController {
+//                    rvc.displayStatusBar = !toVC.prefersStatusBarHidden()
+//                }
                 return vc.animator
             }
             break

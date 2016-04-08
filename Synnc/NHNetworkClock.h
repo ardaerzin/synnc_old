@@ -15,7 +15,7 @@
 
 @property (nonatomic, readonly, copy) NSDate *networkTime;
 @property (nonatomic, readonly) NSTimeInterval networkOffset;
-@property (nonatomic, readonly) BOOL isSynchronized;
+@property (nonatomic, readwrite) BOOL isSynchronized;
 
 #pragma mark - Options
 

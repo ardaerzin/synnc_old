@@ -30,7 +30,6 @@ class ParallaxNode : ASDisplayNode {
     var delegate : ParallaxNodeDelegate!
     var topDistance : CGFloat = 250
     var mainScrollNode : ParallaxContentScroller!
-    var headerNode : SmallHeaderNode!
     
     init(backgroundNode : ParallaxBackgroundNode, contentNode : ASDisplayNode) {
         super.init()
@@ -38,18 +37,14 @@ class ParallaxNode : ASDisplayNode {
         self.mainScrollNode = ParallaxContentScroller(backgroundNode: backgroundNode, contentNode: contentNode)
         self.mainScrollNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
-        self.headerNode = SmallHeaderNode()
-        self.headerNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 35))
-        
         self.addSubnode(self.mainScrollNode)
-        self.addSubnode(self.headerNode)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
         
-        let imageSpec = ASStaticLayoutSpec(children: [mainScrollNode, headerNode])
+        let imageSpec = ASStaticLayoutSpec(children: [mainScrollNode])
         return imageSpec
     }
     

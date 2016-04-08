@@ -63,7 +63,7 @@ class StreamNavigationController : UINavigationController {
     var userStreamController : StreamViewController!
     init(){
         super.init(nibName: nil, bundle: nil)
-        panRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handlePanRecognizer:"))
+        panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(StreamNavigationController.handlePanRecognizer(_:)))
         self.view.addGestureRecognizer(panRecognizer)
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBarHidden = true
@@ -73,48 +73,48 @@ class StreamNavigationController : UINavigationController {
     
     func displayStreamCreateController(playlist: SynncPlaylist? = nil) {
         
-        if SharedPlaylistDataSource.allItems.isEmpty {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {
-                let info = WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", object: item) {
-                    [weak self]
-                    notif in
-                    
-                    if self == nil {
-                        return
-                    }
-                    
-                    if let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController {
-                        rvc.willSetTabItem(rvc.screenNode.tabbar, item: item)
-                    }
-                }
-                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-            }
-            return
-        }
-        
-        if let us = StreamManager.sharedInstance.userStream {
-            
-            if us.playlist == playlist {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You are streaming this playlist already", title: "Active Playlist", showLocalNotification: false))
-                }
-                
-            } else {
-                let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: playlist)
-                WCLPopupManager.sharedInstance.newPopup(x)
-            }
-            
-            return
-        }
-        
-        if userStreamController == nil {
-            userStreamController = StreamViewController(stream: nil, playlist: playlist)
-        }
-        if let _ = self.viewControllers.indexOf(userStreamController) {
-            self.popToViewController(userStreamController, animated: false)
-        } else {
-            self.pushViewController(userStreamController, animated: false)
-        }
+//        if SharedPlaylistDataSource.allItems.isEmpty {
+//            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView, let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController, let item = rvc.playlistsTab {
+//                let info = WCLNotificationInfo(defaultActionName: "OpenTab", body: "Go ahead and create a playlist first", title: "No Playlists", object: item) {
+//                    [weak self]
+//                    notif in
+//                    
+//                    if self == nil {
+//                        return
+//                    }
+//                    
+////                    if let rvc = Synnc.sharedInstance.window?.rootViewController as? RootViewController {
+////                        rvc.willSetTabItem(rvc.screenNode.tabbar, item: item)
+////                    }
+//                }
+//                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+//            }
+//            return
+//        }
+//        
+//        if let us = StreamManager.sharedInstance.userStream {
+//            
+//            if us.playlist == playlist {
+//                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+//                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You are streaming this playlist already", title: "Active Playlist", showLocalNotification: false))
+//                }
+//                
+//            } else {
+//                let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: playlist)
+//                WCLPopupManager.sharedInstance.newPopup(x)
+//            }
+//            
+//            return
+//        }
+//        
+//        if userStreamController == nil {
+//            userStreamController = StreamViewController(stream: nil, playlist: playlist)
+//        }
+//        if let _ = self.viewControllers.indexOf(userStreamController) {
+//            self.popToViewController(userStreamController, animated: false)
+//        } else {
+//            self.pushViewController(userStreamController, animated: false)
+//        }
         self.display()
     }
     
@@ -226,10 +226,10 @@ class StreamNavigationController : UINavigationController {
         }
         self.animation.toValue = 0
         
-        if let rvc = self.rootViewController {
-            statusbarDisplay = rvc.displayStatusBar
-            rvc.displayStatusBar = false
-        }
+//        if let rvc = self.rootViewController {
+//            statusbarDisplay = rvc.displayStatusBar
+//            rvc.displayStatusBar = false
+//        }
         UIApplication.sharedApplication().statusBarHidden = true
     }
     func hide(){
@@ -240,11 +240,11 @@ class StreamNavigationController : UINavigationController {
         }
         
         self.animation.toValue = 1
-        var status : Bool = false
-        if let rvc = self.rootViewController, let tabitem = rvc.displayItem as? TabItemController {
-            status = !tabitem.prefersStatusBarHidden()
-        }
-        UIApplication.sharedApplication().statusBarHidden = !status
+//        var status : Bool = false
+//        if let rvc = self.rootViewController, let tabitem = rvc.displayItem as? TabItemController {
+//            status = !tabitem.prefersStatusBarHidden()
+//        }
+//        UIApplication.sharedApplication().statusBarHidden = !status
     }
     
     func clearUserStreamController() {

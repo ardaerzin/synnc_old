@@ -62,8 +62,8 @@ class WildPlayerItem : AVPlayerItem {
         for keyPath in observedKeys {
             self.addObserver(self, forKeyPath: keyPath, options: NSKeyValueObservingOptions.New, context: nil)
         }
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "playbackStalled:", name: AVPlayerItemPlaybackStalledNotification, object: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didPlayToEnd:", name: AVPlayerItemDidPlayToEndTimeNotification, object: self)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WildPlayerItem.playbackStalled(_:)), name: AVPlayerItemPlaybackStalledNotification, object: self)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WildPlayerItem.didPlayToEnd(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: self)
     }
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         
@@ -76,6 +76,7 @@ class WildPlayerItem : AVPlayerItem {
         if keyPath == "timedMetadata" {
             self.delegate?.wildPlayerItem?(metadataUpdatedForItem: self)
         } else if keyPath == "status" {
+            print("status changed for item", self, self.index, self.status.rawValue)
             self.delegate?.wildPlayerItem?(itemStatusChangedForItem: self)
         } else if keyPath == "loadedTimeRanges" {
             self.delegate?.wildPlayerItem?(loadedItemTimeRangesForItem: self)
@@ -92,7 +93,7 @@ class WildPlayerItem : AVPlayerItem {
     func playbackStalled(notification: NSNotification){
         
         self.delegate?.wildPlayerItem?(playbackStalledForItem: self)
-        //        println("PLAYBACK STALLED")
+                print("PLAYBACK STALLED")
         //        println(notification)
     }
     func didPlayToEnd(notification: NSNotification) {

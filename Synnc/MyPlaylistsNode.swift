@@ -16,10 +16,10 @@ import WCLUserManager
 
 class MyPlaylistsNode : ASDisplayNode, TrackedView {
     
-    var title : String! = "MyPlaylists"
-    var collectionNode : ASCollectionNode!
-    var emptyStateNode : MyPlaylistsEmptyStateNode!
+    var title : String! = "My Playlists"
+    var tableNode : ASTableNode!
     
+    var emptyStateNode : MyPlaylistsEmptyStateNode!
     var emptyState : Bool = false {
         didSet {
             if emptyState != oldValue {
@@ -40,29 +40,20 @@ class MyPlaylistsNode : ASDisplayNode, TrackedView {
     override init() {
         super.init()
         
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .Vertical
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
-        
-        collectionNode = ASCollectionNode(collectionViewLayout: layout)
-//        collectionNode.backgroundColor = UIColor.whiteColor()
-        collectionNode.alignSelf = .Stretch
-        collectionNode.view.contentInset = UIEdgeInsetsMake(135, 0, 50, 0)
-        collectionNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
-        
-        self.addSubnode(collectionNode)
-        
-        
-//        self.backgroundColor = .purpleColor()
+        tableNode = ASTableNode()
+        tableNode.view.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        tableNode.alignSelf = .Stretch
+        tableNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
+        tableNode.view.separatorStyle = .None
+        self.addSubnode(tableNode)
     }
     
-    override func calculatedLayoutDidChange() {
-        super.calculatedLayoutDidChange()
-    }
+//    override func calculatedLayoutDidChange() {
+//        super.calculatedLayoutDidChange()
+//    }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let a = ASStaticLayoutSpec(children: [self.collectionNode])
+        let a = ASStaticLayoutSpec(children: [self.tableNode])
         let o = ASOverlayLayoutSpec(child: a, overlay: self.emptyStateNode)
         return o
     }

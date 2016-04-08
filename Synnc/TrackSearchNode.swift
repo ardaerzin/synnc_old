@@ -52,7 +52,8 @@ class EmptyStateNode : ASDisplayNode {
         self.alpha = 0
         self.userInteractionEnabled = false
         
-        self.backgroundColor = .whiteColor()
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+
     }
     
     func setMessage(msg: String) {
@@ -89,13 +90,13 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         super.init()
         self.clipsToBounds = true
         
-        self.backgroundColor = .whiteColor()
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         self.sourceSelectionNode = SourceSelectionNode(sources: ["Soundcloud", "Spotify"])
         
         self.coverNode = ASDisplayNode()
         self.coverNode.layerBacked = true
-        self.coverNode.backgroundColor = UIColor.whiteColor()
+        self.coverNode.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         self.sourceOptionsButton = ButtonNode()
         self.sourceOptionsButton.setImage(UIImage(named: "soundcloud_active"), forState: ASControlState.Normal)
@@ -105,13 +106,13 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         
         
         self.closeButton = ButtonNode()
-//        self.closeButton.imageNode.imageModificationBlock = ASImageNodeTintColorModificationBlock(UIColor.blackColor().colorWithAlphaComponent(0.6))
         self.closeButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASControlState.Normal)
         self.closeButton.imageNode.preferredFrameSize = CGSizeMake(15, 15)
         self.closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 40, height: 40))
         self.closeButton.imageNode.contentMode = .Center
         
         self.inputNode = ASEditableTextNode()
+        self.inputNode.scrollEnabled = false
         self.inputNode.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
         
         self.inputNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)]
@@ -131,12 +132,14 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         layout.scrollDirection = .Horizontal
         layout.minimumInteritemSpacing = 20
         layout.minimumLineSpacing = 20
-        layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 0)
+        
+        layout.sectionInset = UIEdgeInsetsMake(10, 10, 0, 0)
         self.artistsCollection = ASCollectionNode(collectionViewLayout: layout)
         self.artistsCollection.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 125))
         self.artistsCollection.view.showsHorizontalScrollIndicator = false
         self.artistsCollection.view.leadingScreensForBatching = 1
-        
+        self.artistsCollection.view.backgroundColor = .clearColor()
+            
         self.seperator2 = ASDisplayNode()
         self.seperator2.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 1))
         self.seperator2.layerBacked = true
@@ -146,7 +149,7 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         self.seperator2.alignSelf = .Stretch
         
         self.tracksTable = ASTableNode(style: UITableViewStyle.Plain)
-        self.tracksTable.backgroundColor = UIColor.redColor()
+        self.tracksTable.view.backgroundColor = .clearColor()
 //        self.tracksTable.alignSelf = .Stretch
         self.tracksTable.view.leadingScreensForBatching = 1
 //        self.tracksTable.flexGrow = true

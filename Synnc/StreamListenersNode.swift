@@ -16,63 +16,90 @@ class StreamListenersNode : ASDisplayNode {
     
     var listenersCollection : ASCollectionNode!
     var titleNode : ASTextNode!
+    var countNode : ASTextNode!
+    lazy var countAttributes : [String : AnyObject] = {
+        return [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)]
+    }()
+    var separator : ASDisplayNode!
     
-    var noListenersText : ASTextNode!
-    var noListenersAttributes : [String : AnyObject] = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 124/255, green: 124/255, blue: 124/255, alpha: 1), NSKernAttributeName : -0.1]
-    
-    var emptyState : Bool = true {
+    var emptyStateNode : ListenersEmptyStateNode!
+    var emptyState : Bool = false {
         didSet {
             if emptyState != oldValue {
-                emptyStateAnimation.toValue = emptyState ? 1 : 0
+                if self.emptyStateNode == nil {
+                    emptyStateNode = ListenersEmptyStateNode()
+                }
+                if emptyState {
+                    self.addSubnode(emptyStateNode)
+                } else {
+                    emptyStateNode.removeFromSupernode()
+                    emptyStateNode = nil
+                }
+                self.setNeedsLayout()
             }
         }
     }
-    var emptyStateAnimation : POPBasicAnimation {
-        get {
-            if let anim = self.noListenersText.pop_animationForKey("emptyStateAnimation") {
-                return anim as! POPBasicAnimation
-            } else {
-                let x = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-                x.duration = 0.3
-                self.noListenersText.pop_addAnimation(x, forKey: "emptyStateAnimation")
-                return x
-            }
-        }
-    }
+    
     override init() {
         super.init()
         
-        titleNode = ASTextNode()
-        titleNode.attributedString = NSAttributedString(string: "People Connected:", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 124/255, green: 124/255, blue: 124/255, alpha: 1), NSKernAttributeName : -0.1])
+        separator = ASDisplayNode()
+        separator.alignSelf = .Stretch
+        separator.flexBasis = ASRelativeDimension(type: .Points, value: 1/UIScreen.mainScreen().scale)
+        separator.backgroundColor = UIColor(red: 151/255, green: 151/255, blue: 151/255, alpha: 0.2)
+        self.addSubnode(separator)
         
-        noListenersText = ASTextNode()
-        noListenersText.attributedString = NSAttributedString(string: "Share your stream and get listeners", attributes: self.noListenersAttributes)
+        titleNode = ASTextNode()
+        titleNode.attributedString = NSAttributedString(string: "JOINED USERS", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 168/255, green: 168/255, blue: 168/255, alpha: 1), NSKernAttributeName : 0.5])
+        self.addSubnode(titleNode)
+        
+        countNode = ASTextNode()
+        countNode.spacingBefore = 6
+        self.addSubnode(countNode)
+        
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .Horizontal
+        
         listenersCollection = ASCollectionNode(collectionViewLayout: layout)
         listenersCollection.alignSelf = .Stretch
         listenersCollection.flexBasis = ASRelativeDimension(type: .Points, value: 40)
+        listenersCollection.view.backgroundColor = .clearColor()
         
-        
-        self.addSubnode(titleNode)
         self.addSubnode(listenersCollection)
-        self.addSubnode(noListenersText)
+        self.alignSelf = .Stretch
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let overlaySpec = ASOverlayLayoutSpec(child: self.listenersCollection, overlay: ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: noListenersText))
-        overlaySpec.alignSelf = .Stretch
-        overlaySpec.flexBasis = ASRelativeDimension(type: .Points, value: 40)
-        let vStack = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Start, alignItems: .Start, children: [self.titleNode, overlaySpec])
+        let titleStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [titleNode, countNode])
+        titleStack.alignSelf = .Stretch
+        titleStack.spacingBefore = 25
+        titleStack.spacingAfter = 15
         
-        return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25), child: vStack)
+        
+        let o = ASOverlayLayoutSpec(child: listenersCollection, overlay: self.emptyStateNode)
+        o.alignSelf = .Stretch
+        o.flexBasis = ASRelativeDimension(type: .Points, value: 40)
+        o.spacingAfter = 24
+        
+        let infoStack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [titleStack, o])
+        let infoSpec = ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 20, 0, 20) , child: infoStack)
+        infoSpec.alignSelf = .Stretch
+        
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [separator, infoSpec])
     }
     
-    func update(stream: Stream) {
+    func configure(stream: Stream) {
+        countNode.attributedString = NSAttributedString(string: "\(stream.users.count)", attributes: self.countAttributes)
+        self.emptyState = stream.users.isEmpty
+     
         if stream == StreamManager.sharedInstance.userStream {
-            noListenersText.attributedString = NSAttributedString(string: "Share your stream and get listeners", attributes: self.noListenersAttributes)
+            emptyStateNode?.msgNode.attributedString = NSAttributedString(string: "No listeners", attributes: emptyStateNode?.msgAttributes)
         } else {
-            noListenersText.attributedString = NSAttributedString(string: "This stream does not have any listeners", attributes: self.noListenersAttributes)
+            
+            emptyStateNode?.msgNode.attributedString = NSAttributedString(string: "No listeners", attributes: emptyStateNode?.msgAttributes)
         }
+
+        
+        self.setNeedsLayout()
     }
 }

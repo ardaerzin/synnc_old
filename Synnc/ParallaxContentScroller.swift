@@ -110,7 +110,7 @@ class ParallaxContentScroller : WCLScrollNode, UIScrollViewDelegate {
                
                 ratioProgress = (self.backgroundNode.calculatedSize.height - position) / self.calculatedSize.width
                 
-                let x = self.backgroundNode.calculatedSize.height - self.backgroundNode.calculatedSize.width
+//                let x = self.backgroundNode.calculatedSize.height - self.backgroundNode.calculatedSize.width
                 a = (self.backgroundNode.calculatedSize.height - position - self.backgroundNode.calculatedSize.width) / 2 - (self.backgroundNode.calculatedSize.height - backgroundNode.calculatedSize.width) + z
                 
                 let y = (self.backgroundNode.calculatedSize.width - (self.backgroundNode.calculatedSize.height - position)) / 2 - bgScalePosition

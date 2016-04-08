@@ -201,18 +201,29 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     // MARK: Observation Handlers
     func currentItemChanged(){
         
-        //        println("*****Current item changed")
+        print("*****Current item changed", self.currentItem)
         //        if self.stream == nil {
         //            return
         //        }
-        if self.currentItem == nil {
+        
+        if self.currentItem == nil && !self.trackManager.isLoadingTrackData {
+            print("end of playlist")
             self.endOfPlaylist = true
             self.rate = 0
             return
         }
         
-        let item = self.currentItem as! WildPlayerItem
-        currentIndex = item.index
+        if let item = self.currentItem as? WildPlayerItem {
+            currentIndex = item.index
+            
+            if item.status == AVPlayerItemStatus.ReadyToPlay {
+            
+                self.setRate(1, time: CMTimeMakeWithSeconds((0), self.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(CMClockGetTime(CMClockGetHostTimeClock())), self.currentItem!.asset.duration.timescale) )
+                print("current item changed ", item.index)
+            } else {
+                self.rate = 0
+            }
+        }
     }
     func playerRateChanged(){
         

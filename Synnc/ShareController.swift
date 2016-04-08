@@ -15,21 +15,23 @@ import FBSDKMessengerShareKit
 import Cloudinary
 import Twitter
 
-class ShareController : PopContentController {
+class ShareController : ASViewController {
     
     internal var shareTitle : String!
     internal var shareImg : NSURL!
     internal var shareUrl : NSURL!
     internal var shareDescription : String!
     
+    var screenNode : ASDisplayNode!
+    
     init(){
         let node = ShareNode()
         super.init(node: node)
         self.screenNode = node
         
-        node.facebookShareButton.addTarget(self, action: Selector("facebookShare:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.twitterShareButton.addTarget(self, action: Selector("twitterShare:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.smsShareButton.addTarget(self, action: Selector("smsShare:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.facebookShareButton.addTarget(self, action: #selector(ShareController.facebookShare(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.twitterShareButton.addTarget(self, action: #selector(ShareController.twitterShare(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.smsShareButton.addTarget(self, action: #selector(ShareController.smsShare(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
     }
     
     

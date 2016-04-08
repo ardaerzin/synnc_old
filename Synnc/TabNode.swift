@@ -69,7 +69,7 @@ class TabNode : ASDisplayNode {
             let button = TabbarButton(item: item)
             self.tabbarButtons.append(button)
             button.preferredFrameSize = CGSizeMake(50, 50)
-            button.addTarget(self, action: Selector("tabbuttonAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+            button.addTarget(self, action: #selector(TabNode.tabbuttonAction(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
             self.addSubnode(button)
             
             let x = (UIScreen.mainScreen().bounds.width - CGFloat(tabbarItems.count * 50)) / CGFloat(tabbarItems.count + 1)

@@ -15,10 +15,7 @@ import pop
 class NotCompatiblePopup : WCLPopupViewController {
     
     var screenNode : NotCompatibleNode!
-    
-    var onboardingController : OnboardingVC!
-    var loginController : LoginViewController!
-    
+
     init(size: CGSize) {
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
@@ -32,7 +29,7 @@ class NotCompatiblePopup : WCLPopupViewController {
         self.dismissable = false
         
         let node = NotCompatibleNode()
-        node.yesButton.addTarget(self, action: Selector("goToAppStore:"), forControlEvents: .TouchUpInside)
+        node.yesButton.addTarget(self, action: #selector(NotCompatiblePopup.goToAppStore(_:)), forControlEvents: .TouchUpInside)
         self.screenNode = node
         self.view.addSubnode(node)
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
@@ -41,7 +38,6 @@ class NotCompatiblePopup : WCLPopupViewController {
         super.viewWillLayoutSubviews()
         if let n = self.screenNode {
             let x = n.measureWithSizeRange(ASSizeRangeMake(CGSizeZero, self.view.frame.size))
-            print("X size", x.size)
             if x.size != self.size {
                 self.size = x.size
                 screenNode.view.frame = CGRect(origin: CGPointZero, size: self.size)
@@ -54,11 +50,14 @@ class NotCompatiblePopup : WCLPopupViewController {
     var oldScreen : AnalyticsScreen!
     override func didDisplay() {
         super.didDisplay()
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
         AnalyticsScreen.new(node: screenNode)
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     
     func goToAppStore(sender: AnyObject) {

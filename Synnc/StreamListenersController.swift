@@ -43,7 +43,7 @@ class StreamListenersController : ASViewController {
     func update(stream : Stream) {
         self.dataSource.refresh = true
         self.dataSource.pendingData = stream.users
-        self.screenNode.update(stream)
+        self.screenNode.configure(stream)
     }
 }
 
@@ -53,6 +53,13 @@ extension StreamListenersController : ASCollectionDelegate {
     }
     func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
         return true
+    }
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if let user = self.dataSource.dataAtIndex(indexPath.item) as? WCLUser {
+            if let pvc = self.parentViewController as? StreamInfoController {
+                pvc.displayUserPopup(user._id)
+            }
+        }
     }
 }
 extension StreamListenersController : WCLAsyncCollectionViewDataSourceDelegate {

@@ -28,21 +28,22 @@ class SynncLocationAuthVC : WCLLocationManagerAuthVC {
         self.node = node
         self.view.addSubnode(node)
         
-        node.yesButton.addTarget(self, action: Selector("getLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.noButton.addTarget(self, action: Selector("dismissLocationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.yesButton.addTarget(self, action: #selector(SynncLocationAuthVC.getLocationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.noButton.addTarget(self, action: #selector(SynncLocationAuthVC.dismissLocationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
     var oldScreen : AnalyticsScreen!
     override func didDisplay() {
         super.didDisplay()
-        
         oldScreen = AnalyticsManager.sharedInstance.screens.last
         AnalyticsScreen.new(node: self.node)
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()

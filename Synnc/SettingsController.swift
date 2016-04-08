@@ -9,14 +9,109 @@
 import Foundation
 import AsyncDisplayKit
 import BFPaperCheckbox
+import pop
+import SafariServices
+import WCLNotificationManager
 
-class SettingsController : PopContentController {
+class SettingsInputAccessoryNode : ASDisplayNode {
+    var yesButton : ButtonNode!
+    var noButton : ButtonNode!
     
-    init(user : MainUser){
-        let node = SettingsNode()
-        super.init(node: node)
+    override init() {
+        super.init()
         
-        node.closeButton.addTarget(self, action: Selector("hideController:"), forControlEvents: .TouchUpInside)
+        yesButton = ButtonNode()
+        let a = NSAttributedString(string: "Send", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 140/255, green: 185/255, blue: 189/255, alpha: 1)])
+        yesButton.setAttributedTitle(a, forState: .Normal)
+        
+        noButton = ButtonNode()
+        let b = NSAttributedString(string: "Cancel", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 20)!, NSForegroundColorAttributeName : UIColor(red: 140/255, green: 185/255, blue: 189/255, alpha: 1)])
+        noButton.setAttributedTitle(b, forState: .Normal)
+        
+        backgroundColor = UIColor(red: 206/255, green: 206/255, blue: 206/255, alpha: 1)
+        
+        self.addSubnode(yesButton)
+        self.addSubnode(noButton)
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        
+        let spacer = ASLayoutSpec()
+        spacer.flexGrow = true
+        
+        let stack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [noButton, spacer, yesButton])
+        
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 40, 0, 40), child: stack)
+    }
+}
+
+class SettingsController : ASViewController, PagerSubcontroller {
+    
+    var _inputAccessoryNode : SettingsInputAccessoryNode!
+    override var inputAccessoryView : UIView! {
+        get {
+            
+            if self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() {
+                
+                if _inputAccessoryNode == nil {
+                    _inputAccessoryNode = SettingsInputAccessoryNode()
+                    _inputAccessoryNode.yesButton.addTarget(self, action: #selector(SettingsController.sendFeedback(_:)), forControlEvents: .TouchUpInside)
+                    _inputAccessoryNode.noButton.addTarget(self, action: #selector(SettingsController.cancelFeedback(_:)), forControlEvents: .TouchUpInside)
+                }
+                
+                _inputAccessoryNode.frame = CGRectMake(0,0,self.view.frame.width,40)
+                _inputAccessoryNode.measureWithSizeRange(ASSizeRangeMakeExactSize(CGSize(width: self.view.frame.width,height: 40)))
+                return _inputAccessoryNode.view
+            } else {
+                return nil
+            }
+            
+        }
+    }
+    
+    lazy var _leftHeaderIcon : ASImageNode! = {
+        let x = ASImageNode()
+        x.image = UIImage(named: "magnifier")
+        x.contentMode = .Center
+        return nil
+    }()
+    var leftHeaderIcon : ASImageNode! {
+        get {
+            return _leftHeaderIcon
+        }
+    }
+    lazy var _rightHeaderIcon : ASImageNode! = {
+        return nil
+    }()
+    var rightHeaderIcon : ASImageNode! {
+        get {
+            return _rightHeaderIcon
+        }
+    }
+    lazy var _titleItem : ASTextNode = {
+        let x = ASTextNode()
+        x.attributedString = NSAttributedString(string: "Settings", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5])
+        return x
+    }()
+    var titleItem : ASTextNode! {
+        get {
+            return _titleItem
+        }
+    }
+    
+    var pageControlStyle : [String : UIColor]? {
+        get {
+            return [ "pageControlColor" : UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1), "pageControlSelectedColor" : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1)]
+        }
+    }
+    
+    
+    var screenNode : SettingsHolder!
+    var keyboardTranslation : CGFloat! = 0
+    
+    init(){
+        let node = SettingsHolder()
+        super.init(node: node)
         
         self.screenNode = node
     }
@@ -24,59 +119,88 @@ class SettingsController : PopContentController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let node = self.screenNode as! SettingsNode
+        self.screenNode.settingsNode.aboutNode.infoButton.addTarget(self, action: #selector(SettingsController.infoButtonAction(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.aboutNode.termsAndConditionsButton.addTarget(self, action: #selector(SettingsController.termsButtonAction(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.aboutNode.librariesButton.addTarget(self, action: #selector(SettingsController.librariesButtonAction(_:)), forControlEvents: .TouchUpInside)
         
-        node.contentNode.disconnectSection.disconnectButton.addTarget(self, action: Selector("disconnectAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.contentNode.aboutSection.aboutUsButton.addTarget(self, action: Selector("aboutUsAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.contentNode.aboutSection.termsAndConditionsButton.addTarget(self, action: Selector("termsAndConditionsAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.contentNode.aboutSection.librariesButton.addTarget(self, action: Selector("librariesAction:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        self.screenNode.settingsNode.feedbackNode.feedbackArea.delegate = self
         
-//        node.contentNode.notificationsSection.followsNotificationCheckbox.addTarget(self, action: Selector("toggleFollowsNotification:"), forControlEvents: .TouchUpInside)
-//        node.contentNode.notificationsSection.streamsNotificationCheckbox.addTarget(self, action: Selector("toggleStreamsNotification:"), forControlEvents: .TouchUpInside)
-//        node.contentNode.notificationsSection.newUserNotificationCheckbox.addTarget(self, action: Selector("toggleNewUserNotification:"), forControlEvents: .TouchUpInside)
-//        node.contentNode.notificationsSection.myStreamNotificationCheckbox.addTarget(self, action: Selector("toggleMyStreamNotification:"), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.loginSourcesNode.youtubeButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.loginSourcesNode.spotifyButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.loginSourcesNode.scButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
         
-        node.contentNode.sourcesSection.soundcloudButton.addTarget(self, action: Selector("toggleSoundcloudLogin:"), forControlEvents: .TouchUpInside)
-        node.contentNode.sourcesSection.spotifyButton.addTarget(self, action: Selector("toggleSpotifyLogin:"), forControlEvents: .TouchUpInside)
-//        node.contentNode.sourcesSection.youtubeButton.addTarget(self, action: Selector("toggleYoutubeLogin:"), forControlEvents: .TouchUpInside)
-//        node.contentNode.sourcesSection.googleplayButton.addTarget(self, action: Selector("toggleGoogleplayLogin:"), forControlEvents: .TouchUpInside)
-//        node.contentNode.sourcesSection.groovesharkButton.addTarget(self, action: Selector("toggleGroovesharkLogin:"), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.disconnectButton.addTarget(self, action: #selector(SettingsController.disconnect(_:)), forControlEvents: .TouchUpInside)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SettingsController.keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    func keyboardWillChangeFrame(notification : NSNotification){
+        
+        let a = KeyboardAnimationInfo(dict: notification.userInfo!)
+        
+        var isDisplayed : Bool = false
+        if CGRectGetMinY(a.finalFrame) - self.node.calculatedSize.height == 0 {
+            isDisplayed = false
+        } else {
+            isDisplayed = true
+        }
+        let translation = CGRectGetHeight(a.finalFrame)
+        
+        self.keyboardTranslation = translation
+        
+        if isDisplayed && self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() {
+            POPLayerSetTranslationY(self.screenNode.layer, -translation)
+        } else {
+            POPLayerSetTranslationY(self.screenNode.layer, 0)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
 extension SettingsController {
-    func disconnectAction(sender : ButtonNode) {
-        
+    func infoButtonAction(sender: ButtonNode) {
+        self.openURL("https://synnc.live")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "About Us", value: nil)
     }
-    func aboutUsAction(sender : ButtonNode) {
-        
+    func termsButtonAction(sender: ButtonNode) {
+        self.openURL("https://synnc.live/terms")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Terms", value: nil)
     }
-    func termsAndConditionsAction(sender : ButtonNode) {
-        
+    func librariesButtonAction(sender: ButtonNode) {
+        self.openURL("https://synnc.live/libraries")
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Libraries", value: nil)
     }
-    func librariesAction(sender : ButtonNode) {
-        
+    func openURL(string: String) {
+        if let url = NSURL(string: string) {
+            let x = SFSafariViewController(URL: url)
+            x.modalPresentationStyle = .OverCurrentContext
+            x.delegate = self
+            self.presentViewController(x, animated: true, completion: nil)
+            
+            if let pvc = self.parentViewController as? RootWindowController {
+                pvc.toggleFeed(false)
+            }
+        }
     }
-}
-extension SettingsController {
-    func toggleFollowsNotification(sender : BFPaperCheckbox) {
+    
+    func toggleSocialLogin(sender: SourceLoginButtonNode) {
         
-    }
-    func toggleStreamsNotification(sender : BFPaperCheckbox) {
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: sender.source.rawValue + " Login", value: nil)
         
+        if sender.source == .Soundcloud {
+            toggleSoundcloudLogin(sender)
+        } else {
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                
+                let info = WCLNotificationInfo(defaultActionName: "", body: "\(sender.source.rawValue) Login is not available yet.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+        }
     }
-    func toggleNewUserNotification(sender : BFPaperCheckbox) {
-        
-    }
-    func toggleMyStreamNotification(sender : BFPaperCheckbox) {
-        
-    }
-}
-extension SettingsController {
+    
     func toggleSoundcloudLogin(sender : SourceButton) {
         if !sender.selected {
             if let u = Synnc.sharedInstance.user.soundcloud {
@@ -89,20 +213,67 @@ extension SettingsController {
         }
         
     }
-    func toggleSpotifyLogin(sender : SourceButton) {
-        if !sender.selected {
-            Synnc.sharedInstance.user.socialLogin(.Spotify)
-        } else {
-            Synnc.sharedInstance.user.socialLogout(.Spotify)
+    
+    func disconnect(sender : ButtonNode) {
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Disconnect", value: nil)
+    }
+}
+
+extension SettingsController {
+    func sendFeedback(sender : ButtonNode) {
+        self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "sendFeedback", value: nil)
+        
+        print("send feedback shit", self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string)
+        
+        if let feedbackMsg = self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string {
+            
+            self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText = NSAttributedString(string: "")
+            editableTextNodeDidUpdateText(self.screenNode.settingsNode.feedbackNode.feedbackArea)
+            
+            Synnc.sharedInstance.socket.emit("Feedback:create", [
+                "user" : Synnc.sharedInstance.user._id,
+                "version" : Synnc.sharedInstance.version,
+                "timestamp" : NSDate().timeIntervalSince1970,
+                "feedback" : feedbackMsg
+            ])
         }
     }
-    func toggleYoutubeLogin(sender : SourceButton) {
-        
+    func cancelFeedback(sender : ButtonNode) {
+        self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "cancelFeedback", value: nil)
     }
-    func toggleGoogleplayLogin(sender : SourceButton) {
+}
+
+extension SettingsController : ASEditableTextNodeDelegate {
+    func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode) {
+
+        self.screenNode.settingsNode.feedbackNode.feedbackArea.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(editableTextNode.calculatedSize.width, 100), CGSizeMake(editableTextNode.calculatedSize.width, CGFloat.max)))
+        self.screenNode.settingsNode.feedbackNode.setNeedsLayout()
         
+        let y = 65 + 20 + self.screenNode.settingsNode.disconnectButton.calculatedSize.height
+        self.screenNode.settingsNode.view.setContentOffset(CGPointMake(0, max(0,(self.screenNode.settingsNode.view.contentSize.height - y) - self.screenNode.calculatedSize.height)), animated: false)
     }
-    func toggleGroovesharkLogin(sender : SourceButton) {
+    func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode) {
+        if let pvc = self.parentViewController as? RootWindowController {
+            pvc.screenNode.pager.view.scrollEnabled = false
+        }
         
+        let y = 65 + 20 + self.screenNode.settingsNode.disconnectButton.calculatedSize.height
+        self.screenNode.settingsNode.view.setContentOffset(CGPointMake(0, max(0,(self.screenNode.settingsNode.view.contentSize.height - y) - self.screenNode.calculatedSize.height)), animated: true)
+    }
+    func editableTextNodeDidFinishEditing(editableTextNode: ASEditableTextNode) {
+        if let pvc = self.parentViewController as? RootWindowController {
+            pvc.screenNode.pager.view.scrollEnabled = true
+        }
+        
+        self.screenNode.settingsNode.view.setContentOffset(CGPointMake(0, max(0,(self.screenNode.settingsNode.view.contentSize.height - self.screenNode.settingsNode.view.bounds.height))), animated: true)
+    }
+}
+extension SettingsController : SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        if let pvc = self.parentViewController as? RootWindowController {
+            pvc.toggleFeed(true)
+        }
     }
 }

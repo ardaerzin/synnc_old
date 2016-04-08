@@ -128,7 +128,7 @@ class StreamTitleNode : ASDisplayNode {
     
     func configure(stream: Stream) {
         streamTitle.attributedString = NSAttributedString(string: stream.name.stringByRemovingPercentEncoding!, attributes: self.titleAttributes)
-        usernameNode.attributedString = NSAttributedString(string: stream.user.name, attributes: self.usernameAttributes)
+//        usernameNode.attributedString = NSAttributedString(string: stream.user.name, attributes: self.usernameAttributes)
         
         if let type = WCLUserLoginType(rawValue: stream.user.provider), let url = stream.user.avatarURL(type, frame: CGRect(x: 0, y: 0, width: 25, height: 25), scale: UIScreen.mainScreen().scale) {
             userImage.URL = url

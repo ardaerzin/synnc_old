@@ -22,32 +22,35 @@ class WildPlayerTrackManager {
     }
 
     // MARK: Methods
-    func getPlayerQueueUrls() -> [String] {
-        let prevURLs : [String] = (self.player.items()).map({
-            
-            if let urlAsset = $0.asset as? AVURLAsset {
-                return urlAsset.URL.absoluteString
-            }
-            return ""
-        })
-        return prevURLs
-    }
     
     func reloadTrackData(stream: Stream){
         
         if isLoadingTrackData {
+            print("SECTOOOOOR")
             return
         }
+//        self.player.rate = 0
+        
         isLoadingTrackData = true
         
+        player.rate = 0
+        
+        for item in player.items().reverse() {
+            self.dequeueItem(item)
+        }
+        
+        print("ITEMS", self.player.items())
+        
+        let i : Int = stream == StreamManager.sharedInstance.userStream ? self.player.currentIndex : Int(stream.timestamp!.playlist_index)
         for (index,song) in (stream.playlist.songs).enumerate() {
-            if index >= player.currentIndex {
+            if index >= i {
                 let mediaItem = self.newItem(song: song, index: index)
+                print("!*!*!*! add item", mediaItem!.index)
                 self.queueItem(mediaItem)
             }
         }
-        
         isLoadingTrackData = false
+//        self.player.rate = 1
     }
     func newItem(song song: SynncTrack, index: Int) -> WildPlayerItem? {
         if let url = NSURL(string: song.streamUrl) {
@@ -80,6 +83,7 @@ class WildPlayerTrackManager {
         self.player.insertItem(item!, afterItem: nil)
     }
     func dequeueItem(avItem: AVPlayerItem){
+        print("dequeue item", avItem, (avItem as! WildPlayerItem).index)
         self.player.removeItem(avItem)
     }
 }

@@ -98,7 +98,6 @@ class StreamViewNode : ParallaxNode, TrackedView {
         self.chatNode = chatNode
         self.chatNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Percent, value: 1))
         
-        self.headerNode.buttons = buttons
         self.addSubnode(self.chatNode)
         self.addSubnode(self.chatbar)
         

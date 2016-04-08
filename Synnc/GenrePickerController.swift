@@ -17,8 +17,7 @@ import WCLSoundCloudKit
 import WCLPopupManager
 
 protocol GenrePickerDelegate {
-    func pickedGenres(genres: [Genre])
-    func didCancel()
+    func genrePicker(picker: GenrePicker, dismissedWithGenres genres: [Genre])
 }
 
 class GenrePicker : WCLPopupViewController {
@@ -48,8 +47,7 @@ class GenrePicker : WCLPopupViewController {
         node.genreCollection.view.asyncDataSource = self
         node.genreCollection.view.asyncDelegate = self
         
-        node.buttonHolder.yesButton.addTarget(self, action: Selector("selectGenres:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        node.buttonHolder.noButton.addTarget(self, action: Selector("cancelGenrePicker:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        node.buttonHolder.doneButton.addTarget(self, action: #selector(GenrePicker.donePicking(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -61,14 +59,8 @@ class GenrePicker : WCLPopupViewController {
             }
         }
     }
-    
-    func cancelGenrePicker(sender : ButtonNode) {
-        self.delegate?.didCancel()
-        self.closeView(true)
-    }
-    
-    func selectGenres(sender : ButtonNode) {
-        self.delegate?.pickedGenres(self.selectedGenres)
+    func donePicking(sender : ButtonNode) {
+        self.delegate?.genrePicker(self, dismissedWithGenres: self.selectedGenres)
         self.closeView(true)
     }
 }
@@ -82,6 +74,13 @@ extension GenrePicker : ASCollectionDataSource {
         let node = GenreCellNode()
         let item = genresDataSource.allItems[indexPath.row]
         node.configure(item)
+        
+        let genre = genresDataSource.allItems[indexPath.item]
+        if let _ = self.selectedGenres.indexOf(genre) {
+            node.selected = true
+        } else {
+            node.selected = false
+        }
         return node
     }
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -109,17 +108,18 @@ extension GenrePicker : ASCollectionDelegate {
             self.selectedGenres.append(genre)
         }
     }
-    func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
     func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
         let genre = genresDataSource.allItems[indexPath.item]
         // dodowarningsoru isareti koydum 3 satir alta
         if let _ = self.selectedGenres.indexOf(genre) {
-            self.node.genreCollection.view.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-            if let node = self.node?.genreCollection.view.nodeForItemAtIndexPath(indexPath) {
-                node.selected = true
+
+            Async.main {
+                self.node.genreCollection.view.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }
+//           self.node.genreCollection
+//            if let node = self.node?.genreCollection.view.nodeForItemAtIndexPath(indexPath) {
+//                node.selected = true
+//            }
             
         } else {
             
@@ -147,13 +147,13 @@ class GenrePickerNode : ASDisplayNode {
     var genreCollection : ASCollectionNode!
     var buttonHolder : GenreButtonHolderNode!
     
-        override init() {
+    override init() {
         super.init()
 
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 5
         layout.minimumLineSpacing = 5
-        layout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5)
+        layout.sectionInset = UIEdgeInsetsMake(5, 5, 65, 5)
         layout.scrollDirection = .Vertical
         
         genreCollection = ASCollectionNode(collectionViewLayout: layout)
@@ -162,7 +162,7 @@ class GenrePickerNode : ASDisplayNode {
         genreCollection.view.allowsMultipleSelection = true
         
         buttonHolder = GenreButtonHolderNode()
-        
+        buttonHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 85))
         self.backgroundColor = UIColor.whiteColor()
         self.cornerRadius = 5
         self.clipsToBounds = true
@@ -171,46 +171,64 @@ class GenrePickerNode : ASDisplayNode {
         self.addSubnode(buttonHolder)
     }
     
+    override func layout() {
+        super.layout()
+        buttonHolder.position.y = self.calculatedSize.height - (buttonHolder.calculatedSize.height / 2)
+    }
+    
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [genreCollection, buttonHolder])
+        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [genreCollection])
+        let button = ASStaticLayoutSpec(children: [buttonHolder])
+        return ASOverlayLayoutSpec(child: stack, overlay: button)
     }
 }
 
 class GenreButtonHolderNode : ASDisplayNode {
-    var yesButton : ButtonNode!
-    var noButton : ButtonNode!
-    var line : ASDisplayNode!
     
-        override init() {
+    var gradientLayer : CAGradientLayer!
+    var doneButton : ButtonNode!
+    
+    override init() {
         super.init()
     
         let paragraphAtrributes = NSMutableParagraphStyle()
         paragraphAtrributes.alignment = .Center
         
-        line = ASDisplayNode()
-        line.backgroundColor = UIColor(red: 83/255, green: 83/255, blue: 83/255, alpha: 1)
+        doneButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        doneButton.setAttributedTitle(NSAttributedString(string: "DONE", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size : 13)!, NSForegroundColorAttributeName : UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1)]), forState: ASControlState.Normal)
+        doneButton.contentEdgeInsets = UIEdgeInsetsMake(8, 61, 12, 61)
+        doneButton.borderColor = UIColor(red: 176/255, green: 219/255, blue: 223/255, alpha: 1).CGColor
+        doneButton.borderWidth = 3
+        doneButton.cornerRadius = 15
         
-        yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        yesButton.setAttributedTitle(NSAttributedString(string: "Yes Please", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        self.addSubnode(doneButton)
         
-        noButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
-        noButton.setAttributedTitle(NSAttributedString(string: "Nope", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        self.backgroundColor = .whiteColor()
         
-        self.addSubnode(line)
-        self.addSubnode(noButton)
-        self.addSubnode(yesButton)
+        let layer = CAGradientLayer(layer: self.layer)
+        layer.colors = [UIColor.whiteColor().colorWithAlphaComponent(0).CGColor, UIColor.whiteColor().colorWithAlphaComponent(1).CGColor]
+        layer.startPoint = CGPointMake(0, 0)
+        layer.endPoint = CGPointMake(0, 0.2)
+        self.gradientLayer = layer
+    }
+    
+    override func layoutDidFinish() {
+        super.layoutDidFinish()
+        gradientLayer.frame = self.view.bounds
+        self.layer.mask = gradientLayer
+    }
+    
+    override func layout() {
+        super.layout()
+        
+        doneButton.position.x = self.calculatedSize.width / 2
+        doneButton.position.y = self.calculatedSize.height / 2
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        yesButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width / 2), ASRelativeDimension(type: .Points, value: 50))
-        noButton.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width / 2), ASRelativeDimension(type: .Points, value: 50))
+        let x = ASStaticLayoutSpec(children: [doneButton])
         
-        let buttonSpec = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [noButton]), ASStaticLayoutSpec(children: [yesButton])])
-        
-        line.flexBasis = ASRelativeDimension(type: .Points, value: 1)
-        line.alignSelf = .Stretch
-        
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [line, buttonSpec])
+        return x
     }
 }

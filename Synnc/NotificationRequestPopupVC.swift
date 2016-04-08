@@ -33,8 +33,8 @@ class NotificationRequestPopupVC : WCLPopupViewController {
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: Selector("requestNotification:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: Selector("dismissNotificationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.yesButton.addTarget(self, action: #selector(NotificationRequestPopupVC.requestNotification(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.noButton.addTarget(self, action: #selector(NotificationRequestPopupVC.dismissNotificationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
@@ -57,7 +57,9 @@ class NotificationRequestPopupVC : WCLPopupViewController {
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

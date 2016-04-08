@@ -17,7 +17,10 @@ class StreamManager : NSObject, StreamDelegate {
     
     var userFeed : [Stream] = [] {
         didSet {
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdatedUserFeed", object: userStream, userInfo: nil)
+            Async.main {
+                print(self.userFeed)
+                NSNotificationCenter.defaultCenter().postNotificationName("UpdatedUserFeed", object: self.userStream, userInfo: nil)
+            }
         }
     }
     var streams : [Stream] = [] {
@@ -76,6 +79,7 @@ extension StreamManager {
         
         if isActiveStream(stream) {
             
+            print("play stream", stream.o_id)
             Synnc.sharedInstance.socket.emitWithAck("Stream:start", stream.o_id)(timeoutAfter: 0) {
                 data in
                 
@@ -110,15 +114,37 @@ extension StreamManager {
         if stream != self.activeStream {
             return
         }
+        print("STOP")
         self.activeStream = nil
+        Synnc.sharedInstance.socket.emitWithAck("Stream:leave", stream.o_id)(timeoutAfter: 0) {
+            
+            [weak self]
+            data in
+            
+            if self == nil {
+                return
+            }
+            
+            if let ind = stream.users.indexOf(Synnc.sharedInstance.user) {
+                stream.users.removeAtIndex(ind)
+                self?.updatedStreamFromServer(stream, changedKeys: ["users"])
+            }
+        }
+        completion?(status: true)
     }
     
     func finishedStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
         
         if self.activeStream == nil {
             
+            let info : WCLNotificationInfo = WCLNotificationInfo(defaultActionName: "", body: "Your active stream has just ended", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
+            
         } else {
             
+            print("FINISHED STREAM")
             self.activeStream = nil
             
             var info : WCLNotificationInfo!
@@ -194,10 +220,9 @@ extension StreamManager {
                 self?.activeStream = stream
                 self?.player.isSyncing = true
                 self?.player.syncManager.timestamp = stream.timestamp
+                self?.player.checkActiveSession()
                 
-                if stream.isUserStream {
-                } else {
-                }
+        
             } else {
                 completion?(status: false)
             }
@@ -213,10 +238,12 @@ extension StreamManager {
                     ack in
                     if let data = ack.first {
                         let json = JSON(data)
-                        self.userStream?.fromJSON(json)
-                        self.userStream?.createCallback?(status: true)
-                        if $.find(self.streams, callback: {$0 == self.userStream!}) == nil {
-                            self.streams.append(self.userStream!)
+                        self.userStream?.fromJSON(json) {
+                            stream in
+                            stream.createCallback?(status: true)
+                            if $.find(self.streams, callback: {$0 == stream}) == nil {
+                                self.streams.append(stream)
+                            }
                         }
                     } else {
                         self.userStream?.createCallback?(status: false)
@@ -237,6 +264,7 @@ extension StreamManager {
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
+            print("updated timestamp from server")
             self.player.syncManager.timestamp = stream.timestamp
         }
         
@@ -311,6 +339,7 @@ extension StreamManager {
             ack in
             Async.background {
                 if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
+//                    print(jsonArr)
                     self.findOrCreateFromData(jsonArr, completionBlock: {
                         streams in
                         let newItems = $.difference(streams, self.userFeed)
@@ -399,7 +428,7 @@ extension StreamManager {
                 let x : String = $0.name
                 let y : String = $1.name
                 
-                let range = Range<String.Index>(start: x.startIndex, end: x.endIndex)
+                let range = x.startIndex..<x.endIndex
                 let res = x.compare(y, options: comparisonOptions, range: range, locale: nil)
                 return res == NSComparisonResult.OrderedAscending
             })
@@ -419,13 +448,16 @@ extension StreamManager {
         socket.on("Streams", callback: refreshStreamsCallback())
         socket.on("Stream:save", callback: streamSaveCallback())
         socket.on("Stream:delete", callback: streamDeleteCallback())
+        socket.on("Stream:end", callback: streamEndCallback())
     }
-    func streamDeleteCallback() -> NormalCallback {
+    func streamEndCallback() -> NormalCallback {
         return {
             (dataArr, ack) in
             if let data = dataArr.first {
                 var json = JSON(data)
                 let stream = self.findStream(json["_id"].string)
+                
+                print("received stream end")
                 if stream != nil {
                     stream!.delegate = nil
                     if stream == self.activeStream {
@@ -435,7 +467,35 @@ extension StreamManager {
                     
                     let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
                     NSNotificationCenter.defaultCenter().postNotification(notification)
+                    
+                    if let ind = self.userFeed.indexOf(stream!) {
+                        self.userFeed.removeAtIndex(ind)
+                    }
                 }
+            }
+        }
+    }
+    func streamDeleteCallback() -> NormalCallback {
+        return {
+            (dataArr, ack) in
+            if let data = dataArr.first {
+//                var json = JSON(data)
+//                let stream = self.findStream(json["_id"].string)
+//                if stream != nil {
+//                    stream!.delegate = nil
+//                    if stream == self.activeStream {
+//                        self.activeStream = nil
+//                    }
+//                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
+//                    
+//                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
+//                    NSNotificationCenter.defaultCenter().postNotification(notification)
+//                    
+//                    if let ind = self.userFeed.indexOf(stream!) {
+//                        self.userFeed.removeAtIndex(ind)
+//                        print("remove item at index")
+//                    }
+//                }
             }
         }
     }
@@ -448,7 +508,18 @@ extension StreamManager {
                 let id = json["_id"].string
                 let oldStream = self.findStream(id)
                 if oldStream != nil {
-                    oldStream!.fromJSON(json)
+                    oldStream!.fromJSON(json) {
+                        stream in
+                        if stream.status {
+                            if self.userFeed.indexOf(stream) == nil && stream != self.userStream {
+                                self.userFeed.append(stream)
+                            }
+                        } else {
+                            if let ind = self.userFeed.indexOf(stream) {
+                                self.userFeed.removeAtIndex(ind)
+                            }
+                        }
+                    }
                 } else {
                     
                     self.findOrCreateFromData([json], completionBlock: {

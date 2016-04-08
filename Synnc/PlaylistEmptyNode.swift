@@ -35,6 +35,9 @@ class PlaylistEmptyNode : ASDisplayNode {
         
         self.addSubnode(mainTextNode)
         self.addSubnode(subTextNode)
+        
+        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        
     }
     
     func setText(message : String, withAction: Bool){
@@ -57,13 +60,16 @@ class PlaylistEmptyNode : ASDisplayNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let headerSpacer = ASLayoutSpec()
-        headerSpacer.flexBasis = ASRelativeDimension(type: .Points, value: 0)
-        
-        let spacerBefore = ASLayoutSpec()
-        spacerBefore.flexBasis = ASRelativeDimension(type: .Percent, value: 0)
-        
         mainTextNode.flexBasis = ASRelativeDimension(type: .Percent, value: 0.5)
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [headerSpacer, spacerBefore, ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [mainTextNode]), subTextNode])
+        
+        let spacer = ASLayoutSpec()
+        spacer.flexGrow = true
+        
+        let spacer2 = ASLayoutSpec()
+        spacer2.flexGrow = true
+        let spacer3 = ASLayoutSpec()
+        spacer3.flexGrow = true
+        
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [spacer, ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [mainTextNode]), subTextNode, spacer2, spacer3])
     }
 }

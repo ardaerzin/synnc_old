@@ -11,7 +11,6 @@
 @property (atomic) NSArray *sortDescriptors;
 @property (atomic) NSSortDescriptor *dispersionSortDescriptor;
 @property (atomic) dispatch_queue_t associationDelegateQueue;
-@property (atomic, readwrite) BOOL isSynchronized;
 @property (atomic, copy) void (^complete)();
 
 @end

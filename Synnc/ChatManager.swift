@@ -16,7 +16,7 @@ import WCLUIKit
 import Dollar
 
 protocol ChatRoomDataSourceDelegate {
-    func constrainedSizeForChatItem() -> (min : CGSize, max: CGSize)
+    func nodeForItemAtIndexPath(indexPath : NSIndexPath) -> ASCellNode
 }
 class ChatRoomDataSource : WCLAsyncTableViewDataSource {
     var roomDelegate : ChatRoomDataSourceDelegate?
@@ -33,22 +33,8 @@ class ChatRoomDataSource : WCLAsyncTableViewDataSource {
     }
     
     override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
-        var node : ChatItemNode
         self.tableView = tableView
-        
-        if let data = self.data[indexPath.item] as? ChatItem {
-            if data.user == Synnc.sharedInstance.user {
-                node = MyChatItemNode()
-            } else {
-                node = ChatItemNode()
-            }
-            
-            node.configure(data)
-        } else {
-            node = ChatItemNode()
-        }
-        
-        return node
+        return self.roomDelegate!.nodeForItemAtIndexPath(indexPath)
     }
     
     func updateItem(item: ChatItem) {
@@ -59,13 +45,88 @@ class ChatRoomDataSource : WCLAsyncTableViewDataSource {
         }
     }
     func pushItem(item: ChatItem, completion : (()->Void)?) {
-        self.pendingData = [item]
+        self.pendingData.append(item)
+    }
+    func pushMultiple(items: [NSObject], completion : (()->Void)?) {
+//        print("PUSH ITEM", item, item.message)
+//        print("prending item", self.pendingData)
+        
+        self.pendingData += items
+    }
+}
+
+typealias ChatSaveBatch = (data : [JSON], completionHandler : ((chatItems : [ChatItem])->Void)?)
+class ChatBatchSaver {
+    var isLocked : Bool = false
+    var batches : [ChatSaveBatch] = [] {
+        didSet {
+            if let batch = batches.first where !isLocked {
+                self.isLocked = true
+                self.saveBatch(batch)
+            }
+        }
+    }
+    var savedItems : [ChatItem] = []
+    class var sharedInstance : BatchStreamSaver {
+        get {
+            return _batchSaver
+        }
+    }
+    init() {
+        
     }
     
+    func saveBatch(batch : ChatSaveBatch){
+        var b = batch
+        if let data = b.data.first {
+            
+            let item = ChatItem()
+            item.fromJSON(data)
+            
+//            for item in jsonArr! {
+//                let ci = ChatItem()
+//                ci.fromJSON(item)
+//                arr.append(ci)
+//                //                        Async.main {
+//                //                            self.newChatEntry(ci)
+//                //                        }
+//            }
+            if let user = WCLUserManager.sharedInstance.findUser(item.user_id) {
+                item.user = user
+                self.savedItems.append(item)
+                b.data.removeFirst()
+                if b.data.isEmpty {
+                    b.completionHandler?(chatItems: self.savedItems)
+                    self.savedItems.removeAll()
+                    
+                    self.isLocked = false
+                    self.batches.removeFirst()
+                } else {
+                    self.saveBatch(b)
+                }
+            } else {
+                WCLUserManager.sharedInstance.findUser(item.user_id, cb: { (user) -> Void in
+                    item.user = user
+                    self.savedItems.append(item)
+                    b.data.removeFirst()
+                    if b.data.isEmpty {
+                        b.completionHandler?(chatItems: self.savedItems)
+                        self.savedItems.removeAll()
+                        
+                        self.isLocked = false
+                        self.batches.removeFirst()
+                    } else {
+                        self.saveBatch(b)
+                    }
+                })
+            }
+        }
+    }
 }
 
 class ChatManager : NSObject {
     
+    var batchSaver = ChatBatchSaver()
     weak var socket : SocketIOClient!
     var chatData : [String : ChatRoomDataSource] = [String : ChatRoomDataSource]()
     
@@ -88,22 +149,51 @@ class ChatManager : NSObject {
                 if jsonArr == nil {
                     return
                 }
+                
+                
+                
                 Async.background {
-                    for item in jsonArr! {
-                        let ci = ChatItem()
-                        ci.fromJSON(item)
+                    let batch = ChatSaveBatch(data: jsonArr!) {
+                        items in
+                        
+                        if self.chatData[items.first!.stream_id] == nil {
+                            self.chatData[items.first!.stream_id] = ChatRoomDataSource()
+                        }
+                        
+                        let dataSource = self.chatData[items.first!.stream_id]!
+                        
                         Async.main {
-                            self.newChatEntry(ci)
+                            dataSource.pushMultiple(items, completion: nil)
                         }
                     }
+                    self.batchSaver.batches.append(batch)
                 }
             }
         }
     }
     
-    func sendMessage(var dict: [String : AnyObject]){
+    func requestOld(streamId : String) {
         
+        if self.chatData[streamId] == nil {
+            self.chatData[streamId] = ChatRoomDataSource()
+        }
         
+        let dataSource = self.chatData[streamId]!
+        
+        var lastUpdate : NSTimeInterval = NSDate().timeIntervalSince1970
+        if let item = dataSource.data.first as? ChatItem, let lu = item.last_update {
+            lastUpdate = lu.timeIntervalSince1970 * 1000
+        }
+        
+        var dict = [String : AnyObject]()
+        dict["last_update"] = lastUpdate
+        dict["stream_id"] = streamId
+        self.socket.emit("StreamChat", dict)
+    }
+    
+    func sendMessage(dictionary: [String : AnyObject]){
+        
+        var dict = dictionary
         
         dict["timestamp"] = NSDate().timeIntervalSince1970
         dict["user_id"] = Synnc.sharedInstance.user._id
@@ -137,11 +227,17 @@ class ChatManager : NSObject {
             return chatRoom
         } else {
             chatData[stream_id] = ChatRoomDataSource()
+            var dict = [String : AnyObject]()
+            dict["timestamp"] = NSDate().timeIntervalSince1970
+            dict["stream_id"] = stream_id
+            self.socket.emitWithAck("StreamChat", dict)(timeoutAfter: 0, callback: {
+                (dataArr) in
+            })
             return chatData[stream_id]!
         }
     }
     
-    func newChatEntry(item: ChatItem) {
+    func newChatEntry(item: ChatItem, push : Bool? = true) {
      
         if chatData[item.stream_id] == nil {
             chatData[item.stream_id] = ChatRoomDataSource()
@@ -150,31 +246,18 @@ class ChatManager : NSObject {
         let dataSource = chatData[item.stream_id]!
         
         if let user = WCLUserManager.sharedInstance.findUser(item.user_id) {
-            
             item.user = user
-            dataSource.pushItem(item, completion : {
-//                Async.main {
-//                    self.delegate?.chatManager?(self, messageReceived: item)
-//                }
-            })
-            
-            
-//            let prevItems = chatArray.filter({
-//                return $0.timestamp.compare(item.timestamp) == NSComparisonResult.OrderedAscending
-//            })
-//            let newIndex = prevItems.count
-            
-//            item.user = user
-//            chatData[item.stream_id]!.insert(item, atIndex: newIndex)
-//            delegate?.chatManager?(self, messageReceived: item, atIndex: newIndex)
+            if push! {
+                dataSource.pushItem(item, completion : {
+                })
+            }
         } else {
             WCLUserManager.sharedInstance.findUser(item.user_id, cb: { (user) -> Void in
                 item.user = user
-                dataSource.pushItem(item, completion : {
-//                    Async.main {
-//                        self.delegate?.chatManager?(self, messageReceived: item)
-//                    }
-                })
+                if push! {
+                    dataSource.pushItem(item, completion : {
+                    })
+                }
             })
         }
     }

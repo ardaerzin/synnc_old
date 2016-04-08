@@ -23,6 +23,7 @@ class WildPlayerSyncManager {
     var timestamp : StreamTimeStamp! {
         didSet {
             if timestamp != oldValue {
+                print("updated timestamp")
                 if !player.stream!.isUserStream {
                     self.handleTimeStampChange(timestamp)
                 }
@@ -48,8 +49,9 @@ class WildPlayerSyncManager {
                 timestamp.stream_id = player.stream!.o_id
                 timestamp.player_time = CMTimeGetSeconds(time)
                 timestamp.timeStamp = NSDate.networkDate().timeIntervalSince1970
-                
                 timestamp.playlist_index = player.currentIndex
+                
+                print("update timestamp:", player.currentIndex)
                 
                 player.stream?.update(["timestamp" : timestamp])
                 needsUpdate = false
@@ -70,12 +72,15 @@ extension WildPlayerSyncManager {
     
     func handleTimeStampChange(ts: StreamTimeStamp){
         if player.currentIndex != ts.playlist_index {
+            print("handle timestamp change && change index", player.currentIndex, ts.playlist_index)
             self.player.isSyncing = true
-            player.currentIndex = ts.playlist_index as Int
             player.trackManager.reloadTrackData(player.stream!)
+            player.currentIndex = ts.playlist_index as Int
             handleTimeStampChange(ts)
         } else {
-            self.checkTimeSync()
+            Async.main {
+                self.checkTimeSync()
+            }
         }
     }
     
@@ -83,10 +88,10 @@ extension WildPlayerSyncManager {
         
         let hpt = self.timestamp.player_time as Double
         let hlut = self.timestamp.timeStamp as Double
-            
-//            + offSet
         
         if player.currentIndex != self.timestamp.playlist_index {
+            print("indexes are not the same", player.currentIndex, self.timestamp.playlist_index)
+            self.player.rate = 0
             //do not update time until song indices are the same.
             return
         }
@@ -103,7 +108,12 @@ extension WildPlayerSyncManager {
         
         if let item = self.player.currentItem where !self.player.isPlaying && self.player.readyToPlay {
             
-            self.player.seekToTime(CMTimeMakeWithSeconds((playerNewTime+5), item.asset.duration.timescale), completionHandler: {
+            var a = (playerNewTime+5)
+            if a / player.currentItem!.asset.duration.seconds >= 1 {
+                a = player.currentItem!.asset.duration.seconds - 5
+            }
+//            print("SEEK TO SHIT TIME", a / player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
+            self.player.seekToTime(CMTimeMakeWithSeconds(a, item.asset.duration.timescale), completionHandler: {
                 
                 cb in
                 
@@ -121,15 +131,27 @@ extension WildPlayerSyncManager {
             
         } else if self.player.isPlaying {
             
+            if actualTime/player.currentItem!.asset.duration.seconds >= 1 {
+                self.player.rate = 0
+                return
+            }
+            
+//            print("setRate", playerNewTime/player.currentItem!.asset.duration.seconds, actualTime/player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
+            
             if abs(playerNewTime - actualTime) > 0.01 {
                 
-                self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
-                self.player.isSyncing = true
+                if playerNewTime/player.currentItem!.asset.duration.seconds < 0.97 {
+                    
+                    self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
+                    self.player.isSyncing = true
+                } else {
+//                    print("STOP")
+//                    self.player.rate = 0
+                }
                 
             } else {
-                
+//                print("NO Syncing", playerNewTime/player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
                 self.player.isSyncing = false
-            
             }
         }
     }

@@ -67,8 +67,8 @@ class WildFacebookUser : WCLUserExtension {
         super.init(options: options)
         self.type = .Facebook
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("accessTokenObserver:"), name: FBSDKAccessTokenDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("profileInfoObserver:"), name: FBSDKProfileDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WildFacebookUser.accessTokenObserver(_:)), name: FBSDKAccessTokenDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WildFacebookUser.profileInfoObserver(_:)), name: FBSDKProfileDidChangeNotification, object: nil)
         
         FBSDKProfile.enableUpdatesOnAccessTokenChange(true)
     }
@@ -122,8 +122,10 @@ class WildFacebookUser : WCLUserExtension {
             if fbid != nil {
                 url = "https://graph.facebook.com/\(fbid!)/picture?height=\(Int(frame.height*scale))&width=\(Int(frame.width*scale))"
             }
+        } else {
+            let fbid = FBSDKAccessToken.currentAccessToken().userID
+            url = "https://graph.facebook.com/\(fbid!)/picture?height=\(Int(frame.height*scale))&width=\(Int(frame.width*scale))"
         }
-        
         return url == nil ? nil : NSURL(string: url!)
     }
     //Mark: Facebook Functions

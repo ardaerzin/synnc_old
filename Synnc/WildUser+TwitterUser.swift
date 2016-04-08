@@ -90,9 +90,8 @@ class WildTwitterUser : WCLUserExtension {
         var url : String? = "http://icons.iconarchive.com/icons/pelfusion/long-shadow-media/128/Contact-icon.png"
         
         if let ui = self.profileInfo as? TWTRUser {
-            if let largeUrl = ui.profileImageURL {
-                url = largeUrl
-            }
+            
+            url = ui.profileImageLargeURL
             
             if frame.width <= 15 {
                 url = url?.stringByReplacingOccurrencesOfString("_normal", withString: "_mini")
@@ -103,9 +102,6 @@ class WildTwitterUser : WCLUserExtension {
             } else {
                 url = url?.stringByReplacingOccurrencesOfString("_normal", withString: "")
             }
-//            else if let smallUrl = ui.profileImageURL {
-//                url = smallUrl
-//            }
         }
         print("twitter url", url)
         return url == nil ? nil : NSURL(string: url!)

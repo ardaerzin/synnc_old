@@ -33,8 +33,8 @@ class StreamEndPopupVC : WCLPopupViewController {
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: Selector("requestNotification:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: Selector("dismissNotificationAccess:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.yesButton.addTarget(self, action: #selector(StreamEndPopupVC.requestNotification(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.noButton.addTarget(self, action: #selector(StreamEndPopupVC.dismissNotificationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
@@ -63,10 +63,24 @@ class StreamEndPopupVC : WCLPopupViewController {
         super.closeView(animated)
     }
     
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.node)
+    }
+    override func didHide() {
+        super.didHide()
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
+    }
 }
 
-class StreamEndPopupNode : ASDisplayNode {
+class StreamEndPopupNode : ASDisplayNode, TrackedView {
     
+    var title : String! = "StreamEndPopup"
     var messageNode : ASTextNode!
     var imageNode : ASNetworkImageNode!
     var infoNode : ASTextNode!

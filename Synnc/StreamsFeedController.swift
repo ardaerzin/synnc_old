@@ -13,27 +13,69 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 
-class StreamsFeedController : TabSubsectionController {
+class StreamsFeedController : ASViewController, PagerSubcontroller {
     
-    var dataSource : StreamFeedDataSource! = StreamFeedDataSource()
-    var collectionManager : WCLCollectionViewManager! = WCLCollectionViewManager()
-    override var _title : String! {
-        return "Recommended"
+    lazy var _leftHeaderIcon : ASImageNode! = {
+        return nil
+    }()
+    var leftHeaderIcon : ASImageNode! {
+        get {
+            return _leftHeaderIcon
+        }
+    }
+    lazy var _rightHeaderIcon : ASImageNode! = {
+        let x = ASImageNode()
+        x.image = UIImage(named: "newPlaylist")
+        x.contentMode = .Center
+        return x
+    }()
+    var rightHeaderIcon : ASImageNode! {
+        get {
+            return _rightHeaderIcon
+        }
+    }
+    lazy var _titleItem : ASTextNode = {
+        let x = ASTextNode()
+        x.attributedString = NSAttributedString(string: "Discover", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 0.5])
+        return x
+    }()
+    var titleItem : ASTextNode! {
+        get {
+            return _titleItem
+        }
+    }
+    var pageControlStyle : [String : UIColor]? {
+        get {
+            return [ "pageControlColor" : UIColor.whiteColor().colorWithAlphaComponent(0.27), "pageControlSelectedColor" : UIColor.whiteColor()]
+        }
     }
     
-    override init() {
+    
+    var screenNode : StreamsFeedNode!
+    var dataSource : StreamFeedDataSource! = StreamFeedDataSource()
+    var tableManager : WCLTableViewManager! = WCLTableViewManager()
+    
+    init() {
         let node = StreamsFeedNode()
         super.init(node: node)
         self.screenNode = node
         dataSource.delegate = self
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("updatedFeed:"), name: "UpdatedUserFeed", object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamsFeedController.updatedFeed(_:)), name: "UpdatedUserFeed", object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamsFeedController.updatedStream(_:)), name: "UpdatedStream", object: nil)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let s = self.screenNode as? StreamsFeedNode {
-            s.streamCollection.view.asyncDataSource = self.dataSource
-            s.streamCollection.view.asyncDelegate = self
-        }
+        
+        screenNode.tableNode.view.asyncDataSource = self.dataSource
+        screenNode.tableNode.view.asyncDelegate = self
+
+        self.rightHeaderIcon.addTarget(self.parentViewController!, action: #selector(HomeController.scrollAndCreatePlaylist(_:)), forControlEvents: .TouchUpInside)
+    }
+   
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        super.didMoveToParentViewController(parent)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -63,31 +105,60 @@ class StreamsFeedController : TabSubsectionController {
         //            .map { ($0.copy() as! Stream) }
         //        self.dataSource = streamManager.streams.sort({ $0.users.count > $1.users.count})
     }
+    
+    func updatedStream(notification: NSNotification) {
+        if let stream = notification.object as? Stream, let ind = self.dataSource.data.indexOf(stream) {
+
+            if let cell = self.screenNode.tableNode.view.nodeForRowAtIndexPath(NSIndexPath(forItem: ind, inSection: 0)) as? StreamCellNode {
+            
+                cell.configureForStream(stream)
+                
+            }
+            
+        }
+    }
     func updatedFeed(notification: NSNotification) {
-        self.dataSource.refresh = true
-        self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
         
-        (self.screenNode as! StreamsFeedNode).emptyState = StreamManager.sharedInstance.userFeed.isEmpty
+        Async.main {
+            self.dataSource.refresh = true
+            self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
+            self.screenNode.emptyState = StreamManager.sharedInstance.userFeed.isEmpty
+        }
+        
     }
 }
-extension StreamsFeedController : ASCollectionDelegate {
-    func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
+extension StreamsFeedController : ASTableDelegate {
+    func shouldBatchFetchForTableView(tableView: ASTableView) -> Bool {
         return true
     }
-    func collectionView(collectionView: ASCollectionView, willBeginBatchFetchWithContext context: ASBatchContext) {
-        self.collectionManager.batchContext = context
+    func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
+        self.tableManager.batchContext = context
     }
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if let stream = self.dataSource.data[indexPath.item] as? Stream {
-            Synnc.sharedInstance.streamNavigationController.displayStream(stream)
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if let stream = self.dataSource.data[indexPath.item] as? Stream where indexPath.item < self.dataSource.data.count {
+            let vc = StreamVC(stream: stream)
+            let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height - 70, dismissable: true)
+        
+            let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
+            a.delegate = vc
+            a.clipsToBounds = false
+            a.panRecognizer.delegate = vc
+            a.display(true)
+            
+            AnalyticsEvent.new(category : "ui_action", action: "cell_tap", label: "stream", value: nil)
         }
     }
 }
-extension StreamsFeedController : WCLAsyncCollectionViewDataSourceDelegate {
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
-        return (min: CGSizeMake(self.view.frame.width, CGFloat.min), max: CGSizeMake(self.view.frame.width, CGFloat.max))
+extension StreamsFeedController : WCLAsyncTableViewDataSourceDelegate {
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
+        self.tableManager.performUpdates(self.screenNode.tableNode.view, updates: updatedItems, animated: true)
+        print("feed updated items", updatedItems)
     }
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
-        self.collectionManager.performUpdates((self.screenNode as! StreamsFeedNode).streamCollection.view, updates: updatedData, animated: true)
-    }
+
+//    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
+//        return (min: CGSizeMake(self.view.frame.width, CGFloat.min), max: CGSizeMake(self.view.frame.width, CGFloat.max))
+//    }
+//    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
+//        self.collectionManager.performUpdates(self.screenNode.streamCollection.view, updates: updatedData, animated: true)
+//    }
 }

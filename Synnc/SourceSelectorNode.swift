@@ -77,7 +77,7 @@ class SourceSelectionNode : ASDisplayNode {
             if let x = src {
                 let button = SourceButton(source: x)
                 
-                button.addTarget(self, action: Selector("didSelectSource:"), forControlEvents: .TouchUpInside)
+                button.addTarget(self, action: #selector(SourceSelectionNode.didSelectSource(_:)), forControlEvents: .TouchUpInside)
                 self.sourceButtons.append(button)
                 
                 self.addSubnode(button)
@@ -98,7 +98,7 @@ class SourceSelectionNode : ASDisplayNode {
         doneButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50,30))
         doneButton.setAttributedTitle(NSAttributedString(string: "Done", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : -0.09]), forState: .Normal)
         doneButton.alpha = 0
-        doneButton.addTarget(self, action: Selector("closeSelector:"), forControlEvents: .TouchUpInside)
+        doneButton.addTarget(self, action: #selector(SourceSelectionNode.closeSelector(_:)), forControlEvents: .TouchUpInside)
         self.addSubnode(titleNode)
         self.addSubnode(doneButton)
         self.backgroundColor = UIColor.whiteColor()

@@ -94,24 +94,28 @@ class StreamPlayer : WildPlayer {
     }
     
     func setupMainPlayer() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userFavPlaylistUpdated:"), name: "UpdatedFavPlaylist", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("audioRouteChanged:"), name: AVAudioSessionRouteChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayer.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayer.audioRouteChanged(_:)), name: AVAudioSessionRouteChangeNotification, object: nil)
     }
     
     override func play() {
+        checkActiveSession()
+        super.play()
+    }
+    
+    func checkActiveSession() {
         if !self.isActiveSession {
             setActiveAudioSession()
         }
-        super.play()
     }
     
     //Mark: Player Controls
     func updateControlCenterControls(){
         MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = true
-        MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.addTarget(self, action: Selector("bookmarkAction:"))
+        MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.addTarget(self, action: #selector(StreamPlayer.bookmarkAction(_:)))
         
         MPRemoteCommandCenter.sharedCommandCenter().togglePlayPauseCommand.enabled = true
-        MPRemoteCommandCenter.sharedCommandCenter().togglePlayPauseCommand.addTarget(self, action: Selector("remotePlayPauseStream:"))
+        MPRemoteCommandCenter.sharedCommandCenter().togglePlayPauseCommand.addTarget(self, action: #selector(StreamPlayer.remotePlayPauseStream(_:)))
     }
     func updateControlCenterRate(){
         if self.currentItem != nil && MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] != nil && (MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(CMTimeGetSeconds(self.currentItem!.duration)) {
@@ -151,7 +155,7 @@ class StreamPlayer : WildPlayer {
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
         
         nowPlayingInfo.updateValue(track.name, forKey: MPMediaItemPropertyTitle)
-        nowPlayingInfo.updateValue(st.name + ", by" + st.user.username, forKey: MPMediaItemPropertyArtist)
+        nowPlayingInfo.updateValue(st.name + ", by " + st.user.username, forKey: MPMediaItemPropertyArtist)
         
         
         let downloader = ASPINRemoteImageDownloader.sharedDownloader()

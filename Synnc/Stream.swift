@@ -47,7 +47,6 @@ class Stream : Serializable {
     }
     var delegate : StreamDelegate? = Synnc.sharedInstance.streamManager
     var timestamp : StreamTimeStamp?
-    var genres : [Genre] = []
     var name: String!
     var img: NSString!
     var lat: NSNumber!
@@ -72,6 +71,34 @@ class Stream : Serializable {
         }
     }
     
+//    func create(info: [NSObject : AnyObject]) {
+//        
+//    }
+    
+    class func create(playlist : SynncPlaylist, callback : ((status : Bool) -> Void)?) -> Stream {
+        
+        let stream = Stream(user: Synnc.sharedInstance.user)
+        stream.createCallback = callback
+        
+        var info : [String : AnyObject] = [String : AnyObject]()
+        info["playlist"] = playlist
+        info["lat"] = 0
+        info["lon"] = 0
+    
+        if let name = playlist.name {
+            info["name"] = name
+        }
+        if let coverid = playlist.cover_id {
+            info["img"] = coverid
+        }
+        if let location = playlist.location {
+            info["city"] = location
+        }
+        stream.update(info)
+        Synnc.sharedInstance.streamManager.userStream = stream
+        
+        return stream
+    }
     
     internal func keys() -> [String] {
         return self.propertyNames(Stream)
@@ -144,7 +171,7 @@ extension Stream {
         
         var prop = properties == nil ? self.propertyNames(Stream) : properties!
         
-        var userInd, usersInd, playlistInd, genresInd : Int?
+        var userInd, usersInd, playlistInd : Int?
         
         if let ind = prop.indexOf("__v") {
             prop.removeAtIndex(ind)
@@ -157,10 +184,6 @@ extension Stream {
         if let plistInd = prop.indexOf("playlist") {
             playlistInd = plistInd
             prop.removeAtIndex(plistInd)
-        }
-        if let gInd = prop.indexOf("genres") {
-            genresInd = gInd
-            prop.removeAtIndex(gInd)
         }
         if let dInd = prop.indexOf("delegate") {
             prop.removeAtIndex(dInd)
@@ -185,14 +208,7 @@ extension Stream {
             for item in self.users {
                 x.append(item._id)
             }
-            dict["genres"] = x
-        }
-        if !self.genres.isEmpty, let _ = genresInd {
-            var x : [String] = []
-            for item in self.genres {
-                x.append(item.id)
-            }
-            dict["genres"] = x
+            dict["users"] = x
         }
         if self.user != nil, let _ = userInd {
             dict["user"] = self.user._id
@@ -213,7 +229,6 @@ extension Stream {
                 let plistInfo = shit["playlist"].object.copy()
                 let userInfo = shit["user"].object.copy()
                 let listenersInfo = shit["users"].object.copy()
-                let genresInfo = shit["genres"].object.copy()
                 var tsInfo : AnyObject?
                 
                 
@@ -226,7 +241,6 @@ extension Stream {
                 if var j = x.dictionary {
                     j.removeValueForKey("playlist")
                     j.removeValueForKey("user")
-                    j.removeValueForKey("genres")
                     j.removeValueForKey("users")
                     j.removeValueForKey("timestamp")
                     json = JSON(j)
@@ -240,14 +254,16 @@ extension Stream {
                     ts.fromJSON(tsJSON)
                     
                     if let os = self.timestamp {
-                        if os.timeStamp != ts.timeStamp {
+                        if os.timeStamp.compare(ts.timeStamp) == .OrderedAscending {
+                            print("TIMESTAMP DATA 1:", tsJSON)
                             keys.append("timestamp")
+                            self.timestamp = ts
                         }
                     } else {
+                        print("TIMESTAMP DATA 2:", tsJSON)
                         keys.append("timestamp")
+                        self.timestamp = ts
                     }
-                    
-                    self.timestamp = ts
                 }
                 
                 let listenersJSON = JSON(listenersInfo)
@@ -313,40 +329,41 @@ extension Stream {
                     keys.append("user")
                 }
                 
-                
-                let genresJSON = JSON(genresInfo)
-                if let arr = genresJSON.array {
-                    var genresArr : [Genre] = []
-                    for item in arr {
-                        var genre : Genre!
-                        if let id = item["_id"].string {
-                            
-                            if let g = Genre.finder(inContext: Synnc.sharedInstance.moc).filter(NSPredicate(format: "id == %@", id)).sort(keys: ["id"], ascending: [true]).find()?.first as? Genre {
-                                genre = g
-                            } else {
-                                //                        g = Genre.
-                                //                        genre =
-                                //                            WildUserManager.sharedInstance().newUser(fromJSON: item)
-                            }
-                        }
-                        genresArr.append(genre)
-                    }
-                    
-                    let oldGenresSet = Set(self.genres)
-                    let newGenresSet = Set(genresArr)
-                    let newGenres = newGenresSet.subtract(oldGenresSet)
-                    let oldGenres = oldGenresSet.subtract(newGenresSet)
-                    
-                    if oldGenres.count > 0 || newGenres.count > 0 {
-                        keys.append("genres")
-                    }
-                    
-                    self.genres = genresArr
-                    
-                    
-                }
-                
+//                
+//                let genresJSON = JSON(genresInfo)
+//                if let arr = genresJSON.array {
+//                    var genresArr : [Genre] = []
+//                    for item in arr {
+//                        var genre : Genre!
+//                        if let id = item["_id"].string {
+//                            
+//                            if let g = Genre.finder(inContext: Synnc.sharedInstance.moc).filter(NSPredicate(format: "id == %@", id)).sort(keys: ["id"], ascending: [true]).find()?.first as? Genre {
+//                                genre = g
+//                            } else {
+//                                //                        g = Genre.
+//                                //                        genre =
+//                                //                            WildUserManager.sharedInstance().newUser(fromJSON: item)
+//                            }
+//                        }
+//                        genresArr.append(genre)
+//                    }
+//                    
+//                    let oldGenresSet = Set(self.genres)
+//                    let newGenresSet = Set(genresArr)
+//                    let newGenres = newGenresSet.subtract(oldGenresSet)
+//                    let oldGenres = oldGenresSet.subtract(newGenresSet)
+//                    
+//                    if oldGenres.count > 0 || newGenres.count > 0 {
+//                        keys.append("genres")
+//                    }
+//                    
+//                    self.genres = genresArr
+//                    
+//                    
+//                }
+//                
                 Async.main {
+//                    print("PLAYLIST CHANGED KEYS", keys)
                     self.delegate?.updatedStreamFromServer?(self, changedKeys: keys)
                     callback?(stream: self)
                 }
