@@ -746,6 +746,7 @@
 		475286E31C37372300731008 /* WCLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLScrollNode.m; sourceTree = "<group>"; };
 		475286E51C3737D900731008 /* WCLScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCLScrollView.swift; sourceTree = "<group>"; };
 		475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletePlaylistPopup.swift; sourceTree = "<group>"; };
+		4757711A1CB87339004FBB11 /* DataSourceTest.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = DataSourceTest.playground; sourceTree = "<group>"; };
 		475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedEmptyStateNode.swift; sourceTree = "<group>"; };
 		475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotCompatiblePopup.swift; sourceTree = "<group>"; };
 		476CC7F81CA5FA0900CBA0E3 /* PlaylistInfoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistInfoNode.swift; sourceTree = "<group>"; };
@@ -1666,6 +1667,7 @@
 			children = (
 				4714D24A1C8909F000F6F5AD /* NHTime */,
 				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
+				4757711A1CB87339004FBB11 /* DataSourceTest.playground */,
 				479AF8141C91A327001C9F4F /* AnalyticsManager.swift */,
 				4712B63A1C11149800C49522 /* Utilities.swift */,
 				47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */,
