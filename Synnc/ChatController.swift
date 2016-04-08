@@ -225,7 +225,16 @@ class ChatController : ASViewController, PagerSubcontroller {
         
         isActive = (stream == StreamManager.sharedInstance.activeStream)
         
-        self.screenNode.availableState = !isActive
+        self.screenNode.notAvailableState = !isActive
+        if self.screenNode.notAvailableState {
+            self.screenNode.notAvailableStateNode.subTextNode.addTarget(self, action: #selector(ChatController.joinStream(_:)), forControlEvents: .TouchUpInside)
+        }
+    }
+    
+    func joinStream(sender : AnyObject){
+        if let pvc = self.parentViewController as? StreamVC {
+            pvc.joinStream(sender)
+        }
     }
     
     func newMessage(sender : ButtonNode!) {

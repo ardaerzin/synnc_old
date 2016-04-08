@@ -91,10 +91,7 @@ extension WildPlayerSyncManager {
         
         if player.currentIndex != self.timestamp.playlist_index {
             print("indexes are not the same", player.currentIndex, self.timestamp.playlist_index)
-            
-            if CGFloat(CMTimeGetSeconds(player.currentTime())) / CGFloat(CMTimeGetSeconds(player.currentItem!.duration)) >= 1 {
-                print("gonna break", player.currentIndex, self.timestamp.playlist_index)
-            }
+            self.player.rate = 0
             //do not update time until song indices are the same.
             return
         }
@@ -115,7 +112,7 @@ extension WildPlayerSyncManager {
             if a / player.currentItem!.asset.duration.seconds >= 1 {
                 a = player.currentItem!.asset.duration.seconds - 5
             }
-            print("SEEK TO SHIT TIME", a / player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
+//            print("SEEK TO SHIT TIME", a / player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
             self.player.seekToTime(CMTimeMakeWithSeconds(a, item.asset.duration.timescale), completionHandler: {
                 
                 cb in
@@ -134,6 +131,13 @@ extension WildPlayerSyncManager {
             
         } else if self.player.isPlaying {
             
+            if actualTime/player.currentItem!.asset.duration.seconds >= 1 {
+                self.player.rate = 0
+                return
+            }
+            
+//            print("setRate", playerNewTime/player.currentItem!.asset.duration.seconds, actualTime/player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
+            
             if abs(playerNewTime - actualTime) > 0.01 {
                 
                 if playerNewTime/player.currentItem!.asset.duration.seconds < 0.97 {
@@ -141,11 +145,12 @@ extension WildPlayerSyncManager {
                     self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
                     self.player.isSyncing = true
                 } else {
-                    print("STOP")
+//                    print("STOP")
 //                    self.player.rate = 0
                 }
                 
             } else {
+//                print("NO Syncing", playerNewTime/player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
                 self.player.isSyncing = false
             }
         }

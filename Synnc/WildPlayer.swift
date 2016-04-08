@@ -26,9 +26,8 @@ import WCLPopupManager
     optional func endOfPlaylist(streamer : WildPlayer!)
 }
 
-class WildPlayer : AVPlayer, AVAudioSessionDelegate {
+class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     
-    var queue : [Int : WildPlayerItem] = [Int : WildPlayerItem]()
     weak var stream : Stream? {
         willSet {
             if newValue != nil {
@@ -64,41 +63,12 @@ class WildPlayer : AVPlayer, AVAudioSessionDelegate {
     var currentIndex : Int = -1 {
         didSet{
             if currentIndex != oldValue && self.stream != nil {
-                
-                
-                print("DID SET CURRENT INDEX FOR PLAYER")
-                
                 if self.stream != nil && self.stream === StreamManager.sharedInstance.userStream {
                     if self.stream == Synnc.sharedInstance.streamManager.userStream {
                         self.stream?.update(["currentSongIndex" : currentIndex])
                     }
                     self.delegate?.streamer?(self, updatedPlaylistIndex: currentIndex)
                 }
-
-                if let item = self.queue[currentIndex] {
-                    print("replace item", self.currentItem, item)
-                    if let oldItem = self.currentItem {
-                        
-//                        if item == self.trackManager.bufferPlayer.currentItem {
-//                            print("", self.trackManager.bufferPlayer.rate, self.trackManager.bufferPlayer.currentItem)
-//                            self.trackManager.bufferPlayer.replaceCurrentItemWithPlayerItem(nil)
-//                            self.trackManager.bufferPlayer = nil
-//                        }
-//                        print("bufferer", self.trackManager.bufferPlayer.currentItem)
-                        self.replaceCurrentItemWithPlayerItem(item)
-                        self.rate = 1
-                    } else {
-                        self.replaceCurrentItemWithPlayerItem(item)
-                    }
-                    
-//                    if let nextItem = self.queue[currentIndex + 1] {
-//                        self.trackManager.bufferPlayer?.replaceCurrentItemWithPlayerItem(nextItem)
-//                    }
-                    
-                }
-//                if let item = self.currentItem as? WildPlayerItem {
-//                    
-//                }
             }
         }
     }
@@ -231,12 +201,10 @@ class WildPlayer : AVPlayer, AVAudioSessionDelegate {
     // MARK: Observation Handlers
     func currentItemChanged(){
         
-        //        println("*****Current item changed")
+        print("*****Current item changed", self.currentItem)
         //        if self.stream == nil {
         //            return
         //        }
-        
-        print("CURRENT ITEM CHANGE", self.currentItem)
         
         if self.currentItem == nil && !self.trackManager.isLoadingTrackData {
             print("end of playlist")
@@ -247,7 +215,14 @@ class WildPlayer : AVPlayer, AVAudioSessionDelegate {
         
         if let item = self.currentItem as? WildPlayerItem {
             currentIndex = item.index
-            print("current item changed ", item.index)
+            
+            if item.status == AVPlayerItemStatus.ReadyToPlay {
+            
+                self.setRate(1, time: CMTimeMakeWithSeconds((0), self.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(CMClockGetTime(CMClockGetHostTimeClock())), self.currentItem!.asset.duration.timescale) )
+                print("current item changed ", item.index)
+            } else {
+                self.rate = 0
+            }
         }
     }
     func playerRateChanged(){
@@ -298,9 +273,9 @@ class WildPlayer : AVPlayer, AVAudioSessionDelegate {
     func resetPlayer(){
         self.rate = 0
         
-//        for item in self.items().reverse() {
-//            self.trackManager.dequeueItem(item)
-//        }
+        for item in self.items().reverse() {
+            self.trackManager.dequeueItem(item)
+        }
         
         self.stream = nil
     }
@@ -312,8 +287,6 @@ class WildPlayer : AVPlayer, AVAudioSessionDelegate {
             self.stream = st
             if needsReload {
                 self.trackManager.reloadTrackData(st)
-                self.currentIndex = 0
-//                self.play()
             }
         } else {
             resetPlayer()
@@ -337,8 +310,6 @@ extension WildPlayer : WildPlayerItemDelegate {
     }
     func wildPlayerItem(itemDidPlayToEnd item: WildPlayerItem) {
         //nothing... for now
-        print("!*!*!*!*!* did play item to the end")
-        self.currentIndex = item.index + 1
     }
     func wildPlayerItem(loadedItemTimeRangesForItem item: WildPlayerItem) {
         //nothing... for now

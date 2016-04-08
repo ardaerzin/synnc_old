@@ -28,15 +28,33 @@ class HomeController : PagerBaseController {
     }()
     override var subControllers : [ASViewController]! {
         get {
+            if self.childViewControllers.indexOf(feedController) == nil {
+                self.addChildViewController(feedController)
+            }
+            if self.childViewControllers.indexOf(playlistsController) == nil {
+                self.addChildViewController(playlistsController)
+            }
             return [feedController, playlistsController]
         }
     }
     
     init(){
-        let node = HomeNode()
+        let header = HomeHeader(backgroundColor: .SynncColor(), height: 60)
+        let node = HomeNode(header: header, pager: nil)
         super.init(pagerNode: node)
+        header.toggleButton.addTarget(self, action: #selector(HomeController.toggleWindowPosition(_:)), forControlEvents: .TouchUpInside)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeController.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func toggleWindowPosition(sender : AnyObject) {
+        if let w = self.view.wclWindow {
+            if w.position == .Displayed {
+                w.hide(true)
+            } else {
+                w.display(true)
+            }
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -68,18 +86,49 @@ class HomeController : PagerBaseController {
             window.lowerPercentage = lowerLimit
         }
     }
+
+    var needsToShowPlaylist : Bool = false
+    
+    func scrollAndCreatePlaylist(sender : AnyObject) {
+        print("scroll and create playlist")
+        needsToShowPlaylist = true
+        self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+    }
+    
+    override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        super.scrollViewDidEndDecelerating(scrollView)
+        
+        print("did end decelerating", currentIndex)
+        if self.currentIndex == 1 && needsToShowPlaylist {
+            self.playlistsController.newPlaylistAction(self)
+        }
+        needsToShowPlaylist = false
+    }
+    override func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        super.scrollViewDidEndScrollingAnimation(scrollView)
+        if self.currentIndex == 1 && needsToShowPlaylist {
+            self.playlistsController.newPlaylistAction(self)
+        }
+        needsToShowPlaylist = false
+    }
 }
 extension HomeController : WCLWindowDelegate {
     func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
         let x = 1-window.lowerPercentage
         let za = (1 - progress - x) / (1-x)
         
+//        print(za)
+        
+        (self.screenNode.headerNode as! HomeHeader).toggleButton.progress = za
+//        POPLayerSetRotationZ((self.screenNode.headerNode as! HomeHeader).toggleButton.layer, CGFloat(M_PI) * za)
         self.screenNode.headerNode.leftButtonHolder.alpha = za
         self.screenNode.headerNode.rightButtonHolder.alpha = za
         self.screenNode.headerNode.pageControl.alpha = za
         
         let z = POPTransition(za, startValue: 10, endValue: 0)
         POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
+        
+        
     }
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
         print("did dismiss window")

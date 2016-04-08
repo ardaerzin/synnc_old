@@ -185,6 +185,14 @@ class StreamVC : PagerBaseController {
     
     func endedActiveStream(notification: NSNotification!){
         print("WADAP SON")
+        print("ended active stream")
+        
+        if let stream = notification.object as? Stream {
+            if stream == StreamManager.sharedInstance.activeStream {
+                print("INTERRUPTED")
+            }
+        }
+        
 //        if self.stream == StreamManager.sharedInstance.userStream {
 //            self.state = .Finished
 //        } else {
@@ -325,6 +333,34 @@ extension StreamVC : WCLWindowDelegate {
                 anim.toValue = 1
             }
 //            if self.
+        }
+    }
+}
+
+extension StreamVC {
+    func joinStream(sender : AnyObject){
+        
+        if let node = sender as? ASDisplayNode {
+            node.hidden = true
+        }
+        
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
+        
+        if let stream = StreamManager.sharedInstance.activeStream {
+            
+            let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
+            WCLPopupManager.sharedInstance.newPopup(x)
+            
+            return
+        }
+        
+        if let s = self.stream {
+            StreamManager.sharedInstance.joinStream(s) {
+                success in
+                if success {
+                    //                StreamManager.sharedInstance.player.delegate = self
+                }
+            }
         }
     }
 }

@@ -143,7 +143,7 @@ class StreamTopSection : ASDisplayNode {
         joinButton = ButtonNode()
         joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: .Normal)
         joinButton.spacingAfter = 21
-        
+        joinButton.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10)
         self.addSubnode(joinButton)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

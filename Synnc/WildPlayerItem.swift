@@ -37,8 +37,6 @@ class WildPlayerItem : AVPlayerItem {
             }
         }
         
-        print("deinit player item", self.index, self)
-        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemPlaybackStalledNotification, object: self)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: self)
     }

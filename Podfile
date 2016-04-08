@@ -25,6 +25,7 @@ pod 'TwitterKit'
 pod 'TwitterCore'
 pod 'Crashlytics'
 pod 'WCLSoundCloudKit', :git => 'https://github.com/doguhanokumus/WCLSoundCloudKit.git', :branch => 'master'
+pod 'WCLDataManager', :git => 'https://github.com/doguhanokumus/WCLDataManager.git', :branch => 'master'
 
 pod 'DKImagePickerController'
 pod 'BFPaperCheckbox'

@@ -110,18 +110,18 @@ class ChatNode : ASDisplayNode, TrackedView {
             return self.collectionHolder.chatCollection
         }
     }
-    var availableStateNode : ChatNotAvailableNode!
-    var availableState : Bool = false {
+    var notAvailableStateNode : ChatNotAvailableNode!
+    var notAvailableState : Bool = false {
         didSet {
-            if availableState != oldValue {
-                if self.availableStateNode == nil {
-                    availableStateNode = ChatNotAvailableNode()
+            if notAvailableState != oldValue {
+                if self.notAvailableStateNode == nil {
+                    notAvailableStateNode = ChatNotAvailableNode()
                 }
-                if availableState {
-                    self.addSubnode(availableStateNode)
+                if notAvailableState {
+                    self.addSubnode(notAvailableStateNode)
                 } else {
-                    availableStateNode.removeFromSupernode()
-                    availableStateNode = nil
+                    notAvailableStateNode.removeFromSupernode()
+                    notAvailableStateNode = nil
                 }
                 self.setNeedsLayout()
             }
@@ -153,7 +153,7 @@ class ChatNode : ASDisplayNode, TrackedView {
         
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [spacer, collectionHolder])
         
-        let o = ASOverlayLayoutSpec(child: a, overlay: self.availableStateNode)
+        let o = ASOverlayLayoutSpec(child: a, overlay: self.notAvailableStateNode)
         return o
     }
 }

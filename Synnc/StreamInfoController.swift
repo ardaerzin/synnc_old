@@ -95,23 +95,8 @@ class StreamInfoController : ASViewController, PagerSubcontroller {
     
     func joinStream(sender : AnyObject){
         
-        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
-        
-        if let stream = StreamManager.sharedInstance.activeStream {
-            
-            let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
-            WCLPopupManager.sharedInstance.newPopup(x)
-            
-            return
-        }
-        
-        if let s = self.stream {
-            StreamManager.sharedInstance.joinStream(s) {
-                success in
-                if success {
-                    //                StreamManager.sharedInstance.player.delegate = self
-                }
-            }
+        if let pvc = self.parentViewController as? StreamVC {
+            pvc.joinStream(sender)
         }
     }
     

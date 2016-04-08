@@ -77,6 +77,21 @@ class PlaylistController : PagerBaseController {
             window.panRecognizer.delegate = self
         }
     }
+    
+    func deleteAction(sender : AnyObject){
+        playlist.delete()
+        var plist = self.playlist
+        Async.background {
+            let json = plist.toJSON(nil)
+            Async.main {
+                Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
+            }
+        }
+        if let window = self.view.wclWindow {
+            window.hide(true)
+        }
+        self.playlist = nil
+    }
 }
 
 extension PlaylistController : UIGestureRecognizerDelegate {

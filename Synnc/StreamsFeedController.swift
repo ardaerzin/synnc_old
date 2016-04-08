@@ -24,7 +24,10 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
         }
     }
     lazy var _rightHeaderIcon : ASImageNode! = {
-        return nil
+        let x = ASImageNode()
+        x.image = UIImage(named: "newPlaylist")
+        x.contentMode = .Center
+        return x
     }()
     var rightHeaderIcon : ASImageNode! {
         get {
@@ -68,8 +71,12 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
         screenNode.tableNode.view.asyncDataSource = self.dataSource
         screenNode.tableNode.view.asyncDelegate = self
 
+        self.rightHeaderIcon.addTarget(self.parentViewController!, action: #selector(HomeController.scrollAndCreatePlaylist(_:)), forControlEvents: .TouchUpInside)
     }
    
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        super.didMoveToParentViewController(parent)
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -111,11 +118,13 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
         }
     }
     func updatedFeed(notification: NSNotification) {
-        self.dataSource.refresh = true
-        self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
         
-        self.screenNode.emptyState = StreamManager.sharedInstance.userFeed.isEmpty
-        print("UPDATED FEED")
+        Async.main {
+            self.dataSource.refresh = true
+            self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
+            self.screenNode.emptyState = StreamManager.sharedInstance.userFeed.isEmpty
+        }
+        
     }
 }
 extension StreamsFeedController : ASTableDelegate {
@@ -143,6 +152,7 @@ extension StreamsFeedController : ASTableDelegate {
 extension StreamsFeedController : WCLAsyncTableViewDataSourceDelegate {
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
         self.tableManager.performUpdates(self.screenNode.tableNode.view, updates: updatedItems, animated: true)
+        print("feed updated items", updatedItems)
     }
 
 //    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {

@@ -18,6 +18,7 @@ class StreamManager : NSObject, StreamDelegate {
     var userFeed : [Stream] = [] {
         didSet {
             Async.main {
+                print(self.userFeed)
                 NSNotificationCenter.defaultCenter().postNotificationName("UpdatedUserFeed", object: self.userStream, userInfo: nil)
             }
         }
@@ -135,6 +136,11 @@ extension StreamManager {
     func finishedStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
         
         if self.activeStream == nil {
+            
+            let info : WCLNotificationInfo = WCLNotificationInfo(defaultActionName: "", body: "Your active stream has just ended", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            }
             
         } else {
             
@@ -451,6 +457,7 @@ extension StreamManager {
                 var json = JSON(data)
                 let stream = self.findStream(json["_id"].string)
                 
+                print("received stream end")
                 if stream != nil {
                     stream!.delegate = nil
                     if stream == self.activeStream {
@@ -472,22 +479,23 @@ extension StreamManager {
         return {
             (dataArr, ack) in
             if let data = dataArr.first {
-                var json = JSON(data)
-                let stream = self.findStream(json["_id"].string)
-                if stream != nil {
-                    stream!.delegate = nil
-                    if stream == self.activeStream {
-                        self.activeStream = nil
-                    }
-                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
-                    
-                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
-                    NSNotificationCenter.defaultCenter().postNotification(notification)
-                    
-                    if let ind = self.userFeed.indexOf(stream!) {
-                        self.userFeed.removeAtIndex(ind)
-                    }
-                }
+//                var json = JSON(data)
+//                let stream = self.findStream(json["_id"].string)
+//                if stream != nil {
+//                    stream!.delegate = nil
+//                    if stream == self.activeStream {
+//                        self.activeStream = nil
+//                    }
+//                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
+//                    
+//                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
+//                    NSNotificationCenter.defaultCenter().postNotification(notification)
+//                    
+//                    if let ind = self.userFeed.indexOf(stream!) {
+//                        self.userFeed.removeAtIndex(ind)
+//                        print("remove item at index")
+//                    }
+//                }
             }
         }
     }
@@ -503,7 +511,7 @@ extension StreamManager {
                     oldStream!.fromJSON(json) {
                         stream in
                         if stream.status {
-                            if self.userFeed.indexOf(stream) == nil {
+                            if self.userFeed.indexOf(stream) == nil && stream != self.userStream {
                                 self.userFeed.append(stream)
                             }
                         } else {
