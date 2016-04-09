@@ -13,8 +13,8 @@ import WCLUIKit
 import pop
 
 protocol PagerSubcontroller {
-    var leftHeaderIcon : ASImageNode! {get}
-    var rightHeaderIcon : ASImageNode! {get}
+    var leftHeaderIcon : ASControlNode! {get}
+    var rightHeaderIcon : ASControlNode! {get}
     var titleItem : ASTextNode! {get}
     var pageControlStyle : [String : UIColor]? {get}
 }

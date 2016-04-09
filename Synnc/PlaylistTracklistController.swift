@@ -39,8 +39,9 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
             self.screenNode.tracksTable.view.setEditing(editMode, animated: true)
         }
     }
-    func toggleEditMode(sender : AnyObject) {
+    func toggleEditMode(sender : ButtonNode) {
         print("toggle edit mode")
+        sender.selected = !sender.selected
         editMode = !editMode
     }
     func displayTrackSearch(sender : ASButtonNode!) {
@@ -62,26 +63,26 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         }
     }
     
-    lazy var _leftHeaderIcon : ASImageNode! = {
-        let x = ASImageNode()
-        x.image = UIImage(named: "newPlaylist")
-        x.contentMode = .Center
+    lazy var _leftHeaderIcon : ASControlNode! = {
+        let x = ButtonNode()
+        x.setImage(UIImage(named: "edit-icon"), forState: .Normal)
+        x.setImage(UIImage(named: "edit-icon-selected"), forState: .Selected)
         x.addTarget(self, action: #selector(PlaylistTracklistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
         return x
     }()
-    var leftHeaderIcon : ASImageNode! {
+    var leftHeaderIcon : ASControlNode! {
         get {
             return _leftHeaderIcon
         }
     }
-    lazy var _rightHeaderIcon : ASImageNode! = {
+    lazy var _rightHeaderIcon : ASControlNode! = {
         let x = ASImageNode()
         x.image = UIImage(named: "newPlaylist")
         x.contentMode = .Center
         x.addTarget(self, action: #selector(PlaylistTracklistController.displayTrackSearch(_:)), forControlEvents: .TouchUpInside)
         return x
     }()
-    var rightHeaderIcon : ASImageNode! {
+    var rightHeaderIcon : ASControlNode! {
         get {
             return _rightHeaderIcon
         }
