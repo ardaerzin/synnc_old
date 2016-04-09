@@ -91,7 +91,6 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         
         screenNode.infoNode.genreHolder.tapGestureRecognizer.addTarget(self, action: #selector(PlaylistInfoController.displayGenrePicker(_:)))
         screenNode.infoNode.locationHolder.tapGestureRecognizer.addTarget(self, action: #selector(PlaylistInfoController.toggleLocation(_:)))
-        
         if playlist != SharedPlaylistDataSource.findUserFavoritesPlaylist() {
             screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
         }
@@ -108,10 +107,8 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        if let window = self.parentViewController!.view.wclWindow {
-//            window.panRecognizer.delegate = self
-//        }
         self.screenNode.infoNode.view.delegate = self
+        screenNode.infoNode.addSongsButton.addTarget(self.parentViewController, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
     }
     
     func displayImagePicker(sender : AnyObject){
@@ -267,8 +264,10 @@ extension PlaylistInfoController : PlaylistInfoDelegate {
     }
     func trackCountForPlaylist() -> Int {
         if let pl = self.playlist {
+            self.screenNode.infoNode.addSongsButton.alpha = pl.songs.isEmpty ? 1 : 0
             return pl.songs.count
         } else {
+            self.screenNode.infoNode.addSongsButton.alpha = 1
             return 0
         }
     }

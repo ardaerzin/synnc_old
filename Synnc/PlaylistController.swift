@@ -25,6 +25,7 @@ class PlaylistController : PagerBaseController {
     
     var isNewPlaylist : Bool = false
     var playlist : SynncPlaylist!
+    var needsToShowTrackSearch : Bool = false
     
     lazy var infoController : PlaylistInfoController = {
         return PlaylistInfoController(playlist: self.playlist)
@@ -91,6 +92,27 @@ class PlaylistController : PagerBaseController {
         }
         playlist.delete()
         self.playlist = nil
+    }
+    
+    func addSongs(sender : AnyObject) {
+        print("add songs")
+        needsToShowTrackSearch = true
+        self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+    }
+    
+    override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        super.scrollViewDidEndDecelerating(scrollView)
+        if self.currentIndex == 1 && needsToShowTrackSearch {
+            self.tracklistController.displayTrackSearch(nil)
+            needsToShowTrackSearch = false
+        }
+    }
+    override func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        super.scrollViewDidEndScrollingAnimation(scrollView)
+        if self.currentIndex == 1 && needsToShowTrackSearch {
+            self.tracklistController.displayTrackSearch(nil)
+            needsToShowTrackSearch = false
+        }
     }
 }
 
