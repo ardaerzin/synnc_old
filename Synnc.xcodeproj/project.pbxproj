@@ -292,6 +292,8 @@
 		475286E41C37372300731008 /* WCLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 475286E31C37372300731008 /* WCLScrollNode.m */; };
 		475286E61C3737D900731008 /* WCLScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286E51C3737D900731008 /* WCLScrollView.swift */; };
 		475771191CB72CC2004FBB11 /* DeletePlaylistPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */; };
+		4757711D1CB93066004FBB11 /* ShareStreamPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4757711C1CB93066004FBB11 /* ShareStreamPopup.swift */; };
+		475771231CB96778004FBB11 /* UIActivity+MyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475771221CB96778004FBB11 /* UIActivity+MyActivity.swift */; };
 		475E22A21C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */; };
 		475E22A41C99A79100F6D211 /* NotCompatiblePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */; };
 		476CC7F91CA5FA0900CBA0E3 /* PlaylistInfoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC7F81CA5FA0900CBA0E3 /* PlaylistInfoNode.swift */; };
@@ -1348,6 +1350,7 @@
 		47380A601C7BE7B70028EA38 /* Popups */ = {
 			isa = PBXGroup;
 			children = (
+				4757711C1CB93066004FBB11 /* ShareStreamPopup.swift */,
 				475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */,
 				475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */,
 				476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */,
@@ -1467,6 +1470,14 @@
 				473E8BD61CA549BE00DB9F5B /* PlaylistBaseNode.swift */,
 			);
 			name = Nodes;
+			sourceTree = "<group>";
+		};
+		4757711E1CB9663C004FBB11 /* FBActivity */ = {
+			isa = PBXGroup;
+			children = (
+				475771221CB96778004FBB11 /* UIActivity+MyActivity.swift */,
+			);
+			name = FBActivity;
 			sourceTree = "<group>";
 		};
 		476CC7FA1CA5FC2300CBA0E3 /* Nodes */ = {
@@ -1666,7 +1677,6 @@
 			children = (
 				4714D24A1C8909F000F6F5AD /* NHTime */,
 				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
-				4757711A1CB87339004FBB11 /* DataSourceTest.playground */,
 				479AF8141C91A327001C9F4F /* AnalyticsManager.swift */,
 				4712B63A1C11149800C49522 /* Utilities.swift */,
 				47B37B791C2F044E001CC6D2 /* WildTransitioning.swift */,
@@ -2540,6 +2550,7 @@
 				4741E8631C9D67D2007DE80E /* OnboardingPager.swift in Sources */,
 				476CC8111CA9675900CBA0E3 /* StreamVCNode.swift in Sources */,
 				470D2B341CA348E000526778 /* ProfileCard.swift in Sources */,
+				4757711D1CB93066004FBB11 /* ShareStreamPopup.swift in Sources */,
 				4797B13F1CA0C90800AE2936 /* PagerHeaderTitleNode.swift in Sources */,
 				47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */,
 				47C8F9921C20F37800333492 /* TrackSearchDataSource.swift in Sources */,
@@ -2550,6 +2561,7 @@
 				475E22A41C99A79100F6D211 /* NotCompatiblePopup.swift in Sources */,
 				47EBDF891C1BD8A80075CF0B /* Playlist.swift in Sources */,
 				47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */,
+				475771231CB96778004FBB11 /* UIActivity+MyActivity.swift in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,
 				47B808431C7DDB5200312C96 /* ChatItem.swift in Sources */,
 				47D1A6961C8DD47B00B73E68 /* LoginButtonHolder.swift in Sources */,

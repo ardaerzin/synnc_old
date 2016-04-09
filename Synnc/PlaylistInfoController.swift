@@ -20,21 +20,21 @@ import DKImagePickerController
 
 class PlaylistInfoController : ASViewController, PagerSubcontroller {
     
-    lazy var _leftHeaderIcon : ASImageNode! = {
+    lazy var _leftHeaderIcon : ASControlNode! = {
         let x = ASImageNode()
         x.image = UIImage(named: "trash-can")
         x.contentMode = .Center
         return x
     }()
-    var leftHeaderIcon : ASImageNode! {
+    var leftHeaderIcon : ASControlNode! {
         get {
             return _leftHeaderIcon
         }
     }
-    lazy var _rightHeaderIcon : ASImageNode! = {
+    lazy var _rightHeaderIcon : ASControlNode! = {
         return nil
     }()
-    var rightHeaderIcon : ASImageNode! {
+    var rightHeaderIcon : ASControlNode! {
         get {
             return _rightHeaderIcon
         }

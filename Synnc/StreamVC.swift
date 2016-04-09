@@ -77,6 +77,43 @@ class StreamVC : PagerBaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configure(stream)
+        (self.screenNode.headerNode as! StreamHeaderNode).shareButton.addTarget(self, action: #selector(StreamVC.shareStream(_:)), forControlEvents: .TouchUpInside)
+    }
+    
+    func shareStream(sender: AnyObject) {
+        
+        let textToShare = "I'm listening to \(stream.user.username)'s stream, '\(stream.name)'"
+        if let myWebsite = NSURL(string: "https://synnc.live") {
+            let objectsToShare = [textToShare, myWebsite, (self.screenNode as! StreamVCNode).imageHeader.imageNode.image as! AnyObject, self.stream]
+            
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [SynncFacebookActivity()])
+            activityVC.excludedActivityTypes = [UIActivityTypePostToWeibo,
+                                                UIActivityTypeMessage,
+                                                UIActivityTypeMail,
+                                                UIActivityTypePrint,
+                                                UIActivityTypeCopyToPasteboard,
+                                                UIActivityTypeAssignToContact,
+                                                UIActivityTypeSaveToCameraRoll,
+                                                UIActivityTypeAddToReadingList,
+                                                UIActivityTypePostToFlickr,
+                                                UIActivityTypePostToVimeo,
+                                                UIActivityTypePostToTencentWeibo,
+                                                UIActivityTypeAirDrop,
+                                                UIActivityTypePostToFacebook]
+            activityVC.completionWithItemsHandler = {
+                (activityType, completed:Bool, returnedItems:[AnyObject]?, error: NSError?) in
+                
+                AnalyticsEvent.new(category: "StreamSubsection", action: "share", label: activityType, value: nil)
+                if let w = self.view.wclWindow {
+                    w.panRecognizer.enabled = true
+                }
+            }
+            
+            if let w = self.view.wclWindow {
+                w.panRecognizer.enabled = false
+            }
+            self.presentViewController(activityVC, animated: true, completion: nil)
+        }
     }
     
     func toggleTrackFav(sender: ButtonNode) {
