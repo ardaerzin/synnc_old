@@ -112,8 +112,7 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         self.closeButton.imageNode.contentMode = .Center
         
         self.inputNode = ASEditableTextNode()
-        self.inputNode.scrollEnabled = false
-        self.inputNode.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
+        self.inputNode.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 16)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
         
         self.inputNode.typingAttributes = [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)]
         
@@ -173,6 +172,8 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         
         self.addSubnode(trackEmptyStateNode)
         self.addSubnode(artistEmptyStateNode)
+        
+        self.inputNode.scrollEnabled = false
     }
     
     override func didLoad() {
@@ -196,7 +197,7 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
-        self.inputNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (40*2) - 10 - 10), ASRelativeDimension(type: .Points, value: 30))
+        self.inputNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (40*2) - 10 - 10), ASRelativeDimension(type: .Points, value: 35))
         
         let searchStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [sourceOptionsButton]), ASStaticLayoutSpec(children: [inputNode]), ASStaticLayoutSpec(children: [closeButton])])
         searchStack.spacingBefore = 15

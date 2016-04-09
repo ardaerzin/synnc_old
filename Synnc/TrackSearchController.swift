@@ -160,7 +160,7 @@ extension TrackSearchController : ASTableViewDelegate {
     }
     func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
         
-        Async.background {
+        Async.main {
             if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.trackSearcher(self, hasTrack: data) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }

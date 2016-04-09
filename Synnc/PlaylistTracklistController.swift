@@ -181,7 +181,7 @@ extension PlaylistTracklistController : ASTableViewDataSource {
             
             if let plist = self.playlist {
                 plist.removeSong(atIndexPath: indexPath)
-                plist.save()
+                playlistUpdated()
             }
             
             

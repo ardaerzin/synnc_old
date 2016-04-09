@@ -133,6 +133,7 @@ class PlaylistInfoNode : WCLScrollNode {
     var imageNode : ASNetworkImageNode!
     var titleNode : ASEditableTextNode!
     var trackCountNode : ASTextNode!
+    var addSongsButton : ButtonNode!
     
     var genreHolder : GenreHolder!
     var locationHolder : LocationHolder!
@@ -184,6 +185,13 @@ class PlaylistInfoNode : WCLScrollNode {
         trackCountNode.attributedString = NSAttributedString(string: "", attributes: self.trackCountAttributes)
         trackCountNode.spacingAfter = 25
         self.addSubnode(trackCountNode)
+        
+        addSongsButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
+        let buttonTitle = NSAttributedString(string: "Add Songs", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor.whiteColor(), NSKernAttributeName : 0.45, NSParagraphStyleAttributeName : p])
+        addSongsButton.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10)
+        addSongsButton.setAttributedTitle(buttonTitle, forState: .Normal)
+        addSongsButton.cornerRadius = 8
+        self.addSubnode(addSongsButton)
         
         topSeperator = ASDisplayNode()
         self.addSubnode(topSeperator)
@@ -275,12 +283,18 @@ class PlaylistInfoNode : WCLScrollNode {
         
         self.imageShimmer.bounds = CGRect(origin: CGPointZero, size: self.imageNode.calculatedSize)
         self.imageShimmer.center = self.imageNode.position
+        
+        self.trackCountNode.position = self.addSongsButton.position
     }
     
     override func layoutDidFinish() {
         super.layoutDidFinish()
         
-        self.view.contentSize = CGSizeMake(self.calculatedSize.width, self.locationSeperator.position.y + (self.locationSeperator.calculatedSize.height / 2) + 20 + 65)
+        var h = self.locationSeperator.position.y + (self.locationSeperator.calculatedSize.height / 2) + 20 + 65
+        if h < self.calculatedSize.height {
+            h = self.calculatedSize.height + 1
+        }
+        self.view.contentSize = CGSizeMake(self.calculatedSize.width, h)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -289,7 +303,11 @@ class PlaylistInfoNode : WCLScrollNode {
         let imageSpec = ASStaticLayoutSpec(children: [imageNode])
         imageSpec.spacingBefore = 85
         
-        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [imageSpec, titleNode, trackCountNode, ASStaticLayoutSpec(children: [topSeperator]), genreHolder, ASStaticLayoutSpec(children: [genreSeperator]), locationHolder, ASStaticLayoutSpec(children: [locationSeperator])])
+        let a = ASStaticLayoutSpec(children: [trackCountNode, addSongsButton])
+        let spacer = ASStaticLayoutSpec(children: [topSeperator])
+        spacer.spacingBefore = 5
+        
+        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [imageSpec, titleNode, a, spacer, genreHolder, ASStaticLayoutSpec(children: [genreSeperator]), locationHolder, ASStaticLayoutSpec(children: [locationSeperator])])
         
         return stack
     }
