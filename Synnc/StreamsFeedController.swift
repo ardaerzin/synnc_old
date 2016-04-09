@@ -150,15 +150,7 @@ extension StreamsFeedController : ASTableDelegate {
     }
 }
 extension StreamsFeedController : WCLAsyncTableViewDataSourceDelegate {
-    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
-        self.tableManager.performUpdates(self.screenNode.tableNode.view, updates: updatedItems, animated: true)
-        print("feed updated items", updatedItems)
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedData: (oldData: [NSObject], newData: [NSObject])) {
+        self.tableManager.performUpdates(self.screenNode.tableNode.view, updates: (oldItems: updatedData.oldData, newItems: updatedData.newData), animated: true)
     }
-
-//    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
-//        return (min: CGSizeMake(self.view.frame.width, CGFloat.min), max: CGSizeMake(self.view.frame.width, CGFloat.max))
-//    }
-//    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
-//        self.collectionManager.performUpdates(self.screenNode.streamCollection.view, updates: updatedData, animated: true)
-//    }
 }

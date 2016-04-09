@@ -63,9 +63,11 @@ extension StreamListenersController : ASCollectionDelegate {
     }
 }
 extension StreamListenersController : WCLAsyncCollectionViewDataSourceDelegate {
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
-        self.manager?.performUpdates(collectionView, updates: updatedData, animated: true, completion: nil)
+    
+    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: (oldData: [NSObject], newData: [NSObject])) {
+        self.manager?.performUpdates(collectionView, updates: (oldItems: updatedData.oldData, newItems: updatedData.newData), animated: true)
     }
+    
     func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> (min: CGSize, max: CGSize) {
         return (min: CGSizeMake(40,40), max: CGSizeMake(40,40))
     }
