@@ -19,18 +19,18 @@ import WCLPopupManager
 
 class ChatController : ASViewController, PagerSubcontroller {
     
-    lazy var _leftHeaderIcon : ASImageNode! = {
+    lazy var _leftHeaderIcon : ASControlNode! = {
         return nil
     }()
-    var leftHeaderIcon : ASImageNode! {
+    var leftHeaderIcon : ASControlNode! {
         get {
             return _leftHeaderIcon
         }
     }
-    lazy var _rightHeaderIcon : ASImageNode! = {
+    lazy var _rightHeaderIcon : ASControlNode! = {
         return nil
     }()
-    var rightHeaderIcon : ASImageNode! {
+    var rightHeaderIcon : ASControlNode! {
         get {
             return _rightHeaderIcon
         }
