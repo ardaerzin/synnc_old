@@ -252,11 +252,10 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItemAtIndexPath indexPAth: NSIndexPath) {
         self.manager.updateItem(self.screenNode.chatCollection.view, indexPath: indexPAth, animated: true)
     }
-    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
-        
-        self.manager.performUpdates(self.screenNode.chatCollection.view, updates: updatedItems, animated: true, completion: {
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedData: (oldData: [NSObject], newData: [NSObject])) {
+        self.manager.performUpdates(self.screenNode.chatCollection.view, updates: (oldItems: updatedData.oldData, newItems: updatedData.newData), animated: true) {
             status in
-        
+            
             if status {
                 let table = self.screenNode.chatCollection.view
                 let ind = table.numberOfRowsInSection(0) - 1
@@ -265,9 +264,8 @@ extension ChatController : WCLAsyncTableViewDataSourceDelegate {
                     self.updateHeaderSize(ip)
                 }
             }
-        })
+        }
     }
-    
     
     func updateHeaderSize(indexPath : NSIndexPath){
         let table = self.screenNode.chatCollection.view

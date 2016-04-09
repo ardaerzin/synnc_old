@@ -221,6 +221,9 @@ extension TrackSearchController {
             self.artistsDataSource.refresh = true
             self.artistsDataSource.pendingData = []
             
+            self.screenNode.trackEmptyStateNode.state = false
+            self.screenNode.artistEmptyStateNode.state = false
+            
             return
         }
         
@@ -368,8 +371,8 @@ extension TrackSearchController : WCLAsyncTableViewDataSourceDelegate {
     func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItemAtIndexPath indexPAth: NSIndexPath) {
         
     }
-    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedItems: WCLListSourceUpdaterResult) {
-        self.tracksManager.performUpdates(self.screenNode.tracksTable.view, updates: updatedItems, animated: true)
+    func asyncTableViewDataSource(dataSource: WCLAsyncTableViewDataSource, updatedData: (oldData: [NSObject], newData: [NSObject])) {
+        self.tracksManager.performUpdates(self.screenNode.tracksTable.view, updates: (oldItems: updatedData.oldData, newItems: updatedData.newData), animated: true)
     }
 }
 extension TrackSearchController : WCLAsyncCollectionViewDataSourceDelegate {
@@ -379,7 +382,7 @@ extension TrackSearchController : WCLAsyncCollectionViewDataSourceDelegate {
         
         return (min: CGSizeMake(100,h), max: CGSizeMake(100,h))
     }
-    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: WCLListSourceUpdaterResult) {
-        self.artistsManager.performUpdates(self.screenNode.artistsCollection.view, updates: updatedData, animated: true, completion: nil)
+    func asyncCollectionViewDataSource(dataSource: WCLAsyncCollectionViewDataSource, updatedData: (oldData: [NSObject], newData: [NSObject])) {
+        self.artistsManager.performUpdates(self.screenNode.artistsCollection.view, updates: (oldItems: updatedData.oldData, newItems: updatedData.newData), animated: true)
     }
 }

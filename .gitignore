@@ -2,3 +2,5 @@ Pods
 Podfile.lock
 
 *.xcuserstate
+
+Synnc/DataSourceTest.playground/Contents.swift
