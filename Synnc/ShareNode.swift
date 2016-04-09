@@ -11,6 +11,17 @@ import AsyncDisplayKit
 import WCLUIKit
 import pop
 
+class ShareButton : ASButtonNode {
+    override init() {
+        super.init()
+        self.imageNode.preferredFrameSize = CGSize(width: 25, height: 25)
+        self.imageNode.contentMode = UIViewContentMode.ScaleAspectFit
+    }
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Center, alignItems: .Center, children: [self.imageNode, self.titleNode])
+    }
+}
+
 class ShareNode : ASDisplayNode {
     
     var titleNode : ASTextNode!
@@ -30,19 +41,19 @@ class ShareNode : ASDisplayNode {
         titleNode.attributedString = NSAttributedString(string: "Share this stream with your friends.", attributes: titleAttributes)
         titleNode.spacingBefore = 20
         
-//        facebookShareButton = ShareButton()
+        facebookShareButton = ShareButton()
 //        facebookShareButton.imageNode.preferredFrameSize = CGSize(width: 20,height: 20)
         facebookShareButton.flexGrow = true
         facebookShareButton.setAttributedTitle(NSAttributedString(string: "Facebook", attributes: buttonAttributes), forState: ASControlState.Normal)
         facebookShareButton.setImage(UIImage(named: "facebook-logo"), forState: .Normal)
         
-//        twitterShareButton = ShareButton()
+        twitterShareButton = ShareButton()
 //        twitterShareButton.imageNode.preferredFrameSize = CGSize(width: 20,height: 20)
         twitterShareButton.flexGrow = true
         twitterShareButton.setAttributedTitle(NSAttributedString(string: "Twitter", attributes: buttonAttributes), forState: ASControlState.Normal)
         twitterShareButton.setImage(UIImage(named: "twitter-logo"), forState: .Normal)
         
-//        smsShareButton = ShareButton()
+        smsShareButton = ShareButton()
 //        smsShareButton.imageNode.preferredFrameSize = CGSize(width: 20,height: 20)
         smsShareButton.flexGrow = true
         smsShareButton.setAttributedTitle(NSAttributedString(string: "SMS", attributes: buttonAttributes), forState: ASControlState.Normal)

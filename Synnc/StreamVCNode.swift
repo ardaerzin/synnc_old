@@ -25,6 +25,7 @@ class StreamHeaderNode : PagerHeaderNode {
         
         shareButton = ButtonNode()
         shareButton.setImage(UIImage(named: "share-icon"), forState: .Normal)
+        shareButton.hidden = true
         self.addSubnode(shareButton)
     }
     

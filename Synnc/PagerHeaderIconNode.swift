@@ -11,7 +11,7 @@ import AsyncDisplayKit
 import WCLUIKit
 
 class PagerHeaderIconNode: ASDisplayNode {
-    var items : [ASControlNode?] = [] {
+    var items : [ASImageNode?] = [] {
         didSet {
             for item in items {
                 if let i = item {

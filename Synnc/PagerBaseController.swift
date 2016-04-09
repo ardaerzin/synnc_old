@@ -41,8 +41,8 @@ class PagerBaseController : ASViewController {
         screenNode.pager.delegate = self
         screenNode.pager.setDataSource(self)
         
-        var leftItems : [ASControlNode?] = []
-        var rightItems : [ASControlNode?] = []
+        var leftItems : [ASImageNode?] = []
+        var rightItems : [ASImageNode?] = []
         var titleItems : [ASDisplayNode?] = []
         var pagerStyles : [[String : UIColor]?] = []
         for sub in subControllers {
