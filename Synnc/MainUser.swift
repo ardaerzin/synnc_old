@@ -98,6 +98,8 @@ class MainUser : WCLUser {
         if self.status {
             self.syncFollowed()
         }
+        
+        print("user login status changed", self.status)
     }
     
     override func updateUserInfo(info: JSON) {

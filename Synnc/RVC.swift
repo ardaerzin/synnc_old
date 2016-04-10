@@ -106,6 +106,10 @@ class RootWindowController : PagerBaseController {
         self.homeWindow.animation.toValue = s ? homeWindow.lowerPercentage : 1
     }
     
+    func dismissFeed(){
+        self.homeWindow.animation.toValue = 1
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -123,6 +127,21 @@ class RootWindowController : PagerBaseController {
         
         self.profileController.leftHeaderIcon?.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
         self.settingsController.leftHeaderIcon?.addTarget(self, action: #selector(RootWindowController.displaySearch(_:)), forControlEvents: .TouchUpInside)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootWindowController.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func checkActiveStream(notification : NSNotification) {
+            var lowerLimit : CGFloat = 0
+            
+            if let _ = notification.object as? Stream {
+                lowerLimit = 70
+            } else {
+                lowerLimit = 0
+            }
+            
+            self.profileController.screenNode.profile.contentSizeDiff = lowerLimit
+            self.settingsController.screenNode.settingsNode.contentSizeDiff = lowerLimit
     }
     
     func displaySearch(sender : AnyObject) {

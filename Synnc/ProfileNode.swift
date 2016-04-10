@@ -29,6 +29,11 @@ class ProfileNode : ASScrollNode {
     
     var profileTitle : ASTextNode!
     var profileCard : ProfileCardNode!
+    var contentSizeDiff : CGFloat! = 0 {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
     
     override init() {
         super.init()
@@ -45,7 +50,7 @@ class ProfileNode : ASScrollNode {
     
     override func layoutDidFinish() {
         super.layoutDidFinish()
-        self.view.contentSize = CGSizeMake(self.calculatedSize.width, self.profileCard.position.y + (self.profileCard.calculatedSize.height / 2) + 20)
+        self.view.contentSize = CGSizeMake(self.calculatedSize.width, self.profileCard.position.y + (self.profileCard.calculatedSize.height / 2) + 20 + contentSizeDiff)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [profileTitle, profileCard])

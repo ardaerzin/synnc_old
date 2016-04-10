@@ -121,6 +121,7 @@ class StreamVCNode : PagerBaseControllerNode {
     var state : StreamControllerState! = .Inactive {
         didSet {
             stateAnimation.toValue = state.rawValue
+            nowPlayingArea.state = state
         }
     }
     var stateAnimatableProperty : POPAnimatableProperty {

@@ -57,6 +57,18 @@ class StreamManager : NSObject, StreamDelegate {
         return Singleton.instance
     }
     
+    override init() {
+        super.init()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamManager.loginStatusChanged(_:)), name: "userLoginStatusChanged", object: nil)
+    }
+    
+    func loginStatusChanged(notification: NSNotification){
+        if let user = notification.object as? MainUser where user == Synnc.sharedInstance.user {
+            if let stream = self.activeStream where !user.status {
+                self.stopStream(stream, completion: nil)
+            }
+        }
+    }
 }
 
 extension StreamManager {
