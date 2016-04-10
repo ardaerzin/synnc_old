@@ -296,6 +296,7 @@
 		475771231CB96778004FBB11 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		475771261CB98A2A004FBB11 /* FacebookActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475771251CB98A2A004FBB11 /* FacebookActivity.swift */; };
 		475771281CB98B18004FBB11 /* ShareStreamPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475771271CB98B18004FBB11 /* ShareStreamPopup.swift */; };
+		4757712A1CB9D682004FBB11 /* LogoutPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475771291CB9D681004FBB11 /* LogoutPopup.swift */; };
 		475E22A21C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */; };
 		475E22A41C99A79100F6D211 /* NotCompatiblePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */; };
 		476CC7F91CA5FA0900CBA0E3 /* PlaylistInfoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC7F81CA5FA0900CBA0E3 /* PlaylistInfoNode.swift */; };
@@ -752,6 +753,7 @@
 		475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletePlaylistPopup.swift; sourceTree = "<group>"; };
 		475771251CB98A2A004FBB11 /* FacebookActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookActivity.swift; sourceTree = "<group>"; };
 		475771271CB98B18004FBB11 /* ShareStreamPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareStreamPopup.swift; sourceTree = "<group>"; };
+		475771291CB9D681004FBB11 /* LogoutPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogoutPopup.swift; sourceTree = "<group>"; };
 		475E22A11C98B3E600F6D211 /* StreamsFeedEmptyStateNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedEmptyStateNode.swift; sourceTree = "<group>"; };
 		475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotCompatiblePopup.swift; sourceTree = "<group>"; };
 		476CC7F81CA5FA0900CBA0E3 /* PlaylistInfoNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistInfoNode.swift; sourceTree = "<group>"; };
@@ -1362,6 +1364,7 @@
 				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
 				47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */,
 				4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */,
+				475771291CB9D681004FBB11 /* LogoutPopup.swift */,
 			);
 			name = Popups;
 			sourceTree = "<group>";
@@ -2656,6 +2659,7 @@
 				476CC8061CA6FFD200CBA0E3 /* SynncArtistSmallNode.swift in Sources */,
 				4777052C1C3EBAF7007089D0 /* StreamFeedDataSource.swift in Sources */,
 				479AF8151C91A327001C9F4F /* AnalyticsManager.swift in Sources */,
+				4757712A1CB9D682004FBB11 /* LogoutPopup.swift in Sources */,
 				475286DB1C359E1900731008 /* StreamManager.swift in Sources */,
 				475286DD1C35A22E00731008 /* StreamViewController.swift in Sources */,
 				4777051C1C3DC581007089D0 /* StreamViewNode.swift in Sources */,

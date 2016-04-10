@@ -123,8 +123,10 @@ class WildFacebookUser : WCLUserExtension {
                 url = "https://graph.facebook.com/\(fbid!)/picture?height=\(Int(frame.height*scale))&width=\(Int(frame.width*scale))"
             }
         } else {
-            let fbid = FBSDKAccessToken.currentAccessToken().userID
-            url = "https://graph.facebook.com/\(fbid!)/picture?height=\(Int(frame.height*scale))&width=\(Int(frame.width*scale))"
+            if let token = FBSDKAccessToken.currentAccessToken() {
+                let fbid = token.userID
+                url = "https://graph.facebook.com/\(fbid!)/picture?height=\(Int(frame.height*scale))&width=\(Int(frame.width*scale))"
+            }
         }
         return url == nil ? nil : NSURL(string: url!)
     }
@@ -187,7 +189,7 @@ class WildFacebookUser : WCLUserExtension {
         
         self.isLoggingIn = true
         
-        FBSDKLoginManager().logInWithReadPermissions(permissions, fromViewController: nil, handler: {
+        FBSDKLoginManager().logInWithReadPermissions(permissions, fromViewController: Synnc.sharedInstance.window?.rootViewController, handler: {
             
             (result, error) in
             if error != nil {

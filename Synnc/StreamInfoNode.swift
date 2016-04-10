@@ -129,36 +129,71 @@ class TappableUserArea : ASControlNode {
     }
 }
 
+class SourceHolder : ASDisplayNode {
+    
+    var buttons : [SourceButton] = []
+    
+    func configure(sources: [String]){
+        
+        for button in buttons {
+            button.removeFromSupernode()
+        }
+        
+        buttons = []
+        
+        for source in sources {
+            let button = SourceButton(source: SynncExternalSource(rawValue: source)!)
+            button.selected = true
+            button.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(25, 25))
+            self.addSubnode(button)
+            buttons.append(button)
+        }
+        
+        self.setNeedsLayout()
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        var buttonSpecs : [ASLayoutSpec] = []
+        
+        for button in buttons {
+            buttonSpecs.append(ASStaticLayoutSpec(children: [button]))
+        }
+        return ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: buttonSpecs)
+    }
+}
+
 class StreamTopSection : ASDisplayNode {
     
     var userArea : TappableUserArea!
-    var joinButton : ButtonNode!
+    var sourceArea : SourceHolder!
+//    var joinButton : ButtonNode!
     
     override init(){
         super.init()
         
         userArea = TappableUserArea()
         self.addSubnode(userArea)
+
+        sourceArea = SourceHolder()
+        sourceArea.spacingAfter = 18
+        self.addSubnode(sourceArea)
         
-        joinButton = ButtonNode()
-        joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: .Normal)
-        joinButton.spacingAfter = 21
-        joinButton.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10)
-        self.addSubnode(joinButton)
+//        joinButton = ButtonNode()
+//        joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()]), forState: .Normal)
+//        joinButton.spacingAfter = 21
+//        joinButton.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10)
+//        joinButton.hidden = true
+//        self.addSubnode(joinButton)
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
-        return ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [userArea, spacer, joinButton])
+        return ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [userArea, spacer, sourceArea])
     }
     
     func configure(stream : Stream) {
         self.userArea.configure(stream.user)
-        
-        if stream == StreamManager.sharedInstance.activeStream {
-            joinButton.hidden = true
-        }
-        
+        sourceArea.configure(stream.playlist.allSources())
         self.setNeedsLayout()
     }
 }

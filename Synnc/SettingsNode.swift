@@ -42,6 +42,12 @@ class SettingsNode : ASScrollNode {
     
     var disconnectButton : ButtonNode!
     
+    var contentSizeDiff : CGFloat! = 0 {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
+    
     override init() {
         super.init()
         
@@ -76,7 +82,6 @@ class SettingsNode : ASScrollNode {
         self.addSubnode(feedbackNode)
         
         disconnectButton = ButtonNode()
-        disconnectButton.hidden = true
         let title = NSAttributedString(string: "logout", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1), NSKernAttributeName : 0.7])
         disconnectButton.setAttributedTitle(title, forState: .Normal)
         disconnectButton.spacingBefore = 20
@@ -86,7 +91,7 @@ class SettingsNode : ASScrollNode {
     override func layoutDidFinish() {
         super.layoutDidFinish()
         
-        self.view.contentSize = CGSizeMake(self.calculatedSize.width, self.disconnectButton.position.y + (self.disconnectButton.calculatedSize.height / 2) + 20 + 65)
+        self.view.contentSize = CGSizeMake(self.calculatedSize.width, self.disconnectButton.position.y + (self.disconnectButton.calculatedSize.height / 2) + 20 + 65 + contentSizeDiff)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

@@ -78,8 +78,17 @@ class StreamVC : PagerBaseController {
         super.viewDidLoad()
         self.configure(stream)
         (self.screenNode.headerNode as! StreamHeaderNode).shareButton.addTarget(self, action: #selector(StreamVC.shareStream(_:)), forControlEvents: .TouchUpInside)
+        (self.screenNode as! StreamVCNode).nowPlayingArea.volumeButton.addTarget(self, action: #selector(StreamVC.toggleMute(_:)), forControlEvents: .TouchUpInside)
+        
+        (self.screenNode as! StreamVCNode).nowPlayingArea.joinButton.addTarget(self, action: #selector(StreamVC.joinStream(_:)), forControlEvents: .TouchUpInside)
     }
     
+    func toggleMute(sender: ButtonNode) {
+        if stream != StreamManager.sharedInstance.activeStream {
+            return
+        }
+        StreamManager.sharedInstance.player.volume = !sender.selected ? 1 : 0
+    }
     func shareStream(sender: AnyObject) {
         
         let textToShare = "I'm listening to \(stream.user.username)'s stream, '\(stream.name)'"
@@ -118,6 +127,10 @@ class StreamVC : PagerBaseController {
     
     func toggleTrackFav(sender: ButtonNode) {
         guard let st = self.stream, let ind = st.currentSongIndex else {
+            return
+        }
+        
+        if st != StreamManager.sharedInstance.activeStream {
             return
         }
         
@@ -175,7 +188,7 @@ class StreamVC : PagerBaseController {
                 anim.duration = 0.1
                 anim.toValue = 0
             }
-        } else {
+        } else if self.stream == StreamManager.sharedInstance.activeStream {
             (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = (self.screenNode as! StreamVCNode).nowPlayingArea.calculatedSize.height
             chatController.shouldFirstRespond = true
             chatController.becomeFirstResponder()
@@ -244,11 +257,13 @@ class StreamVC : PagerBaseController {
                 window.dismissable = false
             }
             StreamManager.sharedInstance.player.delegate = self
+            self.scrollViewDidScroll(self.screenNode.pager.view)
         } else {
             if let window = self.node.view.wclWindow {
                 window.dismissable = true
             }
             self.state = .Inactive
+            self.scrollViewDidScroll(self.screenNode.pager.view)
         }
         
         self.chatController.configure(stream)
@@ -310,6 +325,9 @@ extension StreamVC : StreamerDelegate {
             self.updateTrack(self.stream)
         }
     }
+    func streamer(streamer: WildPlayer!, volumeChanged volume: Float) {
+        (self.screenNode as! StreamVCNode).nowPlayingArea.volumeButton.selected = volume > 0 ? true : false
+    }
 }
 
 extension StreamVC : WCLWindowDelegate {
@@ -358,7 +376,7 @@ extension StreamVC : WCLWindowDelegate {
                 anim.duration = 0.1
                 anim.toValue = 0
             }
-        } else {
+        } else if self.stream == StreamManager.sharedInstance.activeStream {
             if self.currentIndex == 2 {
                 (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = (self.screenNode as! StreamVCNode).nowPlayingArea.calculatedSize.height
                 chatController.shouldFirstRespond = true
@@ -377,8 +395,9 @@ extension StreamVC : WCLWindowDelegate {
 extension StreamVC {
     func joinStream(sender : AnyObject){
         
-        if let node = sender as? ASDisplayNode {
-            node.hidden = true
+        if let node = sender as? ButtonNode {
+            node.userInteractionEnabled = false
+            node.showSpinView()
         }
         
         AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)

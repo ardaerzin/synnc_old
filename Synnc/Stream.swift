@@ -255,12 +255,10 @@ extension Stream {
                     
                     if let os = self.timestamp {
                         if os.timeStamp.compare(ts.timeStamp) == .OrderedAscending {
-                            print("TIMESTAMP DATA 1:", tsJSON)
                             keys.append("timestamp")
                             self.timestamp = ts
                         }
                     } else {
-                        print("TIMESTAMP DATA 2:", tsJSON)
                         keys.append("timestamp")
                         self.timestamp = ts
                     }

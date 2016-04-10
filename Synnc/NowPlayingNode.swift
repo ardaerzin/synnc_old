@@ -19,6 +19,67 @@ class NowPlayingNode : ASDisplayNode {
     var trackProgress : CGFloat = -1
     
     
+    var availableStateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("availableStateAnimatableProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! NowPlayingNode).availableStateTransition
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! NowPlayingNode).availableStateTransition = values[0]
+                }
+                prop.threshold = 0.01
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var availableStateAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("availableStateAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    
+                    self.pop_removeAnimationForKey("availableStateAnimation")
+                }
+                x.springSpeed = 10
+                x.springBounciness = 0
+                x.property = self.availableStateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "availableStateAnimation")
+                return x
+            }
+        }
+    }
+    var availableStateTransition : CGFloat = -1 {
+        didSet {
+            self.volumeButton.alpha = availableStateTransition
+            self.likeButton.alpha = availableStateTransition
+            
+            self.joinButton.alpha = 1-availableStateTransition
+            
+            let scale = POPTransition(availableStateTransition, startValue: 0.9, endValue: 1)
+            POPLayerSetScaleXY(self.trackNameNode.layer, CGPointMake(scale, scale))
+            POPLayerSetScaleXY(self.artistNameNode.layer, CGPointMake(scale, scale))
+            
+            let transition = POPTransition(availableStateTransition, startValue: -50, endValue: 0)
+            POPLayerSetTranslationX(self.trackNameNode.layer, transition)
+            POPLayerSetTranslationX(self.artistNameNode.layer, transition)
+        }
+    }
+    var state : StreamControllerState = .Inactive {
+        didSet {
+            self.availableStateAnimation.toValue = state.rawValue
+        }
+    }
+    
     var stateAnimatableProperty : POPAnimatableProperty {
         get {
             let x = POPAnimatableProperty.propertyWithName("stateAnimatableProperty", initializer: {
@@ -85,6 +146,7 @@ class NowPlayingNode : ASDisplayNode {
     
     var border : ASDisplayNode!
     var likeButton : ButtonNode!
+    var joinButton : ButtonNode!
     
     override init(){
         super.init()
@@ -96,12 +158,14 @@ class NowPlayingNode : ASDisplayNode {
         self.addSubnode(border)
         
         volumeButton = ButtonNode()
-        volumeButton.setImage(UIImage(named: "vol"), forState: .Normal)
+        volumeButton.setImage(UIImage(named: "volume-on"), forState: .Selected)
+        volumeButton.setImage(UIImage(named: "volume-off"), forState: .Normal)
         volumeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50, 50))
-        volumeButton.hidden = true
+        
         self.addSubnode(volumeButton)
         
         trackNameNode = ASTextNode()
+        trackNameNode.maximumNumberOfLines = 2
         self.addSubnode(trackNameNode)
         
         artistNameNode = ASTextNode()
@@ -117,8 +181,14 @@ class NowPlayingNode : ASDisplayNode {
         progressBar.alignSelf = .Stretch
         progressBar.flexBasis = ASRelativeDimension(type: .Points, value: 3)
         progressBar.backgroundColor = UIColor.SynncColor()
-            
         self.addSubnode(progressBar)
+        
+        joinButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
+        joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.whiteColor()]), forState: .Normal)
+        joinButton.spacingAfter = 21
+        
+        joinButton.contentEdgeInsets = UIEdgeInsetsMake(12, 15, 12, 15)
+        self.addSubnode(joinButton)
         
         self.shadowColor = UIColor(red: 203/255, green: 203/255, blue: 203/255, alpha: 0.5).CGColor
         self.shadowOpacity = 1
@@ -129,6 +199,14 @@ class NowPlayingNode : ASDisplayNode {
     }
     
     func configure(track : SynncTrack) {
+        
+        let volume = StreamManager.sharedInstance.player.volume
+        if volume > 0 {
+            self.volumeButton.selected = true
+        } else {
+            self.volumeButton.selected = false
+        }
+        
         trackNameNode.attributedString = NSAttributedString(string: track.name, attributes: trackAttributes)
         artistNameNode.attributedString = NSAttributedString(string: track.artists.first!.name, attributes: artistAttributes)
         
@@ -155,8 +233,18 @@ class NowPlayingNode : ASDisplayNode {
         if trackProgress == -1 {
             self.updateProgress(0)
         }
+        
+        if availableStateTransition == -1 {
+            availableStateTransition = 0
+        }
     }
     
+    override func layout() {
+        super.layout()
+        
+        joinButton.position.y = self.calculatedSize.height / 2
+        joinButton.position.x = self.calculatedSize.width - (joinButton.calculatedSize.width / 2) - 10
+    }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let nameStack = ASStackLayoutSpec(direction: .Vertical, spacing: 1, justifyContent: .Start, alignItems: .Center, children: [trackNameNode, artistNameNode])
         nameStack.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 100)
@@ -165,6 +253,9 @@ class NowPlayingNode : ASDisplayNode {
         stack.flexGrow = true
         stack.alignSelf = .Stretch
         
-        return ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [border, stack, progressBar])
+        let x = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [border, stack, progressBar])
+        x.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(constrainedSize.max)
+        
+        return ASStaticLayoutSpec(children: [joinButton, x])
     }
 }

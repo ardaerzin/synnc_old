@@ -12,6 +12,7 @@ import BFPaperCheckbox
 import pop
 import SafariServices
 import WCLNotificationManager
+import WCLPopupManager
 
 class SettingsInputAccessoryNode : ASDisplayNode {
     var yesButton : ButtonNode!
@@ -215,6 +216,13 @@ extension SettingsController {
     }
     
     func disconnect(sender : ButtonNode) {
+        print("disconnect now")
+        
+        let x = LogoutPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+        WCLPopupManager.sharedInstance.newPopup(x)
+        
+//        Synnc.sharedInstance.user.socialLogout(.Facebook)
+
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Disconnect", value: nil)
     }
 }

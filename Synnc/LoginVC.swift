@@ -187,15 +187,20 @@ extension LoginVC : WCLUserDelegate {
             }
             self.screenNode.loginNode.loginStatusAnimation.toValue = 1
         } else {
-            
+            if let rvc = self.parentViewController as? RootWindowController {
+                rvc.state = .Login
+                rvc.dismissFeed()
+            }
+            self.screenNode.loginNode.loginStatusAnimationProgress = 0
+            self.screenNode.loginNode.serverCheckStatusAnimationProgress = 0
         }
     }
     func wildUser(user: WCLUser, loginStatusChanged status: Bool, forExtension ext: String) {
         
         if status && ext == WCLUserLoginType.Facebook.rawValue || ext == WCLUserLoginType.Twitter.rawValue {
-            self.screenNode.loginNode.serverCheckStatusAnimation.toValue = 1
+//            self.screenNode.loginNode.serverCheckStatusAnimation.toValue = 1
         } else {
-            self.screenNode.loginNode.serverCheckStatusAnimation.toValue = 0
+//            self.screenNode.loginNode.serverCheckStatusAnimation.toValue = 0
         }
     }
 }

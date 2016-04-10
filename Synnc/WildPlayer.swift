@@ -15,6 +15,7 @@ import WCLSoundCloudKit
 import WCLPopupManager
 
 @objc protocol StreamerDelegate {
+    optional func streamer(streamer : WildPlayer!, volumeChanged volume: Float)
     optional func streamer(streamer : WildPlayer!, updatedToTime: CGFloat)
     optional func streamer(streamer : WildPlayer!, readyToPlay: Bool)
     optional func streamer(streamer : WildPlayer!, updatedToPosition position: CGFloat)
@@ -98,6 +99,13 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
         didSet {
             if rate != oldValue {
                 playerRateChanged()
+            }
+        }
+    }
+    override var volume : Float {
+        didSet {
+            if volume != oldValue {
+                playerVolumeChanged()
             }
         }
     }
@@ -224,6 +232,9 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
                 self.rate = 0
             }
         }
+    }
+    func playerVolumeChanged() {
+        self.delegate?.streamer?(self, volumeChanged: self.volume)
     }
     func playerRateChanged(){
         

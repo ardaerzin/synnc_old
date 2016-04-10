@@ -189,6 +189,8 @@ class LoginNode : ASDisplayNode, TrackedView {
                 } else {
                     serverCheckStatusAnimation.toValue = 0
                 }
+            } else {
+                serverCheckStatusAnimation.toValue = 0
             }
         }
     }
@@ -237,8 +239,6 @@ class LoginNode : ASDisplayNode, TrackedView {
         didSet {
             let a = POPTransition(serverCheckStatusAnimationProgress, startValue: 1, endValue: 0)
             self.buttonHolder.alpha = a
-//            self.legal.alpha = a
-            
             self.spinnerNode.alpha = 1-a
         }
     }

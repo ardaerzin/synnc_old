@@ -77,7 +77,7 @@ class StreamInfoController : ASViewController, PagerSubcontroller {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.screenNode.infoNode.topSection.joinButton.addTarget(self, action: #selector(StreamInfoController.joinStream(_:)), forControlEvents: .TouchUpInside)
+//        self.screenNode.infoNode.topSection.joinButton.addTarget(self, action: #selector(StreamInfoController.joinStream(_:)), forControlEvents: .TouchUpInside)
         self.screenNode.infoNode.topSection.userArea.addTarget(self, action: #selector(StreamInfoController.tappedOnUserArea(_:)), forControlEvents: .TouchUpInside)
     }
     
@@ -89,14 +89,6 @@ class StreamInfoController : ASViewController, PagerSubcontroller {
             let size = CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200)
             let x = UserProfilePopup(size: size, user: user)
             WCLPopupManager.sharedInstance.newPopup(x)
-        }
-    }
-    
-    
-    func joinStream(sender : AnyObject){
-        
-        if let pvc = self.parentViewController as? StreamVC {
-            pvc.joinStream(sender)
         }
     }
     
