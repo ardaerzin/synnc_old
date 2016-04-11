@@ -26,8 +26,8 @@ import SwiftyJSON
 import WCLUIKit
 
 #if DEBUG
-let socketURLString = "https://digital-reform.codio.io:9500"
-//let socketURLString = "https://synnc.herokuapp.com"
+//let socketURLString = "https://digital-reform.codio.io:9500"
+let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-3"
 #else
 let socketURLString = "https://synnc.herokuapp.com"
@@ -99,31 +99,8 @@ class Synnc : UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        let request = NSMutableURLRequest(URL: NSURL(string: socketURLString+"/api/settings")!)
-        request.HTTPMethod = "GET"
         
-        
-        NSURLSession.sharedSession().dataTaskWithRequest(request) {
-            (data, response, error) in
-        
-            guard let d = data else {
-                print("NO RESPONSE FROM SERVER")
-                return
-            }
-        
-            let json = JSON(data: d)
-            Async.main {
-                if let minReqVersion = json["minCompatibleVersion"].string where self.version.compareToMinRequiredVersion(minReqVersion) >= 0 {
-                    self.serverAvailable = true
-                    self.socket?.connect()
-                } else {
-                    let x = NotCompatiblePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-                    self.topPopupManager.newPopup(x)
-                }
-            }
-            
-        }.resume()
-        
+        self.tryConnect()
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -162,6 +139,40 @@ class Synnc : UIResponder, UIApplicationDelegate {
         lagFreeField.removeFromSuperview()
         
         return true
+    }
+    
+    func tryConnect() {
+        let request = NSMutableURLRequest(URL: NSURL(string: socketURLString+"/api/settings")!)
+        request.HTTPMethod = "GET"
+        
+        
+        NSURLSession.sharedSession().dataTaskWithRequest(request) {
+            (data, response, error) in
+            
+            guard let d = data else {
+                let x = NotReachablePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+                self.topPopupManager.newPopup(x)
+                return
+            }
+            
+            let json = JSON(data: d)
+            
+            Async.main {
+                
+                
+                if let minReqVersion = json["minCompatibleVersion"].string where self.version.compareToMinRequiredVersion(minReqVersion) >= 0 {
+                    self.serverAvailable = true
+                    self.socket?.connect()
+                } else if let _ = json["minCompatibleVersion"].string {
+                    let x = NotCompatiblePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+                    self.topPopupManager.newPopup(x)
+                } else {
+                    let x = NotReachablePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+                    self.topPopupManager.newPopup(x)
+                }
+            }
+            
+            }.resume()
     }
     
     func initSynnc(){

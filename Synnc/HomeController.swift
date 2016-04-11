@@ -133,8 +133,13 @@ extension HomeController : WCLWindowDelegate {
         print("did dismiss window")
     }
     func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
+        
+        print("updated position")
         if position == .Displayed {
+            print("displayed")
             AnalyticsScreen.new(node: self.currentScreen())
         }
+        
+        
     }
 }
