@@ -151,6 +151,9 @@ extension StreamsFeedController : ASTableDelegate {
     }
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let stream = self.dataSource.data[indexPath.item] as? Stream where indexPath.item < self.dataSource.data.count {
+            
+            self.node.userInteractionEnabled = false
+            
             let vc = StreamVC(stream: stream)
             let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height - 70, dismissable: true)
         

@@ -115,6 +115,10 @@ extension MyPlaylistsController : ASTableViewDataSource {
 
 extension MyPlaylistsController : ASTableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.item >= SharedPlaylistDataSource.allItems.count {
+            return
+        }
+        self.screenNode.userInteractionEnabled = false
         let playlist = SharedPlaylistDataSource.allItems[indexPath.item]
         self.displayPlaylist(playlist)
         AnalyticsEvent.new(category : "ui_action", action: "cell_tap", label: "playlist", value: nil)
