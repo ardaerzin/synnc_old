@@ -23,7 +23,6 @@ class WildPlayerSyncManager {
     var timestamp : StreamTimeStamp! {
         didSet {
             if timestamp != oldValue {
-                print("updated timestamp")
                 if !player.stream!.isUserStream {
                     self.handleTimeStampChange(timestamp)
                 }
@@ -72,7 +71,6 @@ extension WildPlayerSyncManager {
     
     func handleTimeStampChange(ts: StreamTimeStamp){
         if player.currentIndex != ts.playlist_index {
-            print("handle timestamp change && change index", player.currentIndex, ts.playlist_index)
             self.player.isSyncing = true
             player.trackManager.reloadTrackData(player.stream!)
             player.currentIndex = ts.playlist_index as Int
@@ -124,8 +122,10 @@ extension WildPlayerSyncManager {
                 
                 let clockTime = CMClockGetTime(CMClockGetHostTimeClock())
                 
-                self.player.setRate(1, time: CMTimeMakeWithSeconds((pnt), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
-                self.checkTimeSync()
+//                Async.background {
+                    self.player.setRate(1, time: CMTimeMakeWithSeconds((pnt), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
+                    self.checkTimeSync()
+//                }
             })
             self.player.isSyncing = true
             
@@ -142,8 +142,10 @@ extension WildPlayerSyncManager {
                 
                 if playerNewTime/player.currentItem!.asset.duration.seconds < 0.97 {
                     
-                    self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
-                    self.player.isSyncing = true
+//                    Async.background {
+                        self.player.setRate(1, time: CMTimeMakeWithSeconds((playerNewTime), self.player.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(clockTime), self.player.currentItem!.asset.duration.timescale) )
+                        self.player.isSyncing = true
+//                    }
                 } else {
 //                    print("STOP")
 //                    self.player.rate = 0

@@ -72,7 +72,6 @@ class StreamPlayer : WildPlayer {
                 UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
                 self.isActiveSession = true
                 updateControlCenterControls()
-                print("set audio session")
             } catch let error as NSError {
                 print(error)
                 self.isActiveSession = false
@@ -162,8 +161,9 @@ class StreamPlayer : WildPlayer {
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
         
+        let name = st.playlist.name == nil ? "Untitled" : st.playlist.name!
         nowPlayingInfo.updateValue(track.name, forKey: MPMediaItemPropertyTitle)
-        nowPlayingInfo.updateValue(st.name + ", by " + st.user.username, forKey: MPMediaItemPropertyArtist)
+        nowPlayingInfo.updateValue(name + ", by " + st.user.username, forKey: MPMediaItemPropertyArtist)
         
         
         let downloader = ASPINRemoteImageDownloader.sharedDownloader()
@@ -175,7 +175,7 @@ class StreamPlayer : WildPlayer {
         
         transformation.crop = "fill"
         
-        if let str = st.img, let x = _cloudinary.url(str as String, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+        if let str = st.playlist.cover_id, let x = _cloudinary.url(str as String, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             
             
             downloader.downloadImageWithURL(url, callbackQueue: dispatch_get_main_queue(), downloadProgress: nil) {

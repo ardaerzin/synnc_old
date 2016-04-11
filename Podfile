@@ -11,7 +11,7 @@ pod 'pop'
 pod 'WCLPopupManager', :git => 'https://github.com/doguhanokumus/WCLPopupManager.git', :branch => 'master'
 pod 'WCLUIKit', :git => 'https://github.com/doguhanokumus/WCLUIKit.git', :branch => 'master'
 pod 'WCLUserManager', :git => 'https://github.com/doguhanokumus/WCLUserManager.git', :branch => 'master'
-pod 'WCLNotificationManager’
+pod 'WCLNotificationManager’, :git => 'https://github.com/doguhanokumus/WCLNotificationManager.git', :branch => 'master'
 pod 'SpinKit'
 pod 'Dollar'
 pod 'Cent'

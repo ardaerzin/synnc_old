@@ -15,7 +15,6 @@ import WCLNotificationManager
 
 class StreamInProgressPopup : WCLPopupViewController {
     var node : StreamInProgressPopupNode!
-    var callback : ((status : Bool) -> Void)?
     var playlist : SynncPlaylist!
     
     init(size: CGSize, playlist : SynncPlaylist? = nil) {
@@ -69,7 +68,10 @@ class StreamInProgressPopup : WCLPopupViewController {
         }
     }
     
+    var callback : ((sender : AnyObject!) -> Void)?
+    
     func endCurrentStream(sender : ButtonNode!) {
+        sender.showSpinView() 
         AnalyticsEvent.new(category: "StreamPopup", action: "buttonTap", label: "endCurrentStream", value: nil)
         if let activeStr = StreamManager.sharedInstance.activeStream {
             StreamManager.sharedInstance.stopStream(activeStr, completion: {
@@ -82,6 +84,7 @@ class StreamInProgressPopup : WCLPopupViewController {
                 
                 self?.closeView(true)
                 self?.playlist = nil
+                self?.callback?(sender: nil)
             })
         }
     }

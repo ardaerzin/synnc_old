@@ -47,13 +47,10 @@ class Stream : Serializable {
     }
     var delegate : StreamDelegate? = Synnc.sharedInstance.streamManager
     var timestamp : StreamTimeStamp?
-    var name: String!
-    var img: NSString!
     var lat: NSNumber!
     var lon: NSNumber!
     var user: WCLUser!
     var userid: String!
-    var city : NSString!
     var currentSongIndex : NSNumber! = 0
     var info : String = ""
     var playlist : SynncPlaylist!
@@ -84,16 +81,7 @@ class Stream : Serializable {
         info["playlist"] = playlist
         info["lat"] = 0
         info["lon"] = 0
-    
-        if let name = playlist.name {
-            info["name"] = name
-        }
-        if let coverid = playlist.cover_id {
-            info["img"] = coverid
-        }
-        if let location = playlist.location {
-            info["city"] = location
-        }
+
         stream.update(info)
         Synnc.sharedInstance.streamManager.userStream = stream
         
@@ -326,40 +314,7 @@ extension Stream {
                     
                     keys.append("user")
                 }
-                
-//                
-//                let genresJSON = JSON(genresInfo)
-//                if let arr = genresJSON.array {
-//                    var genresArr : [Genre] = []
-//                    for item in arr {
-//                        var genre : Genre!
-//                        if let id = item["_id"].string {
-//                            
-//                            if let g = Genre.finder(inContext: Synnc.sharedInstance.moc).filter(NSPredicate(format: "id == %@", id)).sort(keys: ["id"], ascending: [true]).find()?.first as? Genre {
-//                                genre = g
-//                            } else {
-//                                //                        g = Genre.
-//                                //                        genre =
-//                                //                            WildUserManager.sharedInstance().newUser(fromJSON: item)
-//                            }
-//                        }
-//                        genresArr.append(genre)
-//                    }
-//                    
-//                    let oldGenresSet = Set(self.genres)
-//                    let newGenresSet = Set(genresArr)
-//                    let newGenres = newGenresSet.subtract(oldGenresSet)
-//                    let oldGenres = oldGenresSet.subtract(newGenresSet)
-//                    
-//                    if oldGenres.count > 0 || newGenres.count > 0 {
-//                        keys.append("genres")
-//                    }
-//                    
-//                    self.genres = genresArr
-//                    
-//                    
-//                }
-//                
+//
                 Async.main {
 //                    print("PLAYLIST CHANGED KEYS", keys)
                     self.delegate?.updatedStreamFromServer?(self, changedKeys: keys)

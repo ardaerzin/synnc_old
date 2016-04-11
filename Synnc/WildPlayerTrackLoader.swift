@@ -9,6 +9,7 @@
 import Foundation
 import AVFoundation
 import WCLSoundCloudKit
+import WCLUtilities
 
 class WildPlayerTrackManager {
     
@@ -35,21 +36,23 @@ class WildPlayerTrackManager {
         
         player.rate = 0
         
-        for item in player.items().reverse() {
-            self.dequeueItem(item)
-        }
-        
-        print("ITEMS", self.player.items())
-        
-        let i : Int = stream == StreamManager.sharedInstance.userStream ? self.player.currentIndex : Int(stream.timestamp!.playlist_index)
-        for (index,song) in (stream.playlist.songs).enumerate() {
-            if index >= i {
-                let mediaItem = self.newItem(song: song, index: index)
-                print("!*!*!*! add item", mediaItem!.index)
-                self.queueItem(mediaItem)
+//        Async.background {
+            for item in self.player.items().reverse() {
+                self.dequeueItem(item)
             }
-        }
-        isLoadingTrackData = false
+            let i : Int = stream == StreamManager.sharedInstance.userStream ? self.player.currentIndex : Int(stream.timestamp!.playlist_index)
+            for (index,song) in (stream.playlist.songs).enumerate() {
+                if index >= i {
+                    let mediaItem = self.newItem(song: song, index: index)
+                    self.queueItem(mediaItem)
+                }
+            }
+            
+//            Async.main {
+                self.isLoadingTrackData = false
+//            }
+//        }
+        
 //        self.player.rate = 1
     }
     func newItem(song song: SynncTrack, index: Int) -> WildPlayerItem? {
@@ -74,16 +77,19 @@ class WildPlayerTrackManager {
         if item == nil {
             return
         }
-        self.player.insertItem(item!, afterItem: ind != 0 ? self.player.items()[ind-1] : nil)
+//        Async.background {
+            self.player.insertItem(item!, afterItem: ind != 0 ? self.player.items()[ind-1] : nil)
+//        }
     }
     func queueItem(item: AVPlayerItem?){
         if item == nil {
             return
         }
-        self.player.insertItem(item!, afterItem: nil)
+//        Async.background {
+            self.player.insertItem(item!, afterItem: nil)
+//        }
     }
     func dequeueItem(avItem: AVPlayerItem){
-        print("dequeue item", avItem, (avItem as! WildPlayerItem).index)
         self.player.removeItem(avItem)
     }
 }

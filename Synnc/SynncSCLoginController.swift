@@ -15,6 +15,9 @@ class SynncSCLoginController : SoundcloudLoginViewController {
     
     var loadingNode : SoundcloudLoginLoaderNode!
     
+    deinit {
+        print("deinit soundcloud view")
+    }
     override func loadView() {
         super.loadView()
         
@@ -31,6 +34,20 @@ class SynncSCLoginController : SoundcloudLoginViewController {
         self.loadingNode.frame = self.view.bounds
         
         self.loadingNode.measureWithSizeRange(ASSizeRangeMake(self.view.frame.size, self.view.frame.size))
+    }
+    
+    var oldScreen : AnalyticsScreen!
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsManager.sharedInstance.newScreen("Soundcloud Login")
+    }
+    override func didHide() {
+        super.didHide()
+        if oldScreen != nil {
+            AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        }
     }
     
     override func webViewDidFinishLoad(webView: UIWebView) {

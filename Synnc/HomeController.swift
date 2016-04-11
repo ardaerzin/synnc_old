@@ -90,15 +90,14 @@ class HomeController : PagerBaseController {
     var needsToShowPlaylist : Bool = false
     
     func scrollAndCreatePlaylist(sender : AnyObject) {
-        print("scroll and create playlist")
         needsToShowPlaylist = true
         self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "New Playlist 2", value: nil)
     }
     
     override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         super.scrollViewDidEndDecelerating(scrollView)
         
-        print("did end decelerating", currentIndex)
         if self.currentIndex == 1 && needsToShowPlaylist {
             self.playlistsController.newPlaylistAction(self)
         }

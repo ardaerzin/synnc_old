@@ -157,7 +157,7 @@ class StreamCellContentNode : ASDisplayNode {
     
     func configureForStream(stream : Stream) {
         
-        if let img = stream.img {
+        if let img = stream.playlist.cover_id {
             self.imageId = img as String
         }
         
@@ -171,7 +171,7 @@ class StreamCellContentNode : ASDisplayNode {
             }
         }
         streamGenres = genreText
-        streamTitle = stream.name
+        streamTitle = stream.playlist.name
         
         listeners = stream.users.count
         

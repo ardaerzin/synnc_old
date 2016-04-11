@@ -214,6 +214,8 @@ class ProfileController : ASViewController, PagerSubcontroller {
     func imageTapAction(sender: ASImageNode) {
         
         AnalyticsEvent.new(category : "ui_action", action: "image_tap", label: "My Profile", value: nil)
+        let oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsManager.sharedInstance.newScreen("Image Picker Profile")
         
         imagePicker = DKImagePickerController()
         imagePicker.assetType = .AllPhotos
@@ -225,6 +227,7 @@ class ProfileController : ASViewController, PagerSubcontroller {
             if let pvc = self.parentViewController as? RootWindowController {
                 pvc.toggleFeed(true)
             }
+            AnalyticsManager.sharedInstance.newScreen(oldScreen!)
         }
         imagePicker.didSelectAssets = {
             assets in
@@ -241,6 +244,7 @@ class ProfileController : ASViewController, PagerSubcontroller {
             if let pvc = self.parentViewController as? RootWindowController {
                 pvc.toggleFeed(true)
             }
+            AnalyticsManager.sharedInstance.newScreen(oldScreen!)
         }
         
         self.navigationController?.presentViewController(imagePicker, animated: true) {}

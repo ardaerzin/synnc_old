@@ -64,6 +64,7 @@ class AnalyticsManager {
     var screens : [AnalyticsScreen] = [] {
         didSet {
             if let ls = self.screens.last {
+                
                 GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: ls.name)
                 GAI.sharedInstance().defaultTracker.send(GAIDictionaryBuilder.createScreenView().build() as [NSObject : AnyObject])
             }
@@ -74,11 +75,18 @@ class AnalyticsManager {
         if let ls = self.screens.last {
             if let x = ls.node as? NSObject, let y = screen.node as? NSObject where x != y {
                 self.screens.append(screen)
+            } else if ls.node == nil {
+                self.screens.append(screen)
             }
             
         } else {
             self.screens.append(screen)
         }
+    }
+    func newScreen(name : String) {
+        var x = AnalyticsScreen()
+        x.name = name
+        self.screens.append(x)
     }
     
     func newEvent(event : AnalyticsEvent) {

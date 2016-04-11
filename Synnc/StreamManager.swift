@@ -128,21 +128,42 @@ extension StreamManager {
         }
         print("STOP")
         self.activeStream = nil
-        Synnc.sharedInstance.socket.emitWithAck("Stream:leave", stream.o_id)(timeoutAfter: 0) {
-            
-            [weak self]
-            data in
-            
-            if self == nil {
-                return
+        
+        if stream == self.userStream {
+            Synnc.sharedInstance.socket.emitWithAck("Stream:stop", stream.o_id)(timeoutAfter: 0) {
+                [weak self]
+                data in
+                
+                if self == nil {
+                    return
+                }
+                
+                completion?(status: true)
+                
+                if let d = data.first {
+                    let json = JSON(d)
+                    stream.fromJSON(json)
+                }
             }
-            
-            if let ind = stream.users.indexOf(Synnc.sharedInstance.user) {
-                stream.users.removeAtIndex(ind)
-                self?.updatedStreamFromServer(stream, changedKeys: ["users"])
+        } else {
+            Synnc.sharedInstance.socket.emitWithAck("Stream:leave", stream.o_id)(timeoutAfter: 0) {
+                
+                [weak self]
+                data in
+                
+                if self == nil {
+                    return
+                }
+                
+                
+                completion?(status: true)
+                
+                if let ind = stream.users.indexOf(Synnc.sharedInstance.user) {
+                    stream.users.removeAtIndex(ind)
+                    self?.updatedStreamFromServer(stream, changedKeys: ["users"])
+                }
             }
         }
-        completion?(status: true)
     }
     
     func finishedStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
@@ -243,6 +264,7 @@ extension StreamManager {
     }
     
     func updatedStreamLocally(stream: Stream, changedKeys keys: [String]?) {
+        print("updated Stream locally", keys)
         if stream.o_id == nil {
             stream.toJSON() {
                 result in
@@ -269,6 +291,11 @@ extension StreamManager {
                 Synnc.sharedInstance.socket.emit("Stream:update", result)
             }
         }
+        
+        if let k = keys {
+            let notification = NSNotification(name: "UpdatedStreamLocally", object: stream, userInfo: ["updatedKeys" : k])
+            NSNotificationCenter.defaultCenter().postNotification(notification)
+        }
     }
     func updatedStreamFromServer(stream: Stream, changedKeys keys: [String]?) {
         
@@ -276,7 +303,6 @@ extension StreamManager {
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
-            print("updated timestamp from server")
             self.player.syncManager.timestamp = stream.timestamp
         }
         
@@ -437,8 +463,11 @@ extension StreamManager {
             return compoundPredicate.evaluateWithObject($0)
             }.sort({
                 
-                let x : String = $0.name
-                let y : String = $1.name
+                let name1 = $0.playlist.name == nil ? "Untitled" : $0.playlist.name!
+                let name2 = $1.playlist.name == nil ? "Untitled" : $1.playlist.name!
+                
+                let x : String = name1
+                let y : String = name2
                 
                 let range = x.startIndex..<x.endIndex
                 let res = x.compare(y, options: comparisonOptions, range: range, locale: nil)

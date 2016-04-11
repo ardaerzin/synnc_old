@@ -13,6 +13,7 @@ import WCLUtilities
 import AsyncDisplayKit
 import pop
 import WCLPopupManager
+import WCLNotificationManager
 
 extension PlaylistTracklistController : TrackSearchControllerDelegate {
     func trackSearcher(controller: TrackSearchController, didSelect track: SynncTrack) {
@@ -41,10 +42,33 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     }
     func toggleEditMode(sender : ButtonNode) {
         print("toggle edit mode")
+        
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            
+            Async.main {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            }
+            
+            return
+        }
+        
         sender.selected = !sender.selected
         editMode = !editMode
     }
     func displayTrackSearch(sender : ASButtonNode!) {
+        
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            
+            Async.main {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            }
+            return
+        }
+        
         let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
         lc.delegate = self
         WCLPopupManager.sharedInstance.newPopup(lc)

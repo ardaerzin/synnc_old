@@ -69,9 +69,17 @@ class SynncFacebookActivity : UIActivity{
     }
     
     func configure(stream: Stream) -> (title: String, url : NSURL, description : String, image : NSURL!) {
-        let shareTitle = stream.name
+        
+        var name : String
+        if let n = stream.playlist.name {
+            name = n
+        } else {
+            name = "Untitled"
+        }
+        
+        let shareTitle = name
         let shareUrl = NSURL(string: "https://silver-sister.codio.io:9500")!
-        let shareDescription = "I'm listening to \(stream.user.username)'s stream, '\(stream.name)'"
+        let shareDescription = "I'm listening to \(stream.user.username)'s stream, '\(name)'"
         
         let transformation = CLTransformation()
         
@@ -79,7 +87,7 @@ class SynncFacebookActivity : UIActivity{
         transformation.height = 400 * UIScreen.mainScreen().scale
         transformation.crop = "fill"
         var shareImg : NSURL!
-        if let str = stream.img, let x = _cloudinary.url(str as String, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+        if let str = stream.playlist.cover_id, let x = _cloudinary.url(str as String, options: ["transformation" : transformation]), let url = NSURL(string: x) {
             shareImg = url
         }
         

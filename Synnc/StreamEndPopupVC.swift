@@ -33,8 +33,8 @@ class StreamEndPopupVC : WCLPopupViewController {
         self.node = n
         self.view.addSubnode(node)
         
-        n.yesButton.addTarget(self, action: #selector(StreamEndPopupVC.requestNotification(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: #selector(StreamEndPopupVC.dismissNotificationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+//        n.yesButton.addTarget(self, action: #selector(StreamEndPopupVC.requestNotification(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+//        n.noButton.addTarget(self, action: #selector(StreamEndPopupVC.dismissNotificationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }

@@ -71,7 +71,7 @@ class StreamVC : PagerBaseController {
         
         node.nowPlayingArea.likeButton.addTarget(self, action: #selector(StreamVC.toggleTrackFav(_:)), forControlEvents: .TouchUpInside)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamViewController.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
     }
     
     override func viewDidLoad() {
@@ -91,7 +91,7 @@ class StreamVC : PagerBaseController {
     }
     func shareStream(sender: AnyObject) {
         
-        let textToShare = "I'm listening to \(stream.user.username)'s stream, '\(stream.name)'"
+        let textToShare = "I'm listening to \(stream.user.username)'s stream, '\(stream.playlist.name)'"
         if let myWebsite = NSURL(string: "https://synnc.live") {
             let objectsToShare = [textToShare, myWebsite, (self.screenNode as! StreamVCNode).imageHeader.imageNode.image as! AnyObject, self.stream]
             
@@ -208,15 +208,17 @@ class StreamVC : PagerBaseController {
     func configure(stream: Stream) {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.updatedStream(_:)), name: "UpdatedStream", object: stream)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.updatedStream(_:)), name: "UpdatedStreamLocally", object: stream)
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.endedActiveStream(_:)), name: "EndedActiveStream", object: nil)
         
-        
-        ((self.screenNode as! StreamVCNode).headerNode as! StreamHeaderNode).streamTitleNode.attributedString = NSAttributedString(string: stream.name, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 16)!, NSKernAttributeName : 0.5, NSForegroundColorAttributeName : UIColor.whiteColor()])
+        let name = stream.playlist.name == nil ? "Untitled" : stream.playlist.name!
+        ((self.screenNode as! StreamVCNode).headerNode as! StreamHeaderNode).streamTitleNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 16)!, NSKernAttributeName : 0.5, NSForegroundColorAttributeName : UIColor.whiteColor()])
         (self.screenNode as! StreamVCNode).headerNode.setNeedsLayout()
         
-        if let id = stream.img {
-            (self.screenNode as! StreamVCNode).imageHeader.imageId = stream.img as String
+        if let id = stream.playlist.cover_id {
+            (self.screenNode as! StreamVCNode).imageHeader.imageId = id
         } else {
             (self.screenNode as! StreamVCNode).imageHeader.imageNode.image = Synnc.appIcon
         }
@@ -284,6 +286,11 @@ class StreamVC : PagerBaseController {
                     }
                     if let _ = keys.indexOf("currentSongIndex") {
                         self.updateTrack(stream)
+                    }
+                    if let _ = keys.indexOf("playlist") {
+                        self.configure(self.stream)
+//                        self.infoController.configure(self.stream)
+//                        (self.screenNode.headerNode as StreamHeaderNode).conf
                     }
                 }
             }
@@ -393,7 +400,15 @@ extension StreamVC : WCLWindowDelegate {
 }
 
 extension StreamVC {
-    func joinStream(sender : AnyObject){
+    
+    func notJoiningStream(sender : AnyObject){
+        if let node = sender as? ButtonNode {
+            node.userInteractionEnabled = true
+            node.hideSpinView()
+        }
+    }
+    
+    func joinStream(sender : AnyObject!){
         
         if let node = sender as? ButtonNode {
             node.userInteractionEnabled = false
@@ -405,6 +420,9 @@ extension StreamVC {
         if let stream = StreamManager.sharedInstance.activeStream {
             
             let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
+//            x.node.yesButton.addTarget(self, action: #selector(StreamVC.stopAndJoin(_:)), forControlEvents: .TouchUpInside)
+            x.callback = self.joinStream
+            x.node.noButton.addTarget(self, action: #selector(StreamVC.notJoiningStream(_:)), forControlEvents: .TouchUpInside)
             WCLPopupManager.sharedInstance.newPopup(x)
             
             return

@@ -209,13 +209,7 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     // MARK: Observation Handlers
     func currentItemChanged(){
         
-        print("*****Current item changed", self.currentItem)
-        //        if self.stream == nil {
-        //            return
-        //        }
-        
         if self.currentItem == nil && !self.trackManager.isLoadingTrackData {
-            print("end of playlist")
             self.endOfPlaylist = true
             self.rate = 0
             return

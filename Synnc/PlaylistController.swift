@@ -80,6 +80,7 @@ class PlaylistController : PagerBaseController {
     }
     
     func deleteAction(sender : AnyObject){
+        
         var plist = self.playlist
         let json = plist.toJSON(nil, populate: true)
         Async.background {
@@ -98,6 +99,7 @@ class PlaylistController : PagerBaseController {
         print("add songs")
         needsToShowTrackSearch = true
         self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch 2", value: nil)
     }
     
     override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
@@ -154,13 +156,14 @@ extension PlaylistController : UIGestureRecognizerDelegate {
 }
 
 extension PlaylistController {
-    func streamPlaylist(sender: AnyObject) {
+    func streamPlaylist(sender: AnyObject!) {
         
         AnalyticsEvent.new(category : "PlaylistAction", action: "button_tap", label: "stream", value: nil)
         
         if let stream = StreamManager.sharedInstance.activeStream {
             
             let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
+            x.callback = self.streamPlaylist
             WCLPopupManager.sharedInstance.newPopup(x)
             
             return
@@ -219,15 +222,6 @@ extension PlaylistController {
         stream.playlist = playlist
         stream.lat = 0
         stream.lon = 0
-        if let name = playlist.name {
-            stream.name = name
-        }
-        if let coverid = playlist.cover_id {
-            stream.img = coverid
-        }
-        if let location = playlist.location {
-            stream.city = location
-        }
         Synnc.sharedInstance.streamManager.userStream = stream
         let vc = StreamVC(stream: stream)
         

@@ -81,16 +81,16 @@ class TrackSearchController : WCLPopupViewController {
         
     }
     var oldScreen : AnalyticsScreen!
-//    override func didDisplay() {
-//        super.didDisplay()
-//        
-//        oldScreen = AnalyticsManager.sharedInstance.screens.last
-//        AnalyticsScreen.new(node: self.screenNode)
-//    }
-//    override func didHide() {
-//        super.didHide()
-//        AnalyticsManager.sharedInstance.newScreen(oldScreen)
-//    }
+    override func didDisplay() {
+        super.didDisplay()
+        
+        oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsScreen.new(node: self.screenNode)
+    }
+    override func didHide() {
+        super.didHide()
+        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+    }
     func toggleSourceSelector(sender : ButtonNode){
         self.screenNode.sourceSelectionNode.toggle(self.selectedSource)
         AnalyticsEvent.new(category: "trackSearch", action: "sourceSelect", label: nil, value: nil)
@@ -139,7 +139,7 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
             var str = (fieldStr as NSString).stringByReplacingCharactersInRange(range, withString: text)
             str = (str as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
             self.searchStringChanged(fieldStr, toString: str)
-            AnalyticsEvent.new(category: "trackSearch", action: "queryChange", label: nil, value: nil)
+//            AnalyticsEvent.new(category: "trackSearch", action: "queryChange", label: nil, value: nil)
         }
         return true
     }
@@ -147,12 +147,18 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
 
 extension TrackSearchController : ASTableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.item >= self.tracksDataSource.data.count {
+            return
+        }
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             AnalyticsEvent.new(category: "trackSearch", action: "itemSelect", label: "track", value: nil)
             self.delegate?.trackSearcher(self, didSelect: data)
         }
     }
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.item >= self.tracksDataSource.data.count {
+            return
+        }
         if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             AnalyticsEvent.new(category: "trackSearch", action: "itemDeselect", label: "track", value: nil)
             self.delegate?.trackSearcher(self, didDeselect: data)
@@ -161,6 +167,9 @@ extension TrackSearchController : ASTableViewDelegate {
     func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
         
         Async.main {
+            if indexPath.item >= self.tracksDataSource.data.count {
+                return
+            }
             if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.trackSearcher(self, hasTrack: data) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }

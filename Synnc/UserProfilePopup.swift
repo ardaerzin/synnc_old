@@ -12,6 +12,7 @@ import AsyncDisplayKit
 import WCLDataManager
 import pop
 import WCLUserManager
+import WCLNotificationManager
 
 class UserProfilePopup : WCLPopupViewController {
     
@@ -23,6 +24,7 @@ class UserProfilePopup : WCLPopupViewController {
         self.user = user
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
         self.dismissable = true
+        self.tapToDismiss = true
         self.screenNode.updateForUser(user)
         
     }
@@ -37,6 +39,7 @@ class UserProfilePopup : WCLPopupViewController {
         let node = ProfileCardNode()
         node.usernameNode.userInteractionEnabled = false
         self.screenNode = node
+        self.screenNode.followButton.addTarget(self, action: #selector(UserProfilePopup.followUser(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubnode(node)
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
@@ -69,13 +72,14 @@ class UserProfilePopup : WCLPopupViewController {
         }
     }
     
-    func goToAppStore(sender: AnyObject) {
-        if let customAppUrl = NSURL(string: "itms-beta://") {
-            if UIApplication.sharedApplication().canOpenURL(customAppUrl) {
-                if let url = NSURL(string: "https://beta.itunes.apple.com/v1/app/1065504357") {
-                    UIApplication.sharedApplication().openURL(url)
-                }
-            }
+    func followUser(sender: AnyObject) {
+        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Follow option is coming soon.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
         }
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "user_follow", value: nil)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
     }
 }

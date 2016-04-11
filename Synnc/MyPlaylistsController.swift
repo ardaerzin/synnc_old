@@ -147,6 +147,15 @@ extension MyPlaylistsController : PlaylistsDataSourceDelegate {
     }
     func playlistsDataSource(updatedItem item: SynncPlaylist, atIndexPath indexPath: NSIndexPath) {
         
+        if let stream = StreamManager.sharedInstance.activeStream where stream.playlist == item {
+            
+            var keys : [String] = []
+//            if stream.name != item.name {
+//                keys.append("name")
+//            }
+            StreamManager.sharedInstance.updatedStreamLocally(stream, changedKeys: ["playlist"])
+        }
+        
         self.screenNode.tableNode.view.beginUpdates()
         self.screenNode.tableNode.view.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         self.screenNode.tableNode.view.endUpdates()

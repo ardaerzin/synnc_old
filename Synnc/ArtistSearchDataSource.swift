@@ -21,6 +21,11 @@ class ArtistSearchDataSource : WCLAsyncCollectionViewDataSource {
     
     override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let node = SynncArtistSmallNode()
+        
+        if indexPath.item >= self.data.count {
+            return node
+        }
+        
         if let data = self.data[indexPath.item] as? SynncArtist where indexPath.item < self.data.count {
             node.configureForArtist(data)
         }

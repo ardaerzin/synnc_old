@@ -29,7 +29,6 @@ class DeletePlaylistPopup : WCLPopupViewController {
     override func loadView() {
         super.loadView()
         self.draggable = true
-        self.dismissable = false
         
         let node = DeletePlaylistNode()
         node.yesButton.addTarget(self, action: #selector(DeletePlaylistPopup.dismiss(_:)), forControlEvents: .TouchUpInside)
@@ -71,7 +70,7 @@ class DeletePlaylistPopup : WCLPopupViewController {
 
 class DeletePlaylistNode : ASDisplayNode, TrackedView {
     
-    var title: String! = "NotCompatiblePopup"
+    var title: String! = "Delete Playlist Popup"
     var messageNode : ASTextNode!
     var imageNode : ASImageNode!
     var infoNode : ASTextNode!

@@ -13,6 +13,8 @@ import pop
 import SafariServices
 import WCLNotificationManager
 import WCLPopupManager
+import SwiftyJSON
+import WCLUtilities
 
 class SettingsInputAccessoryNode : ASDisplayNode {
     var yesButton : ButtonNode!
@@ -179,7 +181,11 @@ extension SettingsController {
             let x = SFSafariViewController(URL: url)
             x.modalPresentationStyle = .OverCurrentContext
             x.delegate = self
-            self.presentViewController(x, animated: true, completion: nil)
+            self.presentViewController(x, animated: true, completion: {
+                completed in
+                
+                AnalyticsManager.sharedInstance.newScreen("settingsWebview")
+            })
             
             if let pvc = self.parentViewController as? RootWindowController {
                 pvc.toggleFeed(false)
@@ -232,19 +238,27 @@ extension SettingsController {
         self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
         AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "sendFeedback", value: nil)
         
-        print("send feedback shit", self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string)
-        
         if let feedbackMsg = self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText?.string {
             
             self.screenNode.settingsNode.feedbackNode.feedbackArea.attributedText = NSAttributedString(string: "")
             editableTextNodeDidUpdateText(self.screenNode.settingsNode.feedbackNode.feedbackArea)
             
-            Synnc.sharedInstance.socket.emit("Feedback:create", [
-                "user" : Synnc.sharedInstance.user._id,
-                "version" : Synnc.sharedInstance.version,
-                "timestamp" : NSDate().timeIntervalSince1970,
-                "feedback" : feedbackMsg
-            ])
+            var dict : [String : AnyObject] = [String : AnyObject]()
+            dict["user"] = Synnc.sharedInstance.user._id
+            dict["version"] = Synnc.sharedInstance.version
+            dict["timestamp"] = NSDate().timeIntervalSince1970
+            dict["feedback"] = feedbackMsg
+            
+            Synnc.sharedInstance.socket.emitWithAck("Feedback:create", dict)(timeoutAfter: 0, callback: {
+                (dataArr) in
+                if let status = dataArr.first, let stat = JSON(status).bool where stat {
+                    Async.main {
+                        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "We're on it! Thank you very much for your feedback.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                        }
+                    }
+                }
+            })
         }
     }
     func cancelFeedback(sender : ButtonNode) {

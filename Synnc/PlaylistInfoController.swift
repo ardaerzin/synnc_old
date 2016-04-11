@@ -99,6 +99,18 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     }
     
     func deletePlaylist(sender : AnyObject) {
+        
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            
+            Async.main {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't delete your active stream.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            }
+            
+            return
+        }
+        
         let x = DeletePlaylistPopup(playlist : self.playlist!, size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
         x.screenNode.yesButton.addTarget(self.parentViewController!, action: #selector(PlaylistController.deleteAction(_:)), forControlEvents: .TouchUpInside)
         WCLPopupManager.sharedInstance.newPopup(x)
@@ -109,18 +121,41 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         
         self.screenNode.infoNode.view.delegate = self
         screenNode.infoNode.addSongsButton.addTarget(self.parentViewController, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaylistInfoController.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func checkActiveStream(notification : NSNotification) {
+        if let stream = notification.object as? Stream {
+//            if playlist == stream.playlist {
+//                self.screenNode.infoNode.imageNode.userInteractionEnabled = false
+//                self.screenNode.infoNode.titleNode.userInteractionEnabled = false
+//                self.screenNode.infoNode.genreHolder.userInteractionEnabled = false
+//                self.screenNode.infoNode.locationHolder.userInteractionEnabled = false
+//            } else {
+//                self.screenNode.infoNode.imageNode.userInteractionEnabled = true
+//                self.screenNode.infoNode.titleNode.userInteractionEnabled = true
+//                self.screenNode.infoNode.genreHolder.userInteractionEnabled = true
+//                self.screenNode.infoNode.locationHolder.userInteractionEnabled = true
+//            }
+        }
     }
     
     func displayImagePicker(sender : AnyObject){
         
+        let oldScreen = AnalyticsManager.sharedInstance.screens.last
+        AnalyticsManager.sharedInstance.newScreen("Image Picker Playlist")
+        AnalyticsEvent.new(category : "ui_action", action: "image_tap", label: "Playlist Info", value: nil)
+        
         imagePicker = DKImagePickerController()
         imagePicker.assetType = .AllPhotos
         imagePicker.singleSelect = true
-        imagePicker.showsEmptyAlbums = false
+        imagePicker.showsEmptyAlbums = true
         imagePicker.showsCancelButton = true
         
         imagePicker.didCancel = {
             self.imagePicker = nil
+            AnalyticsManager.sharedInstance.newScreen(oldScreen!)
         }
         imagePicker.didSelectAssets = {
             assets in
@@ -135,6 +170,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
             }
             
             self.imagePicker = nil
+            AnalyticsManager.sharedInstance.newScreen(oldScreen!)
         }
         
         self.parentViewController?.presentViewController(imagePicker, animated: true) {}
@@ -407,6 +443,8 @@ extension PlaylistInfoController : GenrePickerDelegate {
     func genrePicker(picker: GenrePicker, dismissedWithGenres genres: [Genre]) {
         
         AnalyticsEvent.new(category: "PlaylistAction", action: "infoEdit", label: "genre", value: nil)
+        
+        print("selected genres:", genres)
         
         self.playlist!.genres = Set(genres)
         saveChanges()
