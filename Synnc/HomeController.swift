@@ -137,6 +137,10 @@ extension HomeController : WCLWindowDelegate {
         print("updated position")
         if position == .Displayed {
             print("displayed")
+            
+            self.feedController.node.userInteractionEnabled = true
+            self.playlistsController.node.userInteractionEnabled = true
+            
             AnalyticsScreen.new(node: self.currentScreen())
         }
         
