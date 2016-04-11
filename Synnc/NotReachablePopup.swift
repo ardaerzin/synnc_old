@@ -1,8 +1,8 @@
 //
-//  NotCompatiblePopup.swift
+//  NotReachablePopup.swift
 //  Synnc
 //
-//  Created by Arda Erzin on 3/16/16.
+//  Created by Arda Erzin on 4/11/16.
 //  Copyright © 2016 Arda Erzin. All rights reserved.
 //
 
@@ -12,10 +12,10 @@ import AsyncDisplayKit
 import WCLDataManager
 import pop
 
-class NotCompatiblePopup : WCLPopupViewController {
+class NotReachablePopup : WCLPopupViewController {
     
-    var screenNode : NotCompatibleNode!
-
+    var screenNode : NotReachablePopupNode!
+    
     init(size: CGSize) {
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
@@ -28,8 +28,8 @@ class NotCompatiblePopup : WCLPopupViewController {
         self.draggable = true
         self.dismissable = false
         
-        let node = NotCompatibleNode()
-        node.yesButton.addTarget(self, action: #selector(NotCompatiblePopup.goToAppStore(_:)), forControlEvents: .TouchUpInside)
+        let node = NotReachablePopupNode()
+        node.yesButton.addTarget(self, action: #selector(NotReachablePopup.tryAgain(_:)), forControlEvents: .TouchUpInside)
         self.screenNode = node
         self.view.addSubnode(node)
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
@@ -45,7 +45,7 @@ class NotCompatiblePopup : WCLPopupViewController {
             }
         }
     }
-
+    
     
     var oldScreen : AnalyticsScreen!
     override func didDisplay() {
@@ -60,18 +60,13 @@ class NotCompatiblePopup : WCLPopupViewController {
         }
     }
     
-    func goToAppStore(sender: AnyObject) {
-        if let customAppUrl = NSURL(string: "itms-beta://") {
-            if UIApplication.sharedApplication().canOpenURL(customAppUrl) {
-                if let url = NSURL(string: "https://beta.itunes.apple.com/v1/app/1065504357") {
-                    UIApplication.sharedApplication().openURL(url)
-                }
-            }
-        }
+    func tryAgain(sender: AnyObject) {
+        Synnc.sharedInstance.tryConnect()
+        self.closeView(true)
     }
 }
 
-class NotCompatibleNode : ASDisplayNode, TrackedView {
+class NotReachablePopupNode : ASDisplayNode, TrackedView {
     
     var title: String! = "NotCompatiblePopup"
     var messageNode : ASTextNode!
@@ -94,13 +89,13 @@ class NotCompatibleNode : ASDisplayNode, TrackedView {
         
         infoNode = ASTextNode()
         infoNode.alignSelf = .Stretch
-        infoNode.attributedString = NSAttributedString(string: "You are using an unsupported version of Synnc. Please update before moving forward.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
+        infoNode.attributedString = NSAttributedString(string: "It looks like you are unable to reach to our servers. Please check your connection.", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
         imageNode = ASImageNode()
         imageNode.image = Synnc.appIcon
         
         yesButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        yesButton.setAttributedTitle(NSAttributedString(string: "Update Now", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        yesButton.setAttributedTitle(NSAttributedString(string: "Reconnect", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         
         self.addSubnode(imageNode)
         self.addSubnode(messageNode)

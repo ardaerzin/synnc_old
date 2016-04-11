@@ -425,6 +425,7 @@
 		47EBDF9F1C1BE1990075CF0B /* SynncTrack+Spotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF9E1C1BE1990075CF0B /* SynncTrack+Spotify.swift */; };
 		47EBDFA41C1C8A060075CF0B /* SynncArtist+Soundcloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDFA31C1C8A060075CF0B /* SynncArtist+Soundcloud.swift */; };
 		47EBDFA61C1C8A110075CF0B /* SynncArtist+Spotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDFA51C1C8A110075CF0B /* SynncArtist+Spotify.swift */; };
+		47EEACCB1CBBD6C1004E5229 /* NotReachablePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EEACCA1CBBD6C1004E5229 /* NotReachablePopup.swift */; };
 		936DB9741C41C5690069ACDA /* WildUser+FBSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936DB9731C41C5690069ACDA /* WildUser+FBSDK.swift */; };
 /* End PBXBuildFile section */
 
@@ -875,6 +876,7 @@
 		47EBDF9E1C1BE1990075CF0B /* SynncTrack+Spotify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncTrack+Spotify.swift"; sourceTree = "<group>"; };
 		47EBDFA31C1C8A060075CF0B /* SynncArtist+Soundcloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncArtist+Soundcloud.swift"; sourceTree = "<group>"; };
 		47EBDFA51C1C8A110075CF0B /* SynncArtist+Spotify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncArtist+Spotify.swift"; sourceTree = "<group>"; };
+		47EEACCA1CBBD6C1004E5229 /* NotReachablePopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotReachablePopup.swift; sourceTree = "<group>"; };
 		56E1A1899D17F83DEDFDEC35 /* Pods_SynncTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SynncTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		696637A1F5E218B729C8DF00 /* Pods_SynncUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SynncUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE84AEB7D80E0B36B62EC9D /* Pods_Synnc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Synnc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1310,6 +1312,7 @@
 			children = (
 				475771271CB98B18004FBB11 /* ShareStreamPopup.swift */,
 				475E22A31C99A79100F6D211 /* NotCompatiblePopup.swift */,
+				47EEACCA1CBBD6C1004E5229 /* NotReachablePopup.swift */,
 				475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */,
 				476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */,
 				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
@@ -2467,6 +2470,7 @@
 				47D763801C3B06B4008E0334 /* GenrePickerController.swift in Sources */,
 				477705291C3EB628007089D0 /* StreamsFeedNode.swift in Sources */,
 				4797B1341CA0862100AE2936 /* PagerHeaderNode.swift in Sources */,
+				47EEACCB1CBBD6C1004E5229 /* NotReachablePopup.swift in Sources */,
 				4741E8631C9D67D2007DE80E /* OnboardingPager.swift in Sources */,
 				476CC8111CA9675900CBA0E3 /* StreamVCNode.swift in Sources */,
 				475771281CB98B18004FBB11 /* ShareStreamPopup.swift in Sources */,
