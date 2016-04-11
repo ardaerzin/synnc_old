@@ -281,7 +281,6 @@
 		4748719B1C84D83D007F3C68 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4748719A1C84D83D007F3C68 /* FBSDKCoreKit.framework */; };
 		475286D91C35989400731008 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286D81C35989400731008 /* Stream.swift */; };
 		475286DB1C359E1900731008 /* StreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DA1C359E1900731008 /* StreamManager.swift */; };
-		475286DF1C35AB9600731008 /* PlaylistSelectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */; };
 		475286E41C37372300731008 /* WCLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 475286E31C37372300731008 /* WCLScrollNode.m */; };
 		475286E61C3737D900731008 /* WCLScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475286E51C3737D900731008 /* WCLScrollView.swift */; };
 		475771191CB72CC2004FBB11 /* DeletePlaylistPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */; };
@@ -727,7 +726,6 @@
 		4748719A1C84D83D007F3C68 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		475286D81C35989400731008 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
 		475286DA1C359E1900731008 /* StreamManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamManager.swift; sourceTree = "<group>"; };
-		475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistSelectorController.swift; sourceTree = "<group>"; };
 		475286E21C37371600731008 /* WCLScrollNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCLScrollNode.h; sourceTree = "<group>"; };
 		475286E31C37372300731008 /* WCLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLScrollNode.m; sourceTree = "<group>"; };
 		475286E51C3737D900731008 /* WCLScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCLScrollView.swift; sourceTree = "<group>"; };
@@ -1030,7 +1028,6 @@
 			isa = PBXGroup;
 			children = (
 				475286D81C35989400731008 /* Stream.swift */,
-				475286DE1C35AB9600731008 /* PlaylistSelectorController.swift */,
 				475286DA1C359E1900731008 /* StreamManager.swift */,
 				47B808801C7FA58C00312C96 /* StreamSaver.swift */,
 				47D763721C3A2829008E0334 /* Player */,
@@ -2451,7 +2448,6 @@
 				47B37B831C2F1596001CC6D2 /* ParallaxBackgroundNode.swift in Sources */,
 				477705261C3EB020007089D0 /* ChatManager.swift in Sources */,
 				47D7637A1C3A283B008E0334 /* WildPlayer.swift in Sources */,
-				475286DF1C35AB9600731008 /* PlaylistSelectorController.swift in Sources */,
 				4714D2471C8909DB00F6F5AD /* NHNetAssociation.m in Sources */,
 				47B37B851C2F159F001CC6D2 /* ParallaxContentNode.swift in Sources */,
 				4723792B1C9DEACA00D79C55 /* LoginSpinner.swift in Sources */,

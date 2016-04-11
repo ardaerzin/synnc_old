@@ -168,6 +168,7 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         self.emptyState = self.playlist!.songs.isEmpty
         
         if let pvc = self.parentViewController as? PlaylistController {
+            pvc.isNewPlaylist = false
             pvc.infoController.screenNode.recursivelyFetchData()
         }
     }

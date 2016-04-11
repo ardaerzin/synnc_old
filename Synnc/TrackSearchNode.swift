@@ -42,6 +42,7 @@ class EmptyStateNode : ASDisplayNode {
             return [NSFontAttributeName : UIFont(name: "Ubuntu", size: 16)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSParagraphStyleAttributeName : p]
         }
     }
+    var actionButton : ButtonNode!
     
     override init() {
         super.init()
@@ -50,7 +51,11 @@ class EmptyStateNode : ASDisplayNode {
         self.addSubnode(self.stateMsgNode)
         
         self.alpha = 0
-        self.userInteractionEnabled = false
+//        self.userInteractionEnabled = false
+        
+        actionButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
+        actionButton.contentEdgeInsets = UIEdgeInsetsMake(10, 15, 10, 15)
+        self.addSubnode(self.actionButton)
         
         self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
 
@@ -62,7 +67,8 @@ class EmptyStateNode : ASDisplayNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: self.stateMsgNode)
+        let hor = ASStackLayoutSpec(direction: .Vertical, spacing: 20, justifyContent: .Center, alignItems: .Center, children: [stateMsgNode, actionButton])
+        return ASCenterLayoutSpec(centeringOptions: .XY, sizingOptions: .Default, child: hor)
     }
     
 }

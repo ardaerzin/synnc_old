@@ -83,6 +83,9 @@ class PlaylistController : PagerBaseController {
         
         var plist = self.playlist
         let json = plist.toJSON(nil, populate: true)
+        
+        playlist.delete()
+        self.playlist = nil
         Async.background {
             Async.main {
                 Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
@@ -91,12 +94,9 @@ class PlaylistController : PagerBaseController {
         if let window = self.view.wclWindow {
             window.hide(true)
         }
-        playlist.delete()
-        self.playlist = nil
     }
     
     func addSongs(sender : AnyObject) {
-        print("add songs")
         needsToShowTrackSearch = true
         self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch 2", value: nil)
@@ -255,7 +255,7 @@ extension PlaylistController : WCLWindowDelegate {
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
         if isNewPlaylist {
             let vals = self.playlist.changedValues().keys
-            if vals.indexOf("songs") == nil && vals.indexOf("name") == nil && vals.indexOf("cover_id") == nil {
+            if vals.indexOf("songs") == nil && vals.indexOf("name") == nil && vals.indexOf("cover_id") == nil && vals.indexOf("songs") == nil {
                 playlist.delete()
             }
         }

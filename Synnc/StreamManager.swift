@@ -18,7 +18,6 @@ class StreamManager : NSObject, StreamDelegate {
     var userFeed : [Stream] = [] {
         didSet {
             Async.main {
-                print(self.userFeed)
                 NSNotificationCenter.defaultCenter().postNotificationName("UpdatedUserFeed", object: self.userStream, userInfo: nil)
             }
         }
@@ -91,7 +90,6 @@ extension StreamManager {
         
         if isActiveStream(stream) {
             
-            print("play stream", stream.o_id)
             Synnc.sharedInstance.socket.emitWithAck("Stream:start", stream.o_id)(timeoutAfter: 0) {
                 data in
                 
@@ -126,7 +124,6 @@ extension StreamManager {
         if stream != self.activeStream {
             return
         }
-        print("STOP")
         self.activeStream = nil
         
         if stream == self.userStream {
@@ -177,7 +174,6 @@ extension StreamManager {
             
         } else {
             
-            print("FINISHED STREAM")
             self.activeStream = nil
             
             var info : WCLNotificationInfo!
@@ -264,7 +260,6 @@ extension StreamManager {
     }
     
     func updatedStreamLocally(stream: Stream, changedKeys keys: [String]?) {
-        print("updated Stream locally", keys)
         if stream.o_id == nil {
             stream.toJSON() {
                 result in
@@ -377,7 +372,6 @@ extension StreamManager {
             ack in
             Async.background {
                 if let jsonArr = JSON(ack.first!).array where !jsonArr.isEmpty {
-//                    print(jsonArr)
                     self.findOrCreateFromData(jsonArr, completionBlock: {
                         streams in
                         let newItems = $.difference(streams, self.userFeed)
@@ -446,7 +440,6 @@ extension StreamManager {
     
     func findStreams(searchString : String? = "", genres: [Genre]? = [], callback: StreamSearchCallback?) -> [Stream] {
         let cachedStreams = self.findLocalStreams(searchString, genres: genres, callback: callback)
-        print("local streams:", cachedStreams)
         self.findRemoteStreams(searchString, genres: genres, callback: callback)
         return cachedStreams
     }

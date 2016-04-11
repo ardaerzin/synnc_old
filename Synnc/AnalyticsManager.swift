@@ -91,7 +91,6 @@ class AnalyticsManager {
     
     func newEvent(event : AnalyticsEvent) {
         
-        print("new event", event)
         let dict = GAIDictionaryBuilder.createEventWithCategory(event.category, action: event.action, label: event.label, value: event.value).build() as [NSObject : AnyObject]
         GAI.sharedInstance().defaultTracker.send(dict)
         

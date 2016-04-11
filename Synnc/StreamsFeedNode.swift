@@ -34,6 +34,7 @@ class StreamsFeedNode : ASDisplayNode, TrackedView {
             if emptyState != oldValue {
                 if self.emptyStateNode == nil {
                     emptyStateNode = StreamsFeedEmptyStateNode()
+                    emptyStateNode.alpha = 1
                 }
                 if emptyState {
                     self.addSubnode(emptyStateNode)

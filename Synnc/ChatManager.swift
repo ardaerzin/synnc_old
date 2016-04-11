@@ -48,9 +48,6 @@ class ChatRoomDataSource : WCLAsyncTableViewDataSource {
         self.pendingData.append(item)
     }
     func pushMultiple(items: [NSObject], completion : (()->Void)?) {
-//        print("PUSH ITEM", item, item.message)
-//        print("prending item", self.pendingData)
-        
         self.pendingData += items
     }
 }

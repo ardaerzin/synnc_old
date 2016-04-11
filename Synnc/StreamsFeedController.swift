@@ -72,6 +72,11 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
         screenNode.tableNode.view.asyncDelegate = self
 
         self.rightHeaderIcon.addTarget(self.parentViewController!, action: #selector(HomeController.scrollAndCreatePlaylist(_:)), forControlEvents: .TouchUpInside)
+    
+        self.screenNode.emptyState = StreamManager.sharedInstance.userFeed.isEmpty
+        if self.screenNode.emptyState {
+            self.screenNode.emptyStateNode.actionButton.addTarget(self, action: #selector(StreamsFeedController.scrollToPlaylists(_:)), forControlEvents: .TouchUpInside)
+        }
     }
    
     override func didMoveToParentViewController(parent: UIViewController?) {
@@ -123,8 +128,18 @@ class StreamsFeedController : ASViewController, PagerSubcontroller {
             self.dataSource.refresh = true
             self.dataSource.pendingData = StreamManager.sharedInstance.userFeed
             self.screenNode.emptyState = StreamManager.sharedInstance.userFeed.isEmpty
+            
+            if self.screenNode.emptyState {
+                self.screenNode.emptyStateNode.actionButton.addTarget(self, action: #selector(StreamsFeedController.scrollToPlaylists(_:)), forControlEvents: .TouchUpInside)
+            }
         }
         
+    }
+    
+    func scrollToPlaylists(sender: AnyObject) {
+        if let pvc = self.parentViewController as? HomeController {
+            pvc.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+        }
     }
 }
 extension StreamsFeedController : ASTableDelegate {

@@ -9,6 +9,7 @@
 import Foundation
 import SwiftyJSON
 import SocketSync
+import CoreData
 
 extension SynncPlaylist {
     override func awakeFromInsert() {
@@ -102,13 +103,23 @@ extension SynncPlaylist {
         self.songs.insert(song, atIndex: toIndexPath.item)
     }
     
+    override func delete() -> NSManagedObjectContext? {
+        isDeleting = true
+        
+        return super.delete()
+    }
     
     override func didSave() {
         super.didSave()
         
+        if isDeleting {
+            return
+        }
+        
         if self.managedObjectContext == Synnc.sharedInstance.moc {
             let msg = self.id == nil ? "create" : "update"
             if needsNotifySocket {
+                
                 Synnc.sharedInstance.socket.emitWithAck("SynncPlaylist:\(msg)", self.toJSON(nil, populate: true)) (timeoutAfter: 0) {
                     ack in
                     if msg == "update" {

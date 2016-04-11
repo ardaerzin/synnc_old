@@ -96,10 +96,7 @@ class RootWindowController : PagerBaseController {
             a.delegate = vc
             self.homeWindow = a
             
-            
-            print("FIRST LOGIN? :", Synnc.sharedInstance.firstLogin)
             a.animation.toValue = Synnc.sharedInstance.firstLogin ? a.lowerPercentage : 0
-            
             return
         }
         

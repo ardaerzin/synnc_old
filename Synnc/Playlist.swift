@@ -37,7 +37,7 @@ class SynncPlaylist: NSManagedObject {
     var delegate : PlaylistDelegate?
     var needsNotifySocket : Bool = false
     var socketCallback : ((playlist : SynncPlaylist) -> Void)?
-    
+    var isDeleting : Bool = false
     
     /// Computed Properties
     internal var _coverImage : UIImage!
