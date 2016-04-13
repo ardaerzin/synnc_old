@@ -92,7 +92,7 @@ class SynncTrack: Serializable {
         case .Soundcloud:
             id = soundcloudIdFromData(data)
         case .Spotify:
-//            id = spotifyIdFromData(data)
+            id = spotifyIdFromData(data)
             break
         default:
             return ""
@@ -125,7 +125,7 @@ class SynncTrack: Serializable {
         
         switch source {
         case .Spotify:
-//            track.createSpotifySong(data)
+            track.createSpotifySong(data)
             break
         case .Soundcloud:
             track.createSoundcloudSong(data)

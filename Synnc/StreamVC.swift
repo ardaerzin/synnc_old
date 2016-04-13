@@ -223,7 +223,7 @@ class StreamVC : PagerBaseController {
             (self.screenNode as! StreamVCNode).imageHeader.imageNode.image = Synnc.appIcon
         }
 
-        (self.screenNode as! StreamVCNode).imageHeader.fetchData()
+        (self.screenNode as! StreamVCNode).imageHeader.setNeedsDataFetch()
         self.infoController.configure(stream)
         
         if stream == StreamManager.sharedInstance.activeStream {

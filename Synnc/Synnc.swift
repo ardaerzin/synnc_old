@@ -99,6 +99,15 @@ class Synnc : UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+//        SPTAuth.defaultInstance().sessionUserDefaultsKey = "Synnc"
+        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserReadPrivateScope]
+        SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
+        SPTAuth.defaultInstance().redirectURL = NSURL(string: "synnc://callback")
+        
+        SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://tokenrefresh.herokuapp.com/refresh")
+        SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://tokenrefresh.herokuapp.com/swap")
+    
+        print("set scopes")
         
         self.tryConnect()
         
@@ -131,12 +140,13 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         topPopupManager = WCLPopupManager()
         
-        
+//        
         let lagFreeField: UITextField = UITextField()
         self.window?.addSubview(lagFreeField)
         lagFreeField.becomeFirstResponder()
         lagFreeField.resignFirstResponder()
         lagFreeField.removeFromSuperview()
+
         
         return true
     }
@@ -150,8 +160,10 @@ class Synnc : UIResponder, UIApplicationDelegate {
             (data, response, error) in
             
             guard let d = data else {
-                let x = NotReachablePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-                self.topPopupManager.newPopup(x)
+                Async.main {
+                    let x = NotReachablePopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+                    self.topPopupManager.newPopup(x)
+                }
                 return
             }
             
@@ -190,14 +202,17 @@ class Synnc : UIResponder, UIApplicationDelegate {
     func performNTPCheck(){
         ntpShit = NSDate()
         NHNetworkClock.sharedNetworkClock().syncWithComplete(nil)
+//        NHNetworkClock.sharedNetworkClock()
     }
     
     func syncCompleteNotification(notification : NSNotification){
         
         let x = NSDate().timeIntervalSince1970 - ntpShit.timeIntervalSince1970
+        print("sync time:", x)
         if x >= 5 {
-            self.performNTPCheck()
-            NHNetworkClock.sharedNetworkClock().networkOffset
+            Async.main {
+                self.performNTPCheck()
+            }
         }
     }
     
@@ -274,18 +289,20 @@ class Synnc : UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        //        let authCallback : SPTAuthCallback = {
-        //            (err, session) in
-        //
-        //            if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
-        //                u.sptAuthenticationStatus(session, error: err)
-        //            }
-        //        }
         
-        //        if SPTAuth.defaultInstance().canHandleURL(url) {
-        //            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: authCallback)
-        //            return true
-        //        }
+        if SPTAuth.defaultInstance().canHandleURL(url) {
+            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: { (err, session) in
+                if let error = err {
+                    print("error with spotify:", error.description)
+                }
+                print("!*!*!*!*", session.properties())
+                if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
+                    u.sptAuthenticationStatus(session, error: err)
+                }
+
+            })
+            return true
+        }
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }

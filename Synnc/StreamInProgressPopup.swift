@@ -51,7 +51,7 @@ class StreamInProgressPopup : WCLPopupViewController {
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.node.fetchData()
+        self.node.setNeedsDataFetch()
     }
     
     var oldScreen : AnalyticsScreen!

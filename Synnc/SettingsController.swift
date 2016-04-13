@@ -197,8 +197,12 @@ extension SettingsController {
         
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: sender.source.rawValue + " Login", value: nil)
         
-        if sender.source == .Soundcloud {
-            toggleSoundcloudLogin(sender)
+        if sender.source == .Soundcloud || sender.source == .Spotify {
+            if sender.source == .Soundcloud {
+                toggleSoundcloudLogin(sender)
+            } else if sender.source == .Spotify {
+                toggleSpotifyLogin(sender)
+            }
         } else {
             if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
                 
@@ -218,7 +222,18 @@ extension SettingsController {
         } else {
             Synnc.sharedInstance.user.socialLogout(.Soundcloud)
         }
-        
+    }
+    
+    func toggleSpotifyLogin(sender : SourceButton) {
+        if !sender.selected {
+//            if let u = Synnc.sharedInstance.user.soundcloud {
+//                let rect = CGRectInset(UIScreen.mainScreen().bounds, 25, 100)
+//                u.setLoginViewController(SynncSCLoginController(size: rect.size))
+//            }
+            Synnc.sharedInstance.user.socialLogin(.Spotify)
+        } else {
+            Synnc.sharedInstance.user.socialLogout(.Spotify)
+        }
     }
     
     func disconnect(sender : ButtonNode) {

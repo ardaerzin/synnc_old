@@ -117,6 +117,19 @@ class SynncArtistSmallNode : ASCellNode {
         if let src = artist.source {
             self.sourceNode.attributedString = NSAttributedString(string: "@"+src, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 9)!, NSForegroundColorAttributeName : UIColor(red: 125/255, green: 125/255, blue: 125/255, alpha: 1)])
         }
+        
+        if artist.source == SynncExternalSource.Spotify.rawValue {
+            SPTArtist.artistWithURI(NSURL(string: "spotify:artist:\(artist.id)")!, session: SPTAuth.defaultInstance().session, callback: { (err, data) in
+                if let artist = data as? SPTArtist {
+                    self.imageNode.clearContents()
+                    if let img = artist.largestImage, url = img.imageURL {
+                        self.imageNode.URL = url
+                    } else if let img = artist.smallestImage, url = img.imageURL {
+                        self.imageNode.URL = url
+                    }
+                }
+            })
+        }
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

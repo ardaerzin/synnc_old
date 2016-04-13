@@ -23,7 +23,9 @@ class SourceLoginButtonNode : SourceButton {
             
             if let ext = Synnc.sharedInstance.user.userExtension(type) {
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SourceLoginButtonNode.loginStatusChanged(_:)), name: "\(type.rawValue)LoginStatusChanged", object: ext)
-                self.selected = ext.loginStatus
+                print(source)
+                
+                self.selected = ext.loginStatus == nil ? false : ext.loginStatus
             }
         }
     }

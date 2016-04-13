@@ -47,7 +47,7 @@ class ControllerNotAvailableNode : ASDisplayNode, TrackedView {
     }
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
-        self.fetchData()
+        self.setNeedsDataFetch()
     }
     override func fetchData() {
         

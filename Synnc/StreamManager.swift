@@ -248,10 +248,10 @@ extension StreamManager {
                 
                 self?.activeStream = stream
                 self?.player.isSyncing = true
-                self?.player.syncManager.timestamp = stream.timestamp
-                self?.player.checkActiveSession()
-                
-        
+                if let ts = stream.timestamp {
+                    self?.player.syncManager.timestamp = stream.timestamp
+                    self?.player.checkActiveSession()
+                }
             } else {
                 completion?(status: false)
             }

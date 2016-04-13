@@ -49,10 +49,4 @@ class StreamsFeedEmptyStateNode : EmptyStateNode {
         self.setNeedsLayout()
         
     }
-    
-    override func fetchData() {
-        super.fetchData()
-        
-        self.setNeedsLayout()
-    }
 }

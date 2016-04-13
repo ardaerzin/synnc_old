@@ -225,6 +225,8 @@
             self.complete = nil;
         }
         
+//        NSLog(@"******** SYNCRONIZED");
+        
         if (self.isSynchronized == NO) {
             NTP_Logging(@"  is not synced");
             

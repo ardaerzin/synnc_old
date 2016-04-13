@@ -236,7 +236,4 @@ class StreamVCNode : PagerBaseControllerNode {
         
         return ASStaticLayoutSpec(children: [x, imageHeader, nowPlayingArea])
     }
-//    override func fetchData() {
-//        super.fetchData()
-//    }
 }

@@ -47,7 +47,15 @@ class WildPlayerSyncManager {
                 let timestamp = StreamTimeStamp()
                 timestamp.stream_id = player.stream!.o_id
                 timestamp.player_time = CMTimeGetSeconds(time)
-                timestamp.timeStamp = NSDate.networkDate().timeIntervalSince1970
+                
+                var date : NSDate
+                if NHNetworkClock.sharedNetworkClock().isSynchronized {
+                    date = NSDate.networkDate()
+                } else {
+                    date = NSDate()
+                }
+                
+                timestamp.timeStamp = date.timeIntervalSince1970
                 timestamp.playlist_index = player.currentIndex
                 
                 print("update timestamp:", player.currentIndex)
@@ -94,7 +102,14 @@ extension WildPlayerSyncManager {
             return
         }
         
-        let now = NSDate.networkDate().timeIntervalSince1970
+        var date : NSDate
+        if NHNetworkClock.sharedNetworkClock().isSynchronized {
+            date = NSDate.networkDate()
+        } else {
+            date = NSDate()
+        }
+        
+        let now = date.timeIntervalSince1970
         let diff = now - hlut
         let playerNewTime = hpt + diff
         
@@ -110,12 +125,18 @@ extension WildPlayerSyncManager {
             if a / player.currentItem!.asset.duration.seconds >= 1 {
                 a = player.currentItem!.asset.duration.seconds - 5
             }
-//            print("SEEK TO SHIT TIME", a / player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
             self.player.seekToTime(CMTimeMakeWithSeconds(a, item.asset.duration.timescale), completionHandler: {
                 
                 cb in
                 
-                let now = NSDate.networkDate().timeIntervalSince1970
+                var date : NSDate
+                if NHNetworkClock.sharedNetworkClock().isSynchronized {
+                    date = NSDate.networkDate()
+                } else {
+                    date = NSDate()
+                }
+                
+                let now = date.timeIntervalSince1970
                 let diff = now - hlut
                 let pnt = hpt + diff
 //                self.player.play()

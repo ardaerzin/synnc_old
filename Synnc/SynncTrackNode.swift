@@ -219,15 +219,15 @@ class SynncTrackNode : ASCellNode {
         self.selectionStyle = .None
     }
     func configureForTrack(track : SynncTrack) {
-        var artistStr : String?
+        var artistStr : String = ""
         for artist in track.artists {
-            if artistStr == nil {
+            if artistStr == "" {
                 artistStr = artist.name
             } else {
-                artistStr! += (" / " + artist.name)
+                artistStr += (" / " + artist.name)
             }
         }
-        self.artistNameNode.attributedString = NSAttributedString(string: artistStr!, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1)])
+        self.artistNameNode.attributedString = NSAttributedString(string: artistStr, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1)])
         
         if let x = track.name {
             trackNameNode.attributedString = NSAttributedString(string: x, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 1)])

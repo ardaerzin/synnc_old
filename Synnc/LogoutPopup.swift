@@ -64,7 +64,7 @@ class LogoutPopup : WCLPopupViewController {
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.node.fetchData()
+        self.node.setNeedsDataFetch()
     }
     func logout(sender : ButtonNode){
         Async.main {

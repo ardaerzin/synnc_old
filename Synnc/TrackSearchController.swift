@@ -15,6 +15,8 @@ import pop
 import WCLUserManager
 import WCLSoundCloudKit
 import WCLPopupManager
+import WCLDataManager
+import WCLNotificationManager
 
 enum EntityType : String {
     case Artist = "artist"
@@ -43,12 +45,30 @@ class TrackSearchController : WCLPopupViewController {
     var artistsManager : WCLCollectionViewManager = WCLCollectionViewManager()
     var tracksManager : WCLTableViewManager = WCLTableViewManager()
     
+    var forceUpdate : Bool = false
+    var previousSource : SynncExternalSource {
+        get {
+            if let previous = WildDataManager.sharedInstance().getUserDefaultsValue("synnc-search-source") as? String, let src = SynncExternalSource(rawValue: previous) {
+                return src
+            } else {
+                return .Soundcloud
+            }
+        }
+    }
+    
     var selectedSource : SynncExternalSource = .Soundcloud {
         didSet {
+            
+            WildDataManager.sharedInstance().updateUserDefaultsValue("synnc-search-source", value: selectedSource.rawValue)
+            
+            self.queryString_artists = ""
+            self.queryString_tracks = ""
             self.screenNode.sourceOptionsButton.setImage(UIImage(named: selectedSource.rawValue.lowercaseString + "_active"), forState: .Normal)
+            self.searchStringChanged(self.screenNode.inputNode.textView.text)
         }
     }
     var selectedArtist : SynncArtist?
+    var spotifyAlbums : [SPTAlbum] = []
     
     init(size: CGSize) {
         let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
@@ -126,6 +146,10 @@ class TrackSearchController : WCLPopupViewController {
         }
         return status
     }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.selectedSource = self.sourceSelector(canSelectSource: self.previousSource) ? self.previousSource : .Soundcloud
+    }
 }
 
 extension TrackSearchController : ASEditableTextNodeDelegate {
@@ -138,8 +162,7 @@ extension TrackSearchController : ASEditableTextNodeDelegate {
         if let fieldStr = editableTextNode.textView.text {
             var str = (fieldStr as NSString).stringByReplacingCharactersInRange(range, withString: text)
             str = (str as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-            self.searchStringChanged(fieldStr, toString: str)
-//            AnalyticsEvent.new(category: "trackSearch", action: "queryChange", label: nil, value: nil)
+            self.searchStringChanged(str)
         }
         return true
     }
@@ -217,7 +240,7 @@ extension TrackSearchController : ASCollectionDelegate {
     }
 }
 extension TrackSearchController {
-    func searchStringChanged(oldString: String, toString newString: String){
+    func searchStringChanged(newString: String){
         
         self.selectedArtist = nil
         
@@ -236,30 +259,62 @@ extension TrackSearchController {
             return
         }
         
-        searchSoundcloud(newString,timeStamp: ts)
+        if !checkSourceAvailability(self.selectedSource) {
+            notifyForSource(self.selectedSource)
+            return
+        }
+        
+        switch self.selectedSource {
+        case .Soundcloud:
+            searchSoundcloud(newString,timeStamp: ts)
+        case .Spotify:
+            searchSpotify(newString, timeStamp: ts)
+        default:
+            break
+        }
+        
+        
     }
     
-    func searchSpotify(str: String, timeStamp: NSDate) {
+    func searchSpotify(str: String, timeStamp: NSDate, offSet : Int? = 0) {
         
-        //        let types : [EntityType] = [.Track, .Artist]
+        let types : [EntityType] = [.Track, .Artist]
         
-        //        for type in types {
-        //            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
-        //                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
-        //                    if let sptshit = data as? SPTListPage {
-        //                        if sptshit.items != nil {
-        //                            self.processResults(str, source: .Spotify, entity: type, dataArr: sptshit.items)
-        //                        }
-        //                    }
-        //                    switch type {
-        //                    case .Track:
-        //                        break
-        //                    case .Artist:
-        //                        break
-        //                    }
-        //                }
-        //            }
-        //        }
+        for type in types {            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, offset: offSet!, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
+            
+            if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
+                    if let sptshit = data as? SPTListPage {
+                        if sptshit.items != nil {
+                            self.processResults(str, source: .Spotify, entity: type, timestamp: timeStamp, dataArr: sptshit.items)
+                            
+                            if sptshit.hasNextPage {
+                                if type == EntityType.Track {
+                                    self.tracksDataSource.nextAction = {
+                                        self.searchSpotify(str, timeStamp: timeStamp, offSet: sptshit.range.location + sptshit.range.length)
+                                    }
+                                } else {
+                                    self.artistsDataSource.nextAction = {
+                                        self.searchSpotify(str, timeStamp: timeStamp, offSet: sptshit.range.location + sptshit.range.length)
+                                    }
+                                }
+                            } else {
+                                if type == EntityType.Track {
+                                    self.tracksDataSource.nextAction = nil
+                                } else {
+                                    self.artistsDataSource.nextAction = nil
+                                }
+                            }
+                        }
+                    }
+                    switch type {
+                    case .Track:
+                        break
+                    case .Artist:
+                        break
+                    }
+                }
+            }
+        }
     }
     
     func searchSoundcloud(str: String, timeStamp: NSDate){
@@ -329,7 +384,8 @@ extension TrackSearchController {
                     self.screenNode.trackEmptyStateNode.state = false
                 }
             } else {
-                let needsRefresh = query != self.queryString_artists
+                
+                let needsRefresh = forceUpdate ? forceUpdate : query != self.queryString_artists
                 self.artistsDataSource.refresh = needsRefresh
                 self.artistsDataSource.pendingData = data
                 self.queryString_artists = query
@@ -344,10 +400,116 @@ extension TrackSearchController {
         }
     }
     
+    func parseAlbum(offset : Int? = 0, timeStamp : NSDate!) {
+        guard let artist = self.selectedArtist else {
+            return
+        }
+        
+        if offset >= spotifyAlbums.count {
+            return
+        }
+        
+        if !checkSourceAvailability(self.selectedSource) {
+            notifyForSource(self.selectedSource)
+            return
+        }
+        
+        let album = spotifyAlbums[offset!]
+        do {
+            var req = try SPTAlbum.createRequestForAlbum(album.uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: nil)
+            let reqStr = req.URL!.absoluteString.stringByReplacingOccurrencesOfString("?", withString: "/tracks", options: [], range: nil)
+            req = try SPTRequest.createRequestForURL(NSURL(string: reqStr), withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false)
+            
+            NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (data, res, err) in
+                do {
+                    let x = try SPTListPage(fromData: data, withResponse: res, expectingPartialChildren: false, rootObjectKey: nil)
+                    if let tracks = x.items as? [SPTPartialTrack] {
+                        for trackItem in tracks {
+                            trackItem.setValue(album, forKey: "album")
+                        }
+                        
+                        self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: tracks)
+                        self.tracksDataSource.nextAction = {
+                            self.parseAlbum(offset!+1, timeStamp: timeStamp)
+                        }
+                    } else {
+                        self.tracksDataSource.nextAction = nil
+                    }
+                    
+                } catch let error as NSError {
+                    print(error)
+                    self.tracksDataSource.nextAction = nil
+                }
+            }).resume()
+            
+        } catch let error as NSError {
+            print(error)
+            self.tracksDataSource.nextAction = nil
+        }
+    }
+    
+    func addSpotifyAlbums(albums : [SPTAlbum], timeStamp: NSDate!) {
+        
+        var needsParse = spotifyAlbums.isEmpty
+        spotifyAlbums += albums
+        
+        if needsParse {
+            parseAlbum(0, timeStamp: timeStamp)
+        }
+    }
+    
+    func spotifyArtistSearch(artist : SPTArtist, uri : NSURL? = nil, timeStamp : NSDate? = nil) {
+        
+        if !checkSourceAvailability(self.selectedSource) {
+            notifyForSource(self.selectedSource)
+            return
+        }
+        
+        guard let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser else {
+            return
+        }
+        
+        self.spotifyAlbums = []
+        
+        do {
+            let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: .Album, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: nil)
+            NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (data, res, err) in
+                do {
+                    let x = try SPTListPage(fromData: data, withResponse: res, expectingPartialChildren: false, rootObjectKey: nil)
+
+                    if let selected = self.selectedArtist where selected.id != artist.identifier {
+                        return
+                    } else if self.selectedArtist == nil {
+                        return
+                    }
+                    
+                    if let albums = x.items as? [SPTAlbum] {
+                        
+                        self.addSpotifyAlbums(albums, timeStamp: timeStamp)
+                        if self.selectedArtist != nil && x.hasNextPage {
+                            self.spotifyArtistSearch(artist, uri : x.nextPageURL, timeStamp: timeStamp)
+                        }
+                    }
+                    
+                } catch let error as NSError {
+                    print(error)
+                }
+            }).resume()
+        } catch let error as NSError {
+            print(error)
+        }
+    
+    }
+    
     func artistSearch(){
         guard let id = self.selectedArtist?.id else {
             AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: nil, value: nil)
-            self.searchStringChanged("", toString: self.screenNode.inputNode.textView.text)
+            self.searchStringChanged(self.screenNode.inputNode.textView.text)
+            return
+        }
+        
+        if !checkSourceAvailability(self.selectedSource) {
+            notifyForSource(self.selectedSource)
             return
         }
         
@@ -358,14 +520,38 @@ extension TrackSearchController {
         
         
         Async.background {
-            SCEngine.tracks(id, limit: 20, jsonCallback: {
-                cb in
-                let timestamp = cb.timestamp
-                if (ts.compare(timestamp) == NSComparisonResult.OrderedAscending) {
-                    self.processResults(id, source: .Soundcloud, entity: .Track, timestamp: self.last_search, dataArr: cb.data)
-                    self.tracksDataSource.nextAction = cb.next
+            
+            if self.selectedSource == .Soundcloud {
+                SCEngine.tracks(id, limit: 20, jsonCallback: {
+                    cb in
+                    let timestamp = cb.timestamp
+                    if (ts.compare(timestamp) == NSComparisonResult.OrderedAscending) {
+                        self.processResults(id, source: .Soundcloud, entity: .Track, timestamp: self.last_search, dataArr: cb.data)
+                        self.tracksDataSource.nextAction = cb.next
+                    }
+                })
+            } else if self.selectedSource == .Spotify {
+                
+                var url = NSURL(string: "spotify:artist:\(id)")
+                if url == nil {
+                    return
                 }
-            })
+                
+                SPTArtist.artistWithURI(url!, session: SPTAuth.defaultInstance().session) {
+                        
+                    [weak self]
+                    (err, obj) -> Void in
+                    
+                    
+                    
+                    if let artist = obj as? SPTArtist, let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser {
+                     
+                        self?.spotifyArtistSearch(artist, timeStamp: ts)
+                        
+                        print("found artist", artist)
+                    }
+                }
+            }
         }
     }
 }
@@ -373,6 +559,38 @@ extension TrackSearchController {
 extension TrackSearchController : SourceSelectorDelegate {
     func sourceSelector(didUpdateSource source: SynncExternalSource) {
         self.selectedSource = source
+    }
+    func sourceSelector(canSelectSource source: SynncExternalSource) -> Bool {
+        return self.checkSourceAvailability(source)
+    }
+}
+
+extension TrackSearchController {
+    func notifyForSource(source : SynncExternalSource) {
+        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+            let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to \(source.rawValue) first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                notif in
+                
+                Synnc.sharedInstance.user.socialLogin(WCLUserLoginType(rawValue: source.rawValue)!)
+            }
+            WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            
+            return
+        }
+    }
+    func checkSourceAvailability(source : SynncExternalSource) -> Bool {
+        
+        if source == .Soundcloud {
+            return true
+        } else if source == .Spotify {
+            if let user = Synnc.sharedInstance.user, let ext = user.userExtension(.Spotify), let status = ext.loginStatus where status  {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
     }
 }
 

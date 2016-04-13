@@ -63,7 +63,7 @@ class NotificationRequestPopupVC : WCLPopupViewController {
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.node.fetchData()
+        self.node.setNeedsDataFetch()
     }
     func requestNotification(sender : ButtonNode){
         WCLNotificationManager.sharedInstance().settingsManager.requestNotificationPermissions()
