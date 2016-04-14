@@ -269,6 +269,7 @@
 		472CB4B71C41BDC100F82523 /* youtube_inactive@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */; };
 		47354E361C4F37A900A5F03E /* ControllerNotAvailableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */; };
 		47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */; };
+		473579051CBF09CA00B03DCE /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473579041CBF09CA00B03DCE /* PlayerManager.swift */; };
 		473E8BD11CA4D9D800DB9F5B /* PlaylistInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E8BD01CA4D9D800DB9F5B /* PlaylistInfoController.swift */; };
 		473E8BD51CA4DA7300DB9F5B /* PlaylistTracklistController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E8BD41CA4DA7300DB9F5B /* PlaylistTracklistController.swift */; };
 		473E8BD71CA549BE00DB9F5B /* PlaylistBaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E8BD61CA549BE00DB9F5B /* PlaylistBaseNode.swift */; };
@@ -716,6 +717,7 @@
 		472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_inactive@3x.png"; sourceTree = "<group>"; };
 		47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerNotAvailableNode.swift; sourceTree = "<group>"; };
 		47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncSCLoginController.swift; sourceTree = "<group>"; };
+		473579041CBF09CA00B03DCE /* PlayerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
 		473E8BD01CA4D9D800DB9F5B /* PlaylistInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistInfoController.swift; sourceTree = "<group>"; };
 		473E8BD41CA4DA7300DB9F5B /* PlaylistTracklistController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistTracklistController.swift; sourceTree = "<group>"; };
 		473E8BD61CA549BE00DB9F5B /* PlaylistBaseNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistBaseNode.swift; sourceTree = "<group>"; };
@@ -1878,6 +1880,7 @@
 		47D763721C3A2829008E0334 /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				473579041CBF09CA00B03DCE /* PlayerManager.swift */,
 				47D763731C3A283B008E0334 /* PlayerSyncManager.swift */,
 				47D763741C3A283B008E0334 /* StreamPlayer.swift */,
 				47D763751C3A283B008E0334 /* WildPlayer.swift */,
@@ -2546,6 +2549,7 @@
 				47B37B891C2F21D1001CC6D2 /* PlaylistNode.swift in Sources */,
 				476CC81A1CAB228F00CBA0E3 /* StreamInfoNode.swift in Sources */,
 				477705241C3E00ED007089D0 /* ChatNode.swift in Sources */,
+				473579051CBF09CA00B03DCE /* PlayerManager.swift in Sources */,
 				475286E41C37372300731008 /* WCLScrollNode.m in Sources */,
 				476CC80D1CA9669900CBA0E3 /* StreamVC.swift in Sources */,
 				47A4E6B51C0CB6D100354EA8 /* LoginNode.swift in Sources */,

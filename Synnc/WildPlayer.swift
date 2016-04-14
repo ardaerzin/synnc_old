@@ -40,6 +40,7 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     
     var syncManager : WildPlayerSyncManager!
     var trackManager : WildPlayerTrackManager!
+    
     var delegate : StreamerDelegate?
     var fadeDuration = 1.0
     
@@ -113,9 +114,6 @@ class WildPlayer : AVQueuePlayer, AVAudioSessionDelegate {
     // MARK: Initializers
     
     override init() {
-        super.init()
-    }
-    init(socket: SocketIOClient) {
         super.init()
         
         self.addObserver(self, forKeyPath: "status", options: [], context: nil)

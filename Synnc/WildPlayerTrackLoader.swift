@@ -14,17 +14,20 @@ import WCLUtilities
 class WildPlayerTrackManager {
     
     // MARK: Properties
-    weak var player: WildPlayer!
+//    weak var player: WildPlayer!
     var isLoadingTrackData : Bool = false
     
     // MARK: Initializers
-    init(player: WildPlayer){
-        self.player = player
+//    init(player: WildPlayer){
+//        self.player = player
+//    }
+    init() {
+        
     }
 
     // MARK: Methods
     
-    func reloadTrackData(stream: Stream){
+    func reloadTrackData(playerManager : StreamPlayerManager, stream: Stream){
         
         if isLoadingTrackData {
             print("SECTOOOOOR")
@@ -34,25 +37,21 @@ class WildPlayerTrackManager {
         
         isLoadingTrackData = true
         
-        player.rate = 0
+//        player.rate = 0
         
-//        Async.background {
-            for item in self.player.items().reverse() {
-                self.dequeueItem(item)
-            }
-            let i : Int = stream == StreamManager.sharedInstance.userStream ? self.player.currentIndex : Int(stream.timestamp!.playlist_index)
-            for (index,song) in (stream.playlist.songs).enumerate() {
-                if index >= i {
-                    let mediaItem = self.newItem(song: song, index: index)
-                    self.queueItem(mediaItem)
-                }
-            }
-            
-//            Async.main {
-                self.isLoadingTrackData = false
+//        for item in self.player.items().reverse() {
+//            self.dequeueItem(item)
+//        }
+//        let i : Int = stream == StreamManager.sharedInstance.userStream ? self.player.currentIndex : Int(stream.timestamp!.playlist_index)
+//        for (index,song) in (stream.playlist.songs).enumerate() {
+//            if index >= i {
+//                let mediaItem = self.newItem(song: song, index: index)
+//                self.queueItem(mediaItem)
 //            }
 //        }
         
+        self.isLoadingTrackData = false
+          
 //        self.player.rate = 1
     }
     func newItem(song song: SynncTrack, index: Int) -> WildPlayerItem? {
@@ -77,19 +76,15 @@ class WildPlayerTrackManager {
         if item == nil {
             return
         }
-//        Async.background {
-            self.player.insertItem(item!, afterItem: ind != 0 ? self.player.items()[ind-1] : nil)
-//        }
+//        self.player.insertItem(item!, afterItem: ind != 0 ? self.player.items()[ind-1] : nil)
     }
     func queueItem(item: AVPlayerItem?){
         if item == nil {
             return
         }
-//        Async.background {
-            self.player.insertItem(item!, afterItem: nil)
-//        }
+//        self.player.insertItem(item!, afterItem: nil)
     }
     func dequeueItem(avItem: AVPlayerItem){
-        self.player.removeItem(avItem)
+//        self.player.removeItem(avItem)
     }
 }

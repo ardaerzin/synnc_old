@@ -47,7 +47,9 @@ class StreamManager : NSObject, StreamDelegate {
             
         }
     }
-    var player : StreamPlayer!
+    var player : StreamPlayerManager!
+//    var
+//    var player : StreamPlayer!
     
     class var sharedInstance : StreamManager {
         struct Singleton {
