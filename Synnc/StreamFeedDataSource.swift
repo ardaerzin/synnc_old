@@ -149,7 +149,7 @@ class StreamCellContentNode : ASDisplayNode {
             self.imageNode.image = Synnc.appIcon
         }
         
-        var title = streamTitle == nil ? "Untitled" : streamTitle!
+        let title = streamTitle == nil ? "Untitled" : streamTitle!
         titleNode.attributedString = NSAttributedString(string: title, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5])
         
         genresNode.attributedString = NSAttributedString(string: streamGenres, attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 1)])

@@ -81,7 +81,7 @@ class PlaylistController : PagerBaseController {
     
     func deleteAction(sender : AnyObject){
         
-        var plist = self.playlist
+        let plist = self.playlist
         let json = plist.toJSON(nil, populate: true)
         
         playlist.delete()
@@ -121,7 +121,7 @@ class PlaylistController : PagerBaseController {
 extension PlaylistController : UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         
-        if let ip = self.infoController.imagePicker {
+        if self.infoController.imagePicker != nil {
             return false
         }
         if otherGestureRecognizer == self.screenNode.pager.view.panGestureRecognizer {
@@ -141,7 +141,8 @@ extension PlaylistController : UIGestureRecognizerDelegate {
         }
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let ip = self.infoController.imagePicker {
+        
+        if self.infoController.imagePicker != nil {
             return false
         }
         if self.tracklistController.editMode {
@@ -160,7 +161,7 @@ extension PlaylistController {
         
         AnalyticsEvent.new(category : "PlaylistAction", action: "button_tap", label: "stream", value: nil)
         
-        if let stream = StreamManager.sharedInstance.activeStream {
+        if StreamManager.sharedInstance.activeStream != nil {
             
             let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
             x.callback = self.streamPlaylist

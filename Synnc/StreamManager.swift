@@ -41,15 +41,14 @@ class StreamManager : NSObject, StreamDelegate {
                 return
             }
             let needsLoad = activeStream == self.userStream
-            
+            print("active stream", activeStream)
             NSNotificationCenter.defaultCenter().postNotificationName("DidSetActiveStream", object: activeStream, userInfo: ["loadTracks" : needsLoad])
-            self.player.didSetActiveStream(activeStream, needsReload: needsLoad)
+            self.playerManager.didSetActiveStream(activeStream, userStream: needsLoad)
             
         }
     }
-    var player : StreamPlayerManager!
-//    var
-//    var player : StreamPlayer!
+    
+    var playerManager: StreamPlayerManager!
     
     class var sharedInstance : StreamManager {
         struct Singleton {
@@ -60,6 +59,8 @@ class StreamManager : NSObject, StreamDelegate {
     
     override init() {
         super.init()
+        
+        playerManager = StreamPlayerManager.sharedInstance
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamManager.loginStatusChanged(_:)), name: "userLoginStatusChanged", object: nil)
     }
     
@@ -100,7 +101,7 @@ extension StreamManager {
                     stream.fromJSON(json)
                 }
 //                stream.update(["status" : true])
-                sharedInstance.player.play()
+//                sharedInstance.playerManager.play()
             }
         }
     }
@@ -249,10 +250,10 @@ extension StreamManager {
                 completion?(status: true)
                 
                 self?.activeStream = stream
-                self?.player.isSyncing = true
-                if let ts = stream.timestamp {
-                    self?.player.syncManager.timestamp = stream.timestamp
-                    self?.player.checkActiveSession()
+//                self?.playerManager.isSyncing = true
+                if let _ = stream.timestamp {
+//                    self?.playerManager.syncManager.timestamp = stream.timestamp
+//                    self?.playerManager.checkActiveSession()
                 }
             } else {
                 completion?(status: false)
@@ -300,7 +301,7 @@ extension StreamManager {
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
-            self.player.syncManager.timestamp = stream.timestamp
+            self.playerManager.syncManager.timestamp = stream.timestamp
         }
         
         NSNotificationCenter.defaultCenter().postNotification(notification)
@@ -479,7 +480,7 @@ extension StreamManager {
 extension StreamManager {
     
     func setSocket(socket: SocketIOClient) {
-        self.player = StreamPlayer(socket: socket)
+//        self.playerManager = StreamPlayer(socket: socket)
         
         socket.on("Streams", callback: refreshStreamsCallback())
         socket.on("Stream:save", callback: streamSaveCallback())
@@ -514,7 +515,7 @@ extension StreamManager {
     func streamDeleteCallback() -> NormalCallback {
         return {
             (dataArr, ack) in
-            if let data = dataArr.first {
+//            if let data = dataArr.first {
 //                var json = JSON(data)
 //                let stream = self.findStream(json["_id"].string)
 //                if stream != nil {
@@ -532,7 +533,7 @@ extension StreamManager {
 //                        print("remove item at index")
 //                    }
 //                }
-            }
+//            }
         }
     }
     func streamSaveCallback() -> NormalCallback {

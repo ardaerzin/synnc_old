@@ -126,7 +126,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     }
     
     func checkActiveStream(notification : NSNotification) {
-        if let stream = notification.object as? Stream {
+        if let _ = notification.object as? Stream {
 //            if playlist == stream.playlist {
 //                self.screenNode.infoNode.imageNode.userInteractionEnabled = false
 //                self.screenNode.infoNode.titleNode.userInteractionEnabled = false

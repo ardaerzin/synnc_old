@@ -450,7 +450,7 @@ extension TrackSearchController {
     
     func addSpotifyAlbums(albums : [SPTAlbum], timeStamp: NSDate!) {
         
-        var needsParse = spotifyAlbums.isEmpty
+        let needsParse = spotifyAlbums.isEmpty
         spotifyAlbums += albums
         
         if needsParse {
@@ -465,7 +465,7 @@ extension TrackSearchController {
             return
         }
         
-        guard let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser else {
+        guard let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser, let loginStatus = sptUser.loginStatus where loginStatus else {
             return
         }
         
@@ -532,7 +532,7 @@ extension TrackSearchController {
                 })
             } else if self.selectedSource == .Spotify {
                 
-                var url = NSURL(string: "spotify:artist:\(id)")
+                let url = NSURL(string: "spotify:artist:\(id)")
                 if url == nil {
                     return
                 }
@@ -544,7 +544,7 @@ extension TrackSearchController {
                     
                     
                     
-                    if let artist = obj as? SPTArtist, let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser {
+                    if let artist = obj as? SPTArtist, let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser, let loginStatus = sptUser.loginStatus where loginStatus {
                      
                         self?.spotifyArtistSearch(artist, timeStamp: ts)
                         

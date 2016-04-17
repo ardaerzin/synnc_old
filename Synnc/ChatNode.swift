@@ -147,7 +147,7 @@ class ChatNode : ASDisplayNode, TrackedView {
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
-        var spacer = ASLayoutSpec()
+        let spacer = ASLayoutSpec()
         spacer.alignSelf = .Stretch
         spacer.flexBasis = ASRelativeDimension(type: .Points, value: 100)
         

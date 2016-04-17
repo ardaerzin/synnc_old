@@ -107,8 +107,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
         SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://tokenrefresh.herokuapp.com/refresh")
         SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://tokenrefresh.herokuapp.com/swap")
     
-        print("set scopes")
-        
         self.tryConnect()
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -208,7 +206,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
     func syncCompleteNotification(notification : NSNotification){
         
         let x = NSDate().timeIntervalSince1970 - ntpShit.timeIntervalSince1970
-        print("sync time:", x)
         if x >= 5 {
             Async.main {
                 self.performNTPCheck()

@@ -118,7 +118,7 @@ class ChatController : ASViewController, PagerSubcontroller {
     }
     var stateAnimationProgress : CGFloat = 1 {
         didSet {
-            let trans = POPTransition(stateAnimationProgress, startValue: -node.calculatedSize.height, endValue: 0)
+//            let trans = POPTransition(stateAnimationProgress, startValue: -node.calculatedSize.height, endValue: 0)
 //            POPLayerSetTranslationY(node.layer, trans)
         }
     }
@@ -214,7 +214,7 @@ class ChatController : ASViewController, PagerSubcontroller {
         } else {
             isDisplayed = true
         }
-        let translation = isDisplayed ? -CGRectGetHeight(a.finalFrame) - self.chatbar.calculatedSize.height : isEnabled ? -self.chatbar.calculatedSize.height : 0
+//        let translation = isDisplayed ? -CGRectGetHeight(a.finalFrame) - self.chatbar.calculatedSize.height : isEnabled ? -self.chatbar.calculatedSize.height : 0
         POPLayerSetTranslationY(self.screenNode.collectionHolder.layer, isDisplayed ? -CGRectGetHeight(a.finalFrame) : 0)
     }
     

@@ -77,7 +77,8 @@ class HomeController : PagerBaseController {
             
             var lowerLimit : CGFloat = 0
             
-            if let activeStream = notification.object as? Stream {
+            let hasActiveStream = (notification.object as? Stream) != nil
+            if hasActiveStream {
                 lowerLimit = UIScreen.mainScreen().bounds.height - 60 - 70
             } else {
                 lowerLimit = UIScreen.mainScreen().bounds.height - 60
@@ -116,10 +117,7 @@ extension HomeController : WCLWindowDelegate {
         let x = 1-window.lowerPercentage
         let za = (1 - progress - x) / (1-x)
         
-//        print(za)
-        
         (self.screenNode.headerNode as! HomeHeader).toggleButton.progress = za
-//        POPLayerSetRotationZ((self.screenNode.headerNode as! HomeHeader).toggleButton.layer, CGFloat(M_PI) * za)
         self.screenNode.headerNode.leftButtonHolder.alpha = za
         self.screenNode.headerNode.rightButtonHolder.alpha = za
         self.screenNode.headerNode.pageControl.alpha = za
@@ -133,11 +131,7 @@ extension HomeController : WCLWindowDelegate {
         print("did dismiss window")
     }
     func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
-        
-        print("updated position")
         if position == .Displayed {
-            print("displayed")
-            
             self.feedController.node.userInteractionEnabled = true
             self.playlistsController.node.userInteractionEnabled = true
             

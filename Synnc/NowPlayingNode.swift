@@ -200,7 +200,7 @@ class NowPlayingNode : ASDisplayNode {
     
     func configure(track : SynncTrack) {
         
-        let volume = StreamManager.sharedInstance.player.volume
+        let volume = StreamManager.sharedInstance.playerManager.volume
         if volume > 0 {
             self.volumeButton.selected = true
         } else {

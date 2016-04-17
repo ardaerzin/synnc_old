@@ -136,7 +136,7 @@ class PageControlNode : ASDisplayNode {
             return
         }
         
-        for (ind,item) in items.enumerate() {
+        for (ind,_) in items.enumerate() {
             
             let a = CGFloat((1 / CGFloat(items.count)) * CGFloat(ind+1))
             if position >= prevPos && position <=  a {

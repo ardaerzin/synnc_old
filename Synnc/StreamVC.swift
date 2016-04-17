@@ -87,7 +87,7 @@ class StreamVC : PagerBaseController {
         if stream != StreamManager.sharedInstance.activeStream {
             return
         }
-        StreamManager.sharedInstance.player.volume = !sender.selected ? 1 : 0
+        StreamManager.sharedInstance.playerManager.volume = !sender.selected ? 1 : 0
     }
     func shareStream(sender: AnyObject) {
         
@@ -258,7 +258,7 @@ class StreamVC : PagerBaseController {
             if let window = self.node.view.wclWindow {
                 window.dismissable = false
             }
-            StreamManager.sharedInstance.player.delegate = self
+            StreamManager.sharedInstance.playerManager.delegate = self
             self.scrollViewDidScroll(self.screenNode.pager.view)
         } else {
             if let window = self.node.view.wclWindow {
@@ -319,20 +319,20 @@ class StreamVC : PagerBaseController {
     }
 }
 
-extension StreamVC : StreamerDelegate {
-    func streamer(streamer: WildPlayer!, updatedToPosition position: CGFloat) {
+extension StreamVC : PlayerManagerDelegate {
+    func playerManager(manager: StreamPlayerManager!, updatedToPosition position: CGFloat) {
         Async.main {
             if position.isFinite {
                 (self.screenNode as! StreamVCNode).nowPlayingArea.updateProgress(position)
             }
         }
     }
-    func streamer(streamer: WildPlayer!, updatedPlaylistIndex index: Int) {
+    func playerManager(manager: StreamPlayerManager!, updatedPlaylistIndex index: Int) {
         Async.main {
             self.updateTrack(self.stream)
         }
     }
-    func streamer(streamer: WildPlayer!, volumeChanged volume: Float) {
+    func playerManager(manager: StreamPlayerManager!, volumeChanged volume: Float) {
         (self.screenNode as! StreamVCNode).nowPlayingArea.volumeButton.selected = volume > 0 ? true : false
     }
 }
@@ -417,7 +417,7 @@ extension StreamVC {
         
         AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
         
-        if let stream = StreamManager.sharedInstance.activeStream {
+        if let _ = StreamManager.sharedInstance.activeStream {
             
             let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
 //            x.node.yesButton.addTarget(self, action: #selector(StreamVC.stopAndJoin(_:)), forControlEvents: .TouchUpInside)

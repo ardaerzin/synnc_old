@@ -101,7 +101,6 @@ class WildSpotifyUser : WCLUserExtension {
     }
     
     private func loadSpotifySession() {
-        print("load session")
         SPTAuth.defaultInstance().renewSession(SPTAuth.defaultInstance().session, callback: { (err, session) -> Void in
             if session != nil && session!.isValid() {
                 print("access token", session.accessToken)
@@ -181,9 +180,10 @@ class WildSpotifyUser : WCLUserExtension {
     
     func sptAuthenticationStatus(session : SPTSession!, error : NSError!) {
         if let err = error {
+            print(#function, err.description)
             self.loginStatus = false
         } else if let sess = session {
-            self.accessToken = session.accessToken
+            self.accessToken = sess.accessToken
             self.loginStatus = true
         }
     }
