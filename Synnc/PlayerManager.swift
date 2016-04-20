@@ -15,12 +15,12 @@ import MediaPlayer
 import CoreMedia
 import WCLNotificationManager
 import AsyncDisplayKit
+import WCLUserManager
 
 enum PlayerManagerPlayer : String {
     case URLPlayerOdd = "Player1"
     case URLPlayerEven = "Player2"
-    case SpotifyPlayerOdd = "Player3"
-    case SpotifyPlayerEven = "Player4"
+    case SpotifyPlayer = "Player3"
 }
 
 class StreamPlayerManager : NSObject {
@@ -60,6 +60,9 @@ class StreamPlayerManager : NSObject {
     }
     var currentIndex : Int {
         get {
+            if let x = self.currentItem {
+                print("current item", self.currentItem, self.songInfo(x))
+            }
             guard let item = self.currentItem, let info = self.songInfo(item) else {
                 return -1
             }
@@ -71,16 +74,16 @@ class StreamPlayerManager : NSObject {
     
     /// Players
     let observedItemKeys : [String] = ["status", "loadedTimeRanges", "playbackBufferFull", "playbackBufferEmpty", "playbackLikelyToKeepUp", "timedMetadata"]
-    var activePlayer : AVPlayer! {
+    var activePlayer : AnyObject! {
         didSet {
-            if activePlayer != oldValue {
-                if let old = oldValue {
-                    old.rate = 0
-                }
+            if activePlayer !== oldValue {
+//                if let old = oldValue {
+//                    old.rate = 0
+//                }
                 if let player = activePlayer {
                     var playerType : PlayerManagerPlayer!
                     for (type,p) in self.players {
-                        if p == player {
+                        if p === player {
                             playerType = type
                             break
                         }
@@ -91,7 +94,7 @@ class StreamPlayerManager : NSObject {
             }
         }
     }
-    var players : [PlayerManagerPlayer : AVPlayer] = [PlayerManagerPlayer : AVPlayer]()
+    var players : [PlayerManagerPlayer : AnyObject] = [PlayerManagerPlayer : AnyObject]()
     var playerObservers : [AnyObject] = []
     var syncManager : WildPlayerSyncManager!
     var delegate : PlayerManagerDelegate!
@@ -117,6 +120,10 @@ class StreamPlayerManager : NSObject {
         super.init()
         
         self.syncManager = WildPlayerSyncManager()
+        
+        if let user = Synnc.sharedInstance.user.userExtension(.Spotify) {
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.loginStatusChanged(_:)), name: "\(WCLUserLoginType.Spotify.rawValue)ProfileInfoChanged", object: user)
+        }
         
         Async.background {
             let player1 = AVPlayer()
@@ -164,6 +171,35 @@ class StreamPlayerManager : NSObject {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.audioRouteChanged(_:)), name: AVAudioSessionRouteChangeNotification, object: nil)
     }
     
+    func loginStatusChanged(notification: NSNotification) {
+        if let user = notification.object as? WildSpotifyUser {
+            if let session = SPTAuth.defaultInstance().session, let status = user.loginStatus, let info = user.profileInfo as? SPTUser where status && info.product == .Premium {
+                Async.main {
+                    let a = SynncSpotifyPlayer(clientId: SPTAuth.defaultInstance().clientID)
+                    self.players[.SpotifyPlayer] = a
+                    a.delegate = self
+                    a.playbackDelegate = self
+                    
+                    print("Create player")
+                    a.loginWithSession(session) {
+                        error in
+                        if let e = error {
+                            print("ERROR WITH PLAYER", PlayerManagerPlayer.SpotifyPlayer)
+                            return
+                        }
+                        print("CREATED PLAYER")
+                    }
+                    
+                    
+                }
+                
+                print("user Spotify login status is TRUE", user.profileInfo)
+            } else {
+                print("user Spotify login status is FALSE")
+            }
+        }
+    }
+    
     // MARK: Key Value Observer
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let player = object as? AVPlayer, let path = keyPath {
@@ -200,7 +236,7 @@ class StreamPlayerManager : NSObject {
     }
     
     func playerTimeUpdated(time: CMTime){
-        self.delegate?.playerManager?(self, updatedToPosition: CGFloat(CMTimeGetSeconds(time)) / CGFloat(CMTimeGetSeconds(self.currentItem!.duration)))
+        self.delegate?.playerManager?(self, updatedToPosition: CGFloat(CMTimeGetSeconds(time)) / CGFloat(self.currentItemDuration))
         
         var infoDict : [String : AnyObject]?
         if let st = stream where st.isUserStream {
@@ -216,7 +252,9 @@ class StreamPlayerManager : NSObject {
         self.rate = 0
         
         for (_,player) in players {
-            player.replaceCurrentItemWithPlayerItem(nil)
+            if let avplayer = player as? AVPlayer {
+                avplayer.replaceCurrentItemWithPlayerItem(nil)
+            }
         }
         for (track, info) in self.playerIndexedPlaylist {
             if let item = info.item {
@@ -246,14 +284,11 @@ class StreamPlayerManager : NSObject {
                 
                 self.stream = st
                 self.playlist = st.playlist.songs
-                print("stream", st)
                 
                 Async.background {
                 
                     self.playerIndexedPlaylist = self.assignTracksToPlayers(st.playlist.songs)
                 
-                    print("indexed stuff")
-                    
                     for (_,info) in self.playerIndexedPlaylist {
                         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.playerDidPlayToEnd(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: info.item)
                         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.itemPlaybackStalled(_:)), name: AVPlayerItemPlaybackStalledNotification, object: info.item)
@@ -270,10 +305,11 @@ class StreamPlayerManager : NSObject {
                         let a = (st.currentSongIndex as Int)...((st.currentSongIndex as Int)+1)
                         
                         for i in a {
-                            self.loadSong(i, play: i == st.currentSongIndex as Int)
+                            self.loadSong(i)
                             if i < self.playlist.count && i == st.currentSongIndex as Int {
                                 let track = self.playlist[i]
                                 if let info = self.playerIndexedPlaylist[track], let player = self.players[info.player] {
+                                    
                                     self.activePlayer = player
                                 }
                             }
@@ -294,7 +330,7 @@ extension StreamPlayerManager {
         
         var playerType : PlayerManagerPlayer!
         for (type,p) in self.players {
-            if p == player {
+            if p === player {
                 playerType = type
                 break
             }
@@ -305,24 +341,10 @@ extension StreamPlayerManager {
         if self.currentItem == nil {
             return
         }
-        
-//        if let item = self.currentItem as? WildPlayerItem {
-//            if item.status == AVPlayerItemStatus.ReadyToPlay {
-//                player.setRate(1, time: CMTimeMakeWithSeconds((0), self.currentItem!.asset.duration.timescale), atHostTime: CMTimeMakeWithSeconds(CMTimeGetSeconds(CMClockGetTime(CMClockGetHostTimeClock())), self.currentItem!.asset.duration.timescale) )
-//            } else {
-//                self.rate = 0
-//            }
-//        }
-        
-//        self.syncManager.needsUpdate = true
-//        print("zbam")
-        
-//        updateControlCenterItem()
-        
-//        AnalyticsEvent.new(category: "StreamPlayer", action: "itemChanged", label: nil, value: nil)
+    
     }
     func playerVolumeChanged(player: AVPlayer) {
-        if player != self.activePlayer {
+        if player !== self.activePlayer {
             return
         }
         self.delegate?.playerManager?(self, volumeChanged: self.volume)
@@ -352,33 +374,47 @@ extension StreamPlayerManager {
         }
     }
     
-    internal func songInfo(item: AVPlayerItem) -> TrackPlayerInfo! {
+    internal func songInfo(item: AnyObject) -> TrackPlayerInfo? {
         var i : TrackPlayerInfo!
-        for (index, currentItem) in self.playlist.enumerate() {
-            if let info = self.playerIndexedPlaylist[currentItem] {
-                if info.item == item {
+        for (index, playlistItem) in self.playlist.enumerate() {
+            if let info = self.playerIndexedPlaylist[playlistItem] {
+//                print(info, item)
+                if let currentUrl = item as? NSURL, let y = info.item as? NSURL where currentUrl.absoluteString == y.absoluteString {
                     i = info
+                    break
+                } else if info.item === item {
+                    i = info
+                    break
                 }
             }
         }
         return i
     }
     
-    internal func loadSong(index: Int, play: Bool? = false){
+    internal func loadSong(index: Int){
         if index >= playlist.count {
             return
         }
-        print("load song")
         let nextSong = self.playlist[index]
-        if let nextSongInfo = self.playerIndexedPlaylist[nextSong] {
-            print("next song info:", nextSongInfo)
-        }
-        if let nextSongInfo = self.playerIndexedPlaylist[nextSong], let player = self.players[nextSongInfo.player] where player != activePlayer {
-            print("player shit")
-            player.replaceCurrentItemWithPlayerItem(nextSongInfo.item)
-//            if play! {
-//                player.play()
-//            }
+        if let nextSongInfo = self.playerIndexedPlaylist[nextSong], let player = self.players[nextSongInfo.player] where player !== activePlayer {
+            if let avplayer = player as? AVPlayer, let item = nextSongInfo.item as? AVPlayerItem {
+                avplayer.replaceCurrentItemWithPlayerItem(item)
+            } else if let spotifyPlayer = player as? SPTAudioStreamingController {
+//                print("load song")
+//                if let spotifyItem = nextSongInfo.item as? SpotifyPlayerItem {
+//                    Async.main {
+//                        spotifyPlayer.queueTrackProvider(spotifyItem, clearQueue: true) {
+//                            error in
+//                            if let err = error {
+//                                print("error loading spotify song:", err.description)
+//                                return
+//                            }
+//                            print("successfully queued uri")
+//                        }
+//                    }
+//                }
+            }
+            
         }
     }
     internal func loadNextSongForPlayer(info : TrackPlayerInfo) {
@@ -409,7 +445,6 @@ extension StreamPlayerManager {
                 self.activePlayer = p
                 
                 self.play()
-//                p.play()
             }
         }
     }
@@ -420,11 +455,8 @@ extension StreamPlayerManager {
         if player.rate == 1 {
             self.activePlayer = player
         }
-//        else if player.rate == 0 && player == self.activePlayer {
-//
-//        }
         
-        if player != self.activePlayer {
+        if player !== self.activePlayer {
             return
         }
         updateControlCenterRate()
@@ -434,7 +466,7 @@ extension StreamPlayerManager {
         
         var playerType : PlayerManagerPlayer!
         for (type,p) in self.players {
-            if p == player {
+            if p === player {
                 playerType = type
                 break
             }
@@ -450,10 +482,6 @@ extension StreamPlayerManager {
             if let s = self.stream where !s.isUserStream {
                 self.syncManager.checkTimeSync()
             }
-            
-//            if self.needsPlay {
-//                self.play()
-//            }
             break
         default:
             print("other")

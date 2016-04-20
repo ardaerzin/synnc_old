@@ -101,6 +101,7 @@ class WildSpotifyUser : WCLUserExtension {
     }
     
     private func loadSpotifySession() {
+        print("load session")
         SPTAuth.defaultInstance().renewSession(SPTAuth.defaultInstance().session, callback: { (err, session) -> Void in
             if session != nil && session!.isValid() {
                 print("access token", session.accessToken)
@@ -115,25 +116,25 @@ class WildSpotifyUser : WCLUserExtension {
     
     //Mark: Login
     private func loginWithSpotify(){
-//        print("login url:", SPTAuth.defaultInstance().loginURL)
-//        Async.main {
-//            UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
-//        }
-        
-        let loginViewController = SPTAuthViewController.authenticationViewController()
-        loginViewController.delegate = self
-        loginViewController.modalPresentationStyle = .OverFullScreen
-        
-        //root view controller for presenting loginViewController
-        let rootViewController = UIApplication.sharedApplication().delegate?.window!!.rootViewController
-        
-        //present loginViewController
-        let x = rootViewController?.presentedViewController
-        if x == nil {
-            rootViewController?.presentViewController(loginViewController, animated: true, completion: nil)
-        } else {
-            x!.presentViewController(loginViewController, animated: true, completion: nil)
+        print("login url:", SPTAuth.defaultInstance().loginURL)
+        Async.main {
+            UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
         }
+        
+//        let loginViewController = SPTAuthViewController.authenticationViewController()
+//        loginViewController.delegate = self
+//        loginViewController.modalPresentationStyle = .OverFullScreen
+//        
+//        //root view controller for presenting loginViewController
+//        let rootViewController = UIApplication.sharedApplication().delegate?.window!!.rootViewController
+//        
+//        //present loginViewController
+//        let x = rootViewController?.presentedViewController
+//        if x == nil {
+//            rootViewController?.presentViewController(loginViewController, animated: true, completion: nil)
+//        } else {
+//            x!.presentViewController(loginViewController, animated: true, completion: nil)
+//        }
     }
     
     //Mark: Logout
@@ -162,8 +163,10 @@ class WildSpotifyUser : WCLUserExtension {
                 print(user.canonicalUserName)
                 
                 self.territory = user.territory
+                self.profileInfo = user
+            } else {
+                self.profileInfo = nil
             }
-            self.profileInfo = JSON(obj).object
         })
     }
     

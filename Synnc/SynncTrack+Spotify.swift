@@ -26,6 +26,10 @@ extension SynncTrack {
         self.name = track.name
         self.song_id = track.identifier
         
+        if let uri = track.uri {
+            self.uri = uri.absoluteString
+        }
+        
         var artists : [SynncArtist] = []
         for artistData in track.artists {
             let artist = SynncArtist.create(artistData, source: .Spotify)

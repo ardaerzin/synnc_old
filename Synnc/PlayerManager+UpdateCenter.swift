@@ -26,9 +26,10 @@ extension StreamPlayerManager {
             print(#function, "nil")
             return
         }
-        if MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] != nil && (MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(CMTimeGetSeconds(ci.duration)) {
+        let duration = self.currentItemDuration
+        if MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] != nil && (MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(duration) {
             
-            nowPlayingInfo.updateValue(NSTimeInterval(CMTimeGetSeconds(ci.duration)), forKey: MPMediaItemPropertyPlaybackDuration)
+            nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
         }
         
         nowPlayingInfo.updateValue(self.rate, forKey: MPNowPlayingInfoPropertyPlaybackRate)
@@ -45,7 +46,7 @@ extension StreamPlayerManager {
             return
         }
         let ci = self.currentIndex
-        
+        let duration = self.currentItemDuration
         let track = st.playlist.songs[ci as Int]
         
         MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = false
@@ -56,7 +57,7 @@ extension StreamPlayerManager {
         }
         MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = true
         
-        nowPlayingInfo.updateValue(NSTimeInterval(CMTimeGetSeconds(npi.duration)), forKey: MPMediaItemPropertyPlaybackDuration)
+        nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
         
         nowPlayingInfo.updateValue(self.rate, forKey: MPNowPlayingInfoPropertyPlaybackRate)
         nowPlayingInfo.updateValue(CMTimeGetSeconds(ct), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
@@ -88,7 +89,7 @@ extension StreamPlayerManager {
                     self.nowPlayingInfo.updateValue(albumArt, forKey: MPMediaItemPropertyArtwork)
                 }
                 
-                self.nowPlayingInfo.updateValue(NSTimeInterval(CMTimeGetSeconds(npi.duration)), forKey: MPMediaItemPropertyPlaybackDuration)
+                self.nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
                 MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
             }
             

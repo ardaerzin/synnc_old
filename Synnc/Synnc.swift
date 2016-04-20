@@ -99,7 +99,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-//        SPTAuth.defaultInstance().sessionUserDefaultsKey = "Synnc"
+        SPTAuth.defaultInstance().sessionUserDefaultsKey = "Synnc"
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserReadPrivateScope]
         SPTAuth.defaultInstance().clientID = "45dabbd3f3e946618030f229ad92b721"
         SPTAuth.defaultInstance().redirectURL = NSURL(string: "synnc://callback")
@@ -291,6 +291,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
             SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: { (err, session) in
                 if let error = err {
                     print("error with spotify:", error.description)
+                    return
                 }
                 print("!*!*!*!*", session.properties())
                 if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {

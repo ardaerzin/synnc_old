@@ -17,12 +17,13 @@ extension Int {
 
 extension StreamPlayerManager {
     
-    typealias TrackPlayerInfo = (item : AVPlayerItem?, index: Int, player: PlayerManagerPlayer)
+    typealias TrackPlayerInfo = (item : AnyObject?, index: Int, player: PlayerManagerPlayer)
+//    typealias TrackPlayerInfo = (item : AVPlayerItem?, index: Int, player: PlayerManagerPlayer)
     
     func assignTracksToPlayers(tracks : [SynncTrack]) -> [SynncTrack : TrackPlayerInfo] {
         
         var indexedData : [SynncTrack : TrackPlayerInfo] = [SynncTrack : TrackPlayerInfo]()
-        
+        var spotifyUris : [NSURL] = []
         for (ind, track) in tracks.enumerate() {
             
             guard let source = SynncExternalSource(rawValue: track.source) else {
@@ -30,7 +31,7 @@ extension StreamPlayerManager {
             }
             
             var player : PlayerManagerPlayer!
-            var item : AVPlayerItem!
+            var item : AnyObject!
             
             switch source {
             case .Soundcloud:
@@ -42,6 +43,14 @@ extension StreamPlayerManager {
                 item = newItem(song: track)
                 break
             case .Spotify:
+                player = .SpotifyPlayer
+                if let uriStr = track.uri {
+                    if let uri = NSURL(string: uriStr) {
+                        print("Append:", uri)
+                        item = uri
+                        spotifyUris.append(uri)
+                    }
+                }
                 break
             default:
                 break
@@ -49,6 +58,18 @@ extension StreamPlayerManager {
             
             if let p = player {
                 indexedData[track] = (item: item, index: ind, player: p)
+            }
+        }
+        
+        if !spotifyUris.isEmpty {
+            if let player = self.players[.SpotifyPlayer] as? SynncSpotifyPlayer {
+ 
+                player.queueURIs(spotifyUris, clearQueue: true) { (err) in
+                    if let error = err {
+                        print("couldn't queue URIs", error.description)
+                        return
+                    }
+                }
             }
         }
         
@@ -79,24 +100,18 @@ extension StreamPlayerManager {
     }
 }
 
-extension StreamPlayerManager {
-    func assignToPlayers(startingAtIndex index: Int) {
-        
-        for (ind,track) in playlist.enumerate() {
-            if ind < index {
-                continue
-            }
-            if let info = playerIndexedPlaylist[track] {
-                if let player = players[info.player], let item = info.item where player.currentItem == nil {
-                    player.replaceCurrentItemWithPlayerItem(item)
-                }
-            }
-        }
-//        for (_,info) in playerIndexedPlaylist {
-//            if let player = players[info.player], let item = info.item where player.currentItem == nil {
-//                print("song", info.index)
-//                player.replaceCurrentItemWithPlayerItem(item)
+//extension StreamPlayerManager {
+//    func assignToPlayers(startingAtIndex index: Int) {
+//        
+//        for (ind,track) in playlist.enumerate() {
+//            if ind < index {
+//                continue
+//            }
+//            if let info = playerIndexedPlaylist[track] {
+//                if let player = players[info.player] as? AVPlayer, let item = info.item as? AVPlayerItem where player.currentItem == nil {
+//                    player.replaceCurrentItemWithPlayerItem(item)
+//                }
 //            }
 //        }
-    }
-}
+//    }
+//}

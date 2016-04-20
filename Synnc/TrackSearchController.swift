@@ -278,9 +278,14 @@ extension TrackSearchController {
     
     func searchSpotify(str: String, timeStamp: NSDate, offSet : Int? = 0) {
         
+        guard let sptUser = Synnc.sharedInstance.user.userExtension(.Spotify) as? WildSpotifyUser, let loginStatus = sptUser.loginStatus where loginStatus else {
+            return
+        }
         let types : [EntityType] = [.Track, .Artist]
         
-        for type in types {            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, offset: offSet!, accessToken: SPTAuth.defaultInstance().session.accessToken, market: SPTMarketFromToken) { (err, data) -> Void in
+        for type in types {
+            
+            SPTSearch.performSearchWithQuery(str.stringByRemovingPercentEncoding, queryType: type == .Track ? .QueryTypeTrack : .QueryTypeArtist, offset: offSet!, accessToken: SPTAuth.defaultInstance().session.accessToken, market: sptUser.territory) { (err, data) -> Void in
             
             if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
                     if let sptshit = data as? SPTListPage {
@@ -452,7 +457,7 @@ extension TrackSearchController {
         
         let needsParse = spotifyAlbums.isEmpty
         spotifyAlbums += albums
-        
+        print("SPOTIFY ALBUMS", spotifyAlbums)
         if needsParse {
             parseAlbum(0, timeStamp: timeStamp)
         }
@@ -472,7 +477,9 @@ extension TrackSearchController {
         self.spotifyAlbums = []
         
         do {
-            let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: .Album, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: nil)
+            let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: .Album, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: sptUser.territory)
+            print(req.URL, SPTMarketFromToken)
+            
             NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (data, res, err) in
                 do {
                     let x = try SPTListPage(fromData: data, withResponse: res, expectingPartialChildren: false, rootObjectKey: nil)

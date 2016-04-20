@@ -10,12 +10,25 @@ import Foundation
 
 extension StreamPlayerManager {
     /// Wrap Player Related Attributes
-    var currentItem : AVPlayerItem? {
+    var currentItemDuration : CGFloat {
         get {
-            if activePlayer == nil {
+            if let avItem = self.currentItem as? AVPlayerItem {
+                return CGFloat(CMTimeGetSeconds(avItem.duration))
+            } else if let player = self.activePlayer as? SynncSpotifyPlayer {
+                return CGFloat(player.currentTrackDuration)
+            }
+            return 0
+        }
+    }
+    var currentItem : AnyObject? {
+        get {
+            if let avplayer = activePlayer as? AVPlayer {
+                return avplayer.currentItem
+            } else if let spotifyPlayer = activePlayer as? SPTAudioStreamingController {
+                return spotifyPlayer.currentTrackURI
+            } else {
                 return nil
             }
-            return activePlayer.currentItem
         }
     }
     var currentTime : CMTime? {
@@ -31,13 +44,23 @@ extension StreamPlayerManager {
             guard let player = activePlayer else {
                 return 0
             }
-            return player.rate
+            if let avplayer = player as? AVPlayer {
+                return avplayer.rate
+            } else if let spotifyPlayer = player as? SPTAudioStreamingController {
+                return 0
+            } else {
+                return 0
+            }
         }
         set {
             guard let player = activePlayer else {
                 return
             }
-            player.rate = newValue
+            if let avplayer = player as? AVPlayer {
+                avplayer.rate = newValue
+            } else if let spotifyPlayer = player as? SPTAudioStreamingController {
+                
+            }
         }
     }
     var volume : Float {
@@ -45,13 +68,23 @@ extension StreamPlayerManager {
             guard let player = activePlayer else {
                 return 0
             }
-            return player.volume
+            if let avplayer = player as? AVPlayer {
+                return avplayer.volume
+            } else if let spotifyPlayer = player as? SPTAudioStreamingController {
+                return Float(spotifyPlayer.volume)
+            } else {
+                return 0
+            }
         }
         set {
             guard let player = activePlayer else {
                 return
             }
-            player.volume = newValue
+            if let avplayer = player as? AVPlayer {
+                avplayer.volume = newValue
+            } else if let spotifyPlayer = player as? SPTAudioStreamingController {
+                spotifyPlayer.setVolume(Double(newValue), callback: nil)
+            }
         }
     }
     var isPlaying : Bool {
@@ -67,32 +100,6 @@ extension StreamPlayerManager {
         }
     }
  
-    func fadeVolume(toValue value: Float){
-        guard let item = self.currentItem, let ct = currentTime else {
-            return
-        }
-        
-        let audioTracks = item.asset.tracksWithMediaType(AVMediaTypeAudio)
-        let timescale = item.asset.duration.timescale
-        
-        var allAudioParams : [AVAudioMixInputParameters] = []
-        
-        
-        for track in audioTracks {
-            let ct2 = CMTimeGetSeconds(ct) == 0.0 ? CMTimeMake(0, timescale) : CMTimeMakeWithSeconds(CMTimeGetSeconds(ct), timescale)
-            
-            let inputParams = AVMutableAudioMixInputParameters(track: track )
-            inputParams.setVolumeRampFromStartVolume(value == 0 ? 1 : 0, toEndVolume: value, timeRange: CMTimeRangeMake(ct2, CMTimeMakeWithSeconds(fadeDuration , 1)))
-            
-            allAudioParams.append(inputParams)
-        }
-        
-        let audioMix = AVMutableAudioMix()
-        audioMix.inputParameters = allAudioParams
-        
-        item.audioMix = audioMix
-    }
-    
     func play(){
         checkActiveSession()
         if self.readyToPlay {
@@ -102,16 +109,4 @@ extension StreamPlayerManager {
             needsPlay = true
         }
     }
-    
-//    func pause(){
-//        guard let player = self.activePlayer, let ct = currentTime else {
-//            return
-//        }
-//        let pauseTime = CMTimeMakeWithSeconds(CMTimeGetSeconds(ct) + fadeDuration, self.currentItem!.asset.duration.timescale)
-//        self.fadeVolume(toValue: 0)
-//        
-//        fadeoutObserver = player.addBoundaryTimeObserverForTimes([NSValue(CMTime: pauseTime)], queue: nil, usingBlock: {
-//            self.rate = 0
-//        })
-//    }
 }

@@ -98,7 +98,7 @@ extension WildPlayerSyncManager {
             let index = ts.playlist_index as Int
             
             
-            manager.loadSong(ts.playlist_index as Int, play: true)
+            manager.loadSong(ts.playlist_index as Int)
             manager.loadSong((ts.playlist_index as Int) + 1)
             
             let ind = ts.playlist_index as Int
@@ -149,14 +149,12 @@ extension WildPlayerSyncManager {
         let actualTime = CMTimeGetSeconds(manager.currentTime!)
         let clockTime = CMClockGetTime(CMClockGetHostTimeClock())
  
-        if let item = manager.currentItem {
+        if let item = manager.currentItem as? AVPlayerItem {
             
             if actualTime/item.asset.duration.seconds >= 1 {
                 manager.rate = 0
                 return
             }
-            
-//            print("setRate", playerNewTime/player.currentItem!.asset.duration.seconds, actualTime/player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
             
             if abs(playerNewTime - actualTime) > 0.02 {
                 
@@ -187,19 +185,13 @@ extension WildPlayerSyncManager {
                                     }
                                 }
                             }
-                            print("Sector")
                         }
                     }
                     
-//                    }
                 } else {
-//                    print("STOP")
-//                    self.player.rate = 0
                 }
                 
             } else {
-//                print("done syncing")
-//                print("NO Syncing", playerNewTime/player.currentItem!.asset.duration.seconds, (player.currentItem as! WildPlayerItem).index, player.currentItem)
                 manager.isSyncing = false
             }
         }

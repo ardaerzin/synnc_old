@@ -15,16 +15,13 @@ extension StreamPlayerManager {
     func playerItem(itemStatusChangedForItem item: AVPlayerItem) {
         
 //        print("PlayerManager:","status changed for item", item, item.status == AVPlayerItemStatus.ReadyToPlay, self.currentItem, self.activePlayer)
-        if item == self.currentItem {
+        if item === self.currentItem {
             self.play()
         }
     }
     func playerItem(loadedItemTimeRangesForItem item: AVPlayerItem) {
         
-        if let st = self.stream where !st.isUserStream && item == currentItem {
-            if let range = item.loadedTimeRanges.first?.CMTimeRangeValue {
-                print("loaded time ranges for item", CMTimeGetSeconds(range.duration), CMTimeGetSeconds(item.asset.duration))
-            }
+        if let st = self.stream where !st.isUserStream && item === currentItem {
             self.syncManager.checkTimeSync()
         }
         
