@@ -10,11 +10,13 @@ import Foundation
 import WCLUIKit
 import AsyncDisplayKit
 import pop
+import SwiftyJSON
+import WCLMusicKit
+import WCLUtilities
 
 class SynncArtistSmallNode : ASCellNode {
     var imageNode : ASNetworkImageNode!
     var usernameNode : ASTextNode!
-    var sourceNode : ASTextNode!
     var selectionIndicator : ASDisplayNode!
     
     
@@ -28,7 +30,12 @@ class SynncArtistSmallNode : ASCellNode {
     var state : TrackCellState = .Add {
         didSet {
             if state != oldValue {
-                self.cellStateAnimation.toValue = state == .Add ? 0 : 1
+                
+                if self.interfaceState != ASInterfaceState.InHierarchy {
+                    self.cellStateAnimationProgress = state == .Add ? 0 : 1
+                } else {
+                    self.cellStateAnimation.toValue = state == .Add ? 0 : 1
+                }
             }
         }
     }
@@ -73,13 +80,30 @@ class SynncArtistSmallNode : ASCellNode {
     }
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
+        self.pop_removeAllAnimations()
+        
         let a = self.cellStateAnimationProgress
         self.cellStateAnimationProgress = a
     }
     var cellStateAnimationProgress : CGFloat = 0 {
         didSet {
+            
+            let track_redT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+            let track_greenT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+            let track_blueT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+            
+            let x = NSMutableAttributedString(attributedString: self.usernameNode.attributedString!)
+            x.addAttribute(NSForegroundColorAttributeName, value: UIColor(red: track_redT, green: track_greenT, blue: track_blueT, alpha: 1), range: NSMakeRange(0, self.usernameNode.attributedString!.length))
+            self.usernameNode.attributedString = x
+
+            let bg_redT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 236) / 255
+            let bg_greenT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 89) / 255
+            let bg_blueT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 26) / 255
+            
+            self.backgroundColor = UIColor(red: bg_redT, green: bg_greenT, blue: bg_blueT, alpha: 1)
+            
             //            let translation = POPTransition(cellStateAnimationProgress, startValue: -self.selectedSeperatorNode.bounds.width / 2, endValue: 0)
-            POPLayerSetScaleX(self.selectionIndicator.layer, cellStateAnimationProgress)
+//            POPLayerSetScaleX(self.selectionIndicator.layer, cellStateAnimationProgress)
             //            POPLayerSetTranslationX(self.selectedSeperatorNode.layer, translation)
         }
     }
@@ -93,19 +117,15 @@ class SynncArtistSmallNode : ASCellNode {
         
         self.usernameNode = ASTextNode()
         self.usernameNode.maximumNumberOfLines = 1
-        self.sourceNode = ASTextNode()
-        self.sourceNode.spacingBefore = 5
-        self.sourceNode.maximumNumberOfLines = 1
         
-        self.selectionIndicator = ASDisplayNode()
-        self.selectionIndicator.backgroundColor = UIColor.SynncColor()
-        self.selectionIndicator.flexBasis = ASRelativeDimension(type: .Points, value: 3)
-        self.selectionIndicator.alignSelf = .Stretch
+//        self.selectionIndicator = ASDisplayNode()
+//        self.selectionIndicator.backgroundColor = UIColor.SynncColor()
+//        self.selectionIndicator.flexBasis = ASRelativeDimension(type: .Points, value: 3)
+//        self.selectionIndicator.alignSelf = .Stretch
         
         self.addSubnode(self.imageNode)
         self.addSubnode(self.usernameNode)
-        self.addSubnode(self.sourceNode)
-        self.addSubnode(self.selectionIndicator)
+//        self.addSubnode(self.selectionIndicator)
     }
     func configureForArtist(artist : SynncArtist) {
         if let x = artist.avatar, url = NSURL(string: x) {
@@ -113,9 +133,6 @@ class SynncArtistSmallNode : ASCellNode {
         }
         if let name = artist.name {
             self.usernameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 10.66)!, NSForegroundColorAttributeName : UIColor(red: 87/255, green: 87/255, blue: 87/255, alpha: 1)])
-        }
-        if let src = artist.source {
-            self.sourceNode.attributedString = NSAttributedString(string: "@"+src, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 9)!, NSForegroundColorAttributeName : UIColor(red: 125/255, green: 125/255, blue: 125/255, alpha: 1)])
         }
         
         if artist.source == SynncExternalSource.Spotify.rawValue {
@@ -129,6 +146,15 @@ class SynncArtistSmallNode : ASCellNode {
                     }
                 }
             })
+        } else if artist.source == SynncExternalSource.AppleMusic.rawValue {
+            
+            WCLMusicKit.sharedInstance.artistAlbums(artist.id, limit: 1){
+                response, data, error, timestamp, next in
+                
+                if let arr = data, let album = arr.first as? WCLMusicKitAlbum, let urlStr = album.artworkUrl100, let url = NSURL(string: urlStr) {
+                    self.imageNode.URL = url
+                }
+            }
         }
     }
     
@@ -139,7 +165,7 @@ class SynncArtistSmallNode : ASCellNode {
         let spacer2 = ASLayoutSpec()
         spacer2.flexGrow = true
         
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [self.imageNode, self.usernameNode, self.sourceNode, spacer2, self.selectionIndicator])
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [self.imageNode, self.usernameNode])
         return a
     }
     

@@ -110,8 +110,7 @@ extension WildPlayerSyncManager {
                     manager.activePlayer = player
                 }
             }
-            manager.play()
-            
+//            manager.play()            
 //            player.trackManager.reloadTrackData(player.stream!)
 //            player.currentIndex = ts.playlist_index as Int
 //            handleTimeStampChange(ts)
@@ -193,6 +192,29 @@ extension WildPlayerSyncManager {
                 
             } else {
                 manager.isSyncing = false
+            }
+        } else {
+            if let sptPlayer = manager.activePlayer as? SynncSpotifyPlayer where !sptPlayer.isSeeking {
+                let x = NSDate()
+//                print(playerNewTime - actualTime)
+                Async.background {
+                    if abs(playerNewTime - actualTime) > 0.015 {
+                        sptPlayer.isSeeking = true
+                        sptPlayer.isSynced = false
+                        sptPlayer.seekToOffset(playerNewTime + 0.075) {
+                            err in
+                            if let error = err {
+                                print("error in seeking", error.description)
+                                sptPlayer.isSeeking = false
+                                return
+                            }
+                            //                        print("seeked", NSDate().timeIntervalSince1970 - x.timeIntervalSince1970)
+                            sptPlayer.isSeeking = false
+                        }
+                    } else {
+                        sptPlayer.isSynced = true
+                    }
+                }
             }
         }
     }

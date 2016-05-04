@@ -27,6 +27,21 @@ enum StreamControllerState : Int {
 
 class StreamVC : PagerBaseController {
     
+    var currentTrack : SynncTrack? {
+        get {
+            if let s = self.stream where s == StreamManager.sharedInstance.activeStream {
+                if let ci = s.currentSongIndex where (ci as Int) < s.playlist.songs.count {
+                    let track = stream.playlist.songs[ci as Int]
+                    return track
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
+        }
+    }
+    var actionSheet : ActionSheetPopup!
     var state : StreamControllerState! = .Inactive {
         didSet {
             (self.screenNode as! StreamVCNode).state = state
@@ -65,11 +80,13 @@ class StreamVC : PagerBaseController {
         super.init(pagerNode: node)
         node.clipsToBounds = false
         
+        (node.headerNode as! StreamHeaderNode).toggleButton.addTarget(self, action: #selector(StreamVC.toggleWindowPosition(_:)), forControlEvents: .TouchUpInside)
+        
         if let s = stream {
             self.stream = s
         }
         
-        node.nowPlayingArea.likeButton.addTarget(self, action: #selector(StreamVC.toggleTrackFav(_:)), forControlEvents: .TouchUpInside)
+        node.nowPlayingArea.submenuButton.addTarget(self, action: #selector(StreamVC.displayActionSheet(_:)), forControlEvents: .TouchUpInside)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
     }
@@ -83,6 +100,16 @@ class StreamVC : PagerBaseController {
         (self.screenNode as! StreamVCNode).nowPlayingArea.joinButton.addTarget(self, action: #selector(StreamVC.joinStream(_:)), forControlEvents: .TouchUpInside)
     }
     
+    func toggleWindowPosition(sender : AnyObject) {
+        if let w = self.view.wclWindow {
+            if w.position == .Displayed {
+                w.hide(true)
+            } else {
+                w.display(true)
+            }
+        }
+    }
+    
     func toggleMute(sender: ButtonNode) {
         if stream != StreamManager.sharedInstance.activeStream {
             return
@@ -90,6 +117,11 @@ class StreamVC : PagerBaseController {
         StreamManager.sharedInstance.playerManager.volume = !sender.selected ? 1 : 0
     }
     func shareStream(sender: AnyObject) {
+        if let s = actionSheet {
+            Async.background {
+                s.closeView(true)
+            }
+        }
         
         let textToShare = "I'm listening to \(stream.user.username)'s stream, '\(stream.playlist.name)'"
         if let myWebsite = NSURL(string: "https://synnc.live") {
@@ -125,7 +157,91 @@ class StreamVC : PagerBaseController {
         }
     }
     
+    func endCurrentStream(sender : ButtonNode!) {
+        sender.showSpinView()
+        AnalyticsEvent.new(category: "StreamPopup", action: "buttonTap", label: "endCurrentStream", value: nil)
+        if let activeStr = StreamManager.sharedInstance.activeStream {
+            StreamManager.sharedInstance.stopStream(activeStr, completion: {
+                [weak self]
+                status in
+                
+                if self == nil {
+                    return
+                }
+                if let s = self!.actionSheet {
+                    Async.background {
+                        s.closeView(true)
+                    }
+                }
+            })
+        }
+    }
+    
+    func displayActionSheet(sender : AnyObject) {
+        var isActiveStream = false
+        if let s = self.stream where s == StreamManager.sharedInstance.activeStream {
+            isActiveStream = true
+        }
+        
+        let paragraphAtrributes = NSMutableParagraphStyle()
+        paragraphAtrributes.alignment = .Center
+        
+        let shareButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        shareButton.setAttributedTitle(NSAttributedString(string: "Share", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        shareButton.minScale = 1
+        shareButton.cornerRadius = 8
+        shareButton.addTarget(self, action: #selector(StreamVC.shareStream(_:)), forControlEvents: .TouchUpInside)
+        
+        var stateButton : ButtonNode
+        if !isActiveStream {
+            let playButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+            playButton.setAttributedTitle(NSAttributedString(string: "Play", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+            playButton.addTarget(self, action: #selector(StreamVC.joinStream(_:)), forControlEvents: .TouchUpInside)
+            playButton.minScale = 1
+            playButton.cornerRadius = 8
+            stateButton = playButton
+        } else {
+            let stopButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+            stopButton.setAttributedTitle(NSAttributedString(string: "Stop", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+            stopButton.minScale = 1
+            stopButton.cornerRadius = 8
+            stopButton.addTarget(self, action: #selector(StreamVC.endCurrentStream(_:)), forControlEvents: .TouchUpInside)
+            stateButton = stopButton
+        }
+        
+        let likeButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        likeButton.setAttributedTitle(NSAttributedString(string: "Like current track", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        likeButton.setAttributedTitle(NSAttributedString(string: "Unlike current track", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Selected)
+        
+        print("current track", self.currentTrack)
+        
+        if let track = currentTrack, let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {
+            likeButton.selected = true
+        } else {
+            likeButton.selected = false
+        }
+        likeButton.minScale = 1
+        likeButton.cornerRadius = 8
+        likeButton.addTarget(self, action: #selector(StreamVC.toggleTrackFav(_:)), forControlEvents: .TouchUpInside)
+        
+        let buttons = [shareButton, likeButton, stateButton]
+        
+        actionSheet = ActionSheetPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 200), buttons : buttons)
+        actionSheet.onCancel = {
+            if let node = sender as? ButtonNode {
+                node.userInteractionEnabled = true
+                node.hideSpinView()
+            }
+        }
+        WCLPopupManager.sharedInstance.newPopup(actionSheet)
+    }
+    
     func toggleTrackFav(sender: ButtonNode) {
+        
+        if let s = actionSheet {
+            s.closeView(true)
+        }
+        
         guard let st = self.stream, let ind = st.currentSongIndex else {
             return
         }
@@ -133,11 +249,12 @@ class StreamVC : PagerBaseController {
         if st != StreamManager.sharedInstance.activeStream {
             return
         }
-        
-        let animation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-        animation.duration = 0.2
-        animation.toValue = 0
-        sender.pop_addAnimation(animation, forKey: "hide")
+
+        sender.selected = !sender.selected
+//        let animation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+//        animation.duration = 0.2
+//        animation.toValue = 0
+//        sender.pop_addAnimation(animation, forKey: "hide")
         
         let song = st.playlist.songs[ind as Int]
         
@@ -153,23 +270,21 @@ class StreamVC : PagerBaseController {
         }
         
         let song = st.playlist.songs[ind as Int]
-        let button = (self.screenNode as! StreamVCNode).nowPlayingArea.likeButton
-        var anim : POPBasicAnimation
-        if let x = button.pop_animationForKey("hide") as? POPBasicAnimation {
-            anim = x
-        } else {
-            anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-            anim.duration = 0.2
-            button.pop_addAnimation(anim, forKey: "hide")
-        }
-        
-        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let _ = plist.indexOf(song) {
-            button.selected = true
-        } else {
-            button.selected = false
-        }
-        
-        anim.toValue = 1
+//        let button = (self.screenNode as! StreamVCNode).nowPlayingArea.likeButton
+//        var anim : POPBasicAnimation
+//        if let x = button.pop_animationForKey("hide") as? POPBasicAnimation {
+//            anim = x
+//        } else {
+//            anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+//            anim.duration = 0.2
+//            button.pop_addAnimation(anim, forKey: "hide")
+//        }
+//        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let _ = plist.indexOf(song) {
+//            button.selected = true
+//        } else {
+//            button.selected = false
+//        }
+//        anim.toValue = 1
     }
     
     override func updatedPagerPosition(position : CGFloat) {
@@ -276,6 +391,27 @@ class StreamVC : PagerBaseController {
                 w.transitionProgress = 1
             }
         }
+        
+        if let window = self.screenNode.view.wclWindow {
+            
+            var lowerLimit : CGFloat = 0
+            
+            var isActiveStream : Bool
+            
+            if let thisSt = self.stream, let st = (notification.object as? Stream) where st == thisSt {
+                isActiveStream = true
+            } else {
+                isActiveStream = false
+            }
+            
+            if isActiveStream {
+                lowerLimit = UIScreen.mainScreen().bounds.height - 70
+            } else {
+                lowerLimit = UIScreen.mainScreen().bounds.height
+            }
+            
+            window.lowerPercentage = lowerLimit
+        }
     }
     func updatedStream(notification: NSNotification){
         if let keys = notification.userInfo?["updatedKeys"] as? [String]{
@@ -305,7 +441,6 @@ class StreamVC : PagerBaseController {
     internal func updateTrack(stream : Stream){
         if let ind = stream.currentSongIndex {
             Async.main {
-                print("current index", ind)
                 let track = stream.playlist.songs[ind as Int]
                 self.tracklistController.currentIndex = ind as Int
                 (self.screenNode as! StreamVCNode).nowPlayingArea.configure(track)
@@ -343,6 +478,7 @@ extension StreamVC : WCLWindowDelegate {
         if stream == StreamManager.sharedInstance.activeStream {
             let screenNode = (self.screenNode as! StreamVCNode)
             
+            
             let p = POPProgress(progress, startValue: 0, endValue: window.lowerPercentage)
             let transition = POPTransition(p, startValue: 0, endValue: -screenNode.calculatedSize.height*window.lowerPercentage)            
             screenNode.nowPlayingArea.windowTransition = transition
@@ -363,6 +499,17 @@ extension StreamVC : WCLWindowDelegate {
 //        self.chatController.shouldFirstRespond = false
 //        self.chatController.resignFirstResponder()
 //        (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = 0
+        
+        let x = 1-window.lowerPercentage
+        let za = (1 - progress - x) / (1-x)
+        
+        (self.screenNode.headerNode as! StreamHeaderNode).toggleButton.progress = za
+        self.screenNode.headerNode.leftButtonHolder.alpha = za
+        self.screenNode.headerNode.rightButtonHolder.alpha = za
+        self.screenNode.headerNode.pageControl.alpha = za
+        
+        let z = POPTransition(za, startValue: 10, endValue: 0)
+        POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
     }
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
     }
@@ -411,6 +558,10 @@ extension StreamVC {
     
     func joinStream(sender : AnyObject!){
         
+        if let s = actionSheet {
+            s.closeView(true)
+        }
+        
         if let node = sender as? ButtonNode {
             node.userInteractionEnabled = false
             node.showSpinView()
@@ -421,7 +572,6 @@ extension StreamVC {
         if let _ = StreamManager.sharedInstance.activeStream {
             
             let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
-//            x.node.yesButton.addTarget(self, action: #selector(StreamVC.stopAndJoin(_:)), forControlEvents: .TouchUpInside)
             x.callback = self.joinStream
             x.node.noButton.addTarget(self, action: #selector(StreamVC.notJoiningStream(_:)), forControlEvents: .TouchUpInside)
             WCLPopupManager.sharedInstance.newPopup(x)
@@ -430,11 +580,23 @@ extension StreamVC {
         }
         
         if let s = self.stream {
-            StreamManager.sharedInstance.joinStream(s) {
-                success in
-                if success {
-                    //                StreamManager.sharedInstance.player.delegate = self
+            
+            if StreamManager.sharedInstance.canJoinStream(s) {
+                StreamManager.sharedInstance.joinStream(s) {
+                    success in
+                    if success {
+                        //                StreamManager.sharedInstance.player.delegate = self
+                    }
                 }
+            } else {
+                let x = SpotifyValidationPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+                x.onCancel = {
+                    if let node = sender as? ButtonNode {
+                        node.userInteractionEnabled = true
+                        node.hideSpinView()
+                    }
+                }
+                WCLPopupManager.sharedInstance.newPopup(x)
             }
         }
     }

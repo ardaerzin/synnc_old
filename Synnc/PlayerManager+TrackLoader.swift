@@ -20,7 +20,7 @@ extension StreamPlayerManager {
     typealias TrackPlayerInfo = (item : AnyObject?, index: Int, player: PlayerManagerPlayer)
 //    typealias TrackPlayerInfo = (item : AVPlayerItem?, index: Int, player: PlayerManagerPlayer)
     
-    func assignTracksToPlayers(tracks : [SynncTrack]) -> [SynncTrack : TrackPlayerInfo] {
+    func assignTracksToPlayers(tracks : [SynncTrack], currentIndex : Int? = 0) -> [SynncTrack : TrackPlayerInfo] {
         
         var indexedData : [SynncTrack : TrackPlayerInfo] = [SynncTrack : TrackPlayerInfo]()
         var spotifyUris : [NSURL] = []
@@ -44,7 +44,7 @@ extension StreamPlayerManager {
                 break
             case .Spotify:
                 player = .SpotifyPlayer
-                if let uriStr = track.uri {
+                if let uriStr = track.uri where ind >= currentIndex {
                     if let uri = NSURL(string: uriStr) {
                         print("Append:", uri)
                         item = uri
@@ -69,6 +69,8 @@ extension StreamPlayerManager {
                         print("couldn't queue URIs", error.description)
                         return
                     }
+                    print("stop player")
+                    player.setIsPlaying(false, callback: nil)
                 }
             }
         }

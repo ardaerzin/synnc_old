@@ -75,6 +75,7 @@ class SourceSelectionNode : ASDisplayNode {
         
         for source in sources {
             let src = SynncExternalSource(rawValue: source.capitalizedString)
+            print(source.capitalizedString, src)
             if let x = src {
                 let button = SourceButton(source: x)
                 
@@ -122,7 +123,20 @@ class SourceSelectionNode : ASDisplayNode {
                     
                     return
                 }
+            } else if sender.source == .AppleMusic {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to Apple Music first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                        notif in
+                        
+                        Synnc.sharedInstance.user.socialLogin(.AppleMusic)
+                    }
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                    
+                    return
+                }
             }
+            
+            
             return
         }
         

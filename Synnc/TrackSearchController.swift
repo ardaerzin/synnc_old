@@ -17,6 +17,7 @@ import WCLSoundCloudKit
 import WCLPopupManager
 import WCLDataManager
 import WCLNotificationManager
+import WCLMusicKit
 
 enum EntityType : String {
     case Artist = "artist"
@@ -69,6 +70,7 @@ class TrackSearchController : WCLPopupViewController {
     }
     var selectedArtist : SynncArtist?
     var spotifyAlbums : [SPTAlbum] = []
+    var appleMusicAlbums : [WCLMusicKitAlbum] = []
     
     init(size: CGSize) {
         let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
@@ -149,12 +151,16 @@ class TrackSearchController : WCLPopupViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.selectedSource = self.sourceSelector(canSelectSource: self.previousSource) ? self.previousSource : .Soundcloud
+        self.screenNode.clearButton.addTarget(self, action: #selector(TrackSearchController.clearTextArea(_:)), forControlEvents: .TouchUpInside)
+    }
+    func clearTextArea(sender: AnyObject){
+        self.screenNode.inputNode.attributedText = nil
+        self.searchStringChanged("")
     }
 }
 
 extension TrackSearchController : ASEditableTextNodeDelegate {
     func editableTextNode(editableTextNode: ASEditableTextNode, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
-        
         if let _ = text.rangeOfString("\n") {
             editableTextNode.resignFirstResponder()
             return false
@@ -195,6 +201,9 @@ extension TrackSearchController : ASTableViewDelegate {
             }
             if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.trackSearcher(self, hasTrack: data) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            } else {
+                tableView.deselectRowAtIndexPath(indexPath, animated: false)
+//                    .deselectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }
         }
     }
@@ -206,7 +215,12 @@ extension TrackSearchController : ASCollectionDelegate {
     func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.tracksManager.batchContext = context
         AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "track", value: nil)
-        self.tracksDataSource.loadMore()
+        
+        if let _ = self.tracksDataSource.nextAction {
+            self.screenNode.trackSearchState = true
+            self.tracksDataSource.loadMore()
+        }
+        
     }
     func shouldBatchFetchForCollectionView(collectionView: ASCollectionView) -> Bool {
         return true
@@ -214,7 +228,11 @@ extension TrackSearchController : ASCollectionDelegate {
     func collectionView(collectionView: ASCollectionView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.artistsManager.batchContext = context
         AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "artist", value: nil)
-        self.artistsDataSource.loadMore()
+        
+        if let _ = self.artistsDataSource.nextAction {
+            self.screenNode.artistSearchState = true
+            self.artistsDataSource.loadMore()
+        }
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         if let artist = self.artistsDataSource.dataAtIndex(indexPath.item) as? SynncArtist {
@@ -228,7 +246,7 @@ extension TrackSearchController : ASCollectionDelegate {
         }
     }
     func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
-        Async.background {
+        Async.main {
             if let data = self.artistsDataSource.dataAtIndex(indexPath.item) as? SynncArtist, let selected = self.selectedArtist {
                 if data.source == selected.source && data.id == selected.id {
                     collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
@@ -256,23 +274,60 @@ extension TrackSearchController {
             self.screenNode.trackEmptyStateNode.state = false
             self.screenNode.artistEmptyStateNode.state = false
             
+            self.screenNode.tfEmpty = true
+            
+            self.screenNode.artistSearchState = false
+            self.screenNode.trackSearchState = false
+            
             return
         }
+        
+        self.screenNode.tfEmpty = false
         
         if !checkSourceAvailability(self.selectedSource) {
             notifyForSource(self.selectedSource)
             return
         }
         
+        self.screenNode.artistSearchState = true
+        self.screenNode.trackSearchState = true
+        
         switch self.selectedSource {
         case .Soundcloud:
             searchSoundcloud(newString,timeStamp: ts)
         case .Spotify:
             searchSpotify(newString, timeStamp: ts)
+        case .AppleMusic:
+            searchAppleMusic(newString, timeStamp: ts)
         default:
             break
         }
         
+        
+    }
+    
+    func searchAppleMusic(str: String, timeStamp: NSDate, offSet : Int? = 0) {
+        
+        guard let amUser = Synnc.sharedInstance.user.userExtension(.AppleMusic), let loginStatus = amUser.loginStatus where loginStatus else {
+            return
+        }
+        let types : [EntityType] = [.Artist, .Track]
+        
+        for type in types {
+            WCLMusicKit.sharedInstance.search(type == .Track ? .Track : .Artist, searchTerm: str, limit: 20) {
+                response, data, error, timestamp, next in
+        
+                if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
+                    if let arr = data {
+                        
+                        Async.background {
+                            
+                            self.processResults(str, source: .AppleMusic, entity: type == .Track ? .Track : .Artist, timestamp: timeStamp, dataArr: arr)
+                        }
+                    }
+                }
+            }
+        }
         
     }
     
@@ -355,21 +410,29 @@ extension TrackSearchController {
     
     func processResults(query: String, source: SynncExternalSource, entity: EntityType! = nil, timestamp: NSDate, dataArr: [AnyObject]? = nil){
         
-        if entity == nil {
+        guard let ent = entity else {
             return
         }
+        if (self.last_search.compare(timestamp) != NSComparisonResult.OrderedSame) {
+            return
+        }
+        
+        if ent == .Track {
+            self.screenNode.trackSearchState = false
+        } else if  ent == .Artist {
+            self.screenNode.artistSearchState = false
+        }
+        
         var data : [NSObject] = []
         if let arr = dataArr {
             for item in arr {
-                let x : NSObject = (entity == .Track) ? SynncTrack.create(item, source: source) : SynncArtist.create(item, source: source)
+                let x : NSObject = (ent == .Track) ? SynncTrack.create(item, source: source) : SynncArtist.create(item, source: source)
                 data.append(x)
             }
             
-            if (self.last_search.compare(timestamp) != NSComparisonResult.OrderedSame) {
-                return
-            }
             
-            if entity == .Track {
+            
+            if ent == .Track {
                 let needsRefresh = query != self.queryString_tracks
                 self.tracksDataSource.refresh = needsRefresh
                 self.tracksDataSource.pendingData = data
@@ -405,7 +468,35 @@ extension TrackSearchController {
         }
     }
     
-    func parseAlbum(offset : Int? = 0, timeStamp : NSDate!) {
+    func parseAppleMusicAlbum(offset : Int? = 0, timeStamp : NSDate!) {
+        guard let artist = self.selectedArtist else {
+            return
+        }
+        
+        if offset >= appleMusicAlbums.count {
+            return
+        }
+        
+        if !checkSourceAvailability(self.selectedSource) {
+            notifyForSource(self.selectedSource)
+            return
+        }
+        
+        let album = appleMusicAlbums[offset!]
+        WCLMusicKit.sharedInstance.albumTracks("\(album.collectionId)") { (response, data, error, timestamp, next) in
+            
+            if let tracks = data as? [WCLMusicKitTrack] {
+                self.processResults(artist.id + ":search", source: .AppleMusic, entity : .Track, timestamp: timeStamp, dataArr: tracks)
+                self.tracksDataSource.nextAction = {
+                    self.parseAppleMusicAlbum(offset!+1, timeStamp: timeStamp)
+                }
+            } else {
+                self.tracksDataSource.nextAction = nil
+            }
+            
+        }
+    }
+    func parseSpotifyAlbum(offset : Int? = 0, timeStamp : NSDate!) {
         guard let artist = self.selectedArtist else {
             return
         }
@@ -435,7 +526,7 @@ extension TrackSearchController {
                         
                         self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: tracks)
                         self.tracksDataSource.nextAction = {
-                            self.parseAlbum(offset!+1, timeStamp: timeStamp)
+                            self.parseSpotifyAlbum(offset!+1, timeStamp: timeStamp)
                         }
                     } else {
                         self.tracksDataSource.nextAction = nil
@@ -459,7 +550,7 @@ extension TrackSearchController {
         spotifyAlbums += albums
         print("SPOTIFY ALBUMS", spotifyAlbums)
         if needsParse {
-            parseAlbum(0, timeStamp: timeStamp)
+            parseSpotifyAlbum(0, timeStamp: timeStamp)
         }
     }
     
@@ -524,7 +615,7 @@ extension TrackSearchController {
         
         last_search = NSDate()
         let ts = last_search
-        
+        self.screenNode.trackSearchState = true
         
         Async.background {
             
@@ -558,6 +649,22 @@ extension TrackSearchController {
                         print("found artist", artist)
                     }
                 }
+            } else if self.selectedSource == .AppleMusic {
+                self.appleMusicAlbums = []
+                
+                WCLMusicKit.sharedInstance.artistAlbums(id, limit: 200){
+                    response, data, error, timestamp, next in
+                    
+                    if let arr = data as? [WCLMusicKitAlbum] {
+                        let needsParse = self.appleMusicAlbums.isEmpty
+                        self.appleMusicAlbums += arr
+                        if needsParse {
+                            self.parseAppleMusicAlbum(0, timeStamp: ts)
+                        }
+                    }
+                }
+
+//                WCLMusicKit.sharedInstance.artistAlbums(id, limit: 200, time: <#T##((response: NSURLResponse?, data: [WCLMusicKitModel]?, error: NSError?, timestamp: NSDate, next: (() -> Void)?) -> Void)?##((response: NSURLResponse?, data: [WCLMusicKitModel]?, error: NSError?, timestamp: NSDate, next: (() -> Void)?) -> Void)?##(response: NSURLResponse?, data: [WCLMusicKitModel]?, error: NSError?, timestamp: NSDate, next: (() -> Void)?) -> Void#>)
             }
         }
     }
@@ -591,6 +698,12 @@ extension TrackSearchController {
             return true
         } else if source == .Spotify {
             if let user = Synnc.sharedInstance.user, let ext = user.userExtension(.Spotify), let status = ext.loginStatus where status  {
+                return true
+            } else {
+                return false
+            }
+        } else if source == .AppleMusic {
+            if let user = Synnc.sharedInstance.user, let ext = user.userExtension(.AppleMusic), let status = ext.loginStatus where status  {
                 return true
             } else {
                 return false

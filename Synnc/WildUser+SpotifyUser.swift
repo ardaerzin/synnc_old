@@ -101,12 +101,11 @@ class WildSpotifyUser : WCLUserExtension {
     }
     
     private func loadSpotifySession() {
-        print("load session")
         SPTAuth.defaultInstance().renewSession(SPTAuth.defaultInstance().session, callback: { (err, session) -> Void in
             if session != nil && session!.isValid() {
-                print("access token", session.accessToken)
                 self.accessToken = session.accessToken
-                self.loginStatus = true
+                self.getUserSpotifyProfile(nil)
+//                self.loginStatus = true
             } else {
                 self.accessToken = nil
                 self.loginStatus = false
@@ -154,16 +153,20 @@ class WildSpotifyUser : WCLUserExtension {
         return queue
         }()
     
-    internal func getUserSpotifyProfile(){
+    internal func getUserSpotifyProfile(callback: ((status: Bool) -> Void)?){
         SPTUser.requestCurrentUserWithAccessToken(self.accessToken, callback: { (err, obj) in
             if let user = obj as? SPTUser {
                 
-                print(SPTProduct.Free.rawValue, SPTProduct.Premium.rawValue, SPTProduct.Unlimited.rawValue, SPTProduct.Unknown.rawValue)
-                print("USER SHIT", user.product.rawValue)
-                print(user.canonicalUserName)
-                
                 self.territory = user.territory
                 self.profileInfo = user
+                
+                if user.product == SPTProduct.Premium {
+                    self.loginStatus = true
+                } else {
+                    self.loginStatus = false
+                }
+                
+                callback?(status: self.loginStatus)
             } else {
                 self.profileInfo = nil
             }
@@ -174,7 +177,7 @@ class WildSpotifyUser : WCLUserExtension {
     
     internal override func loginStatusChanged(){
         if let status = loginStatus where status {
-            self.getUserSpotifyProfile()
+//            self.getUserSpotifyProfile()
         } else {
             self.profileInfo = nil
         }
@@ -187,7 +190,22 @@ class WildSpotifyUser : WCLUserExtension {
             self.loginStatus = false
         } else if let sess = session {
             self.accessToken = sess.accessToken
-            self.loginStatus = true
+            self.getUserSpotifyProfile({
+                status in
+                
+                Async.main {
+                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                        if status == false {
+                            let info = WCLNotificationInfo(defaultActionName: "", body: "You need a Spotify Premium Account to use Synnc.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                                notif in
+                                UIApplication.sharedApplication().openURL(NSURL(string: "https://www.spotify.com/premium")!)
+                            }
+                            WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                        }
+                    }
+                }
+            })
+//            self.loginStatus = true
         }
     }
 }
@@ -199,8 +217,8 @@ extension WildSpotifyUser : SPTAuthViewDelegate {
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
         
         self.accessToken = session.accessToken
-        print(session.properties())
-        self.loginStatus = true
+//        self.getUserSpotifyProfile()
+//        self.loginStatus = true
         
     }
     func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {

@@ -40,14 +40,15 @@ extension StreamPlayerManager {
     
     func updateControlCenterItem(){
         
-        guard let st = self.stream, let npi = self.currentItem, let ct = currentTime else {
+        let ci = self.currentIndex as Int
+        print(self.stream, self.currentItem)
+        guard let st = self.stream, let npi = self.currentItem, let ct = currentTime where ci >= 0 else {
             MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [String : AnyObject]()
             print(#function, "nil")
             return
         }
-        let ci = self.currentIndex
         let duration = self.currentItemDuration
-        let track = st.playlist.songs[ci as Int]
+        let track = st.playlist.songs[ci]
         
         MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = false
         if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {

@@ -27,7 +27,6 @@ class TrackEmptyStateNode : EmptyStateNode {
 }
 
 class EmptyStateNode : ASDisplayNode {
-    
     var state : Bool = false {
         didSet {
             self.alpha = state ? 1 : 0
@@ -94,17 +93,162 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
     var trackEmptyStateNode : TrackEmptyStateNode!
     var artistEmptyStateNode : EmptyStateNode!
     
+    var indicator : UIActivityIndicatorView!
+    var clearButton : ButtonNode!
+    
+    
+    var tfEmpty : Bool = true {
+        didSet {
+            if tfEmpty {
+                clearButtonAlpha = 0
+            } else {
+                clearButtonAlpha = 1
+            }
+        }
+    }
+    var clearButtonAlpha : CGFloat = 0 {
+        didSet {
+            if !searchingState {
+                self.clearButtonAnimation.toValue = clearButtonAlpha
+            }
+        }
+    }
+    
+    
+    var artistSearchState : Bool = false {
+        didSet {
+            if !artistSearchState && !trackSearchState {
+                self.searchingState = false
+            } else {
+                self.searchingState = true
+            }
+        }
+    }
+    var trackSearchState : Bool = false {
+        didSet {
+            if !artistSearchState && !trackSearchState {
+                self.searchingState = false
+            } else {
+                self.searchingState = true
+            }
+        }
+    }
+    
+    var searchingState = false {
+        didSet {
+            if searchingState {
+                self.indicator.startAnimating()
+            } else {
+                self.indicator.stopAnimating()
+            }
+            searchStateAnimation.toValue = searchingState ? 1 : 0
+        }
+    }
+    
+    var searchStateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("searchStateAnimatableProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! TrackSearchNode).searchStateAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! TrackSearchNode).searchStateAnimationProgress = values[0]
+                }
+                prop.threshold = 0.01
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var searchStateAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("searchStateAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    
+                    self.pop_removeAnimationForKey("searchStateAnimation")
+                }
+                x.springSpeed = 1
+                x.springBounciness = 0
+                x.property = self.searchStateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "searchStateAnimation")
+                return x
+            }
+        }
+    }
+    var searchStateAnimationProgress : CGFloat = 0 {
+        didSet {
+            self.indicator.alpha = searchStateAnimationProgress
+            self.clearButton.alpha = (1-searchStateAnimationProgress) * clearButtonAlpha
+        }
+    }
+    
+    
+    var clearButtonAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("clearButtonAnimatableProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! TrackSearchNode).clearButtonAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! TrackSearchNode).clearButtonAnimationProgress = values[0]
+                }
+                prop.threshold = 0.01
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var clearButtonAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("clearButtonAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    
+                    self.pop_removeAnimationForKey("clearButtonAnimation")
+                }
+                x.springSpeed = 1
+                x.springBounciness = 0
+                x.property = self.clearButtonAnimatableProperty
+                self.pop_addAnimation(x, forKey: "clearButtonAnimation")
+                return x
+            }
+        }
+    }
+    var clearButtonAnimationProgress : CGFloat = 0 {
+        didSet {
+            self.clearButton.alpha = clearButtonAnimationProgress
+        }
+    }
+    
     override init() {
         super.init()
         self.clipsToBounds = true
         
-        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        self.backgroundColor = UIColor.whiteColor()
         
-        self.sourceSelectionNode = SourceSelectionNode(sources: ["Soundcloud", "Spotify"])
+        self.sourceSelectionNode = SourceSelectionNode(sources: ["Soundcloud", "Spotify", "AppleMusic"])
         
         self.coverNode = ASDisplayNode()
         self.coverNode.layerBacked = true
-        self.coverNode.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        self.coverNode.backgroundColor = .whiteColor()
+            
         
         self.sourceOptionsButton = ButtonNode()
         self.sourceOptionsButton.setImage(UIImage(named: "soundcloud_active"), forState: ASControlState.Normal)
@@ -114,13 +258,10 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         
         
         self.closeButton = ButtonNode()
-//        self.closeButton.setImage(UIImage(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: ASControlState.Normal)
-        
         let title = NSAttributedString(string: "Done", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)])
         self.closeButton.setAttributedTitle(title, forState: .Normal)
-//        self.closeButton.imageNode.preferredFrameSize = CGSizeMake(15, 15)
-//        self.closeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSize(width: 40, height: 40))
         self.closeButton.imageNode.contentMode = .Center
+        self.closeButton.contentEdgeInsets = UIEdgeInsetsMake(10, 5, 10, 5)
         
         self.inputNode = ASEditableTextNode()
         self.inputNode.attributedPlaceholderText = NSAttributedString(string: "Search Here", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 16)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
@@ -143,12 +284,13 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         layout.minimumInteritemSpacing = 20
         layout.minimumLineSpacing = 20
         
-        layout.sectionInset = UIEdgeInsetsMake(10, 10, 0, 0)
+        layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 0)
         self.artistsCollection = ASCollectionNode(collectionViewLayout: layout)
         self.artistsCollection.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 125))
         self.artistsCollection.view.showsHorizontalScrollIndicator = false
         self.artistsCollection.view.leadingScreensForBatching = 1
-        self.artistsCollection.view.backgroundColor = .clearColor()
+        self.artistsCollection.view.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+//            .clearColor()
             
         self.seperator2 = ASDisplayNode()
         self.seperator2.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 1))
@@ -159,15 +301,19 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         self.seperator2.alignSelf = .Stretch
         
         self.tracksTable = ASTableNode(style: UITableViewStyle.Plain)
-        self.tracksTable.view.backgroundColor = .clearColor()
+        self.tracksTable.view.backgroundColor = .whiteColor()
 //        self.tracksTable.alignSelf = .Stretch
-        self.tracksTable.view.leadingScreensForBatching = 1
+        self.tracksTable.view.leadingScreensForBatching = 2
 //        self.tracksTable.flexGrow = true
         
         
         trackEmptyStateNode = TrackEmptyStateNode()
         artistEmptyStateNode = EmptyStateNode()
         
+        clearButton = ButtonNode()
+        clearButton.setAttributedTitle(NSAttributedString(string: "clear", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Light", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)]), forState: .Normal)
+        clearButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5)
+        clearButton.alpha = 0
         
         self.addSubnode(self.seperator1)
         self.addSubnode(self.artistsCollection)
@@ -180,11 +326,14 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         self.addSubnode(self.sourceOptionsButton)
         self.addSubnode(self.inputNode)
         self.addSubnode(self.closeButton)
+        self.addSubnode(self.clearButton)
         
         self.addSubnode(trackEmptyStateNode)
         self.addSubnode(artistEmptyStateNode)
         
         self.inputNode.scrollEnabled = false
+        
+        
     }
     
     override func didLoad() {
@@ -193,9 +342,18 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         self.tracksTable.view.tableHeaderView = UIView(frame: CGRectZero)
         self.tracksTable.view.allowsMultipleSelection = true
         self.tracksTable.view.separatorInset = UIEdgeInsets(top: 0, left: 45, bottom: 0, right: 0)
-        
+        self.tracksTable.view.separatorStyle = .None
         self.tracksTable.view.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
         self.artistsCollection.view.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
+    
+        self.indicator = UIActivityIndicatorView(frame: CGRectMake(0,0,20,20))
+        self.indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+        
+//        self.indicator.backgroundColor = .purpleColor()
+//        self.indicator.alpha = 1
+//        self.indicator.startAnimating()
+        
+        self.view.addSubview(self.indicator)
     }
     
     override func layout() {
@@ -204,13 +362,17 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         sourceSelectionNode.position.y = self.artistsCollection.position.y - sourceSelectionNode.calculatedSize.height
         
         coverNode.layer.frame = CGRectMake(0, 0, self.calculatedSize.width, self.seperator1.position.y - (self.seperator1.calculatedSize.height / 2))
+    
+        self.indicator.center = CGPointMake((self.inputNode.position.x + self.inputNode.calculatedSize.width / 2) - 20, self.inputNode.position.y)
+        
+        self.clearButton.position = CGPointMake((self.inputNode.position.x + self.inputNode.calculatedSize.width / 2) - (self.clearButton.calculatedSize.width / 2 + 5), self.inputNode.position.y)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         self.inputNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (40*2) - 10 - 10), ASRelativeDimension(type: .Points, value: 35))
         
-        let searchStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [sourceOptionsButton]), ASStaticLayoutSpec(children: [inputNode]), ASStaticLayoutSpec(children: [closeButton])])
+        let searchStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [sourceOptionsButton]), ASStaticLayoutSpec(children: [inputNode, clearButton]), ASStaticLayoutSpec(children: [closeButton])])
         searchStack.spacingBefore = 15
         
         let spacer = ASLayoutSpec()

@@ -33,10 +33,16 @@ extension StreamPlayerManager {
     }
     var currentTime : CMTime? {
         get {
-            if activePlayer == nil {
+            guard let player = activePlayer else {
                 return nil
             }
-            return activePlayer.currentTime()
+            if let avplayer = player as? AVPlayer {
+                return avplayer.currentTime()
+            } else if let spotifyPlayer = player as? SPTAudioStreamingController {
+                return CMTimeMakeWithSeconds(spotifyPlayer.currentPlaybackPosition, 1000)
+            } else {
+                return nil
+            }
         }
     }
     var rate : Float {
@@ -47,7 +53,7 @@ extension StreamPlayerManager {
             if let avplayer = player as? AVPlayer {
                 return avplayer.rate
             } else if let spotifyPlayer = player as? SPTAudioStreamingController {
-                return 0
+                return spotifyPlayer.isPlaying ? 1 : 0
             } else {
                 return 0
             }

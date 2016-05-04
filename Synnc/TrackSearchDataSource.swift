@@ -16,7 +16,7 @@ class TrackSearchDataSource : WCLAsyncTableViewDataSource {
     var nextAction : (()->Void)?
     
     override func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
-        let node = SynncTrackNode()
+        let node = SynncTrackNode(withIcon: true, withSource: false)
         if indexPath.item >= self.data.count {
             return node
         }
@@ -24,7 +24,6 @@ class TrackSearchDataSource : WCLAsyncTableViewDataSource {
             node.configureForTrack(data)
         }
         
-        node.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         return node
     }
     

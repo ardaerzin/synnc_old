@@ -235,6 +235,24 @@ extension StreamManager {
         }
     }
     
+    func canJoinStream(stream: Stream) -> Bool {
+        
+        let sources = stream.playlist.allSources()
+        
+        if let _ = sources.indexOf(SynncExternalSource.Spotify.rawValue) {
+            
+            print("This stream has premium content")
+            
+            if let user = Synnc.sharedInstance.user, let sptUser = user.userExtension(.Spotify), let status = sptUser.loginStatus where !status {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            return true
+        }
+    }
+    
     func joinStream(stream: Stream, completion : ((status: Bool) -> Void)? ) {
         Synnc.sharedInstance.socket.emitWithAck("Stream:join", stream.o_id)(timeoutAfter: 0) {
             

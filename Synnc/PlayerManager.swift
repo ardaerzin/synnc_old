@@ -60,9 +60,6 @@ class StreamPlayerManager : NSObject {
     }
     var currentIndex : Int {
         get {
-            if let x = self.currentItem {
-                print("current item", self.currentItem, self.songInfo(x))
-            }
             guard let item = self.currentItem, let info = self.songInfo(item) else {
                 return -1
             }
@@ -77,9 +74,6 @@ class StreamPlayerManager : NSObject {
     var activePlayer : AnyObject! {
         didSet {
             if activePlayer !== oldValue {
-//                if let old = oldValue {
-//                    old.rate = 0
-//                }
                 if let player = activePlayer {
                     var playerType : PlayerManagerPlayer!
                     for (type,p) in self.players {
@@ -88,7 +82,7 @@ class StreamPlayerManager : NSObject {
                             break
                         }
                     }
-                    print("PlayerManager:", "DidSetActivePlayer", playerType)
+                    self.delegate?.playerManager?(self, volumeChanged: self.volume)
                 }
                 updateControlCenterItem()
             }
@@ -122,7 +116,7 @@ class StreamPlayerManager : NSObject {
         self.syncManager = WildPlayerSyncManager()
         
         if let user = Synnc.sharedInstance.user.userExtension(.Spotify) {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.loginStatusChanged(_:)), name: "\(WCLUserLoginType.Spotify.rawValue)ProfileInfoChanged", object: user)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.loginStatusChanged(_:)), name: "\(WCLUserLoginType.Spotify.rawValue)LoginStatusChanged", object: user)
         }
         
         Async.background {
@@ -173,29 +167,24 @@ class StreamPlayerManager : NSObject {
     
     func loginStatusChanged(notification: NSNotification) {
         if let user = notification.object as? WildSpotifyUser {
-            if let session = SPTAuth.defaultInstance().session, let status = user.loginStatus, let info = user.profileInfo as? SPTUser where status && info.product == .Premium {
-                Async.main {
+            if let session = SPTAuth.defaultInstance().session, let status = user.loginStatus, let info = user.profileInfo as? SPTUser where status {
+                Async.background {
                     let a = SynncSpotifyPlayer(clientId: SPTAuth.defaultInstance().clientID)
                     self.players[.SpotifyPlayer] = a
                     a.delegate = self
                     a.playbackDelegate = self
                     
-                    print("Create player")
                     a.loginWithSession(session) {
                         error in
                         if let e = error {
-                            print("ERROR WITH PLAYER", PlayerManagerPlayer.SpotifyPlayer)
+                            print("ERROR WITH PLAYER", e.description)
                             return
                         }
                         print("CREATED PLAYER")
                     }
-                    
-                    
                 }
-                
-                print("user Spotify login status is TRUE", user.profileInfo)
             } else {
-                print("user Spotify login status is FALSE")
+                
             }
         }
     }
@@ -254,6 +243,9 @@ class StreamPlayerManager : NSObject {
         for (_,player) in players {
             if let avplayer = player as? AVPlayer {
                 avplayer.replaceCurrentItemWithPlayerItem(nil)
+            } else if let sptPlayer = player as? SynncSpotifyPlayer {
+                sptPlayer.stop(nil)
+                sptPlayer.queueClear(nil)
             }
         }
         for (track, info) in self.playerIndexedPlaylist {
@@ -287,7 +279,7 @@ class StreamPlayerManager : NSObject {
                 
                 Async.background {
                 
-                    self.playerIndexedPlaylist = self.assignTracksToPlayers(st.playlist.songs)
+                    self.playerIndexedPlaylist = self.assignTracksToPlayers(st.playlist.songs, currentIndex: st.currentSongIndex as Int)
                 
                     for (_,info) in self.playerIndexedPlaylist {
                         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.playerDidPlayToEnd(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: info.item)
@@ -316,7 +308,9 @@ class StreamPlayerManager : NSObject {
                         }
                         self.play()
                     } else {
-                        self.syncManager.timestamp = st.timestamp
+                        Async.main {
+                            self.syncManager.timestamp = st.timestamp
+                        }
                     }
                 }
             }
@@ -400,19 +394,7 @@ extension StreamPlayerManager {
             if let avplayer = player as? AVPlayer, let item = nextSongInfo.item as? AVPlayerItem {
                 avplayer.replaceCurrentItemWithPlayerItem(item)
             } else if let spotifyPlayer = player as? SPTAudioStreamingController {
-//                print("load song")
-//                if let spotifyItem = nextSongInfo.item as? SpotifyPlayerItem {
-//                    Async.main {
-//                        spotifyPlayer.queueTrackProvider(spotifyItem, clearQueue: true) {
-//                            error in
-//                            if let err = error {
-//                                print("error loading spotify song:", err.description)
-//                                return
-//                            }
-//                            print("successfully queued uri")
-//                        }
-//                    }
-//                }
+                
             }
             
         }
@@ -437,20 +419,24 @@ extension StreamPlayerManager {
         let nextSong = self.playlist[ind]
         if let nextSongInfo = self.playerIndexedPlaylist[nextSong] {
             if let p = players[nextSongInfo.player] {
-                print("PlayerManager:", "Switch to player", nextSongInfo.player)
                 
-                let a = self.activePlayer
-                a.replaceCurrentItemWithPlayerItem(nil)
+                if let avPlayer = self.activePlayer as? AVPlayer {
+                    avPlayer.replaceCurrentItemWithPlayerItem(nil)
+                } else if let sptPlayer = self.activePlayer as? SynncSpotifyPlayer where p !== sptPlayer {
+                    sptPlayer.setIsPlaying(false, callback: nil)
+                }
                 
                 self.activePlayer = p
                 
+                if let sptPlayer = self.activePlayer as? SynncSpotifyPlayer where !sptPlayer.isPlaying {
+                    sptPlayer.setIsPlaying(true, callback: nil)
+                }
                 self.play()
             }
         }
     }
     
     func playerRateChanged(player: AVPlayer) {
-        
         
         if player.rate == 1 {
             self.activePlayer = player

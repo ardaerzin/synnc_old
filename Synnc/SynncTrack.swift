@@ -19,6 +19,7 @@ enum SynncExternalSource : String {
     case YouTube = "Youtube"
     case Grooveshark = "Grooveshark"
     case GooglePlay = "Googleplay"
+    case AppleMusic = "Applemusic"
 }
 
 class SynncTrackStore {
@@ -94,7 +95,8 @@ class SynncTrack: Serializable {
             id = soundcloudIdFromData(data)
         case .Spotify:
             id = spotifyIdFromData(data)
-            break
+        case .AppleMusic:
+            id = appleMusicIdFromData(data)
         default:
             return ""
         }
@@ -130,6 +132,9 @@ class SynncTrack: Serializable {
             break
         case .Soundcloud:
             track.createSoundcloudSong(data)
+        case .AppleMusic:
+            track.createAppleMusicSong(data)
+            break
         default:
             break
         }

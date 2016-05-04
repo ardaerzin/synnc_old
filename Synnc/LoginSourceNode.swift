@@ -13,10 +13,10 @@ class LoginSourceNode : CardNodeBase {
     
     var scButton : SourceLoginButtonNode!
     var spotifyButton : SourceLoginButtonNode!
-    var youtubeButton : SourceLoginButtonNode!
+    var appleMusicButton : SourceLoginButtonNode!
     var buttons : [SourceLoginButtonNode] {
         get {
-            return [youtubeButton, scButton, spotifyButton]
+            return [appleMusicButton, scButton, spotifyButton]
         }
     }
     
@@ -26,11 +26,11 @@ class LoginSourceNode : CardNodeBase {
         scButton = SourceLoginButtonNode(source: .Soundcloud)
         self.addSubnode(scButton)
         
-        spotifyButton = SourceLoginButtonNode(source: .YouTube)
+        spotifyButton = SourceLoginButtonNode(source: .Spotify)
         self.addSubnode(spotifyButton)
         
-        youtubeButton = SourceLoginButtonNode(source: .Spotify)
-        self.addSubnode(youtubeButton)
+        appleMusicButton = SourceLoginButtonNode(source: .AppleMusic)
+        self.addSubnode(appleMusicButton)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

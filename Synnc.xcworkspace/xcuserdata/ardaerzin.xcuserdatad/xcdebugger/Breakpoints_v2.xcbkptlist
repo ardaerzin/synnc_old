@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/Stream.swift"
-            timestampString = "482602920.129386"
+            timestampString = "482005411.683151"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
             landmarkName = "fromJSON(_:callback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pods/WCLUserManager/Pod/Classes/Core/WildUser+Socket.swift"
-            timestampString = "481986584.675889"
+            timestampString = "482859842.160406"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "232"
-            endingLineNumber = "232"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "onDisconnect(forExtensions:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "482065123.363282"
+            timestampString = "484070098.272662"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
             landmarkName = "gestureRecognizer(_:shouldRequireFailureOfGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "482065123.363282"
+            timestampString = "484070098.272662"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
             landmarkName = "gestureRecognizer(_:shouldRequireFailureOfGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -170,12 +170,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "482065123.363282"
+            timestampString = "484070098.272662"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "gestureRecognizer(_:shouldBeRequiredToFailByGestureRecognizer:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/PlaylistController.swift"
+            timestampString = "484070098.272662"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
+            landmarkName = "gestureRecognizer(_:shouldRecognizeSimultaneouslyWithGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -278,6 +294,22 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/WildPlayer.swift"
+            timestampString = "481923708.253577"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
+            landmarkName = "pause()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -361,14 +393,46 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Synnc/TrackSearchController.swift"
-            timestampString = "482715228.481355"
+            filePath = "Synnc/Synnc.swift"
+            timestampString = "482248093.06219"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
-            landmarkName = "processResults(_:source:entity:timestamp:dataArr:)"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
+            landmarkName = "application(_:openURL:sourceApplication:annotation:)"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Synnc.Synnc.application (__ObjC.UIApplication, openURL : __ObjC.NSURL, sourceApplication : Swift.Optional&lt;Swift.String&gt;, annotation : Swift.AnyObject) -&gt; Swift.Bool"
+                  moduleName = "Synnc"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ardaerzin/Documents/Workspace/Synnc/Synnc/Synnc.swift"
+                  timestampString = "482201628.945925"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "295"
+                  endingLineNumber = "295"
+                  offsetFromSymbolStart = "476">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Synnc.Synnc.(application (__ObjC.UIApplication, openURL : __ObjC.NSURL, sourceApplication : Swift.Optional&lt;Swift.String&gt;, annotation : Swift.AnyObject) -&gt; Swift.Bool).(closure #1)"
+                  moduleName = "Synnc"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ardaerzin/Documents/Workspace/Synnc/Synnc/Synnc.swift"
+                  timestampString = "482201628.946211"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "296"
+                  endingLineNumber = "296"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -377,93 +441,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerManager.swift"
-            timestampString = "482810147.806023"
+            filePath = "Synnc/Synnc.swift"
+            timestampString = "482249960.267711"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "370"
-            endingLineNumber = "370"
-            landmarkName = "playerDidPlayToEnd(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerSyncManager.swift"
-            timestampString = "482598222.097336"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "playerTimeUpdated(_:infoDict:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerManager+Player.swift"
-            timestampString = "482765222.330273"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "play()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerManager+Player.swift"
-            timestampString = "482765222.330273"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
-            landmarkName = "play()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerSyncManager.swift"
-            timestampString = "482598222.097336"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "handleTimeStampChange(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerManager+AVPlayerItem.swift"
-            timestampString = "482706172.035969"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "19"
-            endingLineNumber = "19"
-            landmarkName = "playerItem(itemStatusChangedForItem:)"
+            startingLineNumber = "300"
+            endingLineNumber = "300"
+            landmarkName = "application(_:openURL:sourceApplication:annotation:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -473,13 +457,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerManager+AVPlayerItem.swift"
-            timestampString = "482765222.330273"
+            filePath = "Synnc/WildUser+SpotifyUser.swift"
+            timestampString = "483745694.249662"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "playerItem(playbackStalledForItem:)"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
+            landmarkName = "logoutSoundcloudSession()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -489,13 +473,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Synnc/PlayerManager+SoundSession.swift"
-            timestampString = "482706188.565228"
+            filePath = "Synnc/WildUser+SpotifyUser.swift"
+            timestampString = "482856406.066325"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "audioRouteChanged(_:)"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "WCLUser"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/PlayerManager+Spotify.swift"
+            timestampString = "483017409.746578"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "init()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -506,12 +506,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/StreamVC.swift"
-            timestampString = "482808499.267498"
+            timestampString = "484072448.716069"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
-            landmarkName = "updatedStream(_:)"
+            startingLineNumber = "472"
+            endingLineNumber = "472"
+            landmarkName = "playerManager(_:volumeChanged:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -522,12 +522,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlayerSyncManager.swift"
-            timestampString = "482808791.365728"
+            timestampString = "483147087.933263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "playerTimeUpdated(_:infoDict:)"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
+            landmarkName = "checkTimeSync()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -538,13 +538,61 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlayerSyncManager.swift"
-            timestampString = "482808793.689986"
+            timestampString = "483147087.933263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "playerTimeUpdated(_:infoDict:)"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "checkTimeSync()"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/PlayerSyncManager.swift"
+            timestampString = "483146784.981355"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "checkTimeSync()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/PlayerSyncManager.swift"
+            timestampString = "483146784.981355"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
+            landmarkName = "checkTimeSync()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/TrackSearchNode.swift"
+            timestampString = "483984442.44073"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
+            landmarkName = "TrackSearchNode"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

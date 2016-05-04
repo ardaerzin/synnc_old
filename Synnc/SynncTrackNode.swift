@@ -10,6 +10,7 @@ import Foundation
 import WCLUIKit
 import AsyncDisplayKit
 import pop
+import WCLUtilities
 
 enum TrackCellState {
     case Add
@@ -68,17 +69,22 @@ class TrackStatusButton : ASDisplayNode {
             let line1Rotation = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
             let line2Rotation = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
             
+//            let redT = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
+//            let greenT = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
+//            let blueT = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
+//            line1.backgroundColor = UIColor(red: redT, green: greenT, blue: blueT, alpha: 1)
+//            line1.backgroundColor = UIColor(red: redT, green: greenT, blue: blueT, alpha: 1)
+            
             POPLayerSetRotation(line1.layer, line1Rotation)
             POPLayerSetRotation(line2.layer, line2Rotation)
             
-            if let rgbTarget = UIColor.SynncColor().rgb() {
-                let targetRed = POPTransition(buttonStatusAnimationProgress, startValue: 215, endValue: CGFloat(rgbTarget.red)) / 255
-                let targetGreen = POPTransition(buttonStatusAnimationProgress, startValue: 215, endValue: CGFloat(rgbTarget.green)) / 255
-                let targetBlue = POPTransition(buttonStatusAnimationProgress, startValue: 215, endValue: CGFloat(rgbTarget.blue)) / 255
+            let targetRed = POPTransition(buttonStatusAnimationProgress, startValue: 215, endValue: 255) / 255
+            let targetGreen = POPTransition(buttonStatusAnimationProgress, startValue: 215, endValue: 255) / 255
+            let targetBlue = POPTransition(buttonStatusAnimationProgress, startValue: 215, endValue: 255) / 255
                 
-                line1.backgroundColor = UIColor(red: targetRed, green: targetGreen, blue: targetBlue, alpha: 1)
-                line2.backgroundColor = UIColor(red: targetRed, green: targetGreen, blue: targetBlue, alpha: 1)
-            }
+            line1.backgroundColor = UIColor(red: targetRed, green: targetGreen, blue: targetBlue, alpha: 1)
+            line2.backgroundColor = UIColor(red: targetRed, green: targetGreen, blue: targetBlue, alpha: 1)
+            
         }
     }
     override func willEnterHierarchy() {
@@ -116,15 +122,100 @@ class TrackStatusButton : ASDisplayNode {
     }
 }
 
+class ImageHolder : ASDisplayNode {
+    var imageNode : ASNetworkImageNode!
+    var dummy : ASDisplayNode!
+    
+    override init() {
+        super.init()
+        
+        imageNode = ASNetworkImageNode()
+        imageNode.layerBacked = true
+        
+        dummy = ASDisplayNode()
+        dummy.layerBacked = true
+        self.addSubnode(dummy)
+//        imageNode.alignSelf = .Stretch
+        
+//        imageNode.flexBasis = ASRelativeDimensionMake(.Points, 70)
+//        imageNode.alignSelf = .Stretch
+//        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimensionMake(.Percent, 1), ASRelativeDimensionMake(.Points, 50))
+//            ASRelativeSizeMake(ASRelativeDimensionMake(.Percent, 1), ASRelativeDimensionMake(.Percent, 1))
+        self.addSubnode(imageNode)
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [dummy])
+//            ASStaticLayoutSpec(children: [imageNode])
+        
+        return ASOverlayLayoutSpec(child: a, overlay: imageNode)
+    }
+}
+
+class SynncTrackContentNode : ASDisplayNode {
+    var imageNode : ASNetworkImageNode! {
+        get {
+            return self.imageHolder.imageNode
+        }
+    }
+    var iconNode : TrackStatusButton! {
+        get {
+            return self.infoNode.iconNode
+        }
+    }
+    var imageHolder : ImageHolder!
+    var infoNode : TrackInfoNode!
+    
+    init(withIcon: Bool, withSource : Bool) {
+        super.init()
+        
+        imageHolder = ImageHolder()
+        imageHolder.flexGrow = false
+        imageHolder.flexShrink = false
+        imageHolder.flexBasis = ASRelativeDimensionMake(.Points, 70)
+        imageHolder.alignSelf = .Stretch
+        
+        infoNode = TrackInfoNode(withIcon: withIcon, withSource: withSource)
+        
+        self.addSubnode(imageHolder)
+        self.addSubnode(infoNode)
+    }
+    
+    override func layout() {
+        super.layout()
+        print("info node height", infoNode.calculatedSize.height)
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        infoNode.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (70 + 2.5))
+        
+        //        iconNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: 14), ASRelativeDimension(type: .Points, value: 14))
+        //        let iconSpec = ASStaticLayoutSpec(children: [self.iconNode])
+        //        iconSpec.spacingAfter = 14
+        
+        return ASStackLayoutSpec(direction: .Horizontal, spacing: 2.5, justifyContent: .Start, alignItems: .Center, children: [imageHolder, infoNode])
+    }
+}
+
 class SynncTrackNode : ASCellNode {
     
-    var trackNameNode : ASTextNode!
-    var artistNameNode : ASTextNode!
-    var iconNode : TrackStatusButton!
-    var sourceNode : ASImageNode!
+    var imageNode : ASNetworkImageNode! {
+        get {
+            return self.contentNode.imageNode
+        }
+    }
+    var iconNode : TrackStatusButton! {
+        get {
+            return self.contentNode.iconNode
+        }
+    }
+    var infoNode : TrackInfoNode! {
+        get {
+            return self.contentNode.infoNode
+        }
+    }
     
-    var selectedSeperatorNode : ASDisplayNode!
-    var seperatorNode : ASDisplayNode!
+    var contentNode : SynncTrackContentNode!
     
     override var selected : Bool {
         didSet {
@@ -136,8 +227,13 @@ class SynncTrackNode : ASCellNode {
     var state : TrackCellState = .Add {
         didSet {
             if state != oldValue {
-                self.iconNode.state = state
-                self.cellStateAnimation.toValue = state == .Add ? 0 : 1
+                
+                self.iconNode?.state = state
+                if self.interfaceState != ASInterfaceState.InHierarchy {
+                    self.cellStateAnimationProgress = state == .Add ? 0 : 1
+                } else {
+                    self.cellStateAnimation.toValue = state == .Add ? 0 : 1
+                }
             }
         }
     }
@@ -182,42 +278,37 @@ class SynncTrackNode : ASCellNode {
     }
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
+        self.pop_removeAllAnimations()
+        
         let a = self.cellStateAnimationProgress
         self.cellStateAnimationProgress = a
     }
     var cellStateAnimationProgress : CGFloat = 0 {
         didSet {
-            let translation = POPTransition(cellStateAnimationProgress, startValue: -self.selectedSeperatorNode.bounds.width / 2, endValue: 0)
             
-            POPLayerSetScaleX(self.selectedSeperatorNode.layer, cellStateAnimationProgress)
-            POPLayerSetTranslationX(self.selectedSeperatorNode.layer, translation)
+            let redT = POPTransition(cellStateAnimationProgress, startValue: 255, endValue: 236) / 255
+            let greenT = POPTransition(cellStateAnimationProgress, startValue: 255, endValue: 89) / 255
+            let blueT = POPTransition(cellStateAnimationProgress, startValue: 255, endValue: 26) / 255
+
+            Async.main {
+                self.contentNode.infoNode.backgroundColor = UIColor(red: redT, green: greenT, blue: blueT, alpha: 1)
+            }
+            
+            self.contentNode.infoNode.cellStateAnimationProgress = cellStateAnimationProgress
         }
     }
     
-    override init() {
+    init(withIcon : Bool, withSource : Bool) {
         super.init()
         
-        self.artistNameNode = ASTextNode()
-        self.artistNameNode.layerBacked = true
-        self.artistNameNode.maximumNumberOfLines = 1
+        contentNode = SynncTrackContentNode(withIcon: withIcon, withSource: withSource)
         
-        self.trackNameNode = ASTextNode()
-        self.trackNameNode.layerBacked = true
-        self.trackNameNode.spacingBefore = 18
+        self.addSubnode(contentNode)
         
-        self.iconNode = TrackStatusButton()
-        
-        self.selectedSeperatorNode = ASDisplayNode()
-        self.selectedSeperatorNode.backgroundColor = UIColor.SynncColor()
-        
-        self.addSubnode(self.trackNameNode)
-        self.addSubnode(self.artistNameNode)
-        self.addSubnode(self.iconNode)
-        //        self.addSubnode(self.sourceNode)
-        
-        self.addSubnode(self.selectedSeperatorNode)
+        self.backgroundColor = .whiteColor()
         self.selectionStyle = .None
     }
+    
     func configureForTrack(track : SynncTrack) {
         var artistStr : String = ""
         for artist in track.artists {
@@ -227,38 +318,113 @@ class SynncTrackNode : ASCellNode {
                 artistStr += (" / " + artist.name)
             }
         }
-        self.artistNameNode.attributedString = NSAttributedString(string: artistStr, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1)])
+        self.infoNode.artistNameNode.attributedString = NSMutableAttributedString(string: artistStr, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1)])
         
         if let x = track.name {
-            trackNameNode.attributedString = NSAttributedString(string: x, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 1)])
+            infoNode.trackNameNode.attributedString = NSMutableAttributedString(string: x, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 117/255, green: 117/255, blue: 117/255, alpha: 1)])
+        }
+        
+        if let str = track.artwork_url, let artworkUrl = NSURL(string: str) {
+            self.imageNode.URL = artworkUrl
+        }
+        
+        if let x = track.source {
+            self.infoNode.sourceNode?.image = UIImage(named: x.lowercaseString+"_active")
         }
     }
     
-    override func layout() {
-        super.layout()
-        self.selectedSeperatorNode.frame = CGRectMake(42.5, self.calculatedSize.height - 1, self.calculatedSize.width - 42.5, 1)
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(3, 10, 3, 10), child: contentNode)
+    }
+}
+
+class TrackInfoNode : ASDisplayNode {
+    
+    var trackNameNode : ASTextNode!
+    var artistNameNode : ASTextNode!
+    var iconNode : TrackStatusButton!
+    var sourceNode : ASImageNode!
+    
+    var displayIcon : Bool = false
+    var displaySource : Bool = false
+    
+    var cellStateAnimationProgress : CGFloat = 0 {
+        didSet {
+            
+            let track_redT = POPTransition(cellStateAnimationProgress, startValue: 117, endValue: 255) / 255
+            let track_greenT = POPTransition(cellStateAnimationProgress, startValue: 117, endValue: 255) / 255
+            let track_blueT = POPTransition(cellStateAnimationProgress, startValue: 117, endValue: 255) / 255
+            
+            let x = NSMutableAttributedString(attributedString: self.trackNameNode.attributedString!)
+            x.addAttribute(NSForegroundColorAttributeName, value: UIColor(red: track_redT, green: track_greenT, blue: track_blueT, alpha: 1), range: NSMakeRange(0, self.trackNameNode.attributedString!.length))
+            self.trackNameNode.attributedString = x
+            
+            let artist_redT = POPTransition(cellStateAnimationProgress, startValue: 194, endValue: 225) / 255
+            let artist_greenT = POPTransition(cellStateAnimationProgress, startValue: 194, endValue: 225) / 255
+            let artist_blueT = POPTransition(cellStateAnimationProgress, startValue: 194, endValue: 225) / 255
+            
+            let y = NSMutableAttributedString(attributedString: self.artistNameNode.attributedString!)
+            y.addAttribute(NSForegroundColorAttributeName, value: UIColor(red: artist_redT, green: artist_greenT, blue: artist_blueT, alpha: 1), range: NSMakeRange(0, self.artistNameNode.attributedString!.length))
+            self.artistNameNode.attributedString = y
+            
+        }
+    }
+    
+    init(withIcon: Bool, withSource : Bool) {
+        super.init()
+        
+        self.artistNameNode = ASTextNode()
+        self.artistNameNode.layerBacked = true
+        self.artistNameNode.maximumNumberOfLines = 1
+        
+        self.trackNameNode = ASTextNode()
+        self.trackNameNode.layerBacked = true
+        self.trackNameNode.spacingBefore = 7
+        
+        self.addSubnode(self.trackNameNode)
+        self.addSubnode(self.artistNameNode)
+        
+        displayIcon = withIcon
+        displaySource = withSource
+        
+        if displayIcon {
+            self.iconNode = TrackStatusButton()
+            self.addSubnode(iconNode)
+            iconNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: 14), ASRelativeDimension(type: .Points, value: 14))
+        }
+        
+        if displaySource {
+            self.sourceNode = ASImageNode()
+            self.sourceNode.layerBacked = true
+            self.sourceNode.preferredFrameSize = CGSizeMake(12, 12)
+            self.sourceNode.spacingBefore = 8
+            self.addSubnode(self.sourceNode)
+        }
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.flexGrow = true
         
-        let spacer2 = ASLayoutSpec()
-        spacer2.flexGrow = true
+        var iconSpec : ASStaticLayoutSpec!
+        if displayIcon {
+            iconSpec = ASStaticLayoutSpec(children: [self.iconNode])
+            iconSpec.spacingAfter = 14
+            iconSpec.spacingBefore = 7
+        }
         
-        artistNameNode.spacingBefore = 5
-        artistNameNode.spacingAfter = 18
         
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [trackNameNode, artistNameNode])
-        a.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (22 + 20 + 14 + 10))
+        let width = constrainedSize.max.width - (10 + (displayIcon ? (14+14+7) : 0))
         
-        iconNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: 14), ASRelativeDimension(type: .Points, value: 14))
-        let iconSpec = ASStaticLayoutSpec(children: [self.iconNode])
-        iconSpec.spacingBefore = 22
-        a.spacingBefore = 20
-        a.spacingAfter = 10
+        let bottomLineItems = displaySource ? [artistNameNode, sourceNode] : [artistNameNode]
+        let bottomLine = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Start, children: bottomLineItems)
+        bottomLine.alignSelf = .Stretch
+        bottomLine.spacingBefore = 3
+        bottomLine.spacingAfter = 12
         
-        let b = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Start, alignItems: .Center, children: [iconSpec, a])
-        return b
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [trackNameNode, bottomLine])
+        a.flexBasis = ASRelativeDimension(type: .Points, value: width)
+        
+//        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [trackNameNode, artistNameNode])
+        let b = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: displayIcon ? [a, iconSpec] : [a])
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 10, 0, 0), child: b)
     }
 }

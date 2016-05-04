@@ -12,13 +12,37 @@ import AsyncDisplayKit
 class PlaylistHeaderNode : PagerHeaderNode {
     
     var gradientLayer : CAGradientLayer!
+    var toggleButton : ToggleButton!
+    var tracksearchButton : ButtonNode!
+    
+//    var submenuButton : ButtonNode!
     
     init(){
         super.init(backgroundColor: nil)
+        toggleButton = ToggleButton(color: UIColor(red: 154/255, green: 154/255, blue: 154/255, alpha: 1))
+        toggleButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
+        self.addSubnode(toggleButton)
+        
+        tracksearchButton = ButtonNode()
+        tracksearchButton.setImage(UIImage(named: "newPlaylist"), forState: .Normal)
+        tracksearchButton.contentEdgeInsets = UIEdgeInsetsMake(5, 15, 5, 15)
+        self.addSubnode(tracksearchButton)
+    }
+    
+    override func layout() {
+        super.layout()
+        self.toggleButton.position = self.leftButtonHolder.position
+        
+        tracksearchButton.position = self.rightButtonHolder.position
+    }
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASStaticLayoutSpec(children: [pageControl, leftButtonHolder, rightButtonHolder, titleHolder, toggleButton, tracksearchButton])
     }
 }
 
 class PlaylistStreamButtonHolder : ASDisplayNode {
+    
+    var submenuButton : ButtonNode!
     var gradientLayer : CAGradientLayer!
     var streamButton : ButtonNode!
     
@@ -31,6 +55,11 @@ class PlaylistStreamButtonHolder : ASDisplayNode {
         streamButton.borderWidth = 3
         streamButton.cornerRadius = 15
         streamButton.contentEdgeInsets = UIEdgeInsetsMake(8, 53, 12, 53)
+        
+        submenuButton = ButtonNode()
+        submenuButton.setImage(UIImage(named: "submenu"), forState: .Normal)
+        submenuButton.contentEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
+        self.addSubnode(submenuButton)
         
         let title = NSAttributedString(string: "STREAM", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()])
         streamButton.setAttributedTitle(title, forState: .Normal)
@@ -53,10 +82,13 @@ class PlaylistStreamButtonHolder : ASDisplayNode {
         
         streamButton.position.x = self.calculatedSize.width / 2
         streamButton.position.y = self.calculatedSize.height / 2
+        
+        submenuButton.position.y = streamButton.position.y
+        submenuButton.position.x = self.calculatedSize.width - 35
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASStaticLayoutSpec(children: [streamButton])
+        return ASStaticLayoutSpec(children: [submenuButton, streamButton])
     }
 }
 

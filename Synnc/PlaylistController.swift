@@ -26,6 +26,7 @@ class PlaylistController : PagerBaseController {
     var isNewPlaylist : Bool = false
     var playlist : SynncPlaylist!
     var needsToShowTrackSearch : Bool = false
+    var actionSheet : ActionSheetPopup!
     
     lazy var infoController : PlaylistInfoController = {
         return PlaylistInfoController(playlist: self.playlist)
@@ -62,6 +63,7 @@ class PlaylistController : PagerBaseController {
         }
         
         node.streamButtonHolder.streamButton.addTarget(self, action: #selector(PlaylistController.streamPlaylist(_:)) , forControlEvents: .TouchUpInside)
+        node.streamButtonHolder.submenuButton.addTarget(self, action: #selector(PlaylistController.displaySubmenu(_:)), forControlEvents: .TouchUpInside)
         
         if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist == fav {
             self.infoController.screenNode.infoNode.titleNode.userInteractionEnabled = false
@@ -77,28 +79,84 @@ class PlaylistController : PagerBaseController {
         if let window = self.view.wclWindow {
             window.panRecognizer.delegate = self
         }
+        
+        (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton.addTarget(self, action: #selector(PlaylistController.toggleWindowPosition(_:)), forControlEvents: .TouchUpInside)
+        (self.screenNode.headerNode as! PlaylistHeaderNode).tracksearchButton.addTarget(self, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
     }
     
-    func deleteAction(sender : AnyObject){
+    func displaySubmenu(sender : AnyObject){
         
-        let plist = self.playlist
-        let json = plist.toJSON(nil, populate: true)
+        let paragraphAtrributes = NSMutableParagraphStyle()
+        paragraphAtrributes.alignment = .Center
         
-        playlist.delete()
-        self.playlist = nil
-        Async.background {
-            Async.main {
-                Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
+        let deleteButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        deleteButton.setAttributedTitle(NSAttributedString(string: "Delete", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        deleteButton.minScale = 1
+        deleteButton.cornerRadius = 8
+        deleteButton.addTarget(self, action: #selector(PlaylistController.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
+        
+        let editButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        editButton.setAttributedTitle(NSAttributedString(string: "Edit Tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        editButton.minScale = 1
+        editButton.cornerRadius = 8
+        editButton.addTarget(self, action: #selector(PlaylistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
+        
+        let streamButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        streamButton.setAttributedTitle(NSAttributedString(string: "Stream", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        streamButton.minScale = 1
+        streamButton.cornerRadius = 8
+        streamButton.addTarget(self, action: #selector(PlaylistController.streamPlaylist(_:)), forControlEvents: .TouchUpInside)
+        
+        let addSongsButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        addSongsButton.setAttributedTitle(NSAttributedString(string: "Add Tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        addSongsButton.minScale = 1
+        addSongsButton.cornerRadius = 8
+        addSongsButton.addTarget(self, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
+        
+        let buttons = [streamButton, addSongsButton, editButton, deleteButton]
+        
+        actionSheet = ActionSheetPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 200), buttons : buttons)
+        actionSheet.onCancel = {
+            if let node = sender as? ButtonNode {
+                node.userInteractionEnabled = true
+                node.hideSpinView()
             }
         }
-        if let window = self.view.wclWindow {
-            window.hide(true)
+        
+        Synnc.sharedInstance.topPopupManager.newPopup(self.actionSheet)
+    }
+    
+    func toggleWindowPosition(sender : AnyObject) {
+        if let w = self.view.wclWindow {
+            if w.position == .Displayed {
+                w.hide(true)
+            } else {
+                w.display(true)
+            }
         }
     }
     
     func addSongs(sender : AnyObject) {
-        needsToShowTrackSearch = true
-        self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+        
+        if let s = actionSheet {
+            s.closeView(true)
+        }
+        
+        if !self.tracklistController.canDisplayTrackSearch() {
+            Async.main {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            }
+            return
+        }
+
+        if self.currentIndex != 1 {
+            needsToShowTrackSearch = true
+            self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+        } else {
+            self.tracklistController.displayTrackSearch(nil)
+        }
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch 2", value: nil)
     }
     
@@ -115,6 +173,28 @@ class PlaylistController : PagerBaseController {
             self.tracklistController.displayTrackSearch(nil)
             needsToShowTrackSearch = false
         }
+    }
+    
+    override func updatedPagerPosition(position: CGFloat) {
+        super.updatedPagerPosition(position)
+        
+        let a = (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton
+        let x = a.position.x + a.calculatedSize.width / 2
+        
+        if position >= 1 - (x / self.screenNode.pager.calculatedSize.width) {
+            (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton.setColor(.whiteColor())
+        } else {
+            (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton.setColor(UIColor(red: 154/255, green: 154/255, blue: 154/255, alpha: 1))
+        }
+        
+//        let b = (self.screenNode.headerNode as! PlaylistHeaderNode).tracksearchButton
+//        let y = b.position.x + b.calculatedSize.width / 2
+//        
+//        if position >= 1 - (y / self.screenNode.pager.calculatedSize.width) {
+//            b.setImage(UIImage(named: "submenu-white"), forState: .Normal)
+//        } else {
+//            b.setImage(UIImage(named: "submenu"), forState: .Normal)
+//        }
     }
 }
 
@@ -159,6 +239,10 @@ extension PlaylistController : UIGestureRecognizerDelegate {
 extension PlaylistController {
     func streamPlaylist(sender: AnyObject!) {
         
+        if let s = actionSheet {
+            s.closeView(true)
+        }
+
         AnalyticsEvent.new(category : "PlaylistAction", action: "button_tap", label: "stream", value: nil)
         
         if StreamManager.sharedInstance.activeStream != nil {
@@ -226,7 +310,7 @@ extension PlaylistController {
         Synnc.sharedInstance.streamManager.userStream = stream
         let vc = StreamVC(stream: stream)
         
-        let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height - 70, dismissable: true)
+        let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
         a.delegate = vc
         a.panRecognizer.delegate = vc
@@ -262,11 +346,87 @@ extension PlaylistController : WCLWindowDelegate {
         }
     }
     func wclWindow(window: WCLWindow, updatedTransitionProgress progress: CGFloat) {
+        let x = 1-window.lowerPercentage
+        let za = (1 - progress - x) / (1-x)
         
+        (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton.progress = za
+        self.screenNode.headerNode.leftButtonHolder.alpha = za
+        self.screenNode.headerNode.rightButtonHolder.alpha = za
+        self.screenNode.headerNode.pageControl.alpha = za
+        
+        let z = POPTransition(za, startValue: 10, endValue: 0)
+        POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
     }
     func wclWindow(window: WCLWindow, updatedPosition position: WCLWindowPosition) {
         if position == .Displayed {
             AnalyticsScreen.new(node: self.currentScreen())
         }
+    }
+}
+
+extension PlaylistController {
+    
+    func deletePlaylist(sender : AnyObject) {
+        
+        if let s = actionSheet {
+            s.closeView(true)
+        }
+        
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            
+            Async.main {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't delete your active stream.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            }
+            
+            return
+        }
+        
+        let x = DeletePlaylistPopup(playlist : self.playlist!, size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+        x.screenNode.yesButton.addTarget(self, action: #selector(PlaylistController.deleteAction(_:)), forControlEvents: .TouchUpInside)
+        WCLPopupManager.sharedInstance.newPopup(x)
+    }
+    
+    func deleteAction(sender : AnyObject){
+        
+        let plist = self.playlist
+        let json = plist.toJSON(nil, populate: true)
+        
+        playlist.delete()
+        self.playlist = nil
+        Async.background {
+            Async.main {
+                Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
+            }
+        }
+        if let window = self.view.wclWindow {
+            window.hide(true)
+        }
+    }
+    
+    func toggleEditMode(sender : ButtonNode) {
+        
+        if let s = actionSheet {
+            s.closeView(true)
+        }
+        
+        
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            
+            Async.main {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                }
+            }
+            
+            return
+        }
+        
+        if self.currentIndex != 1 {
+            self.screenNode.pager.scrollToPageAtIndex(1, animated: true)
+        }
+        sender.selected = !sender.selected
+        self.tracklistController.editMode = !self.tracklistController.editMode
     }
 }

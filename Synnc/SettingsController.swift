@@ -128,7 +128,7 @@ class SettingsController : ASViewController, PagerSubcontroller {
         
         self.screenNode.settingsNode.feedbackNode.feedbackArea.delegate = self
         
-        self.screenNode.settingsNode.loginSourcesNode.youtubeButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
+        self.screenNode.settingsNode.loginSourcesNode.appleMusicButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
         self.screenNode.settingsNode.loginSourcesNode.spotifyButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
         self.screenNode.settingsNode.loginSourcesNode.scButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
         
@@ -197,18 +197,41 @@ extension SettingsController {
         
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: sender.source.rawValue + " Login", value: nil)
         
-        if sender.source == .Soundcloud || sender.source == .Spotify {
-            if sender.source == .Soundcloud {
-                toggleSoundcloudLogin(sender)
-            } else if sender.source == .Spotify {
-                toggleSpotifyLogin(sender)
-            }
+        if sender.source == .Soundcloud {
+            toggleSoundcloudLogin(sender)
+        } else if sender.source == .Spotify {
+            toggleSpotifyLogin(sender)
+        } else if sender.source == .AppleMusic {
+            toggleAppleMusicLogin(sender)
+        }
+        
+//        if sender.source == .Soundcloud || sender.source == .Spotify {
+//            if sender.source == .Soundcloud {
+//                toggleSoundcloudLogin(sender)
+//            } else if sender.source == .Spotify {
+//                toggleSpotifyLogin(sender)
+//            }
+//        } else {
+//            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+//                
+//                let info = WCLNotificationInfo(defaultActionName: "", body: "\(sender.source.rawValue) Login is not available yet.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+//                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+//            }
+//        }
+    }
+    
+    func toggleAppleMusicLogin(sender : SourceButton) {
+        if !sender.selected {
+//            if let u = Synnc.sharedInstance.user.soundcloud {
+//                let rect = CGRectInset(UIScreen.mainScreen().bounds, 25, 100)
+//                u.setLoginViewController(SynncSCLoginController(size: rect.size))
+//            }
+//            Synnc.sharedInstance.user.socialLogin(.Soundcloud)
+            print("login now")
+            Synnc.sharedInstance.user.socialLogin(.AppleMusic)
         } else {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                
-                let info = WCLNotificationInfo(defaultActionName: "", body: "\(sender.source.rawValue) Login is not available yet.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
-                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-            }
+            print("logout now")
+            Synnc.sharedInstance.user.socialLogout(.AppleMusic)
         }
     }
     

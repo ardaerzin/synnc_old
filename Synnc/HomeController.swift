@@ -124,8 +124,6 @@ extension HomeController : WCLWindowDelegate {
         
         let z = POPTransition(za, startValue: 10, endValue: 0)
         POPLayerSetTranslationY(self.screenNode.headerNode.titleHolder.layer, z)
-        
-        
     }
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
         print("did dismiss window")

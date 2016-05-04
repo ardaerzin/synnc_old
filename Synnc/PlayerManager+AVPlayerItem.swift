@@ -23,6 +23,10 @@ extension StreamPlayerManager {
         
         if let st = self.stream where !st.isUserStream && item === currentItem {
             self.syncManager.checkTimeSync()
+            
+            if self.rate == 0 {
+                self.play()
+            }
         }
         
     }
@@ -41,6 +45,5 @@ extension StreamPlayerManager {
     func playerItem(playbackStalledForItem item: AVPlayerItem) {
         print("PlayerManager:", "PLAYBACK STALLED")
         self.syncManager.needsUpdate = true
-        self.play()
     }
 }

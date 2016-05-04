@@ -44,7 +44,8 @@ class SynncArtist : Serializable {
             id = soundcloudIdFromData(data)
         case .Spotify:
             id = spotifyIdFromData(data)
-            id = ""
+        case .AppleMusic:
+            id = appleMusicIdFromData(data)
         default:
             return ""
         }
@@ -59,9 +60,10 @@ class SynncArtist : Serializable {
         switch source {
         case .Spotify:
             artist.parseSpotify(data)
-            break
         case .Soundcloud:
             artist.parseSoundcloud(data)
+        case .AppleMusic:
+            artist.parseAppleMusic(data)
         default:
             break
         }

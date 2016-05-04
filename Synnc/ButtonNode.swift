@@ -201,6 +201,6 @@ class ButtonNode : ASButtonNode {
             }
             self.pop_removeAnimationForKey("spinStateAnimation")
         }
-        self.spinStateAnimation.toValue = 1
+        self.spinStateAnimation.toValue = 0
     }
 }
