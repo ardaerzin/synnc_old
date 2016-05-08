@@ -269,6 +269,7 @@
 		472CB4B51C41BDC100F82523 /* youtube_inactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3D71C41BDC100F82523 /* youtube_inactive.png */; };
 		472CB4B61C41BDC100F82523 /* youtube_inactive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3D81C41BDC100F82523 /* youtube_inactive@2x.png */; };
 		472CB4B71C41BDC100F82523 /* youtube_inactive@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */; };
+		473450F51CDCC380003E4421 /* PlayerManager+AppleMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473450F41CDCC380003E4421 /* PlayerManager+AppleMusic.swift */; };
 		47354E361C4F37A900A5F03E /* ControllerNotAvailableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */; };
 		47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */; };
 		473579051CBF09CA00B03DCE /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473579041CBF09CA00B03DCE /* PlayerManager.swift */; };
@@ -727,6 +728,7 @@
 		472CB3D71C41BDC100F82523 /* youtube_inactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_inactive.png; sourceTree = "<group>"; };
 		472CB3D81C41BDC100F82523 /* youtube_inactive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_inactive@2x.png"; sourceTree = "<group>"; };
 		472CB3D91C41BDC100F82523 /* youtube_inactive@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_inactive@3x.png"; sourceTree = "<group>"; };
+		473450F41CDCC380003E4421 /* PlayerManager+AppleMusic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PlayerManager+AppleMusic.swift"; sourceTree = "<group>"; };
 		47354E351C4F37A900A5F03E /* ControllerNotAvailableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerNotAvailableNode.swift; sourceTree = "<group>"; };
 		47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncSCLoginController.swift; sourceTree = "<group>"; };
 		473579041CBF09CA00B03DCE /* PlayerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
@@ -1408,6 +1410,7 @@
 				47478F681CC058620020706A /* PlayerManagerDelegate.swift */,
 				47478F6A1CC0588F0020706A /* PlayerManager+Player.swift */,
 				47478F6E1CC18A210020706A /* PlayerManager+AVPlayerItem.swift */,
+				473450F41CDCC380003E4421 /* PlayerManager+AppleMusic.swift */,
 			);
 			name = PlayerManager;
 			sourceTree = "<group>";
@@ -2555,6 +2558,7 @@
 				4741E8611C9CD683007DE80E /* OnboardingItemPage.swift in Sources */,
 				4777051E1C3DC5EA007089D0 /* ListenerCellNode.swift in Sources */,
 				4797B13D1CA0B79200AE2936 /* PagerHeaderIconNode.swift in Sources */,
+				473450F51CDCC380003E4421 /* PlayerManager+AppleMusic.swift in Sources */,
 				47C8F98E1C1F8B6300333492 /* ArtistSearchDataSource.swift in Sources */,
 				47EBDF911C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld in Sources */,
 				47B808401C7DDB4000312C96 /* ChatItemNode.swift in Sources */,
@@ -2883,7 +2887,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -2996,7 +3000,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Synnc/Synnc-Bridging-Header.h";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

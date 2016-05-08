@@ -88,13 +88,16 @@ class SynncArtistSmallNode : ASCellNode {
     var cellStateAnimationProgress : CGFloat = 0 {
         didSet {
             
-            let track_redT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
-            let track_greenT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
-            let track_blueT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+            if let username = usernameNode.attributedString {
+                let track_redT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+                let track_greenT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+                let track_blueT = POPTransition(cellStateAnimationProgress, startValue: 87, endValue: 255) / 255
+                
+                let x = NSMutableAttributedString(attributedString: username)
+                x.addAttribute(NSForegroundColorAttributeName, value: UIColor(red: track_redT, green: track_greenT, blue: track_blueT, alpha: 1), range: NSMakeRange(0, self.usernameNode.attributedString!.length))
+                self.usernameNode.attributedString = x
+            }
             
-            let x = NSMutableAttributedString(attributedString: self.usernameNode.attributedString!)
-            x.addAttribute(NSForegroundColorAttributeName, value: UIColor(red: track_redT, green: track_greenT, blue: track_blueT, alpha: 1), range: NSMakeRange(0, self.usernameNode.attributedString!.length))
-            self.usernameNode.attributedString = x
 
             let bg_redT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 236) / 255
             let bg_greenT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 89) / 255

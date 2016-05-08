@@ -23,7 +23,11 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
     func trackSearcher(controller: TrackSearchController, hasTrack track: SynncTrack) -> Bool {
-        return self.playlist!.hasTrack(track)
+        if let p = self.playlist {
+            return p.hasTrack(track)
+        } else {
+            return false
+        }
     }
     func trackSearcher(controller: TrackSearchController, didDeselect track: SynncTrack) {
         self.playlist!.removeSongs([track])

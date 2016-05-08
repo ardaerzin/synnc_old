@@ -11,6 +11,7 @@ import Cloudinary
 import MediaPlayer
 import CoreMedia
 import AsyncDisplayKit
+import WCLUtilities
 
 extension StreamPlayerManager {
     //Mark: Player Controls
@@ -27,7 +28,8 @@ extension StreamPlayerManager {
             return
         }
         let duration = self.currentItemDuration
-        if MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] != nil && (MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(duration) {
+        
+        if let info = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo where info[MPMediaItemPropertyPlaybackDuration] != nil && (info[MPMediaItemPropertyPlaybackDuration]! as! NSTimeInterval) != NSTimeInterval(duration) {
             
             nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
         }
@@ -58,18 +60,18 @@ extension StreamPlayerManager {
         }
         MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = true
         
+        print("duration:", duration)
         nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
         
         nowPlayingInfo.updateValue(self.rate, forKey: MPNowPlayingInfoPropertyPlaybackRate)
         nowPlayingInfo.updateValue(CMTimeGetSeconds(ct), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
         
-        
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
-        
         let name = st.playlist.name == nil ? "Untitled" : st.playlist.name!
         nowPlayingInfo.updateValue(track.name, forKey: MPMediaItemPropertyTitle)
         nowPlayingInfo.updateValue(name + ", by " + st.user.username, forKey: MPMediaItemPropertyArtist)
         
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nil
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
         
         let downloader = ASPINRemoteImageDownloader.sharedDownloader()
         
@@ -91,7 +93,10 @@ extension StreamPlayerManager {
                 }
                 
                 self.nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
-                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
+                Async.main {
+                    MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
+                }
+//                    self.nowPlayingInfo
             }
             
         }

@@ -46,6 +46,7 @@ class SynncTrack: Serializable {
     var name: String!
     var artists : [SynncArtist]! = []
     var uri: String! = ""
+    var albumName : String!
     
     var streamUrl : String! {
         get {

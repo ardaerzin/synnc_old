@@ -344,6 +344,9 @@ extension TrackSearchController {
             
             if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
                     if let sptshit = data as? SPTListPage {
+                        
+                        print("OH SIHT", sptshit)
+                        
                         if sptshit.items != nil {
                             self.processResults(str, source: .Spotify, entity: type, timestamp: timeStamp, dataArr: sptshit.items)
                             
@@ -364,6 +367,8 @@ extension TrackSearchController {
                                     self.artistsDataSource.nextAction = nil
                                 }
                             }
+                        } else {
+                            self.processResults(str, source: .Spotify, entity: type, timestamp: timeStamp, dataArr: [])
                         }
                     }
                     switch type {
@@ -468,12 +473,8 @@ extension TrackSearchController {
         }
     }
     
-    func parseAppleMusicAlbum(offset : Int? = 0, timeStamp : NSDate!) {
+    func parseAppleMusicAlbum(offset : Int? = 0, timeStamp : NSDate!, prevData: [WCLMusicKitTrack]? = []) {
         guard let artist = self.selectedArtist else {
-            return
-        }
-        
-        if offset >= appleMusicAlbums.count {
             return
         }
         
@@ -482,14 +483,25 @@ extension TrackSearchController {
             return
         }
         
+        if offset >= appleMusicAlbums.count {
+            return
+        }
+        
         let album = appleMusicAlbums[offset!]
         WCLMusicKit.sharedInstance.albumTracks("\(album.collectionId)") { (response, data, error, timestamp, next) in
             
             if let tracks = data as? [WCLMusicKitTrack] {
-                self.processResults(artist.id + ":search", source: .AppleMusic, entity : .Track, timestamp: timeStamp, dataArr: tracks)
-                self.tracksDataSource.nextAction = {
-                    self.parseAppleMusicAlbum(offset!+1, timeStamp: timeStamp)
+                
+                let x = tracks + prevData!
+                if x.count < 20 && offset!+1 < self.appleMusicAlbums.count {
+                    self.parseAppleMusicAlbum(offset!+1, timeStamp: timeStamp, prevData: x)
+                } else {
+                    self.processResults(artist.id + ":search", source: .AppleMusic, entity : .Track, timestamp: timeStamp, dataArr: x)
+                    self.tracksDataSource.nextAction = {
+                        self.parseAppleMusicAlbum(offset!+1, timeStamp: timeStamp)
+                    }
                 }
+                
             } else {
                 self.tracksDataSource.nextAction = nil
             }
@@ -502,6 +514,7 @@ extension TrackSearchController {
         }
         
         if offset >= spotifyAlbums.count {
+            self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: [])
             return
         }
         
@@ -575,6 +588,8 @@ extension TrackSearchController {
                 do {
                     let x = try SPTListPage(fromData: data, withResponse: res, expectingPartialChildren: false, rootObjectKey: nil)
 
+                    print(x)
+                    
                     if let selected = self.selectedArtist where selected.id != artist.identifier {
                         return
                     } else if self.selectedArtist == nil {
@@ -587,6 +602,8 @@ extension TrackSearchController {
                         if self.selectedArtist != nil && x.hasNextPage {
                             self.spotifyArtistSearch(artist, uri : x.nextPageURL, timeStamp: timeStamp)
                         }
+                    } else {
+                        self.addSpotifyAlbums([], timeStamp: timeStamp)
                     }
                     
                 } catch let error as NSError {

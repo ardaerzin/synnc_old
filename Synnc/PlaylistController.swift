@@ -338,10 +338,10 @@ extension PlaylistController {
 
 extension PlaylistController : WCLWindowDelegate {
     func wclWindow(window: WCLWindow, didDismiss animated: Bool) {
-        if isNewPlaylist {
-            let vals = self.playlist.changedValues().keys
+        if let p = playlist where isNewPlaylist {
+            let vals = p.changedValues().keys
             if vals.indexOf("songs") == nil && vals.indexOf("name") == nil && vals.indexOf("cover_id") == nil && vals.indexOf("songs") == nil {
-                playlist.delete()
+                p.delete()
             }
         }
     }

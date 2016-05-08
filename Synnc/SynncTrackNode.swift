@@ -183,7 +183,6 @@ class SynncTrackContentNode : ASDisplayNode {
     
     override func layout() {
         super.layout()
-        print("info node height", infoNode.calculatedSize.height)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

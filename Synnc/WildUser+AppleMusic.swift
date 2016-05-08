@@ -87,12 +87,20 @@ extension WildAppleMusicUser : WCLMusicKitDelegate {
                 }
             }
         } else if enableNotif {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                enableNotif = false
-                Async.main {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Apple Music Playback is supported on iOS 9.3 or newer.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+            
+            
+            do {
+                try musicKit.requestAuth()
+            } catch let err as NSError {
+                print(err)
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    enableNotif = false
+                    Async.main {
+                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Apple Music Playback is supported on iOS 9.3 or newer.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+                    }
                 }
             }
+            
         }
     }
 }

@@ -10,6 +10,7 @@ import Foundation
 import AVFoundation
 import WCLUtilities
 import SwiftyJSON
+import MediaPlayer
 
 class WildPlayerSyncManager {
     
@@ -198,7 +199,7 @@ extension WildPlayerSyncManager {
                 let x = NSDate()
 //                print(playerNewTime - actualTime)
                 Async.background {
-                    if abs(playerNewTime - actualTime) > 0.015 {
+                    if abs(playerNewTime - actualTime) > 0.03 {
                         sptPlayer.isSeeking = true
                         sptPlayer.isSynced = false
                         sptPlayer.seekToOffset(playerNewTime + 0.075) {
@@ -214,6 +215,21 @@ extension WildPlayerSyncManager {
                     } else {
                         sptPlayer.isSynced = true
                     }
+                }
+            } else if let appleMusicPlayer = manager.activePlayer as? MPMusicPlayerController {
+                
+                if abs(playerNewTime - actualTime) > 0.075 {
+                    print("synnc apple music player now please", (playerNewTime - actualTime))
+                  
+//                    if appleMusicPlayer.playbackState == MPMusicPlaybackState.SeekingForward || appleMusicPlayer.playbackState == MPMusicPlaybackState.SeekingBackward {
+//                        return
+//                    }
+                    
+//                    appleMusicPlayer.
+                    
+//                    appleMusicPlayer.beginSeekingForward()
+                    appleMusicPlayer.currentPlaybackTime = playerNewTime + 0.1
+                    
                 }
             }
         }

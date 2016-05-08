@@ -21,6 +21,7 @@ enum PlayerManagerPlayer : String {
     case URLPlayerOdd = "Player1"
     case URLPlayerEven = "Player2"
     case SpotifyPlayer = "Player3"
+    case AppleMusicPlayer = "Player4"
 }
 
 class StreamPlayerManager : NSObject {
@@ -42,6 +43,7 @@ class StreamPlayerManager : NSObject {
     }
     var readyToPlay : Bool = false {
         willSet {
+            self.play()
             self.delegate?.playerManager?(self, readyToPlay: readyToPlay)
         }
     }
@@ -82,6 +84,10 @@ class StreamPlayerManager : NSObject {
                             break
                         }
                     }
+                    if player === players[.AppleMusicPlayer] {
+                        self.readyToPlay = true
+                        self.play()
+                    }
                     self.delegate?.playerManager?(self, volumeChanged: self.volume)
                 }
                 updateControlCenterItem()
@@ -109,6 +115,9 @@ class StreamPlayerManager : NSObject {
     var isActiveSession : Bool = false
     var fadeDuration = 1.0
     var fadeoutObserver : AnyObject!
+    
+    var appleMusicItem : MPMediaItem!
+    var appleMusicPlayerTimer : NSTimer!
 
     override init() {
         super.init()
@@ -157,9 +166,9 @@ class StreamPlayerManager : NSObject {
             })
             self.players[.URLPlayerEven] = player2
             self.playerObservers.append(playbackPeriodicObserver2)
-            
         }
         
+        self.players[.AppleMusicPlayer] = initAppleMusicPlayer()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.audioRouteChanged(_:)), name: AVAudioSessionRouteChangeNotification, object: nil)
@@ -306,10 +315,15 @@ class StreamPlayerManager : NSObject {
                                 }
                             }
                         }
-                        self.play()
+//                        self.play()
                     } else {
                         Async.main {
                             self.syncManager.timestamp = st.timestamp
+                            print("ACTIVE PLAYER", self.activePlayer)
+                        
+                            if let p = self.activePlayer as? MPMusicPlayerController {
+                                p.play()
+                            }
                         }
                     }
                 }
@@ -372,10 +386,22 @@ extension StreamPlayerManager {
         var i : TrackPlayerInfo!
         for (index, playlistItem) in self.playlist.enumerate() {
             if let info = self.playerIndexedPlaylist[playlistItem] {
-//                print(info, item)
                 if let currentUrl = item as? NSURL, let y = info.item as? NSURL where currentUrl.absoluteString == y.absoluteString {
                     i = info
                     break
+                } else if let mpItem = item as? MPMediaItem {
+                    
+                    let x = mpItem.valueForKey(MPMediaItemPropertyTitle) as! String
+                    let y = mpItem.valueForKey(MPMediaItemPropertyArtist) as! String
+                    let z = mpItem.valueForKey(MPMediaItemPropertyAlbumTitle) as! String
+                    
+                    
+                    let uuid = "\(x) / \(y) / \(z)"
+                    
+                    if let str = info.item as? String where str == uuid {
+                        i = info
+                        break
+                    }
                 } else if info.item === item {
                     i = info
                     break
@@ -424,6 +450,8 @@ extension StreamPlayerManager {
                     avPlayer.replaceCurrentItemWithPlayerItem(nil)
                 } else if let sptPlayer = self.activePlayer as? SynncSpotifyPlayer where p !== sptPlayer {
                     sptPlayer.setIsPlaying(false, callback: nil)
+                } else if let appleMusicPlayer = self.activePlayer as? MPMusicPlayerController where p !== appleMusicPlayer {
+                    appleMusicPlayer.pause()
                 }
                 
                 self.activePlayer = p

@@ -9,6 +9,7 @@
 import Foundation
 import WCLUtilities
 import WCLNotificationManager
+import MediaPlayer
 
 extension StreamPlayerManager {
     func checkActiveSession() {
@@ -24,6 +25,10 @@ extension StreamPlayerManager {
                 UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
                 self.isActiveSession = true
                 updateControlCenterControls()
+                
+//                if let player = self.players[.AppleMusicPlayer] as? MPMusicPlayerController {
+//                    player.play()
+//                }
             } catch let error as NSError {
                 print(error)
                 self.isActiveSession = false

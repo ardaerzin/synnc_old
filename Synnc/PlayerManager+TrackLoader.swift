@@ -8,6 +8,7 @@
 
 import Foundation
 import WCLUtilities
+import MediaPlayer
 
 extension Int {
     func isEven() -> Bool {
@@ -24,6 +25,9 @@ extension StreamPlayerManager {
         
         var indexedData : [SynncTrack : TrackPlayerInfo] = [SynncTrack : TrackPlayerInfo]()
         var spotifyUris : [NSURL] = []
+        var appleIds : [String] = []
+//        let x = MPMediaPlaylist()
+        
         for (ind, track) in tracks.enumerate() {
             
             guard let source = SynncExternalSource(rawValue: track.source) else {
@@ -32,6 +36,7 @@ extension StreamPlayerManager {
             
             var player : PlayerManagerPlayer!
             var item : AnyObject!
+//            var id : AnyObject!
             
             switch source {
             case .Soundcloud:
@@ -41,6 +46,8 @@ extension StreamPlayerManager {
                     player = .URLPlayerOdd
                 }
                 item = newItem(song: track)
+//                id = track
+                
                 break
             case .Spotify:
                 player = .SpotifyPlayer
@@ -50,6 +57,30 @@ extension StreamPlayerManager {
                         item = uri
                         spotifyUris.append(uri)
                     }
+                }
+                break
+            case .AppleMusic:
+                player = .AppleMusicPlayer
+                if let shit = track.song_id where ind >= currentIndex {
+                    
+//                    item = track
+                
+                    var uuid : String = track.name
+                    if let artist = track.artists.first {
+                        uuid += " / \(artist.name)"
+                    }
+                    uuid += " / \(track.albumName)"
+                    
+                    item = uuid
+                    
+                    print("!*!*!*!*!*!*", uuid)
+//                    uuid += track.releaseDate
+//                    let a1 = track.artists.first
+                    appleIds.append(shit)
+//                    if #available(iOS 9.3, *) {
+//                    } else {
+//                        // Fallback on earlier versions
+//                    }
                 }
                 break
             default:
@@ -74,6 +105,22 @@ extension StreamPlayerManager {
                 }
             }
         }
+        
+        if !appleIds.isEmpty {
+            
+            if let player = self.players[.AppleMusicPlayer] as? MPMusicPlayerController {
+                if #available(iOS 9.3, *) {
+                    Async.main {
+                        player.setQueueWithStoreIDs(appleIds)
+//                        player.play()
+                    }
+                } else {
+                    // Fallback on earlier versions
+                }
+            }
+        }
+        
+        print("APPLE IDs", appleIds)
         
         return indexedData
     }
@@ -101,19 +148,3 @@ extension StreamPlayerManager {
         return item
     }
 }
-
-//extension StreamPlayerManager {
-//    func assignToPlayers(startingAtIndex index: Int) {
-//        
-//        for (ind,track) in playlist.enumerate() {
-//            if ind < index {
-//                continue
-//            }
-//            if let info = playerIndexedPlaylist[track] {
-//                if let player = players[info.player] as? AVPlayer, let item = info.item as? AVPlayerItem where player.currentItem == nil {
-//                    player.replaceCurrentItemWithPlayerItem(item)
-//                }
-//            }
-//        }
-//    }
-//}

@@ -11,6 +11,17 @@ import SwiftyJSON
 import WCLMusicKit
 
 extension SynncTrack {
+    
+    convenience init?(data: WCLMusicKitTrack) {
+        
+        if data.kind == "song" {
+            self.init()
+//            self.parse
+            return
+        }
+        return nil
+    }
+    
     internal class func appleMusicIdFromData(data: AnyObject) -> String {
         var id : String = ""
         if let track = data as? WCLMusicKitTrack {
@@ -26,10 +37,16 @@ extension SynncTrack {
             return
         }
         
+//        print("release date:", track.releaseDate)
+        
+        
+//        print("track country:", track.country)
         self.source = SynncExternalSource.AppleMusic.rawValue
         self.name = track.trackName
         self.song_id = "\(track.trackId)"
         self.artwork_url = track.artworkUrl100
+        self.duration = track.trackTimeMillis
+        self.albumName = track.collectionName
         
         self.artists = []
         if let a = track.artist {
