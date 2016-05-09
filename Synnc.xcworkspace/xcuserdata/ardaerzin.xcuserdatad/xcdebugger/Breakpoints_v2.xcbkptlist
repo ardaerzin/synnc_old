@@ -426,11 +426,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/StreamVC.swift"
-            timestampString = "484437971.442688"
+            timestampString = "484511927.314892"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "476"
-            endingLineNumber = "476"
+            startingLineNumber = "480"
+            endingLineNumber = "480"
             landmarkName = "playerManager(_:volumeChanged:)"
             landmarkType = "5">
          </BreakpointContent>

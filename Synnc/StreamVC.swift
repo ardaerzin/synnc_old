@@ -444,7 +444,11 @@ class StreamVC : PagerBaseController {
     internal func updateTrack(stream : Stream){
         if let ind = stream.currentSongIndex {
             Async.main {
-                print("what da shit is the index?", ind)
+//                print("what da shit is the index?", ind)
+                let i = ind as Int
+                if i >= stream.playlist.songs.count {
+                    return
+                }
                 let track = stream.playlist.songs[ind as Int]
                 self.tracklistController.currentIndex = ind as Int
                 (self.screenNode as! StreamVCNode).nowPlayingArea.configure(track)
