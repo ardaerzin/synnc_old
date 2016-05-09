@@ -126,6 +126,8 @@ class PlaylistTracksNode : ASDisplayNode, TrackedView {
         
         tracksTable.view.tableFooterView = UIView(frame: CGRectMake(0,0,50,100))
         tracksTable.view.tableHeaderView = UIView(frame: CGRectMake(0,0,50,105))
+        tracksTable.view.allowsSelection = false
+        
     }
     
     override func layoutDidFinish() {
