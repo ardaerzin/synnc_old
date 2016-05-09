@@ -533,25 +533,26 @@ extension StreamManager {
     func streamDeleteCallback() -> NormalCallback {
         return {
             (dataArr, ack) in
-//            if let data = dataArr.first {
-//                var json = JSON(data)
-//                let stream = self.findStream(json["_id"].string)
-//                if stream != nil {
-//                    stream!.delegate = nil
-//                    if stream == self.activeStream {
-//                        self.activeStream = nil
-//                    }
-//                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
-//                    
-//                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
-//                    NSNotificationCenter.defaultCenter().postNotification(notification)
-//                    
-//                    if let ind = self.userFeed.indexOf(stream!) {
-//                        self.userFeed.removeAtIndex(ind)
-//                        print("remove item at index")
-//                    }
-//                }
-//            }
+            print("ananen")
+            if let data = dataArr.first {
+                var json = JSON(data)
+                let stream = self.findStream(json["_id"].string)
+                if stream != nil {
+                    stream!.delegate = nil
+                    if stream == self.activeStream {
+                        self.activeStream = nil
+                    }
+                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
+                    
+                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
+                    NSNotificationCenter.defaultCenter().postNotification(notification)
+                    
+                    if let ind = self.userFeed.indexOf(stream!) {
+                        self.userFeed.removeAtIndex(ind)
+                        print("remove item at index")
+                    }
+                }
+            }
         }
     }
     func streamSaveCallback() -> NormalCallback {

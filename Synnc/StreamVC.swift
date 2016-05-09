@@ -158,6 +158,9 @@ class StreamVC : PagerBaseController {
     }
     
     func endCurrentStream(sender : ButtonNode!) {
+        
+        
+        
         sender.showSpinView()
         AnalyticsEvent.new(category: "StreamPopup", action: "buttonTap", label: "endCurrentStream", value: nil)
         if let activeStr = StreamManager.sharedInstance.activeStream {

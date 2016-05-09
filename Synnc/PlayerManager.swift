@@ -53,7 +53,7 @@ class StreamPlayerManager : NSObject {
                 
                 if newValue {
                     
-                    if let s = self.stream {
+                    if let s = self.stream where s == StreamManager.sharedInstance.userStream {
                         StreamManager.sharedInstance.finishedStream(s, completion: nil)
                     }
                 }
