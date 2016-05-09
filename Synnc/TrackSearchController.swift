@@ -219,6 +219,7 @@ extension TrackSearchController : ASCollectionDelegate {
         if let _ = self.tracksDataSource.nextAction {
             self.screenNode.trackSearchState = true
             self.tracksDataSource.loadMore()
+            self.screenNode.moreTracksIndicatorState = true
         }
         
     }
@@ -232,6 +233,7 @@ extension TrackSearchController : ASCollectionDelegate {
         if let _ = self.artistsDataSource.nextAction {
             self.screenNode.artistSearchState = true
             self.artistsDataSource.loadMore()
+            self.screenNode.moreArtistsIndicatorState = true
         }
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -423,8 +425,10 @@ extension TrackSearchController {
         }
         
         if ent == .Track {
+            self.screenNode.moreTracksIndicatorState = false
             self.screenNode.trackSearchState = false
         } else if  ent == .Artist {
+            self.screenNode.moreArtistsIndicatorState = false
             self.screenNode.artistSearchState = false
         }
         

@@ -14,6 +14,28 @@ import AsyncDisplayKit
 import pop
 import WCLUserManager
 
+class IndicatorHolder : ASDisplayNode {
+    var indicator : UIActivityIndicatorView!
+    
+    override func didLoad() {
+        super.didLoad()
+        
+        indicator = UIActivityIndicatorView(frame: CGRectMake(0,0,30,30))
+        indicator.backgroundColor = UIColor.clearColor()
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
+        
+        indicator.startAnimating()
+        
+        self.view.addSubview(indicator)
+    }
+    
+    override func layout() {
+        super.layout()
+        
+        indicator.center = CGPointMake(self.calculatedSize.width/2, self.calculatedSize.height/2)
+    }
+}
+
 class TrackEmptyStateNode : EmptyStateNode {
     override func layout() {
         super.layout()
@@ -95,6 +117,116 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
     
     var indicator : UIActivityIndicatorView!
     var clearButton : ButtonNode!
+    
+    var moreTracksIndicatorHolder : IndicatorHolder!
+    var moreArtistsIndicatorHolder : IndicatorHolder!
+    
+    var moreTracksIndicatorState : Bool = false {
+        didSet {
+            self.moreTracksStateAnimation.toValue = moreTracksIndicatorState ? 1 : 0
+        }
+    }
+    var moreTracksStateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("moreTracksStateAnimatableProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! TrackSearchNode).moreTracksStateAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! TrackSearchNode).moreTracksStateAnimationProgress = values[0]
+                }
+                prop.threshold = 0.01
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var moreTracksStateAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("moreTracksStateAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    
+                    self.pop_removeAnimationForKey("moreTracksStateAnimation")
+                }
+                x.springBounciness = 0
+                x.property = self.moreTracksStateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "moreTracksStateAnimation")
+                return x
+            }
+        }
+    }
+    var moreTracksStateAnimationProgress : CGFloat = 0 {
+        didSet {
+            let x = POPTransition(moreTracksStateAnimationProgress, startValue: 0, endValue: -self.moreTracksIndicatorHolder.calculatedSize.height)
+            POPLayerSetTranslationY(self.moreTracksIndicatorHolder.layer, x)
+        }
+    }
+    
+    
+    var moreArtistsIndicatorState : Bool = false {
+        didSet {
+            self.moreArtistsStateAnimation.toValue = moreArtistsIndicatorState ? 1 : 0
+        }
+    }
+    var moreArtistsStateAnimatableProperty : POPAnimatableProperty {
+        get {
+            let x = POPAnimatableProperty.propertyWithName("moreArtistsStateAnimatableProperty", initializer: {
+                
+                prop in
+                
+                prop.readBlock = {
+                    obj, values in
+                    values[0] = (obj as! TrackSearchNode).moreArtistsStateAnimationProgress
+                }
+                prop.writeBlock = {
+                    obj, values in
+                    (obj as! TrackSearchNode).moreArtistsStateAnimationProgress = values[0]
+                }
+                prop.threshold = 0.01
+            }) as! POPAnimatableProperty
+            
+            return x
+        }
+    }
+    var moreArtistsStateAnimation : POPSpringAnimation {
+        get {
+            if let anim = self.pop_animationForKey("moreArtistsStateAnimation") {
+                return anim as! POPSpringAnimation
+            } else {
+                let x = POPSpringAnimation()
+                x.completionBlock = {
+                    anim, finished in
+                    
+                    self.pop_removeAnimationForKey("moreArtistsStateAnimation")
+                }
+                x.springBounciness = 0
+                x.property = self.moreArtistsStateAnimatableProperty
+                self.pop_addAnimation(x, forKey: "moreArtistsStateAnimation")
+                return x
+            }
+        }
+    }
+    var moreArtistsStateAnimationProgress : CGFloat = 0 {
+        didSet {
+            
+            let x = POPTransition(moreArtistsStateAnimationProgress, startValue: 0, endValue: -self.moreArtistsIndicatorHolder.calculatedSize.width)
+            POPLayerSetTranslationX(self.moreArtistsIndicatorHolder.layer, x)
+            
+        }
+    }
+
+
+
+    
     
     
     var tfEmpty : Bool = true {
@@ -315,10 +447,17 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         clearButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5)
         clearButton.alpha = 0
         
+        moreTracksIndicatorHolder = IndicatorHolder()
+        moreTracksIndicatorHolder.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.5)
+        moreArtistsIndicatorHolder = IndicatorHolder()
+        moreArtistsIndicatorHolder.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.5)
+        
         self.addSubnode(self.seperator1)
         self.addSubnode(self.artistsCollection)
         self.addSubnode(self.seperator2)
         self.addSubnode(self.tracksTable)
+        self.addSubnode(self.moreArtistsIndicatorHolder)
+        self.addSubnode(self.moreTracksIndicatorHolder)
         
         self.addSubnode(sourceSelectionNode)
         self.addSubnode(coverNode)
@@ -338,8 +477,12 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
     
     override func didLoad() {
         super.didLoad()
-        self.tracksTable.view.tableFooterView = UIView(frame: CGRectZero)
+        
+        self.tracksTable.view.tableFooterView = UIView(frame: CGRectMake(0,0,100,44))
         self.tracksTable.view.tableHeaderView = UIView(frame: CGRectZero)
+        
+//            UIView(frame: CGRectZero)
+        
         self.tracksTable.view.allowsMultipleSelection = true
         self.tracksTable.view.separatorInset = UIEdgeInsets(top: 0, left: 45, bottom: 0, right: 0)
         self.tracksTable.view.separatorStyle = .None
@@ -366,6 +509,10 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         self.indicator.center = CGPointMake((self.inputNode.position.x + self.inputNode.calculatedSize.width / 2) - 20, self.inputNode.position.y)
         
         self.clearButton.position = CGPointMake((self.inputNode.position.x + self.inputNode.calculatedSize.width / 2) - (self.clearButton.calculatedSize.width / 2 + 5), self.inputNode.position.y)
+        
+        self.moreTracksIndicatorHolder.position.y = self.calculatedSize.height + (self.moreTracksIndicatorHolder.calculatedSize.height/2)
+        moreArtistsIndicatorHolder.position.x = self.calculatedSize.width + moreArtistsIndicatorHolder.calculatedSize.width / 2
+        print("POSITION", self.moreTracksIndicatorHolder.position)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -381,8 +528,13 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         let artistsSpec = ASStaticLayoutSpec(children: [artistsCollection])
         artistsSpec.spacingBefore = 15
         
-        let c = ASOverlayLayoutSpec(child: artistsSpec, overlay: artistEmptyStateNode)
-        let d = ASOverlayLayoutSpec(child: tracksTable, overlay: trackEmptyStateNode)
+        moreArtistsIndicatorHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: 30), ASRelativeDimension(type: .Percent, value: 1))
+        let c = ASOverlayLayoutSpec(child: ASOverlayLayoutSpec(child: artistsSpec, overlay: ASStaticLayoutSpec(children: [moreArtistsIndicatorHolder])), overlay: artistEmptyStateNode)
+        
+        moreTracksIndicatorHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 44))
+        let d = ASOverlayLayoutSpec(child: ASOverlayLayoutSpec(child: tracksTable, overlay: ASStaticLayoutSpec(children: [moreTracksIndicatorHolder])), overlay: trackEmptyStateNode)
+//            ASOverlayLayoutSpec(child: tracksTable, overlay: trackEmptyStateNode)
+//            ASOverlayLayoutSpec(child: ASOverlayLayoutSpec(child: tracksTable, overlay: ASStaticLayoutSpec(children: [moreTracksIndicatorHolder])), overlay: trackEmptyStateNode)
         d.alignSelf = .Stretch
         d.flexGrow = true
         

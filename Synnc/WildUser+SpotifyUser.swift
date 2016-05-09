@@ -11,6 +11,7 @@ import WCLUserManager
 import WCLUtilities
 import SwiftyJSON
 import WCLNotificationManager
+import WCLPopupManager
 
 public extension WCLUser {
     public func spotifyInit(object : AnyObject!) -> WCLUserExtension {
@@ -41,8 +42,10 @@ public extension WCLUser {
     
 }
 
+
 class WildSpotifyUser : WCLUserExtension {
     
+    var loginController : SpotifyLoginViewController!
     override var id : String? {
         get {
             var x : String? = nil
@@ -116,24 +119,43 @@ class WildSpotifyUser : WCLUserExtension {
     //Mark: Login
     private func loginWithSpotify(){
         print("login url:", SPTAuth.defaultInstance().loginURL)
-        Async.main {
-            UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
-        }
-        
-//        let loginViewController = SPTAuthViewController.authenticationViewController()
-//        loginViewController.delegate = self
-//        loginViewController.modalPresentationStyle = .OverFullScreen
-//        
-//        //root view controller for presenting loginViewController
-//        let rootViewController = UIApplication.sharedApplication().delegate?.window!!.rootViewController
-//        
-//        //present loginViewController
-//        let x = rootViewController?.presentedViewController
-//        if x == nil {
-//            rootViewController?.presentViewController(loginViewController, animated: true, completion: nil)
-//        } else {
-//            x!.presentViewController(loginViewController, animated: true, completion: nil)
+//        Async.main {
+//            
+//            if self.loginController == nil {
+//                if let url = SPTAuth.defaultInstance().loginURL {
+//                    print("login url:", url)
+//                    var str = url.absoluteString
+//                    if str.rangeOfString("spotify-action://") != nil {
+//                        str = str.stringByReplacingOccurrencesOfString("spotify-action://", withString: "https://api.spotify.com/")
+//                    }
+//                    
+//                    if let url2 = NSURL(string: str) {
+//                        self.loginController = SpotifyLoginViewController(url: url2)
+//                    }
+//                    
+//                }
+//            }
+//            
+////            UIApplication.sharedApplication().windows.first
+//            
+////            WCLPopupManager.sharedInstance.newPopup(self.loginController)
+//            UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
 //        }
+        
+        let loginViewController = SPTAuthViewController.authenticationViewController()
+        loginViewController.delegate = self
+        loginViewController.modalPresentationStyle = .OverFullScreen
+        
+        //root view controller for presenting loginViewController
+        let rootViewController = UIApplication.sharedApplication().delegate?.window!!.rootViewController
+        
+        //present loginViewController
+        let x = rootViewController?.presentedViewController
+        if x == nil {
+            rootViewController?.presentViewController(loginViewController, animated: true, completion: nil)
+        } else {
+            x!.presentViewController(loginViewController, animated: true, completion: nil)
+        }
     }
     
     //Mark: Logout
@@ -216,7 +238,7 @@ extension WildSpotifyUser : SPTAuthViewDelegate {
     }
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
         
-        self.accessToken = session.accessToken
+        self.sptAuthenticationStatus(session, error: nil)
 //        self.getUserSpotifyProfile()
 //        self.loginStatus = true
         
