@@ -155,7 +155,7 @@ extension StreamsFeedController : ASTableDelegate {
             self.node.userInteractionEnabled = false
             
             let vc = StreamVC(stream: stream)
-            let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height - 70, dismissable: true)
+            let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height, dismissable: true)
         
             let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
             a.delegate = vc

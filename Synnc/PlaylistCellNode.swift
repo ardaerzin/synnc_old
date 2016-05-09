@@ -131,7 +131,7 @@ class PlaylistCell : ASDisplayNode {
             self.img = img
         }
         
-        self.fetchData()
+        self.setNeedsDataFetch()
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

@@ -41,13 +41,14 @@ class StreamManager : NSObject, StreamDelegate {
                 return
             }
             let needsLoad = activeStream == self.userStream
-            
+            print("active stream", activeStream)
             NSNotificationCenter.defaultCenter().postNotificationName("DidSetActiveStream", object: activeStream, userInfo: ["loadTracks" : needsLoad])
-            self.player.didSetActiveStream(activeStream, needsReload: needsLoad)
+            self.playerManager.didSetActiveStream(activeStream, userStream: needsLoad)
             
         }
     }
-    var player : StreamPlayer!
+    
+    var playerManager: StreamPlayerManager!
     
     class var sharedInstance : StreamManager {
         struct Singleton {
@@ -58,6 +59,8 @@ class StreamManager : NSObject, StreamDelegate {
     
     override init() {
         super.init()
+        
+        playerManager = StreamPlayerManager.sharedInstance
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamManager.loginStatusChanged(_:)), name: "userLoginStatusChanged", object: nil)
     }
     
@@ -98,7 +101,7 @@ extension StreamManager {
                     stream.fromJSON(json)
                 }
 //                stream.update(["status" : true])
-                sharedInstance.player.play()
+//                sharedInstance.playerManager.play()
             }
         }
     }
@@ -232,6 +235,24 @@ extension StreamManager {
         }
     }
     
+    func canJoinStream(stream: Stream) -> Bool {
+        
+        let sources = stream.playlist.allSources()
+        
+        if let _ = sources.indexOf(SynncExternalSource.Spotify.rawValue) {
+            
+            print("This stream has premium content")
+            
+            if let user = Synnc.sharedInstance.user, let sptUser = user.userExtension(.Spotify), let status = sptUser.loginStatus where !status {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            return true
+        }
+    }
+    
     func joinStream(stream: Stream, completion : ((status: Bool) -> Void)? ) {
         Synnc.sharedInstance.socket.emitWithAck("Stream:join", stream.o_id)(timeoutAfter: 0) {
             
@@ -247,11 +268,11 @@ extension StreamManager {
                 completion?(status: true)
                 
                 self?.activeStream = stream
-                self?.player.isSyncing = true
-                self?.player.syncManager.timestamp = stream.timestamp
-                self?.player.checkActiveSession()
-                
-        
+//                self?.playerManager.isSyncing = true
+                if let _ = stream.timestamp {
+//                    self?.playerManager.syncManager.timestamp = stream.timestamp
+//                    self?.playerManager.checkActiveSession()
+                }
             } else {
                 completion?(status: false)
             }
@@ -298,7 +319,7 @@ extension StreamManager {
         let notification = NSNotification(name: "UpdatedStream", object: stream, userInfo: ["updatedKeys" : changedKeys])
         
         if let _ = keys?.indexOf("timestamp") where stream == self.activeStream {
-            self.player.syncManager.timestamp = stream.timestamp
+            self.playerManager.syncManager.timestamp = stream.timestamp
         }
         
         NSNotificationCenter.defaultCenter().postNotification(notification)
@@ -477,7 +498,7 @@ extension StreamManager {
 extension StreamManager {
     
     func setSocket(socket: SocketIOClient) {
-        self.player = StreamPlayer(socket: socket)
+//        self.playerManager = StreamPlayer(socket: socket)
         
         socket.on("Streams", callback: refreshStreamsCallback())
         socket.on("Stream:save", callback: streamSaveCallback())
@@ -512,24 +533,25 @@ extension StreamManager {
     func streamDeleteCallback() -> NormalCallback {
         return {
             (dataArr, ack) in
+            print("ananen")
             if let data = dataArr.first {
-//                var json = JSON(data)
-//                let stream = self.findStream(json["_id"].string)
-//                if stream != nil {
-//                    stream!.delegate = nil
-//                    if stream == self.activeStream {
-//                        self.activeStream = nil
-//                    }
-//                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
-//                    
-//                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
-//                    NSNotificationCenter.defaultCenter().postNotification(notification)
-//                    
-//                    if let ind = self.userFeed.indexOf(stream!) {
-//                        self.userFeed.removeAtIndex(ind)
-//                        print("remove item at index")
-//                    }
-//                }
+                var json = JSON(data)
+                let stream = self.findStream(json["_id"].string)
+                if stream != nil {
+                    stream!.delegate = nil
+                    if stream == self.activeStream {
+                        self.activeStream = nil
+                    }
+                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
+                    
+                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
+                    NSNotificationCenter.defaultCenter().postNotification(notification)
+                    
+                    if let ind = self.userFeed.indexOf(stream!) {
+                        self.userFeed.removeAtIndex(ind)
+                        print("remove item at index")
+                    }
+                }
             }
         }
     }

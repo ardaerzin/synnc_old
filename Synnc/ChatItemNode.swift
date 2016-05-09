@@ -190,6 +190,6 @@ class ChatItemNode : ASCellNode {
     
         self.textHolder.bubble.sendingShimmer.shimmering = item.user == Synnc.sharedInstance.user ? !item.status : false
         
-        self.fetchData()
+        self.setNeedsDataFetch()
     }
 }

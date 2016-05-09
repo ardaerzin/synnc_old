@@ -10,19 +10,22 @@ import Foundation
 import SwiftyJSON
 
 extension SynncArtist {
-//    internal class func spotifyIdFromData(data: AnyObject) -> String {
-//        var id : String = ""
-//        if let sptsong = data as? SPTPartialArtist {
-//            id = sptsong.identifier
+    internal class func spotifyIdFromData(data: AnyObject) -> String {
+        var id : String = ""
+        if let sptsong = data as? SPTPartialArtist {
+            id = sptsong.identifier
+        }
+        return id
+    }
+    internal func parseSpotify(data : AnyObject?) {
+        guard let user = data as? SPTPartialArtist else {
+            return
+        }
+        self.source = SynncExternalSource.Spotify.rawValue
+        self.id = user.identifier
+        self.name = user.name
+//        if let x = user as? SPTArtist {
+//            print(x)
 //        }
-//        return id
-//    }
-//    internal func parseSpotify(data : AnyObject?) {
-//        guard let user = data as? SPTPartialArtist else {
-//            return
-//        }
-//        self.source = SynncExternalSource.Spotify.rawValue
-//        self.id = user.identifier
-//        self.name = user.name
-//    }
+    }
 }

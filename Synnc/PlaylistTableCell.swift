@@ -75,7 +75,10 @@ class PlaylistTableCell : ASCellNode {
                 artistStr! += (" / " + artist.name)
             }
         }
-        self.artistNameNode.attributedString = NSAttributedString(string: artistStr!, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 168/255, green: 168/255, blue: 168/255, alpha: 1), NSKernAttributeName : 0.5])
+        if let str = artistStr {
+            self.artistNameNode.attributedString = NSAttributedString(string: str, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 168/255, green: 168/255, blue: 168/255, alpha: 1), NSKernAttributeName : 0.5])
+        }
+        
         
         if let x = track.name {
             trackNameNode.attributedString = NSAttributedString(string: x, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 88/255, green: 88/255, blue: 88/255, alpha: 1), NSKernAttributeName : 0.5])

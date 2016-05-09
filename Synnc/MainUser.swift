@@ -25,8 +25,9 @@ class MainUser : WCLUser {
         self.init(alternatives: [
             .Facebook : [.withSession, .authServer],
 //            .Twitter : [.withSession, .authServer],
-//            .Spotify : [.withSession],
-            .Soundcloud : [.withSession]
+            .Spotify : [.withSession],
+            .Soundcloud : [.withSession],
+            .AppleMusic : [.withSession]
         ])
         self.withSocket(socket)
         self.needsToNotify = true

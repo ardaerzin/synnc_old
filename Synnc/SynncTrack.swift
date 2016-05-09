@@ -19,6 +19,7 @@ enum SynncExternalSource : String {
     case YouTube = "Youtube"
     case Grooveshark = "Grooveshark"
     case GooglePlay = "Googleplay"
+    case AppleMusic = "Applemusic"
 }
 
 class SynncTrackStore {
@@ -44,6 +45,8 @@ class SynncTrack: Serializable {
     var duration : NSNumber!
     var name: String!
     var artists : [SynncArtist]! = []
+    var uri: String! = ""
+    var albumName : String!
     
     var streamUrl : String! {
         get {
@@ -92,8 +95,9 @@ class SynncTrack: Serializable {
         case .Soundcloud:
             id = soundcloudIdFromData(data)
         case .Spotify:
-//            id = spotifyIdFromData(data)
-            break
+            id = spotifyIdFromData(data)
+        case .AppleMusic:
+            id = appleMusicIdFromData(data)
         default:
             return ""
         }
@@ -125,10 +129,13 @@ class SynncTrack: Serializable {
         
         switch source {
         case .Spotify:
-//            track.createSpotifySong(data)
+            track.createSpotifySong(data)
             break
         case .Soundcloud:
             track.createSoundcloudSong(data)
+        case .AppleMusic:
+            track.createAppleMusicSong(data)
+            break
         default:
             break
         }

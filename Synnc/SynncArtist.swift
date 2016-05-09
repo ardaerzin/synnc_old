@@ -18,6 +18,7 @@ class SynncArtist : Serializable {
     var id : String!
     var avatar : String!
     var source : String!
+    var uri : NSURL!
 
     required init() {
         super.init()
@@ -42,8 +43,9 @@ class SynncArtist : Serializable {
         case .Soundcloud:
             id = soundcloudIdFromData(data)
         case .Spotify:
-//            id = spotifyIdFromData(data)
-            id = ""
+            id = spotifyIdFromData(data)
+        case .AppleMusic:
+            id = appleMusicIdFromData(data)
         default:
             return ""
         }
@@ -57,10 +59,11 @@ class SynncArtist : Serializable {
         
         switch source {
         case .Spotify:
-//            artist.parseSpotify(data)
-            break
+            artist.parseSpotify(data)
         case .Soundcloud:
             artist.parseSoundcloud(data)
+        case .AppleMusic:
+            artist.parseAppleMusic(data)
         default:
             break
         }

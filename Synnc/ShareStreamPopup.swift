@@ -177,21 +177,21 @@ class ShareStreamPopup : WCLPopupViewController {
 //        let node : 
         
 //        frame: CGRect(origin: CGPointZero, size: CGSizeMake(400, 400))
-        let node = MessengerSharePopup(image: self.image, title: "Wadap son??")
+//        let node = MessengerSharePopup(image: self.image, title: "Wadap son??")
 //        self.view.addSubview(node.view)
-        var size = node.measureWithSizeRange(ASSizeRangeMakeExactSize(CGSizeMake(400, 400)))
-        node.layout()
-        
-        node.view.frame = CGRect(origin: CGPointZero, size: size.size)
+//        let size = node.measureWithSizeRange(ASSizeRangeMakeExactSize(CGSizeMake(400, 400)))
+//        node.layout()
+    
+//        node.view.frame = CGRect(origin: CGPointZero, size: size.size)
 //        let a = node.view.snapshotViewAfterScreenUpdates(false)
         
         
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(400, 400), true, 0)
-        node.view.drawViewHierarchyInRect(CGRect(origin: CGPointZero, size: CGSizeMake(400, 400)), afterScreenUpdates: true)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        print("did draw")
+//        UIGraphicsBeginImageContextWithOptions(CGSizeMake(400, 400), true, 0)
+//        node.view.drawViewHierarchyInRect(CGRect(origin: CGPointZero, size: CGSizeMake(400, 400)), afterScreenUpdates: true)
+//        let image = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        
+//        print("did draw")
         
 //        FBSDKMessengerSharer.shareImage(image, withOptions: nil)
     }

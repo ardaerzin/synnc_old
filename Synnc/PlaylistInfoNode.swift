@@ -221,7 +221,7 @@ class PlaylistInfoNode : WCLScrollNode {
         
         if let x = self.infoDelegate?.imageForPlaylist!() {
             
-            if var img = x as? UIImage {
+            if let img = x as? UIImage {
 
 //                if img == Synnc.appIcon {
 //                    img = UIImage(named: "cameraPlaceholder")!

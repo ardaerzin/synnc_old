@@ -16,6 +16,7 @@ import WCLNotificationManager
 
 protocol SourceSelectorDelegate {
     func sourceSelector(didUpdateSource source: SynncExternalSource)
+    func sourceSelector(canSelectSource source: SynncExternalSource) -> Bool
 }
 
 class SourceButton : ButtonNode {
@@ -74,6 +75,7 @@ class SourceSelectionNode : ASDisplayNode {
         
         for source in sources {
             let src = SynncExternalSource(rawValue: source.capitalizedString)
+            print(source.capitalizedString, src)
             if let x = src {
                 let button = SourceButton(source: x)
                 
@@ -86,7 +88,7 @@ class SourceSelectionNode : ASDisplayNode {
         
         titleNode = ASTextNode()
         titleNode.spacingAfter = 10
-        titleNode.attributedString = NSAttributedString(string: "Select a music provider", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 18)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
+        titleNode.attributedString = NSAttributedString(string: "Select a music provider", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 16)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
         
         self.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
         self.shadowOffset = CGSizeMake(0,2)
@@ -108,13 +110,43 @@ class SourceSelectionNode : ASDisplayNode {
         
         AnalyticsEvent.new(category: "searchSourceSelect", action: "sourceSelect", label: sender.source.rawValue, value: nil)
         
-        if sender.source == .Spotify {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This source is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                
-                return
+        let canSelect = self.delegate?.sourceSelector(canSelectSource: sender.source)
+        if canSelect == nil || !canSelect! {
+            if sender.source == .Spotify {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to Spotify first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                        notif in
+                        
+                        Synnc.sharedInstance.user.socialLogin(.Spotify)
+                    }
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                    
+                    return
+                }
+            } else if sender.source == .AppleMusic {
+                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to Apple Music first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                        notif in
+                        
+                        Synnc.sharedInstance.user.socialLogin(.AppleMusic)
+                    }
+                    WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                    
+                    return
+                }
             }
+            
+            
+            return
         }
+        
+//        if sender.source == .Spotify {
+//            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+//                WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This source is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
+//                
+//                return
+//            }
+//        }
         
         sender.selected = true
         
@@ -125,6 +157,7 @@ class SourceSelectionNode : ASDisplayNode {
         }
         
         self.delegate?.sourceSelector(didUpdateSource: sender.source)
+        self.closeSelector(sender)
     }
     
     func closeSelector(sender: ButtonNode) {
@@ -154,7 +187,7 @@ class SourceSelectionNode : ASDisplayNode {
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 10, justifyContent: .Center, alignItems: .Center, children: self.sourceButtons)
         
-        self.titleNode.spacingBefore = 10
+        self.titleNode.spacingBefore = 25
         let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 10, justifyContent: .Start, alignItems: .Center, children: [ self.titleNode, a])
         
         return ASOverlayLayoutSpec(child: stack, overlay: ASStaticLayoutSpec(children: [doneButton]))

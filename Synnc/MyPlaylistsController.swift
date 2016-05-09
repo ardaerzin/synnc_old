@@ -153,7 +153,7 @@ extension MyPlaylistsController : PlaylistsDataSourceDelegate {
         
         if let stream = StreamManager.sharedInstance.activeStream where stream.playlist == item {
             
-            var keys : [String] = []
+//            var keys : [String] = []
 //            if stream.name != item.name {
 //                keys.append("name")
 //            }

@@ -25,36 +25,35 @@ import MediaPlayer
 
 class WildPlayerItem : AVPlayerItem {
 
-    weak var player : WildPlayer!
+//    weak var player : WildPlayer!
     var delegate : WildPlayerItemDelegate?
     var index: Int! = -1
     var observedKeys : [String] = ["status", "loadedTimeRanges", "playbackBufferFull", "playbackBufferEmpty", "playbackLikelyToKeepUp", "timedMetadata"]
     
     deinit {
-        if self.player != nil {
-            for keyPath in observedKeys {
-                self.removeObserver(self, forKeyPath: keyPath)
-            }
-        }
+//        if self.player != nil {
+//            for keyPath in observedKeys {
+//                self.removeObserver(self, forKeyPath: keyPath)
+//            }
+//        }
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemPlaybackStalledNotification, object: self)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: self)
     }
     
-    convenience init!(URL: NSURL, player : WildPlayer!, delegate: WildPlayerItemDelegate?, index: Int) {
-        self.init(URL: URL, player : player)
-        self.delegate = delegate
-        self.index = index
-    }
-    init!(URL: NSURL, player : WildPlayer!) {
-//        super.init(URL : URL)
-        super.init(asset: AVAsset(URL: URL), automaticallyLoadedAssetKeys: nil)
-//        super.init(asset: AVAsset(URL: URL))
-        self.player = player
-        
-        addObservers()
-    }
-    
+//    convenience init!(URL: NSURL, player : WildPlayer!, delegate: WildPlayerItemDelegate?, index: Int) {
+//        self.init(URL: URL, player : player)
+//        self.delegate = delegate
+//        self.index = index
+//    }
+//    init!(URL: NSURL, player : WildPlayer!) {
+////        super.init(URL : URL)
+//        super.init(asset: AVAsset(URL: URL), automaticallyLoadedAssetKeys: nil)
+////        super.init(asset: AVAsset(URL: URL))
+//        self.player = player
+//        
+//        addObservers()
+//    }
     
     
     func addObservers(){

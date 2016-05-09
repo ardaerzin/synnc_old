@@ -17,6 +17,7 @@ class StreamHeaderNode : PagerHeaderNode {
     var gradientLayer : CAGradientLayer!
     var streamTitleNode : ASTextNode!
     var shareButton : ButtonNode!
+    var toggleButton : ToggleButton!
     
     init(){
         super.init(backgroundColor: nil)
@@ -26,6 +27,10 @@ class StreamHeaderNode : PagerHeaderNode {
         shareButton = ButtonNode()
         shareButton.setImage(UIImage(named: "share-icon"), forState: .Normal)
         self.addSubnode(shareButton)
+        
+        toggleButton = ToggleButton()
+        toggleButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(40, 40))
+        self.addSubnode(toggleButton)
     }
     
     
@@ -38,9 +43,11 @@ class StreamHeaderNode : PagerHeaderNode {
         shareButton.position.y = self.calculatedSize.height / 2
         
         pageControl.position.y = streamTitleNode.position.y + (streamTitleNode.calculatedSize.height / 2) + 20
+        
+        self.toggleButton.position = self.leftButtonHolder.position
     }
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASStaticLayoutSpec(children: [pageControl, leftButtonHolder, rightButtonHolder, titleHolder, streamTitleNode, shareButton])
+        return ASStaticLayoutSpec(children: [pageControl, leftButtonHolder, rightButtonHolder, titleHolder, streamTitleNode, shareButton, toggleButton])
     }
 }
 
@@ -78,6 +85,7 @@ class StreamImageHeader : ASDisplayNode {
         transformation.crop = "fill"
         
         if let x = _cloudinary.url(imageId, options: ["transformation" : transformation]), let url = NSURL(string: x) {
+            print("image url:", url)
             self.imageNode.URL = url
         }
     }
@@ -236,7 +244,4 @@ class StreamVCNode : PagerBaseControllerNode {
         
         return ASStaticLayoutSpec(children: [x, imageHeader, nowPlayingArea])
     }
-//    override func fetchData() {
-//        super.fetchData()
-//    }
 }

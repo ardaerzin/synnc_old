@@ -21,10 +21,11 @@ import DKImagePickerController
 class PlaylistInfoController : ASViewController, PagerSubcontroller {
     
     lazy var _leftHeaderIcon : ASControlNode! = {
-        let x = ASImageNode()
-        x.image = UIImage(named: "trash-can")
-        x.contentMode = .Center
-        return x
+//        let x = ASImageNode()
+//        x.image = UIImage(named: "trash-can")
+//        x.contentMode = .Center
+//        return x
+        return nil
     }()
     var leftHeaderIcon : ASControlNode! {
         get {
@@ -95,25 +96,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
             screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
         }
         
-        self._leftHeaderIcon.addTarget(self, action: #selector(PlaylistInfoController.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
-    }
-    
-    func deletePlaylist(sender : AnyObject) {
-        
-        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
-            
-            Async.main {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't delete your active stream.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                }
-            }
-            
-            return
-        }
-        
-        let x = DeletePlaylistPopup(playlist : self.playlist!, size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-        x.screenNode.yesButton.addTarget(self.parentViewController!, action: #selector(PlaylistController.deleteAction(_:)), forControlEvents: .TouchUpInside)
-        WCLPopupManager.sharedInstance.newPopup(x)
+//        self._leftHeaderIcon.addTarget(self, action: #selector(PlaylistInfoController.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
     }
     
     override func viewDidLoad() {
@@ -126,7 +109,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     }
     
     func checkActiveStream(notification : NSNotification) {
-        if let stream = notification.object as? Stream {
+        if let _ = notification.object as? Stream {
 //            if playlist == stream.playlist {
 //                self.screenNode.infoNode.imageNode.userInteractionEnabled = false
 //                self.screenNode.infoNode.titleNode.userInteractionEnabled = false

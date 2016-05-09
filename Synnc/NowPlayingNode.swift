@@ -61,7 +61,7 @@ class NowPlayingNode : ASDisplayNode {
     var availableStateTransition : CGFloat = -1 {
         didSet {
             self.volumeButton.alpha = availableStateTransition
-            self.likeButton.alpha = availableStateTransition
+            self.submenuButton.alpha = availableStateTransition
             
             self.joinButton.alpha = 1-availableStateTransition
             
@@ -145,7 +145,10 @@ class NowPlayingNode : ASDisplayNode {
     }()
     
     var border : ASDisplayNode!
-    var likeButton : ButtonNode!
+    
+    
+//    var likeButton : ButtonNode!
+    var submenuButton : ButtonNode!
     var joinButton : ButtonNode!
     
     override init(){
@@ -171,11 +174,11 @@ class NowPlayingNode : ASDisplayNode {
         artistNameNode = ASTextNode()
         self.addSubnode(artistNameNode)
         
-        likeButton = ButtonNode()
-        likeButton.setImage(UIImage(named: "reactions-icon"), forState: .Selected)
-        likeButton.setImage(UIImage(named: "likeDeselected"), forState: .Normal)
-        likeButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50, 50))
-        self.addSubnode(likeButton)
+        submenuButton = ButtonNode()
+        submenuButton.setImage(UIImage(named: "submenu"), forState: .Selected)
+        submenuButton.setImage(UIImage(named: "submenu"), forState: .Normal)
+        submenuButton.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(50, 50))
+        self.addSubnode(submenuButton)
         
         progressBar = ASDisplayNode()
         progressBar.alignSelf = .Stretch
@@ -200,7 +203,7 @@ class NowPlayingNode : ASDisplayNode {
     
     func configure(track : SynncTrack) {
         
-        let volume = StreamManager.sharedInstance.player.volume
+        let volume = StreamManager.sharedInstance.playerManager.volume
         if volume > 0 {
             self.volumeButton.selected = true
         } else {
@@ -210,11 +213,11 @@ class NowPlayingNode : ASDisplayNode {
         trackNameNode.attributedString = NSAttributedString(string: track.name, attributes: trackAttributes)
         artistNameNode.attributedString = NSAttributedString(string: track.artists.first!.name, attributes: artistAttributes)
         
-        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {
-            self.likeButton.selected = true
-        } else {
-            self.likeButton.selected = false
-        }
+//        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist() where plist.hasTrack(track) {
+//            self.likeButton.selected = true
+//        } else {
+//            self.likeButton.selected = false
+//        }
         
         self.setNeedsLayout()
     }
@@ -249,7 +252,7 @@ class NowPlayingNode : ASDisplayNode {
         let nameStack = ASStackLayoutSpec(direction: .Vertical, spacing: 1, justifyContent: .Start, alignItems: .Center, children: [trackNameNode, artistNameNode])
         nameStack.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 100)
         
-        let stack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [volumeButton]), nameStack, ASStaticLayoutSpec(children: [likeButton])])
+        let stack = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [volumeButton]), nameStack, ASStaticLayoutSpec(children: [submenuButton])])
         stack.flexGrow = true
         stack.alignSelf = .Stretch
         

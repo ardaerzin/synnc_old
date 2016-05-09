@@ -23,7 +23,11 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
         self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
     func trackSearcher(controller: TrackSearchController, hasTrack track: SynncTrack) -> Bool {
-        return self.playlist!.hasTrack(track)
+        if let p = self.playlist {
+            return p.hasTrack(track)
+        } else {
+            return false
+        }
     }
     func trackSearcher(controller: TrackSearchController, didDeselect track: SynncTrack) {
         self.playlist!.removeSongs([track])
@@ -40,26 +44,9 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
             self.screenNode.tracksTable.view.setEditing(editMode, animated: true)
         }
     }
-    func toggleEditMode(sender : ButtonNode) {
-        print("toggle edit mode")
-        
-        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
-            
-            Async.main {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                }
-            }
-            
-            return
-        }
-        
-        sender.selected = !sender.selected
-        editMode = !editMode
-    }
     func displayTrackSearch(sender : ASButtonNode!) {
         
-        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+        if !canDisplayTrackSearch() {
             
             Async.main {
                 if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
@@ -76,6 +63,13 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch", value: nil)
     }
     
+    func canDisplayTrackSearch() -> Bool {
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            return false
+        }
+        return true
+    }
+    
     var emptyState : Bool! {
         didSet {
             if emptyState != oldValue {
@@ -88,11 +82,12 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     }
     
     lazy var _leftHeaderIcon : ASControlNode! = {
-        let x = ButtonNode()
-        x.setImage(UIImage(named: "edit-icon"), forState: .Normal)
-        x.setImage(UIImage(named: "edit-icon-selected"), forState: .Selected)
-        x.addTarget(self, action: #selector(PlaylistTracklistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
-        return x
+//        let x = ButtonNode()
+//        x.setImage(UIImage(named: "edit-icon"), forState: .Normal)
+//        x.setImage(UIImage(named: "edit-icon-selected"), forState: .Selected)
+//        x.addTarget(self, action: #selector(PlaylistTracklistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
+//        return x
+        return nil
     }()
     var leftHeaderIcon : ASControlNode! {
         get {
@@ -100,11 +95,12 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         }
     }
     lazy var _rightHeaderIcon : ASControlNode! = {
-        let x = ASImageNode()
-        x.image = UIImage(named: "newPlaylist")
-        x.contentMode = .Center
-        x.addTarget(self, action: #selector(PlaylistTracklistController.displayTrackSearch(_:)), forControlEvents: .TouchUpInside)
-        return x
+//        let x = ASImageNode()
+//        x.image = UIImage(named: "newPlaylist")
+//        x.contentMode = .Center
+//        x.addTarget(self, action: #selector(PlaylistTracklistController.displayTrackSearch(_:)), forControlEvents: .TouchUpInside)
+//        return x
+        return nil
     }()
     var rightHeaderIcon : ASControlNode! {
         get {
@@ -158,7 +154,7 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         self.screenNode.tracksTable.view.asyncDelegate = self
     
         if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist == fav {
-            self.rightHeaderIcon.hidden = true
+            self.rightHeaderIcon?.hidden = true
         }
     }
     
@@ -178,9 +174,9 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
 extension PlaylistTracklistController : ASTableViewDataSource {
     func tableView(tableView: ASTableView, nodeForRowAtIndexPath indexPath: NSIndexPath) -> ASCellNode {
         let track = self.playlist!.songs[indexPath.item]
-        let node = PlaylistTableCell()
+        let node = SynncTrackNode(withIcon: false, withSource: true)
         node.configureForTrack(track)
-        node.backgroundColor = UIColor.clearColor()
+        node.backgroundColor = .clearColor()
         return node
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

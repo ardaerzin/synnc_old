@@ -52,7 +52,7 @@ class SettingsNode : ASScrollNode {
         super.init()
         
         loginSourcesTitle = ASTextNode()
-        loginSourcesTitle.attributedString = NSAttributedString(string: "SYNCED ACCOUNTS", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 168/255, green: 168/255, blue: 168/255, alpha: 1), NSKernAttributeName : 0.5])
+        loginSourcesTitle.attributedString = NSAttributedString(string: "SYNNCED ACCOUNTS", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 168/255, green: 168/255, blue: 168/255, alpha: 1), NSKernAttributeName : 0.5])
         loginSourcesTitle.spacingBefore = 90
         loginSourcesTitle.spacingAfter = 10
         self.addSubnode(loginSourcesTitle)

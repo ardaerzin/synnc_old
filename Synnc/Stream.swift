@@ -64,7 +64,8 @@ class Stream : Serializable {
     }
     var isUserStream : Bool {
         get {
-            return self === Synnc.sharedInstance.streamManager.userStream
+            let a = self === Synnc.sharedInstance.streamManager.userStream
+            return a
         }
     }
     
