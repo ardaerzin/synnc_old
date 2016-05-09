@@ -191,7 +191,7 @@ class StreamTracklistNode : ASDisplayNode, TrackedView {
     override func didLoad() {
         super.didLoad()
         
-        tracksTable.view.tableFooterView = UIView(frame: CGRectZero)
+        tracksTable.view.tableFooterView = UIView(frame: CGRectMake(0, 0, 1, 75))
         tracksTable.view.tableHeaderView = UIView(frame: CGRectMake(0, 0, 1, 100))
     }
     

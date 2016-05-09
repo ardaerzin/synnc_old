@@ -48,6 +48,13 @@ class MyPlaylistsNode : ASDisplayNode, TrackedView {
         self.addSubnode(tableNode)
     }
     
+    override func didLoad() {
+        super.didLoad()
+        
+        tableNode.view.tableFooterView = UIView(frame: CGRectZero)
+//        tableNode.view.tableHeaderView = UIView(frame: CGRectZero)
+    }
+    
 //    override func calculatedLayoutDidChange() {
 //        super.calculatedLayoutDidChange()
 //    }
