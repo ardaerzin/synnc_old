@@ -24,6 +24,7 @@ import WCLNotificationManager
 import Crashlytics
 import SwiftyJSON
 import WCLUIKit
+import SafariServices
 
 #if DEBUG
 //let socketURLString = "https://digital-reform.codio.io:9500"
@@ -98,6 +99,9 @@ class Synnc : UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        
+        UINavigationBar.appearanceWhenContainedInInstancesOfClasses([SFSafariViewController.self]).barTintColor = .purpleColor()
         
         SPTAuth.defaultInstance().sessionUserDefaultsKey = "Synnc"
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserReadPrivateScope]
@@ -287,6 +291,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         
+        print("ANANEN", url)
         if SPTAuth.defaultInstance().canHandleURL(url) {
             SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: { (err, session) in
                 if let error = err {
