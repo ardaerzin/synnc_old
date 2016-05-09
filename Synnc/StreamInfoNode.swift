@@ -81,7 +81,12 @@ class StreamInfoNode : WCLScrollNode {
     
     override func layoutDidFinish() {
         super.layoutDidFinish()
-        self.view.contentSize.height = self.locationSection.position.y + (self.locationSection.calculatedSize.height / 2) + 100
+        
+        var height = self.locationSection.position.y + (self.locationSection.calculatedSize.height / 2) + 100
+        if height < self.calculatedSize.height {
+            height = self.calculatedSize.height + 1
+        }
+        self.view.contentSize.height = height
     }
     
     func configure(stream : Stream) {
