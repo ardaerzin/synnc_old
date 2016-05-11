@@ -89,6 +89,109 @@ extension UIColor {
     }
 }
 
+extension UIImage {
+    func resizeForUpload() -> UIImage? {
+        let cgImage = self.CGImage
+        
+        var s = self.size
+        let iw = s.width
+        let ih = s.height
+        
+        var nh : CGFloat
+        var nw : CGFloat
+        
+        var height : Int
+        var width : Int
+        
+        let bitsPerComponent = CGImageGetBitsPerComponent(cgImage)
+        let bytesPerRow = CGImageGetBytesPerRow(cgImage)
+        let colorSpace = CGImageGetColorSpace(cgImage)
+        let bitmapInfo = CGImageGetBitmapInfo(cgImage)
+        
+        var context : CGContextRef
+        
+        if self.imageOrientation == .Up || self.imageOrientation == .Down {
+            print(bitsPerComponent)
+        
+            if iw > 1125 || ih > 1125 {
+                if iw > ih {
+                    nh = 1125
+                    nw = nh * (iw/ih)
+                } else {
+                    nw = 1125
+                    nh = nw * (ih/iw)
+                }
+                s = CGSizeMake(nw, nh)
+            } else {
+                return self
+            }
+            
+            print("size before resize:", self.size, s)
+            
+            width = Int(s.width)
+            height = Int(s.height)
+            
+            context = CGBitmapContextCreate(nil, width, height, bitsPerComponent, 0, colorSpace, bitmapInfo.rawValue)!
+        } else {
+            
+            if iw > 1125 || ih > 1125 {
+                if iw > ih {
+                    nh = 1125
+                    nw = nh * (ih/ih)
+                } else {
+                    nw = 1125
+                    nh = nw * (ih/iw)
+                }
+                s = CGSizeMake(nh, nw)
+            } else {
+                return self
+            }
+            
+            print("size before resize:", self.size, s)
+            
+            width = Int(s.width)
+            height = Int(s.height)
+            
+            context = CGBitmapContextCreate(nil, height, width, bitsPerComponent, 0, colorSpace, bitmapInfo.rawValue)!
+        }
+        
+        switch self.imageOrientation {
+        case .Left :
+            CGContextRotateCTM(context, radians(90))
+            CGContextTranslateCTM(context, 0, CGFloat(-height))
+            break
+        case .Right:
+            CGContextRotateCTM(context, radians(-90))
+            CGContextTranslateCTM(context, CGFloat(-width), 0)
+            break
+        case .Up:
+            break
+        case .Down:
+            CGContextTranslateCTM(context, CGFloat(width), CGFloat(height))
+            CGContextRotateCTM(context, radians(-180))
+            break
+        default:
+            break
+        }
+        
+        CGContextSetInterpolationQuality(context, CGInterpolationQuality.High)
+        
+        CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: CGFloat(width), height: CGFloat(height))), cgImage)
+        
+        let scaledImage = CGBitmapContextCreateImage(context).flatMap { UIImage(CGImage: $0) }
+        
+        return scaledImage
+    }
+    
+    func radians(degree: Double) -> CGFloat {
+        return CGFloat(degree * M_PI / 180)
+    }
+}
+
+func radians(degree: Double) -> CGFloat {
+    return CGFloat(degree * M_PI / 180)
+}
+
 struct KeyboardAnimationInfo {
     var initialFrame: CGRect!
     var finalFrame: CGRect!

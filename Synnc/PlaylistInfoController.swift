@@ -17,6 +17,8 @@ import WCLLocationManager
 import WCLNotificationManager
 import Cloudinary
 import DKImagePickerController
+import CoreGraphics
+import QuartzCore
 
 class PlaylistInfoController : ASViewController, PagerSubcontroller {
     
@@ -68,10 +70,12 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     var editedImage : UIImage! {
         didSet {
             if let _ = editedImage, let _ = self.playlist {
+                self.coverImage = editedImage.resizeForUpload()
                 saveChanges()
             }
         }
     }
+    var coverImage : UIImage!
     var playlist : SynncPlaylist? {
         get {
             if let parent = self.parentViewController as? PlaylistController, let pl = parent.playlist {
@@ -250,7 +254,7 @@ extension PlaylistInfoController : PlaylistInfoDelegate {
             }
         } else {
             var image : UIImage!
-            if let img = self.editedImage {
+            if let img = self.coverImage {
                 image = img
             } else if let img = playlist.coverImage {
                 image = img
@@ -309,13 +313,21 @@ extension PlaylistInfoController : PlaylistInfoDelegate {
             AnalyticsEvent.new(category : "playlistAction", action: "editInfo", label: "image", value: nil)
             playlist.cover_id = ""
             playlist.coverImage = self.editedImage
+            
+//            self.editedImage.CGImage
+//            CGImageSourceCreate
+            
+            let img = coverImage
+            
             Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)
-            let data = UIImageJPEGRepresentation(self.editedImage, 1)
+            let data = UIImageJPEGRepresentation(img!, 1)
             let a = CLTransformation()
             a.angle = "exif"
             
             self.screenNode.infoNode.imageShimmer.shimmering = true
             self.editedImage = nil
+            self.coverImage = nil
+            
             uploadingImage = true
             
             Synnc.sharedInstance.imageUploader.cancel()
