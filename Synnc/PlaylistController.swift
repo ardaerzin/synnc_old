@@ -271,7 +271,7 @@ extension PlaylistController {
             var notificationMessage : String?
             var notificationAction : ((notif: WCLNotificationInfo) -> Void)?
             
-            if let missingSources = dict["missingSources"] as? [String] {
+            if let missingSources = dict["missingSources"] as? [String] where !missingSources.isEmpty {
                 if missingSources.count > 1 {
                     //multiple
                     
@@ -295,7 +295,9 @@ extension PlaylistController {
                         }
                     }
                 }
-            } else if let missingInfo = dict["missingInfo"] as? [String] {
+            }
+            
+            if let missingInfo = dict["missingInfo"] as? [String] {
                 
                 if missingInfo.indexOf("songs") != nil {
 
@@ -361,6 +363,17 @@ extension PlaylistController {
                     StreamManager.setActiveStream(stream)
                     StreamManager.playStream(stream)
                 }
+            }
+        }
+        a.onDisplay = {
+            [weak self] in
+            
+            if self == nil {
+                return
+            }
+            
+            if let window = self!.view.wclWindow {
+                window.hide(true)
             }
         }
         stream.update([NSObject : AnyObject]())
