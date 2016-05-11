@@ -84,6 +84,11 @@ class HomeController : PagerBaseController {
                 lowerLimit = UIScreen.mainScreen().bounds.height - 60
             }
             
+            self.playlistsController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
+            self.feedController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
+            
+//                ?.frame.size.height = hasActiveStream ? 75 : 0
+            
             window.lowerPercentage = lowerLimit
         }
     }

@@ -6,11 +6,20 @@
 //
 //
 
+extension Dictionary {
+    mutating func merge<K, V>(dict: [K: V]){
+        for (k, v) in dict {
+            self.updateValue(v as! Value, forKey: k as! Key)
+        }
+    }
+}
+
 import Foundation
 import CoreData
 import SocketSync
 import WCLUtilities
 import SwiftyJSON
+import WCLUserManager
 
 @objc protocol PlaylistDelegate {
     optional func didUpdateSongs()
@@ -71,5 +80,59 @@ class SynncPlaylist: NSManagedObject {
             }
         }
         return x
+    }
+    
+    func canPlay() -> (status: Bool, reasonDict : [String : AnyObject]?) {
+        
+        var reasonDict = [String : AnyObject]()
+        
+        
+        let infoDict = self.validateInfo()
+        let sourceDict = self.checkSources()
+        
+        let status = infoDict.status && sourceDict.status
+        
+        var dict = infoDict.reasonDict!
+        dict.merge(sourceDict.reasonDict!)
+        
+        
+        return (status: status, reasonDict: dict)
+    }
+    
+    internal func validateInfo() -> (status: Bool, reasonDict : [String : AnyObject]?) {
+        
+        var status = true
+        var missingKeys : [String] = []
+        
+        if self.songs.isEmpty {
+            status = false
+            missingKeys.append("songs")
+        }
+        
+        if self.name == nil || self.name == "" {
+            status = false
+            missingKeys.append("name")
+        }
+        
+        return (status: status, reasonDict: ["missingInfo" : missingKeys])
+    }
+    
+    internal func checkSources() -> (status: Bool, reasonDict : [String : AnyObject]?) {
+        
+        let sources = allSources()
+        var missingSources : [String] = []
+        
+        for source in SynncPremiumSources {
+            let x = source.rawValue
+            if let _ = sources.indexOf(x) {
+                guard let user = Synnc.sharedInstance.user, let type = WCLUserLoginType(rawValue: x.lowercaseString), let ext = user.userExtension(type), let status = ext.loginStatus where status else {
+                    
+                    missingSources.append(x)
+                    continue
+                }
+            }
+        }
+        
+        return (status: missingSources.isEmpty, reasonDict: ["missingSources" : missingSources])
     }
 }

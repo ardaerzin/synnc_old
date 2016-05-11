@@ -243,6 +243,10 @@ extension PlaylistController {
             s.closeView(true)
         }
 
+        guard let plist = self.playlist else {
+            return
+        }
+        
         AnalyticsEvent.new(category : "PlaylistAction", action: "button_tap", label: "stream", value: nil)
         
         if StreamManager.sharedInstance.activeStream != nil {
@@ -254,55 +258,90 @@ extension PlaylistController {
             return
         }
         
-        if self.playlist.songs.isEmpty {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+        let t = plist.canPlay()
+        
+        if t.status {
+            createStream(plist)
+        } else {
+
+            guard let dict = t.reasonDict else {
+                return
+            }
+            
+            var notificationMessage : String?
+            var notificationAction : ((notif: WCLNotificationInfo) -> Void)?
+            
+            if let missingSources = dict["missingSources"] as? [String] {
+                if missingSources.count > 1 {
+                    //multiple
+                    
+                    var str : String = ""
+                    
+                    for (index,src) in missingSources.enumerate() {
+                        str += index == 0 ? "\(src)" : index == missingSources.count - 1 ? " and \(src)" : ", \(src)"
+                    }
+                    
+                    notificationMessage = "Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream."
+                    notificationAction = nil
+                    
+                } else if let src = missingSources.first {
+                    
+                    let str = src.fixAppleMusic()
+                    notificationMessage = "Please login to \(str) to listen to the Premium content in this stream."
+                    notificationAction = {
+                        notif in
+                        if let type = WCLUserLoginType(rawValue: src.lowercaseString) {
+                            Synnc.sharedInstance.user.socialLogin(type)
+                        }
+                    }
+                }
+            } else if let missingInfo = dict["missingInfo"] as? [String] {
                 
-                let info = WCLNotificationInfo(defaultActionName: "", body: "First, add songs to your playlist", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
+                if missingInfo.indexOf("songs") != nil {
+
+                    notificationMessage = "First, add songs to your playlist"
+                    notificationAction = {
                         [weak self]
                         notif in
                         
                         if self == nil {
                             return
                         }
-                    
+                        
                         AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Notification", value: nil)
-                    
+                        
                         self!.screenNode.pager.scrollToPageAtIndex(1, animated: true)
-                }
-                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-            }
-            return
-        }
-        
-        
-        if self.playlist.name == nil || self.playlist.name == "" {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                
-                let info = WCLNotificationInfo(defaultActionName: "", body: "You need to name your playlist before sharing it with others.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                    [weak self]
-                    notif in
-                    
-                    if self == nil {
-                        return
                     }
-                    
-                    AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Name Notification", value: nil)
-                    
-                    self!.screenNode.pager.scrollToPageAtIndex(0, animated: true)
                 }
+                
+                if missingInfo.indexOf("name") != nil {
+                    
+                    notificationMessage = "You need to name your playlist before sharing it with others."
+                    notificationAction = {
+                        [weak self]
+                        notif in
+                        
+                        if self == nil {
+                            return
+                        }
+                        
+                        AnalyticsEvent.new(category : "ui_action", action: "notification_tap", label: "Empty Playlist Name Notification", value: nil)
+                        
+                        self!.screenNode.pager.scrollToPageAtIndex(0, animated: true)
+                    }
+                }
+                
+            }
+            
+            if let msg = notificationMessage, let action = notificationAction, let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                let info = WCLNotificationInfo(defaultActionName: "", body: msg, title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil, callback: action)
                 WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                return
             }
-            return
         }
-        
-        if self.infoController.uploadingImage {
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Image upload in progress. Try again once it is finished", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-            }
-            return
-        }
-        
-        
+    }
+    
+    internal func createStream(playlist: SynncPlaylist) {
         let stream = Stream(user: Synnc.sharedInstance.user)
         stream.playlist = playlist
         stream.lat = 0
@@ -325,13 +364,6 @@ extension PlaylistController {
             }
         }
         stream.update([NSObject : AnyObject]())
-//        let stream = Stream.create(self.playlist) {
-//            created in
-//            
-//            if created {
-//                vc.createdStream()                
-//            }
-//        }
         a.display(true)
     }
 }

@@ -245,8 +245,9 @@ class PlaylistInfoNode : WCLScrollNode {
                 }
             }
         } else {
-            self.imageNode.image = UIImage(named: "camera-placeholder")!
-            self.imageNode.contentMode = .Center
+            self.imageNode.image = UIImage(named: "placeholder")!
+            self.imageNode.contentMode = .ScaleAspectFill
+//            self.imageNode.contentMode = .Center
         }
         
         if let title = self.infoDelegate?.titleForPlaylist!() {
@@ -299,13 +300,13 @@ class PlaylistInfoNode : WCLScrollNode {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
-        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: constrainedSize.max.width * 0.6), ASRelativeDimension(type: .Points, value: constrainedSize.max.width * 0.6))
+        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: 200), ASRelativeDimension(type: .Points, value: 200))
         let imageSpec = ASStaticLayoutSpec(children: [imageNode])
         imageSpec.spacingBefore = 85
         
         let a = ASStaticLayoutSpec(children: [trackCountNode, addSongsButton])
         let spacer = ASStaticLayoutSpec(children: [topSeperator])
-        spacer.spacingBefore = 5
+        spacer.spacingBefore = 10
         
         let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [imageSpec, titleNode, a, spacer, genreHolder, ASStaticLayoutSpec(children: [genreSeperator]), locationHolder, ASStaticLayoutSpec(children: [locationSeperator])])
         

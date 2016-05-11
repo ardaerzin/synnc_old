@@ -10,6 +10,11 @@ import Foundation
 
 // MARK: - Version Checker
 extension String {
+    
+    func fixAppleMusic() -> String {
+        return self.stringByReplacingOccurrencesOfString(SynncExternalSource.AppleMusic.rawValue, withString: "Apple Music")
+    }
+    
     func versionToInt() -> [Int] {
         return self.componentsSeparatedByString(".")
             .map {

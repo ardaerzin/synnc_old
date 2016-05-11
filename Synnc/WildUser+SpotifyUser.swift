@@ -12,6 +12,28 @@ import WCLUtilities
 import SwiftyJSON
 import WCLNotificationManager
 import WCLPopupManager
+import WCLUIKit
+
+class SpotifyLVC : WCLPopupViewController {
+    var loginController : SPTAuthViewController!
+    
+    init(controller : SPTAuthViewController) {
+        super.init(nibName: nil, bundle: nil, size: UIScreen.mainScreen().bounds.size)
+        self.loginController = controller
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func didDisplay() {
+        super.didDisplay()
+        self.presentViewController(loginController, animated: true, completion: nil)
+    }
+    override func didHide() {
+        super.didHide()
+        loginController.dismissViewControllerAnimated(true, completion: nil)
+    }
+}
 
 public extension WCLUser {
     public func spotifyInit(object : AnyObject!) -> WCLUserExtension {
@@ -45,7 +67,9 @@ public extension WCLUser {
 
 class WildSpotifyUser : WCLUserExtension {
     
+    var loginPopup : WCLPopupViewController!
     var loginController : SpotifyLoginViewController!
+    
     override var id : String? {
         get {
             var x : String? = nil
@@ -147,15 +171,32 @@ class WildSpotifyUser : WCLUserExtension {
         loginViewController.modalPresentationStyle = .OverFullScreen
         
         //root view controller for presenting loginViewController
-        let rootViewController = UIApplication.sharedApplication().delegate?.window!!.rootViewController
+//        var controller : UIViewController!
+//        if let vc = WCLWindowManager.sharedInstance.windows.last?.rootViewController {
+//            controller = vc
+//        } else if let rootViewController = UIApplication.sharedApplication().windows.first?.rootViewController {
+//            controller = rootViewController
+//        }
+        
+        let x = SpotifyLVC(controller: loginViewController)
+//        x.presentViewController(loginViewController, animated: true, completion: nil)
+//        x.addChildViewController(loginViewController)
+//        
+//        x.view.addSubview(loginViewController.view)
+//        loginViewController.didMoveToParentViewController(x)
+        
+        Synnc.sharedInstance.topPopupManager.newPopup(x)
+        loginPopup = x
         
         //present loginViewController
-        let x = rootViewController?.presentedViewController
-        if x == nil {
-            rootViewController?.presentViewController(loginViewController, animated: true, completion: nil)
-        } else {
-            x!.presentViewController(loginViewController, animated: true, completion: nil)
-        }
+//        if let c = controller {
+//            let x = c.presentedViewController
+//            if x == nil {
+//                c.presentViewController(loginViewController, animated: true, completion: nil)
+//            } else {
+//                x!.presentViewController(loginViewController, animated: true, completion: nil)
+//            }
+//        }
     }
     
     //Mark: Logout
@@ -235,15 +276,24 @@ class WildSpotifyUser : WCLUserExtension {
 extension WildSpotifyUser : SPTAuthViewDelegate {
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didFailToLogin error: NSError!) {
         self.loginStatus = false
+        if let p = loginPopup {
+            p.closeView(true)
+        }
     }
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
         
         self.sptAuthenticationStatus(session, error: nil)
+        if let p = loginPopup {
+            p.closeView(true)
+        }
 //        self.getUserSpotifyProfile()
 //        self.loginStatus = true
         
     }
     func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {
         self.loginStatus = false
+        if let p = loginPopup {
+            p.closeView(true)
+        }
     }
 }
