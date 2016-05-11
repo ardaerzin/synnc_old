@@ -296,8 +296,11 @@ extension ProfileController : ASEditableTextNodeDelegate {
 extension ProfileController {
     func saveImage(){
         if let newImage = self.editedImage {
+            
+            let img = newImage.resizeForUpload()
             Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)
-            let data = UIImageJPEGRepresentation(newImage, 1)
+            let data = UIImageJPEGRepresentation(img!, 1)
+            
             let a = CLTransformation()
             a.angle = "exif"
             Synnc.sharedInstance.imageUploader.upload(data, options: ["transformation" : a], withCompletion: {
