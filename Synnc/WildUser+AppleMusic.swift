@@ -47,8 +47,6 @@ public extension WCLUser {
 extension WildAppleMusicUser : WCLMusicKitDelegate {
     func wclMusicKit(musicKit: WCLMusicKit, didChangeAuthStatus status: Bool?, withError error: NSError?) {
         self.loginStatus = status
-        print("********* did change auth status", status, musicKit.status)
-        
         if let s1 = musicKit.status, let s2 = status where s1 {
             
             if !s2 && enableNotif {

@@ -19,7 +19,6 @@ class ActionSheetPopup : WCLPopupViewController {
     
     init(size: CGSize, buttons : [ButtonNode]) {
         super.init(nibName: nil, bundle: nil, size: size)
-        print("set buttons", buttons)
         self.screenNode.addButtons(buttons)
         self.screenNode.cancelButton.addTarget(self, action: #selector(ActionSheetPopup.cancel(_:)), forControlEvents: .TouchUpInside)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Bottom), withShadow: true)

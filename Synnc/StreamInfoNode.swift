@@ -138,6 +138,36 @@ class SourceHolder : ASDisplayNode {
     
     var buttons : [SourceButton] = []
     
+    override init() {
+        super.init()
+        
+        for type in SynncExternalSource.premiumSources {
+            if let t = WCLUserLoginType(rawValue: type.rawValue.lowercaseString), let user = Synnc.sharedInstance.user, let ext = user.userExtension(t) {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SourceHolder.extensionLoginStatusChanged(_:)), name: "\(t.rawValue)LoginStatusChanged", object: ext)
+            }
+        }
+    }
+    
+    internal func buttonForUserExtension(ext: WCLUserExtension) -> SourceButton? {
+        for button in buttons {
+            if button.source.rawValue.lowercaseString == ext.type.rawValue.lowercaseString {
+                return button
+            }
+        }
+        return nil
+    }
+    
+    internal func extensionLoginStatusChanged(notification : NSNotification) {
+        if let ext = notification.object as? WCLUserExtension, let button = self.buttonForUserExtension(ext) {
+            
+            if let status = ext.loginStatus where status {
+                button.selected = true
+            } else {
+                button.selected = false
+            }
+        }
+    }
+    
     func configure(sources: [String]){
         
         for button in buttons {
@@ -148,7 +178,16 @@ class SourceHolder : ASDisplayNode {
         
         for source in sources {
             let button = SourceButton(source: SynncExternalSource(rawValue: source)!)
-            button.selected = true
+            
+            if let type = WCLUserLoginType(rawValue: source.lowercaseString), let user = Synnc.sharedInstance.user, let ext = user.userExtension(type) {
+                
+                if let status = ext.loginStatus where status {
+                    button.selected = true
+                } else {
+                    button.selected = false
+                }
+            }
+            
             button.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(25, 25))
             self.addSubnode(button)
             buttons.append(button)
