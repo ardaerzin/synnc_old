@@ -18,8 +18,10 @@ enum SynncExternalSource : String {
     case Spotify = "Spotify"
     case GoogleMusic = "Googlemusic"
     case AppleMusic = "Applemusic"
+    
+    static let allValues = [Soundcloud, Spotify, GoogleMusic, AppleMusic]
+    static let premiumSources = [Spotify, AppleMusic]
 }
-let SynncPremiumSources : [SynncExternalSource] = [.Spotify, .AppleMusic]
 
 class SynncTrackStore {
     

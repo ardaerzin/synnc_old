@@ -139,6 +139,32 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         let n = PlaylistTracksNode()
         super.init(node: n)
         self.screenNode = n
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaylistTracklistController.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func checkActiveStream(notification : NSNotification) {
+        if let plist = self.playlist, let stream = notification.object as? Stream where stream.playlist == plist && self.editMode {
+            self.editMode = false
+        }
+//        if let window = self.screenNode.view.wclWindow {
+//            
+//            var lowerLimit : CGFloat = 0
+//            
+//            let hasActiveStream = (notification.object as? Stream) != nil
+//            if hasActiveStream {
+//                lowerLimit = UIScreen.mainScreen().bounds.height - 60 - 70
+//            } else {
+//                lowerLimit = UIScreen.mainScreen().bounds.height - 60
+//            }
+//            
+//            self.playlistsController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
+//            self.feedController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
+//            
+//            //                ?.frame.size.height = hasActiveStream ? 75 : 0
+//            
+//            window.lowerPercentage = lowerLimit
+//        }
     }
     
     required init?(coder aDecoder: NSCoder) {

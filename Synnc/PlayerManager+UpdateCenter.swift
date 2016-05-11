@@ -60,7 +60,6 @@ extension StreamPlayerManager {
         }
         MPRemoteCommandCenter.sharedCommandCenter().bookmarkCommand.enabled = true
         
-        print("duration:", duration)
         nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
         
         nowPlayingInfo.updateValue(self.rate, forKey: MPNowPlayingInfoPropertyPlaybackRate)

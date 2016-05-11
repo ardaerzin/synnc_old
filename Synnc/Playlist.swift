@@ -122,7 +122,7 @@ class SynncPlaylist: NSManagedObject {
         let sources = allSources()
         var missingSources : [String] = []
         
-        for source in SynncPremiumSources {
+        for source in SynncExternalSource.premiumSources {
             let x = source.rawValue
             if let _ = sources.indexOf(x) {
                 guard let user = Synnc.sharedInstance.user, let type = WCLUserLoginType(rawValue: x.lowercaseString), let ext = user.userExtension(type), let status = ext.loginStatus where status else {

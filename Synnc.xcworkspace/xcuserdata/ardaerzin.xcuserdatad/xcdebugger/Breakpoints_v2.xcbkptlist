@@ -618,11 +618,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlayerManager+UpdateCenter.swift"
-            timestampString = "484421961.377155"
+            timestampString = "484623090.938058"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
             landmarkName = "updateControlCenterItem()"
             landmarkType = "5">
          </BreakpointContent>

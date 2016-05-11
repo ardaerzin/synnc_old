@@ -120,8 +120,6 @@ extension StreamPlayerManager {
             }
         }
         
-        print("APPLE IDs", appleIds)
-        
         return indexedData
     }
 }
