@@ -65,7 +65,10 @@ class SpotifyValidationPopup : WCLPopupViewController {
         self.closeView(true)
     }
     func spotifyLogin(sender: AnyObject) {
-        print("login with spotify")
+        if let button = sender as? ButtonNode {
+            button.showSpinView()
+        }
+        
         if let user = Synnc.sharedInstance.user {
             user.socialLogin(.Spotify)
         }

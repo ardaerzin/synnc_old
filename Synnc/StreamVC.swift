@@ -570,11 +570,6 @@ extension StreamVC {
             s.closeView(true)
         }
         
-        if let node = sender as? ButtonNode {
-            node.userInteractionEnabled = false
-            node.showSpinView()
-        }
-        
         AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
         
         if let _ = StreamManager.sharedInstance.activeStream {
@@ -589,22 +584,59 @@ extension StreamVC {
         
         if let s = self.stream {
             
-            if StreamManager.sharedInstance.canJoinStream(s) {
+            let t = s.playlist.canPlay()
+            if t.status {
+                if let node = sender as? ButtonNode {
+                    node.userInteractionEnabled = false
+                    node.showSpinView()
+                }
                 StreamManager.sharedInstance.joinStream(s) {
                     success in
-                    if success {
-                        //                StreamManager.sharedInstance.player.delegate = self
-                    }
                 }
             } else {
-                let x = SpotifyValidationPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-                x.onCancel = {
-                    if let node = sender as? ButtonNode {
-                        node.userInteractionEnabled = true
-                        node.hideSpinView()
+                
+                guard let dict = t.reasonDict else {
+                    return
+                }
+                
+                
+                var notificationMessage : String?
+                var notificationAction : ((notif: WCLNotificationInfo) -> Void)?
+                
+                if let missingSources = dict["missingSources"] as? [String] {
+                    if missingSources.count > 1 {
+                        //multiple
+                        
+                        var str : String = ""
+                        
+                        for (index,src) in missingSources.enumerate() {
+                            str += index == 0 ? "\(src)" : index == missingSources.count - 1 ? " and \(src)" : ", \(src)"
+                        }
+                        
+                        notificationMessage = "Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream."
+                        notificationAction = nil
+                        
+                    } else if let src = missingSources.first {
+                        
+                        let str = src.fixAppleMusic()
+                        notificationMessage = "Please login to \(str) to listen to the Premium content in this stream."
+                        notificationAction = {
+                           notif in
+                            if let type = WCLUserLoginType(rawValue: src.lowercaseString) {
+                                Synnc.sharedInstance.user.socialLogin(type)
+                            }
+                        }
                     }
                 }
-                WCLPopupManager.sharedInstance.newPopup(x)
+                
+                if let msg = notificationMessage, let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
+                    let info = WCLNotificationInfo(defaultActionName: "", body: msg, title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil, callback: notificationAction)
+                    
+                    Async.main {
+                        WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                    }
+                    return
+                }
             }
         }
     }

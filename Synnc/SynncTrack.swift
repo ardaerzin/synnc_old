@@ -16,11 +16,10 @@ import SwiftyJSON
 enum SynncExternalSource : String {
     case Soundcloud = "Soundcloud"
     case Spotify = "Spotify"
-    case YouTube = "Youtube"
-    case Grooveshark = "Grooveshark"
-    case GooglePlay = "Googleplay"
+    case GoogleMusic = "Googlemusic"
     case AppleMusic = "Applemusic"
 }
+let SynncPremiumSources : [SynncExternalSource] = [.Spotify, .AppleMusic]
 
 class SynncTrackStore {
     
