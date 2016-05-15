@@ -13,8 +13,6 @@ extension StreamPlayerManager {
         
     }
     func playerItem(itemStatusChangedForItem item: AVPlayerItem) {
-        
-//        print("PlayerManager:","status changed for item", item, item.status == AVPlayerItemStatus.ReadyToPlay, self.currentItem, self.activePlayer)
         if item === self.currentItem {
             self.play()
         }
@@ -43,7 +41,9 @@ extension StreamPlayerManager {
         
     }
     func playerItem(playbackStalledForItem item: AVPlayerItem) {
-        print("PlayerManager:", "PLAYBACK STALLED")
+        if item === self.currentItem {
+            self.play()
+        }
         self.syncManager.needsUpdate = true
     }
 }

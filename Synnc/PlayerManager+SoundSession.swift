@@ -10,6 +10,7 @@ import Foundation
 import WCLUtilities
 import WCLNotificationManager
 import MediaPlayer
+import Async
 
 extension StreamPlayerManager {
     func checkActiveSession() {
@@ -53,9 +54,8 @@ extension StreamPlayerManager {
                     Async.main {
                         
                         if oldVolume > 0 {
-                            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                                WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Your stream is now Muted, but continues in the background", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                            }
+                            
+                            WCLNotification(body: ("Your stream is now muted, but continues in the background", "muted"), image: "notification-warning", showLocalNotification: true).addToQueue()
                         }
                         
                     }

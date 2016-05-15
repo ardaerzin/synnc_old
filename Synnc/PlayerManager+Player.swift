@@ -9,13 +9,13 @@
 import Foundation
 import MediaPlayer
 import WCLUtilities
+import Async
 
 extension StreamPlayerManager {
     /// Wrap Player Related Attributes
     var currentItemDuration : CGFloat {
         get {
             if let avItem = self.currentItem as? AVPlayerItem {
-//                print(avItem, avItem.asset.duration, CMTimeGetSeconds(avItem.duration))
                 return CGFloat(CMTimeGetSeconds(avItem.asset.duration))
             } else if let player = self.activePlayer as? SynncSpotifyPlayer {
                 return CGFloat(player.currentTrackDuration)
@@ -34,17 +34,7 @@ extension StreamPlayerManager {
             } else if let spotifyPlayer = activePlayer as? SPTAudioStreamingController {
                 return spotifyPlayer.currentTrackURI
             } else if let appleMusicPlayer = activePlayer as? MPMusicPlayerController {
-                
                 return appleMusicPlayer.nowPlayingItem
-//                
-////                let query = MPMediaQuery.songsQuery()
-////                let pred = MPMediaPropertyPredicate(value: "\(item!.persistentID)", forProperty: MPMediaItemPropertyPersistentID)
-////                query.addFilterPredicate(pred)
-////                var x = query.items?.first
-////                print(x)
-//                
-//                print("current item for apple player:", item, item?.persistentID, item?.valueForKey(MPMediaItemPropertyTitle))
-//                return appleMusicPlayer.nowPlayingItem
             }
             
             return nil

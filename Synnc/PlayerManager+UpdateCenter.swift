@@ -12,6 +12,7 @@ import MediaPlayer
 import CoreMedia
 import AsyncDisplayKit
 import WCLUtilities
+import Async
 
 extension StreamPlayerManager {
     //Mark: Player Controls

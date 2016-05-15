@@ -19,6 +19,7 @@ import AssetsLibrary
 import Cloudinary
 import Shimmer
 import WCLNotificationManager
+import Async
 
 enum StreamControllerState : Int {
     case Inactive = 0
@@ -159,8 +160,6 @@ class StreamVC : PagerBaseController {
     
     func endCurrentStream(sender : ButtonNode!) {
         
-        
-        
         sender.showSpinView()
         AnalyticsEvent.new(category: "StreamPopup", action: "buttonTap", label: "endCurrentStream", value: nil)
         if let activeStr = StreamManager.sharedInstance.activeStream {
@@ -271,23 +270,6 @@ class StreamVC : PagerBaseController {
         guard let st = self.stream, let ind = st.currentSongIndex else {
             return
         }
-        
-        let song = st.playlist.songs[ind as Int]
-//        let button = (self.screenNode as! StreamVCNode).nowPlayingArea.likeButton
-//        var anim : POPBasicAnimation
-//        if let x = button.pop_animationForKey("hide") as? POPBasicAnimation {
-//            anim = x
-//        } else {
-//            anim = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-//            anim.duration = 0.2
-//            button.pop_addAnimation(anim, forKey: "hide")
-//        }
-//        if let plist = SharedPlaylistDataSource.findUserFavoritesPlaylist(), let _ = plist.indexOf(song) {
-//            button.selected = true
-//        } else {
-//            button.selected = false
-//        }
-//        anim.toValue = 1
     }
     
     override func updatedPagerPosition(position : CGFloat) {
@@ -354,7 +336,6 @@ class StreamVC : PagerBaseController {
     }
     
     func endedActiveStream(notification: NSNotification!){
-        print("WADAP SON")
         print("ended active stream")
         
         if let stream = notification.object as? Stream {
@@ -362,12 +343,6 @@ class StreamVC : PagerBaseController {
                 print("INTERRUPTED")
             }
         }
-        
-//        if self.stream == StreamManager.sharedInstance.userStream {
-//            self.state = .Finished
-//        } else {
-//            self.state = .ReadyToPlay
-//        }
     }
     func checkActiveStream(notification: NSNotification!){
         if let s = self.stream, let st = StreamManager.sharedInstance.activeStream where s == st {
@@ -428,8 +403,6 @@ class StreamVC : PagerBaseController {
                     }
                     if let _ = keys.indexOf("playlist") {
                         self.configure(self.stream)
-//                        self.infoController.configure(self.stream)
-//                        (self.screenNode.headerNode as StreamHeaderNode).conf
                     }
                 }
             }
@@ -444,7 +417,6 @@ class StreamVC : PagerBaseController {
     internal func updateTrack(stream : Stream){
         if let ind = stream.currentSongIndex {
             Async.main {
-//                print("what da shit is the index?", ind)
                 let i = ind as Int
                 if i >= stream.playlist.songs.count {
                     return
@@ -493,20 +465,8 @@ extension StreamVC : WCLWindowDelegate {
         }
         
         Async.main {
-//            self.chatController.chatbar.textNode.view.endEditing(true)
-//            self.chatController.chatbar.view.endEditing(true)
-//            self.chatController.chatbar.textNode.resignFirstResponder()
-//            self.chatController.shouldFirstRespond = false
-//            self.chatController.resignFirstResponder()
             (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = 0
         }
-        
-//        self.chatController.chatbar.textNode.view.endEditing(true)
-//        self.chatController.chatbar.view.endEditing(true)
-//        self.chatController.chatbar.textNode.resignFirstResponder()
-//        self.chatController.shouldFirstRespond = false
-//        self.chatController.resignFirstResponder()
-//        (self.screenNode as! StreamVCNode).nowPlayingArea.stateAnimation.toValue = 0
         
         let x = 1-window.lowerPercentage
         let za = (1 - progress - x) / (1-x)
@@ -550,7 +510,6 @@ extension StreamVC : WCLWindowDelegate {
                 anim.duration = 0.1
                 anim.toValue = 1
             }
-//            if self.
         }
     }
 }
@@ -592,6 +551,11 @@ extension StreamVC {
                 }
                 StreamManager.sharedInstance.joinStream(s) {
                     success in
+                    
+                    if let node = sender as? ButtonNode {
+                        node.userInteractionEnabled = true
+                        node.hideSpinView()
+                    }
                 }
             } else {
                 
@@ -600,8 +564,8 @@ extension StreamVC {
                 }
                 
                 
-                var notificationMessage : String?
-                var notificationAction : ((notif: WCLNotificationInfo) -> Void)?
+                var notificationMessage : (String, String)?
+                var notificationAction : ((notif: WCLNotification) -> Void)?
                 
                 if let missingSources = dict["missingSources"] as? [String] {
                     if missingSources.count > 1 {
@@ -613,13 +577,13 @@ extension StreamVC {
                             str += index == 0 ? "\(src)" : index == missingSources.count - 1 ? " and \(src)" : ", \(src)"
                         }
                         
-                        notificationMessage = "Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream."
+                        notificationMessage = ("Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream.", "\(str.fixAppleMusic())")
                         notificationAction = nil
                         
                     } else if let src = missingSources.first {
                         
                         let str = src.fixAppleMusic()
-                        notificationMessage = "Please login to \(str) to listen to the Premium content in this stream."
+                        notificationMessage = ("Please login to \(str) to listen to the Premium content in this stream.", "\(str)")
                         notificationAction = {
                            notif in
                             if let type = WCLUserLoginType(rawValue: src.lowercaseString) {
@@ -629,13 +593,8 @@ extension StreamVC {
                     }
                 }
                 
-                if let msg = notificationMessage, let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    let info = WCLNotificationInfo(defaultActionName: "", body: msg, title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil, callback: notificationAction)
-                    
-                    Async.main {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-                    }
-                    return
+                if let msg = notificationMessage {
+                    WCLNotification(body: msg, image: "notification-warning", callback: notificationAction).addToQueue()
                 }
             }
         }
@@ -661,9 +620,13 @@ extension StreamVC : UIGestureRecognizerDelegate {
         } else {
             return false
         }
+        
+        return false
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        
+
+//        return true
+//        return false
         if otherGestureRecognizer == self.infoController.screenNode.infoNode.view.panGestureRecognizer || otherGestureRecognizer == (self.tracklistController.node as! StreamTracklistNode).tracksTable.view.panGestureRecognizer || otherGestureRecognizer == self.chatController.screenNode.chatCollection.view.panGestureRecognizer {
             return true
         } else {

@@ -18,6 +18,7 @@ import WCLPopupManager
 import WCLDataManager
 import WCLNotificationManager
 import WCLMusicKit
+import Async
 
 enum EntityType : String {
     case Artist = "artist"
@@ -65,7 +66,13 @@ class TrackSearchController : WCLPopupViewController {
             self.queryString_artists = ""
             self.queryString_tracks = ""
             self.screenNode.sourceOptionsButton.setImage(UIImage(named: selectedSource.rawValue.lowercaseString + "_active"), forState: .Normal)
-            self.searchStringChanged(self.screenNode.inputNode.textView.text)
+            
+            if let str = (self.screenNode.inputNode.textView.text as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()) {
+                self.searchStringChanged(str)
+            } else {
+                self.searchStringChanged("")
+            }
+            
         }
     }
     var selectedArtist : SynncArtist?
@@ -218,8 +225,9 @@ extension TrackSearchController : ASCollectionDelegate {
         
         if let _ = self.tracksDataSource.nextAction {
             self.screenNode.trackSearchState = true
-            self.tracksDataSource.loadMore()
             self.screenNode.moreTracksIndicatorState = true
+            print("SECTOR")
+            self.tracksDataSource.loadMore()
         }
         
     }
@@ -347,8 +355,6 @@ extension TrackSearchController {
             if (self.last_search.compare(timeStamp) == NSComparisonResult.OrderedSame) {
                     if let sptshit = data as? SPTListPage {
                         
-                        print("OH SIHT", sptshit)
-                        
                         if sptshit.items != nil {
                             self.processResults(str, source: .Spotify, entity: type, timestamp: timeStamp, dataArr: sptshit.items)
                             
@@ -408,6 +414,8 @@ extension TrackSearchController {
                                 }
                                 
                             }
+                        } else {
+                            print("oh shit")
                         }
                     }
                 })
@@ -550,13 +558,11 @@ extension TrackSearchController {
                     }
                     
                 } catch let error as NSError {
-                    print(error)
                     self.tracksDataSource.nextAction = nil
                 }
             }).resume()
             
         } catch let error as NSError {
-            print(error)
             self.tracksDataSource.nextAction = nil
         }
     }
@@ -565,7 +571,6 @@ extension TrackSearchController {
         
         let needsParse = spotifyAlbums.isEmpty
         spotifyAlbums += albums
-        print("SPOTIFY ALBUMS", spotifyAlbums)
         if needsParse {
             parseSpotifyAlbum(0, timeStamp: timeStamp)
         }
@@ -586,14 +591,11 @@ extension TrackSearchController {
         
         do {
             let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: .Album, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: sptUser.territory)
-            print(req.URL, SPTMarketFromToken)
             
             NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (data, res, err) in
                 do {
                     let x = try SPTListPage(fromData: data, withResponse: res, expectingPartialChildren: false, rootObjectKey: nil)
 
-                    print(x)
-                    
                     if let selected = self.selectedArtist where selected.id != artist.identifier {
                         return
                     } else if self.selectedArtist == nil {
@@ -623,7 +625,12 @@ extension TrackSearchController {
     func artistSearch(){
         guard let id = self.selectedArtist?.id else {
             AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: nil, value: nil)
-            self.searchStringChanged(self.screenNode.inputNode.textView.text)
+            
+            if let str = (self.screenNode.inputNode.textView.text as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()) {
+                self.searchStringChanged(str)
+            } else {
+                self.searchStringChanged("")
+            }
             return
         }
         
@@ -667,7 +674,6 @@ extension TrackSearchController {
                      
                         self?.spotifyArtistSearch(artist, timeStamp: ts)
                         
-                        print("found artist", artist)
                     }
                 }
             } else if self.selectedSource == .AppleMusic {
@@ -702,16 +708,12 @@ extension TrackSearchController : SourceSelectorDelegate {
 
 extension TrackSearchController {
     func notifyForSource(source : SynncExternalSource) {
-        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-            let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to \(source.rawValue) first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                notif in
-                
-                Synnc.sharedInstance.user.socialLogin(WCLUserLoginType(rawValue: source.rawValue)!)
-            }
-            WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+        let x = source.rawValue.fixAppleMusic()
+        WCLNotification(body: ("You need to login to \(x) first.", x), image: "notification-access") {
+            notif in
             
-            return
-        }
+            Synnc.sharedInstance.user.socialLogin(WCLUserLoginType(rawValue: source.rawValue)!)
+        }.addToQueue()
     }
     func checkSourceAvailability(source : SynncExternalSource) -> Bool {
         

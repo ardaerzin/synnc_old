@@ -317,7 +317,6 @@
 		476CC81C1CAC542C00CBA0E3 /* NowPlayingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC81B1CAC542C00CBA0E3 /* NowPlayingNode.swift */; };
 		476CC81E1CAF1BDE00CBA0E3 /* UserProfilePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */; };
 		477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */; };
-		4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */; };
 		4777051E1C3DC5EA007089D0 /* ListenerCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */; };
 		477705201C3DC8E5007089D0 /* StreamUsersDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4777051F1C3DC8E5007089D0 /* StreamUsersDataSource.swift */; };
 		477705221C3DF4F6007089D0 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477705211C3DF4F6007089D0 /* ChatController.swift */; };
@@ -776,7 +775,6 @@
 		476CC81B1CAC542C00CBA0E3 /* NowPlayingNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingNode.swift; sourceTree = "<group>"; };
 		476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfilePopup.swift; sourceTree = "<group>"; };
 		477232BB1C5FF08000CAC71A /* PlaylistEmptyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistEmptyNode.swift; sourceTree = "<group>"; };
-		4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncLocationAuthVC.swift; sourceTree = "<group>"; };
 		4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListenerCellNode.swift; sourceTree = "<group>"; };
 		4777051F1C3DC8E5007089D0 /* StreamUsersDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamUsersDataSource.swift; sourceTree = "<group>"; };
 		477705211C3DF4F6007089D0 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
@@ -1356,7 +1354,6 @@
 				47EEACCA1CBBD6C1004E5229 /* NotReachablePopup.swift */,
 				475771181CB72CC2004FBB11 /* DeletePlaylistPopup.swift */,
 				476CC81D1CAF1BDD00CBA0E3 /* UserProfilePopup.swift */,
-				4773D9471C38205F00534DAD /* SynncLocationAuthVC.swift */,
 				4740A5921C543E6F00C767EE /* NotificationRequestPopupVC.swift */,
 				47DE5D001C6DD218006876E6 /* StreamInProgressPopup.swift */,
 				4740A5941C544A6300C767EE /* StreamEndPopupVC.swift */,
@@ -2599,7 +2596,6 @@
 				477705201C3DC8E5007089D0 /* StreamUsersDataSource.swift in Sources */,
 				47C8F9A01C243BC900333492 /* PlaylistCellNode.swift in Sources */,
 				470D2B321CA329C300526778 /* RootHeaderNode.swift in Sources */,
-				4773D9481C38205F00534DAD /* SynncLocationAuthVC.swift in Sources */,
 				470F8C091C48825000624F0F /* ChatTableManager.swift in Sources */,
 				472379351C9F033C00D79C55 /* ProfileController.swift in Sources */,
 				476CC81C1CAC542C00CBA0E3 /* NowPlayingNode.swift in Sources */,

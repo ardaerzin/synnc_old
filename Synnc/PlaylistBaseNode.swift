@@ -48,7 +48,8 @@ class PlaylistStreamButtonHolder : ASDisplayNode {
     
     override init() {
         super.init()
-        self.backgroundColor = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
+        self.backgroundColor = .whiteColor()
+//            UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
         
         streamButton = ButtonNode()
         streamButton.borderColor = UIColor.SynncColor().CGColor
@@ -65,15 +66,15 @@ class PlaylistStreamButtonHolder : ASDisplayNode {
         streamButton.setAttributedTitle(title, forState: .Normal)
         self.addSubnode(streamButton)
         
-        let layer = CAGradientLayer(layer: self.layer)
-        layer.colors = [UIColor.whiteColor().colorWithAlphaComponent(0).CGColor, UIColor.whiteColor().colorWithAlphaComponent(1).CGColor]
-        layer.startPoint = CGPointMake(0, 0)
-        layer.endPoint = CGPointMake(0, 0.25)
-        self.gradientLayer = layer
+//        let layer = CAGradientLayer(layer: self.layer)
+//        layer.colors = [UIColor.blackColor().colorWithAlphaComponent(0).CGColor, UIColor.blackColor().colorWithAlphaComponent(1).CGColor]
+//        layer.startPoint = CGPointMake(0, 0)
+//        layer.endPoint = CGPointMake(0, 0.25)
+//        self.gradientLayer = layer
     }
     override func layoutDidFinish() {
         super.layoutDidFinish()
-        gradientLayer.frame = self.view.bounds
+        gradientLayer?.frame = self.view.bounds
         self.layer.mask = gradientLayer
     }
     

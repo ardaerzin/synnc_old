@@ -87,9 +87,11 @@ class HomeController : PagerBaseController {
             self.playlistsController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
             self.feedController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
             
-//                ?.frame.size.height = hasActiveStream ? 75 : 0
-            
             window.lowerPercentage = lowerLimit
+            
+            if window.position == WCLWindowPosition.LowerLinked {
+                window.hide(true)
+            }
         }
     }
 
@@ -142,5 +144,16 @@ extension HomeController : WCLWindowDelegate {
         }
         
         
+    }
+}
+
+extension HomeController {
+    override func pagerHeaderDidTapOnHeeader(header: PagerHeaderNode) {
+        super.pagerHeaderDidTapOnHeeader(header)
+        if let w = self.screenNode?.view.wclWindow, let pos = w.position {
+            if pos == .LowerLinked {
+                w.display(true)
+            }
+        }
     }
 }

@@ -179,13 +179,15 @@ class SourceHolder : ASDisplayNode {
         for source in sources {
             let button = SourceButton(source: SynncExternalSource(rawValue: source)!)
             
-            if let type = WCLUserLoginType(rawValue: source.lowercaseString), let user = Synnc.sharedInstance.user, let ext = user.userExtension(type) {
+            if let src = SynncExternalSource(rawValue: source), let type = WCLUserLoginType(rawValue: source.lowercaseString), let user = Synnc.sharedInstance.user, let ext = user.userExtension(type), let ind = SynncExternalSource.premiumSources.indexOf(src) {
                 
                 if let status = ext.loginStatus where status {
                     button.selected = true
                 } else {
                     button.selected = false
                 }
+            } else {
+                button.selected = true
             }
             
             button.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(25, 25))

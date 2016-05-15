@@ -12,6 +12,7 @@ import WCLUtilities
 import SwiftyJSON
 import WCLNotificationManager
 import Dollar
+import Async
 
 class StreamManager : NSObject, StreamDelegate {
     
@@ -170,25 +171,21 @@ extension StreamManager {
         
         if self.activeStream == nil {
             
-            let info : WCLNotificationInfo = WCLNotificationInfo(defaultActionName: "", body: "Your active stream has just ended", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-            }
+            WCLNotification(body: ("Your active stream ended", "ended"), image: "notification-warning", showLocalNotification: true).addToQueue()
             
         } else {
             
             self.activeStream = nil
-            
-            var info : WCLNotificationInfo!
+            var notificationMsg : (String, String)?
             
             if stream == StreamManager.sharedInstance.userStream {
-                info = WCLNotificationInfo(defaultActionName: "", body: "You have reached the end of your stream", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+                notificationMsg = ("You have reached the end of your stream", "reached the end")
             } else {
-                info = WCLNotificationInfo(defaultActionName: "", body: "The stream you'd been listening to has just ended", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
+                notificationMsg = ("The stream you'd been listening to has just ended", "just ended")
             }
             
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            if let msg = notificationMsg {
+                WCLNotification(body: msg, showLocalNotification: true, image: "notification-warning").addToQueue()
             }
         }
         

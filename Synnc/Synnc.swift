@@ -25,6 +25,7 @@ import Crashlytics
 import SwiftyJSON
 import WCLUIKit
 import SafariServices
+import Async
 
 #if DEBUG
 //let socketURLString = "https://digital-reform.codio.io:9500"
@@ -142,7 +143,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         topPopupManager = WCLPopupManager()
         
-//        
         let lagFreeField: UITextField = UITextField()
         self.window?.addSubview(lagFreeField)
         lagFreeField.becomeFirstResponder()
@@ -204,7 +204,6 @@ class Synnc : UIResponder, UIApplicationDelegate {
     func performNTPCheck(){
         ntpShit = NSDate()
         NHNetworkClock.sharedNetworkClock().syncWithComplete(nil)
-//        NHNetworkClock.sharedNetworkClock()
     }
     
     func syncCompleteNotification(notification : NSNotification){
@@ -291,14 +290,11 @@ class Synnc : UIResponder, UIApplicationDelegate {
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         
-        print("ANANEN", url)
         if SPTAuth.defaultInstance().canHandleURL(url) {
             SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: { (err, session) in
                 if let error = err {
-                    print("error with spotify:", error.description)
                     return
                 }
-                print("!*!*!*!*", session.properties())
                 if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {
                     u.sptAuthenticationStatus(session, error: err)
                 }
@@ -345,9 +341,6 @@ extension Synnc {
         if self.user._id != nil {
             socket!.emit("user:update", [ "id" : self.user._id, "lat" : 0, "lon" : 0])
             if self.user.generatedUsername {
-//                let x = FirstLoginPopupVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-//                x.node.yesButton.addTarget(self, action: Selector("goToProfile:"), forControlEvents: ASControlNodeEvent.TouchUpInside)
-//                WCLPopupManager.sharedInstance.newPopup(x)
             }
             StreamManager.sharedInstance.updateUserFeed()
             SynncPlaylist.socketSync(self.socket, inStack: WildDataManager.sharedInstance().coreDataStack, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
@@ -371,11 +364,10 @@ extension Synnc : WCLLocationManagerDelegate {
             return
         }
     }
-    
-    func locationAuthController() -> SynncLocationAuthVC {
-        let x = SynncLocationAuthVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
-        return x
-    }
+//    func locationAuthController() -> SynncLocationAuthVC {
+//        let x = SynncLocationAuthVC(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
+//        return x
+//    }
 }
 
 var SCEngine : WildSoundCloud = {

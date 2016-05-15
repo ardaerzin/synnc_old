@@ -22,7 +22,7 @@ class IndicatorHolder : ASDisplayNode {
         
         indicator = UIActivityIndicatorView(frame: CGRectMake(0,0,30,30))
         indicator.backgroundColor = UIColor.clearColor()
-        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
         
         indicator.startAnimating()
         
@@ -448,9 +448,9 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         clearButton.alpha = 0
         
         moreTracksIndicatorHolder = IndicatorHolder()
-        moreTracksIndicatorHolder.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.5)
+//        moreTracksIndicatorHolder.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.5)
         moreArtistsIndicatorHolder = IndicatorHolder()
-        moreArtistsIndicatorHolder.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.5)
+//        moreArtistsIndicatorHolder.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(0.5)
         
         self.addSubnode(self.seperator1)
         self.addSubnode(self.artistsCollection)
@@ -512,7 +512,6 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         
         self.moreTracksIndicatorHolder.position.y = self.calculatedSize.height + (self.moreTracksIndicatorHolder.calculatedSize.height/2)
         moreArtistsIndicatorHolder.position.x = self.calculatedSize.width + moreArtistsIndicatorHolder.calculatedSize.width / 2
-        print("POSITION", self.moreTracksIndicatorHolder.position)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {

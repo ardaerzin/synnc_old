@@ -19,6 +19,7 @@ import Cloudinary
 import DKImagePickerController
 import CoreGraphics
 import QuartzCore
+import Async
 
 class PlaylistInfoController : ASViewController, PagerSubcontroller {
     
@@ -99,8 +100,6 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         if playlist != SharedPlaylistDataSource.findUserFavoritesPlaylist() {
             screenNode.infoNode.imageNode.addTarget(self, action: #selector(PlaylistInfoController.displayImagePicker(_:)), forControlEvents: .TouchUpInside)
         }
-        
-//        self._leftHeaderIcon.addTarget(self, action: #selector(PlaylistInfoController.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
     }
     
     override func viewDidLoad() {
@@ -114,17 +113,6 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     
     func checkActiveStream(notification : NSNotification) {
         if let _ = notification.object as? Stream {
-//            if playlist == stream.playlist {
-//                self.screenNode.infoNode.imageNode.userInteractionEnabled = false
-//                self.screenNode.infoNode.titleNode.userInteractionEnabled = false
-//                self.screenNode.infoNode.genreHolder.userInteractionEnabled = false
-//                self.screenNode.infoNode.locationHolder.userInteractionEnabled = false
-//            } else {
-//                self.screenNode.infoNode.imageNode.userInteractionEnabled = true
-//                self.screenNode.infoNode.titleNode.userInteractionEnabled = true
-//                self.screenNode.infoNode.genreHolder.userInteractionEnabled = true
-//                self.screenNode.infoNode.locationHolder.userInteractionEnabled = true
-//            }
         }
     }
     
@@ -314,9 +302,6 @@ extension PlaylistInfoController : PlaylistInfoDelegate {
             playlist.cover_id = ""
             playlist.coverImage = self.editedImage
             
-//            self.editedImage.CGImage
-//            CGImageSourceCreate
-            
             let img = coverImage
             
             Synnc.sharedInstance.imageUploader = CLUploader(_cloudinary, delegate: nil)
@@ -381,24 +366,36 @@ extension PlaylistInfoController {
         switch managerStatus {
         case -1:
             
-            let s = Synnc.sharedInstance
-            let controller = s.locationAuthController()
-            controller.callback = {
-                success in
-//                if !sender.selected {
+            WCLNotification(body: ("You need to allow Synnc to use your location.", "allow"), image: "notification-location") {
+                notif in
+                
+                AnalyticsEvent.new(category: "LocationPopup", action: "buttonTap", label: "request", value: nil)
+                WCLLocationManager.sharedInstance().requestAuth(false) {
+                    status in
+                    
                     self.getAddress()
-//                } else {
-//                    self.backgroundNode.updateLocation(status: false)
-//                }
-            }
-            s.locationManager.requestLocationPermission(controller)
+                }
+                
+            }.addToQueue()
+            
+//            let s = Synnc.sharedInstance
+//            let controller = s.locationAuthController()
+//            controller.callback = {
+//                success in
+//                
+//                self.getAddress()
+//            }
+//            s.locationManager.requestLocationPermission(controller)
             
             break
         case 0:
             
-            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Please go to iOS settings and enable location support for Synnc.", title: "Location Error", sound: nil, fireDate: nil, showLocalNotification: false, object: nil, id: nil))
-            }
+            
+            WCLNotification(body: ("Please go to iOS settings and enable location access for Synnc.", "location access"), image: "notification-location") {
+                    notif in
+                
+                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                }.addToQueue()
             return
             
         case 1 :
@@ -438,9 +435,6 @@ extension PlaylistInfoController : GenrePickerDelegate {
     func genrePicker(picker: GenrePicker, dismissedWithGenres genres: [Genre]) {
         
         AnalyticsEvent.new(category: "PlaylistAction", action: "infoEdit", label: "genre", value: nil)
-        
-        print("selected genres:", genres)
-        
         self.playlist!.genres = Set(genres)
         saveChanges()
     }

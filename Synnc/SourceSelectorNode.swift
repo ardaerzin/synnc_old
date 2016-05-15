@@ -113,40 +113,23 @@ class SourceSelectionNode : ASDisplayNode {
         let canSelect = self.delegate?.sourceSelector(canSelectSource: sender.source)
         if canSelect == nil || !canSelect! {
             if sender.source == .Spotify {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to Spotify first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                        notif in
-                        
-                        Synnc.sharedInstance.user.socialLogin(.Spotify)
-                    }
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                
+                WCLNotification(body: ("You need to login to Spotify first.", "Spotify"), image: "notification-access") {
+                    notif in
                     
-                    return
-                }
+                    Synnc.sharedInstance.user.socialLogin(.Spotify)
+                }.addToQueue()
             } else if sender.source == .AppleMusic {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to Apple Music first.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                        notif in
-                        
-                        Synnc.sharedInstance.user.socialLogin(.AppleMusic)
-                    }
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+                WCLNotification(body: ("You need to login to Apple Music first.", "Apple Music"), image: "notification-access") {
+                    notif in
                     
-                    return
-                }
+                    Synnc.sharedInstance.user.socialLogin(.AppleMusic)
+                }.addToQueue()
             }
             
             
             return
         }
-        
-//        if sender.source == .Spotify {
-//            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-//                WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "This source is not available yet", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-//                
-//                return
-//            }
-//        }
         
         sender.selected = true
         

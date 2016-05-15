@@ -14,6 +14,7 @@ import AsyncDisplayKit
 import pop
 import WCLPopupManager
 import WCLNotificationManager
+import Async
 
 extension PlaylistTracklistController : TrackSearchControllerDelegate {
     func trackSearcher(controller: TrackSearchController, didSelect track: SynncTrack) {
@@ -49,9 +50,7 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         if !canDisplayTrackSearch() {
             
             Async.main {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                }
+                WCLNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
             }
             return
         }
@@ -82,11 +81,6 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     }
     
     lazy var _leftHeaderIcon : ASControlNode! = {
-//        let x = ButtonNode()
-//        x.setImage(UIImage(named: "edit-icon"), forState: .Normal)
-//        x.setImage(UIImage(named: "edit-icon-selected"), forState: .Selected)
-//        x.addTarget(self, action: #selector(PlaylistTracklistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
-//        return x
         return nil
     }()
     var leftHeaderIcon : ASControlNode! {
@@ -95,11 +89,6 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         }
     }
     lazy var _rightHeaderIcon : ASControlNode! = {
-//        let x = ASImageNode()
-//        x.image = UIImage(named: "newPlaylist")
-//        x.contentMode = .Center
-//        x.addTarget(self, action: #selector(PlaylistTracklistController.displayTrackSearch(_:)), forControlEvents: .TouchUpInside)
-//        return x
         return nil
     }()
     var rightHeaderIcon : ASControlNode! {
@@ -147,24 +136,6 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         if let plist = self.playlist, let stream = notification.object as? Stream where stream.playlist == plist && self.editMode {
             self.editMode = false
         }
-//        if let window = self.screenNode.view.wclWindow {
-//            
-//            var lowerLimit : CGFloat = 0
-//            
-//            let hasActiveStream = (notification.object as? Stream) != nil
-//            if hasActiveStream {
-//                lowerLimit = UIScreen.mainScreen().bounds.height - 60 - 70
-//            } else {
-//                lowerLimit = UIScreen.mainScreen().bounds.height - 60
-//            }
-//            
-//            self.playlistsController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
-//            self.feedController.screenNode.tableNode.view.tableFooterView = UIView(frame: CGRectMake(0,0,1, hasActiveStream ? 75 : 0))
-//            
-//            //                ?.frame.size.height = hasActiveStream ? 75 : 0
-//            
-//            window.lowerPercentage = lowerLimit
-//        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -250,21 +221,6 @@ extension PlaylistTracklistController : ASTableViewDataSource {
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         self.screenNode.scrollPosition = scrollView.contentOffset.y        
-//        if let s = self.screenNode.tracksTable.view {
-//            print("DID SCROLL", s.contentOffset.y, self.screenNode.calculatedSize.width - 100)
-//            
-//            if s.contentOffset.y  < -(self.screenNode.calculatedSize.width - 100) {
-//                s.programaticScrollEnabled = false
-//                s.panGestureRecognizer.enabled = false
-//                s.programaticScrollEnabled = true
-//                
-//                let animation = POPBasicAnimation(propertyNamed: kPOPScrollViewContentOffset)
-//                s.pop_addAnimation(animation, forKey: "offsetAnim")
-//                animation.toValue = NSValue(CGPoint: CGPoint(x: 0, y: 0))
-//            } else {
-//                s.panGestureRecognizer.enabled = true
-//            }
-//        }
     }
 }
 

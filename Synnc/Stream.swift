@@ -13,6 +13,7 @@ import WCLUtilities
 import CoreData
 import WCLDataManager
 import SwiftyJSON
+import Async
 
 @objc protocol StreamDelegate {
     optional func updatedStreamLocally(stream: Stream, changedKeys keys: [String]?)
@@ -68,10 +69,6 @@ class Stream : Serializable {
             return a
         }
     }
-    
-//    func create(info: [NSObject : AnyObject]) {
-//        
-//    }
     
     class func create(playlist : SynncPlaylist, callback : ((status : Bool) -> Void)?) -> Stream {
         
@@ -315,7 +312,7 @@ extension Stream {
                     
                     keys.append("user")
                 }
-//
+
                 Async.main {
                     self.delegate?.updatedStreamFromServer?(self, changedKeys: keys)
                     callback?(stream: self)

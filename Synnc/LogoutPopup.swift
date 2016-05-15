@@ -13,6 +13,7 @@ import WCLUserManager
 import SwiftyJSON
 import WCLNotificationManager
 import WCLUtilities
+import Async
 
 class LogoutPopup : WCLPopupViewController {
     var node : LogoutPopupNode!

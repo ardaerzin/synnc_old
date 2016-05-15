@@ -13,6 +13,7 @@ import SwiftyJSON
 import WCLNotificationManager
 import WCLPopupManager
 import WCLUIKit
+import Async
 
 class SpotifyLVC : WCLPopupViewController {
     var loginController : SPTAuthViewController!
@@ -104,7 +105,7 @@ class WildSpotifyUser : WCLUserExtension {
         self.loginWithSpotify()
     }
     override func socialLogout() {
-        self.logoutSoundcloudSession()
+        self.logoutSpotifySession()
     }
     override func loadOldSession() {
         self.loadSpotifySession()
@@ -132,7 +133,6 @@ class WildSpotifyUser : WCLUserExtension {
             if session != nil && session!.isValid() {
                 self.accessToken = session.accessToken
                 self.getUserSpotifyProfile(nil)
-//                self.loginStatus = true
             } else {
                 self.accessToken = nil
                 self.loginStatus = false
@@ -142,68 +142,22 @@ class WildSpotifyUser : WCLUserExtension {
     
     //Mark: Login
     private func loginWithSpotify(){
-        print("login url:", SPTAuth.defaultInstance().loginURL)
-//        Async.main {
-//            
-//            if self.loginController == nil {
-//                if let url = SPTAuth.defaultInstance().loginURL {
-//                    print("login url:", url)
-//                    var str = url.absoluteString
-//                    if str.rangeOfString("spotify-action://") != nil {
-//                        str = str.stringByReplacingOccurrencesOfString("spotify-action://", withString: "https://api.spotify.com/")
-//                    }
-//                    
-//                    if let url2 = NSURL(string: str) {
-//                        self.loginController = SpotifyLoginViewController(url: url2)
-//                    }
-//                    
-//                }
-//            }
-//            
-////            UIApplication.sharedApplication().windows.first
-//            
-////            WCLPopupManager.sharedInstance.newPopup(self.loginController)
-//            UIApplication.sharedApplication().openURL(SPTAuth.defaultInstance().loginURL)
-//        }
         
         let loginViewController = SPTAuthViewController.authenticationViewController()
         loginViewController.delegate = self
         loginViewController.modalPresentationStyle = .OverFullScreen
         
-        //root view controller for presenting loginViewController
-//        var controller : UIViewController!
-//        if let vc = WCLWindowManager.sharedInstance.windows.last?.rootViewController {
-//            controller = vc
-//        } else if let rootViewController = UIApplication.sharedApplication().windows.first?.rootViewController {
-//            controller = rootViewController
-//        }
-        
         let x = SpotifyLVC(controller: loginViewController)
-//        x.presentViewController(loginViewController, animated: true, completion: nil)
-//        x.addChildViewController(loginViewController)
-//        
-//        x.view.addSubview(loginViewController.view)
-//        loginViewController.didMoveToParentViewController(x)
         
         Synnc.sharedInstance.topPopupManager.newPopup(x)
         loginPopup = x
-        
-        //present loginViewController
-//        if let c = controller {
-//            let x = c.presentedViewController
-//            if x == nil {
-//                c.presentViewController(loginViewController, animated: true, completion: nil)
-//            } else {
-//                x!.presentViewController(loginViewController, animated: true, completion: nil)
-//            }
-//        }
     }
     
     //Mark: Logout
     /*
     Delete Soundcloud Session Cookies
     */
-    private func logoutSoundcloudSession(){
+    private func logoutSpotifySession(){
         SPTAuth.defaultInstance().session = nil
         self.accessToken = nil
         self.loginStatus = false
@@ -227,6 +181,13 @@ class WildSpotifyUser : WCLUserExtension {
                     self.loginStatus = true
                 } else {
                     self.loginStatus = false
+                    Async.main {
+                        WCLNotification(body: ("You need a Spotify Premium Account to use Synnc.", "Premium Account"), image: "notification-access") {
+                            notif in
+                            
+                            UIApplication.sharedApplication().openURL(NSURL(string: "https://www.spotify.com/premium")!)
+                        }.addToQueue()
+                    }
                 }
                 
                 callback?(status: self.loginStatus)
@@ -240,7 +201,6 @@ class WildSpotifyUser : WCLUserExtension {
     
     internal override func loginStatusChanged(){
         if let status = loginStatus where status {
-//            self.getUserSpotifyProfile()
         } else {
             self.profileInfo = nil
         }
@@ -253,22 +213,7 @@ class WildSpotifyUser : WCLUserExtension {
             self.loginStatus = false
         } else if let sess = session {
             self.accessToken = sess.accessToken
-            self.getUserSpotifyProfile({
-                status in
-                
-                Async.main {
-                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                        if status == false {
-                            let info = WCLNotificationInfo(defaultActionName: "", body: "You need a Spotify Premium Account to use Synnc.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                                notif in
-                                UIApplication.sharedApplication().openURL(NSURL(string: "https://www.spotify.com/premium")!)
-                            }
-                            WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-                        }
-                    }
-                }
-            })
-//            self.loginStatus = true
+            self.getUserSpotifyProfile(nil)
         }
     }
 }
@@ -286,9 +231,6 @@ extension WildSpotifyUser : SPTAuthViewDelegate {
         if let p = loginPopup {
             p.closeView(true)
         }
-//        self.getUserSpotifyProfile()
-//        self.loginStatus = true
-        
     }
     func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {
         self.loginStatus = false

@@ -58,6 +58,8 @@ class PagerBaseController : ASViewController {
         screenNode.headerNode.rightButtonHolder.items = rightItems
         screenNode.headerNode.titleHolder.items = titleItems
         screenNode.headerNode.pageControl.styles = pagerStyles
+        
+        screenNode.headerNode.delegate = self
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -69,6 +71,15 @@ class PagerBaseController : ASViewController {
     }
     
     func updatedCurrentIndex(index : Int) {
+    }
+}
+
+extension PagerBaseController : PagerHeaderDelegate {
+    func pagerHeaderDidTapOnHeeader(header: PagerHeaderNode) {
+        
+    }
+    func pagerHeader(header: PagerHeaderNode, didSelectPageControl direction: Int) {
+        
     }
 }
 
