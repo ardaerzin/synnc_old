@@ -11,23 +11,24 @@ import WCLUIKit
 import AsyncDisplayKit
 import Cloudinary
 import pop
+import Async
 
 class GenreCellNode : ASCellNode {
     
     var cellStateAnimationProgress : CGFloat = 0 {
         didSet {
             
+            Async.main {
+                let r = POPTransition(self.cellStateAnimationProgress, startValue: 176, endValue: 97)
+                let g = POPTransition(self.cellStateAnimationProgress, startValue: 219, endValue: 97)
+                let b = POPTransition(self.cellStateAnimationProgress, startValue: 223, endValue: 97)
+                self.titleAttributes[NSForegroundColorAttributeName] = UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)
+
+                self.genreTitleNode.attributedString = NSAttributedString(string: self.genreTitleNode.attributedString!.string, attributes: self.titleAttributes)
             
-            let r = POPTransition(cellStateAnimationProgress, startValue: 176, endValue: 97)
-            let g = POPTransition(cellStateAnimationProgress, startValue: 219, endValue: 97)
-            let b = POPTransition(cellStateAnimationProgress, startValue: 223, endValue: 97)
-            self.titleAttributes[NSForegroundColorAttributeName] = UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)
-//
-            self.genreTitleNode.attributedString = NSAttributedString(string: self.genreTitleNode.attributedString!.string, attributes: self.titleAttributes)
-            
-            let s = POPTransition(cellStateAnimationProgress, startValue: 1, endValue: 1.2)
-            POPLayerSetScaleXY(genreTitleNode.layer, CGPointMake(s,s))
-//            self.backgroundColor = UIColor.SynncColor().colorWithAlphaComponent(cellStateAnimationProgress)
+                let s = POPTransition(self.cellStateAnimationProgress, startValue: 1, endValue: 1.2)
+                POPLayerSetScaleXY(self.genreTitleNode.layer, CGPointMake(s,s))
+            }
         }
     }
     var cellStateAnimatableProperty : POPAnimatableProperty {
@@ -50,9 +51,13 @@ class GenreCellNode : ASCellNode {
             return x
         }
     }
+    
     override func willEnterHierarchy() {
         super.willEnterHierarchy()
-        cellStateAnimationProgress = self.selected ? 1 : 0
+        self.pop_removeAllAnimations()
+        
+        let a = self.cellStateAnimationProgress
+        self.cellStateAnimationProgress = a
     }
     var cellStateAnimation : POPSpringAnimation {
         get {
@@ -72,9 +77,19 @@ class GenreCellNode : ASCellNode {
             }
         }
     }
+    
+    var state : Bool = false {
+        didSet {
+            if self.interfaceState != ASInterfaceState.InHierarchy {
+                self.cellStateAnimationProgress = state ? 1 : 0
+            } else {
+                self.cellStateAnimation.toValue = state ? 1 : 0
+            }
+        }
+    }
     override var selected : Bool {
         didSet {
-            self.cellStateAnimation.toValue = selected ? 1 : 0
+            self.state = selected
         }
     }
     var genreTitleNode : ASTextNode!
@@ -94,12 +109,6 @@ class GenreCellNode : ASCellNode {
     }
     
     func configure(genre: Genre) {
-//        let paragraphAttributes = NSMutableParagraphStyle()
-//        paragraphAttributes.alignment = .Center
-//
-//        self.titleAttributes[NSParagraphStyleAttributeName] = paragraphAttributes
-//        self.titleAttributes[NSForegroundColorAttributeName] = UIColor.SynncColor()
-        
         genreTitleNode.attributedString = NSAttributedString(string: genre.name, attributes: self.titleAttributes)
         self.setNeedsLayout()
     }

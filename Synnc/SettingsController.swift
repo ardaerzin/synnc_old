@@ -15,6 +15,7 @@ import WCLNotificationManager
 import WCLPopupManager
 import SwiftyJSON
 import WCLUtilities
+import Async
 
 class SettingsInputAccessoryNode : ASDisplayNode {
     var yesButton : ButtonNode!
@@ -204,33 +205,12 @@ extension SettingsController {
         } else if sender.source == .AppleMusic {
             toggleAppleMusicLogin(sender)
         }
-        
-//        if sender.source == .Soundcloud || sender.source == .Spotify {
-//            if sender.source == .Soundcloud {
-//                toggleSoundcloudLogin(sender)
-//            } else if sender.source == .Spotify {
-//                toggleSpotifyLogin(sender)
-//            }
-//        } else {
-//            if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-//                
-//                let info = WCLNotificationInfo(defaultActionName: "", body: "\(sender.source.rawValue) Login is not available yet.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil)
-//                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-//            }
-//        }
     }
     
     func toggleAppleMusicLogin(sender : SourceButton) {
         if !sender.selected {
-//            if let u = Synnc.sharedInstance.user.soundcloud {
-//                let rect = CGRectInset(UIScreen.mainScreen().bounds, 25, 100)
-//                u.setLoginViewController(SynncSCLoginController(size: rect.size))
-//            }
-//            Synnc.sharedInstance.user.socialLogin(.Soundcloud)
-            print("login now")
             Synnc.sharedInstance.user.socialLogin(.AppleMusic)
         } else {
-            print("logout now")
             Synnc.sharedInstance.user.socialLogout(.AppleMusic)
         }
     }
@@ -249,10 +229,6 @@ extension SettingsController {
     
     func toggleSpotifyLogin(sender : SourceButton) {
         if !sender.selected {
-//            if let u = Synnc.sharedInstance.user.soundcloud {
-//                let rect = CGRectInset(UIScreen.mainScreen().bounds, 25, 100)
-//                u.setLoginViewController(SynncSCLoginController(size: rect.size))
-//            }
             Synnc.sharedInstance.user.socialLogin(.Spotify)
         } else {
             Synnc.sharedInstance.user.socialLogout(.Spotify)
@@ -287,9 +263,7 @@ extension SettingsController {
                 (dataArr) in
                 if let status = dataArr.first, let stat = JSON(status).bool where stat {
                     Async.main {
-                        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "We're on it! Thank you very much for your feedback.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                        }
+                        WCLNotification(body: ("We're on it! Thank you for your feedback.", "Thank you"), image: "notification-error").addToQueue()
                     }
                 }
             })

@@ -25,7 +25,7 @@ extension SynncTrack {
         self.source = SynncExternalSource.Spotify.rawValue
         self.name = track.name
         self.song_id = track.identifier
-        self.duration = track.duration
+        self.duration = track.duration * 1000
         
         if let uri = track.uri {
             self.uri = uri.absoluteString

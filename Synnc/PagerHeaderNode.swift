@@ -10,8 +10,14 @@ import Foundation
 import AsyncDisplayKit
 import pop
 
+protocol PagerHeaderDelegate {
+    func pagerHeaderDidTapOnHeeader(header : PagerHeaderNode)
+    func pagerHeader(header: PagerHeaderNode, didSelectPageControl direction: Int)
+}
+
 class PagerHeaderNode : ASDisplayNode {
     
+    var delegate : PagerHeaderDelegate?
     var leftButtonHolder : PagerHeaderIconNode!
     var rightButtonHolder : PagerHeaderIconNode!
     var titleHolder : PagerHeaderTitleNode!
@@ -28,7 +34,6 @@ class PagerHeaderNode : ASDisplayNode {
         self.addSubnode(pageControl)
         
         titleHolder = PagerHeaderTitleNode()
-        titleHolder.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 20))
         self.addSubnode(titleHolder)
         
         leftButtonHolder = PagerHeaderIconNode()
@@ -40,8 +45,26 @@ class PagerHeaderNode : ASDisplayNode {
         self.addSubnode(rightButtonHolder)
     }
     
+    func didTap(sender : UITapGestureRecognizer) {
+        self.delegate?.pagerHeaderDidTapOnHeeader(self)
+    }
+    
+//    override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
+//        let x = super.hitTest(point, withEvent: event)
+//        
+//        if x == self.view {
+//            return nil
+//        }
+//        
+//        return x
+//    }
+    
     override func didLoad() {
         super.didLoad()
+        
+        let x = UITapGestureRecognizer(target: self, action: #selector(PagerHeaderNode.didTap(_:)))
+        self.view.addGestureRecognizer(x)
+        
 //        self.view.roundCorners([UIRectCorner.TopLeft,UIRectCorner.TopRight], radius: 15)
     }
     

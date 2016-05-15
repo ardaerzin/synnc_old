@@ -82,13 +82,6 @@ extension StreamPlayerManager {
 //            switchPlayers(nil)
         }
         
-        if let p = self.activePlayer {
-            print("Active player is", p)
-        } else {
-            print("Active player is nil")
-        }
-//        print("active player", self.activePlayer)
-        
         if player === self.activePlayer {
             startAppleMusicTimer()
             self.play()

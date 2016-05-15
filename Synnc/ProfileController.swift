@@ -309,9 +309,7 @@ extension ProfileController {
                 (successResult, errorString, code, context)  in
                 
                 if let _ = errorString {
-                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Please try to save your image once again", title: "Couldn't Upload Image", sound: nil, fireDate: nil, showLocalNotification: false, object: nil, id: nil))
-                    }
+                    WCLNotification(body: ("Please try to upload your image once again", "upload"), image: "notification-error").addToQueue()
                 } else {
                     if let publicId = successResult["public_id"] as? String, let v = successResult["version"] as? NSNumber, let format =  successResult["format"] as? String{
                         
@@ -333,9 +331,7 @@ extension ProfileController {
                 if let status = dataArr.first as? Bool where status {
                     Synnc.sharedInstance.socket!.emit("user:update", [ "id" : Synnc.sharedInstance.user._id, "username" : newUsername])
                 } else {
-                    if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Can't set this username. Please type another one.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                    }
+                    WCLNotification(body: ("Can't set this username. Please try another one.", "another"), image: "notification-error").addToQueue()
                     
                     self.screenNode.profile.profileCard.usernameNode.attributedText = NSAttributedString(string: Synnc.sharedInstance.user.username, attributes: self.screenNode.profile.profileCard.usernameNode.typingAttributes)
                 }

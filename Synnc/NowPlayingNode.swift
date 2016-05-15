@@ -198,7 +198,7 @@ class NowPlayingNode : ASDisplayNode {
         self.shadowOffset = CGSizeMake(0, -1)
         self.shadowRadius = 2
         
-        self.backgroundColor = UIColor(red: 236/255, green: 236/255, blue: 236/255, alpha: 1)
+        self.backgroundColor = UIColor.whiteColor()
     }
     
     func configure(track : SynncTrack) {

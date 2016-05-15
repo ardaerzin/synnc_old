@@ -12,6 +12,7 @@ import WCLUIKit
 import WCLUtilities
 import AsyncDisplayKit
 import pop
+import Async
 
 class StreamsFeedController : ASViewController, PagerSubcontroller {
     

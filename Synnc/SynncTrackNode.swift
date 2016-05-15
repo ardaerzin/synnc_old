@@ -11,6 +11,7 @@ import WCLUIKit
 import AsyncDisplayKit
 import pop
 import WCLUtilities
+import Async
 
 enum TrackCellState {
     case Add
@@ -68,12 +69,6 @@ class TrackStatusButton : ASDisplayNode {
         didSet {
             let line1Rotation = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
             let line2Rotation = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
-            
-//            let redT = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
-//            let greenT = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
-//            let blueT = POPTransition(buttonStatusAnimationProgress, startValue: 0, endValue: CGFloat((M_PI_2)/2))
-//            line1.backgroundColor = UIColor(red: redT, green: greenT, blue: blueT, alpha: 1)
-//            line1.backgroundColor = UIColor(red: redT, green: greenT, blue: blueT, alpha: 1)
             
             POPLayerSetRotation(line1.layer, line1Rotation)
             POPLayerSetRotation(line2.layer, line2Rotation)
@@ -135,19 +130,11 @@ class ImageHolder : ASDisplayNode {
         dummy = ASDisplayNode()
         dummy.layerBacked = true
         self.addSubnode(dummy)
-//        imageNode.alignSelf = .Stretch
-        
-//        imageNode.flexBasis = ASRelativeDimensionMake(.Points, 70)
-//        imageNode.alignSelf = .Stretch
-//        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimensionMake(.Percent, 1), ASRelativeDimensionMake(.Points, 50))
-//            ASRelativeSizeMake(ASRelativeDimensionMake(.Percent, 1), ASRelativeDimensionMake(.Percent, 1))
         self.addSubnode(imageNode)
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [dummy])
-//            ASStaticLayoutSpec(children: [imageNode])
-        
         return ASOverlayLayoutSpec(child: a, overlay: imageNode)
     }
 }
@@ -187,11 +174,6 @@ class SynncTrackContentNode : ASDisplayNode {
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         infoNode.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - (70 + 2.5))
-        
-        //        iconNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Points, value: 14), ASRelativeDimension(type: .Points, value: 14))
-        //        let iconSpec = ASStaticLayoutSpec(children: [self.iconNode])
-        //        iconSpec.spacingAfter = 14
-        
         return ASStackLayoutSpec(direction: .Horizontal, spacing: 2.5, justifyContent: .Start, alignItems: .Center, children: [imageHolder, infoNode])
     }
 }
@@ -422,7 +404,6 @@ class TrackInfoNode : ASDisplayNode {
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [trackNameNode, bottomLine])
         a.flexBasis = ASRelativeDimension(type: .Points, value: width)
         
-//        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Start, alignItems: .Start, children: [trackNameNode, artistNameNode])
         let b = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: displayIcon ? [a, iconSpec] : [a])
         return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 10, 0, 0), child: b)
     }

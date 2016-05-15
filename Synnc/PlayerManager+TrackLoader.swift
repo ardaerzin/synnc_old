@@ -9,6 +9,7 @@
 import Foundation
 import WCLUtilities
 import MediaPlayer
+import Async
 
 extension Int {
     func isEven() -> Bool {
@@ -19,14 +20,12 @@ extension Int {
 extension StreamPlayerManager {
     
     typealias TrackPlayerInfo = (item : AnyObject?, index: Int, player: PlayerManagerPlayer)
-//    typealias TrackPlayerInfo = (item : AVPlayerItem?, index: Int, player: PlayerManagerPlayer)
     
     func assignTracksToPlayers(tracks : [SynncTrack], currentIndex : Int? = 0) -> [SynncTrack : TrackPlayerInfo] {
         
         var indexedData : [SynncTrack : TrackPlayerInfo] = [SynncTrack : TrackPlayerInfo]()
         var spotifyUris : [NSURL] = []
         var appleIds : [String] = []
-//        let x = MPMediaPlaylist()
         
         for (ind, track) in tracks.enumerate() {
             
@@ -36,7 +35,6 @@ extension StreamPlayerManager {
             
             var player : PlayerManagerPlayer!
             var item : AnyObject!
-//            var id : AnyObject!
             
             switch source {
             case .Soundcloud:
@@ -53,7 +51,6 @@ extension StreamPlayerManager {
                 player = .SpotifyPlayer
                 if let uriStr = track.uri where ind >= currentIndex {
                     if let uri = NSURL(string: uriStr) {
-                        print("Append:", uri)
                         item = uri
                         spotifyUris.append(uri)
                     }
@@ -63,8 +60,6 @@ extension StreamPlayerManager {
                 player = .AppleMusicPlayer
                 if let shit = track.song_id where ind >= currentIndex {
                     
-//                    item = track
-                
                     var uuid : String = track.name
                     if let artist = track.artists.first {
                         uuid += " / \(artist.name)"
@@ -73,14 +68,7 @@ extension StreamPlayerManager {
                     
                     item = uuid
                     
-                    print("!*!*!*!*!*!*", uuid)
-//                    uuid += track.releaseDate
-//                    let a1 = track.artists.first
                     appleIds.append(shit)
-//                    if #available(iOS 9.3, *) {
-//                    } else {
-//                        // Fallback on earlier versions
-//                    }
                 }
                 break
             default:

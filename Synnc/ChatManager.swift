@@ -14,6 +14,7 @@ import SwiftyJSON
 import AsyncDisplayKit
 import WCLUIKit
 import Dollar
+import Async
 
 protocol ChatRoomDataSourceDelegate {
     func nodeForItemAtIndexPath(indexPath : NSIndexPath) -> ASCellNode

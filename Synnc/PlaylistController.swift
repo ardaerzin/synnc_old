@@ -20,6 +20,7 @@ import Cloudinary
 import Shimmer
 import WCLNotificationManager
 import DKImagePickerController
+import Async
 
 class PlaylistController : PagerBaseController {
     
@@ -144,9 +145,7 @@ class PlaylistController : PagerBaseController {
         
         if !self.tracklistController.canDisplayTrackSearch() {
             Async.main {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                }
+                WCLNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
             }
             return
         }
@@ -187,14 +186,14 @@ class PlaylistController : PagerBaseController {
             (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton.setColor(UIColor(red: 154/255, green: 154/255, blue: 154/255, alpha: 1))
         }
         
-//        let b = (self.screenNode.headerNode as! PlaylistHeaderNode).tracksearchButton
-//        let y = b.position.x + b.calculatedSize.width / 2
-//        
-//        if position >= 1 - (y / self.screenNode.pager.calculatedSize.width) {
-//            b.setImage(UIImage(named: "submenu-white"), forState: .Normal)
-//        } else {
-//            b.setImage(UIImage(named: "submenu"), forState: .Normal)
-//        }
+        let b = (self.screenNode.headerNode as! PlaylistHeaderNode).tracksearchButton
+        let y = b.position.x
+        
+        if position >= 1 - (y / self.screenNode.pager.calculatedSize.width) {
+            b.setImage(UIImage(named: "newPlaylist"), forState: .Normal)
+        } else {
+            b.setImage(UIImage(named: "newPlaylist-dark"), forState: .Normal)
+        }
     }
 }
 
@@ -268,8 +267,8 @@ extension PlaylistController {
                 return
             }
             
-            var notificationMessage : String?
-            var notificationAction : ((notif: WCLNotificationInfo) -> Void)?
+            var notificationMessage : (String,String)?
+            var notificationAction : ((notif: WCLNotification) -> Void)?
             
             if let missingSources = dict["missingSources"] as? [String] where !missingSources.isEmpty {
                 if missingSources.count > 1 {
@@ -281,13 +280,13 @@ extension PlaylistController {
                         str += index == 0 ? "\(src)" : index == missingSources.count - 1 ? " and \(src)" : ", \(src)"
                     }
                     
-                    notificationMessage = "Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream."
+                    notificationMessage = ("Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream.","\(str.fixAppleMusic())")
                     notificationAction = nil
                     
                 } else if let src = missingSources.first {
                     
                     let str = src.fixAppleMusic()
-                    notificationMessage = "Please login to \(str) to listen to the Premium content in this stream."
+                    notificationMessage = ("Please login to \(str) to listen to the Premium content in this stream.", "\(str)")
                     notificationAction = {
                         notif in
                         if let type = WCLUserLoginType(rawValue: src.lowercaseString) {
@@ -301,7 +300,7 @@ extension PlaylistController {
                 
                 if missingInfo.indexOf("songs") != nil {
 
-                    notificationMessage = "First, add songs to your playlist"
+                    notificationMessage = ("First, add songs to your playlist", "add songs")
                     notificationAction = {
                         [weak self]
                         notif in
@@ -318,7 +317,7 @@ extension PlaylistController {
                 
                 if missingInfo.indexOf("name") != nil {
                     
-                    notificationMessage = "You need to name your playlist before sharing it with others."
+                    notificationMessage = ("You need to name your playlist before sharing it with others.", "name")
                     notificationAction = {
                         [weak self]
                         notif in
@@ -335,9 +334,8 @@ extension PlaylistController {
                 
             }
             
-            if let msg = notificationMessage, let action = notificationAction, let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                let info = WCLNotificationInfo(defaultActionName: "", body: msg, title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil, callback: action)
-                WCLNotificationManager.sharedInstance().newNotification(a, info: info)
+            if let msg = notificationMessage {
+                WCLNotification(body: msg, image: "notification-error", callback: notificationAction).addToQueue()
                 return
             }
         }
@@ -420,9 +418,7 @@ extension PlaylistController {
         if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
             
             Async.main {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't delete your active stream.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                }
+                WCLNotification(body: ("You can't delete your active stream.", "can't delete"), image: "notification-error").addToQueue()
             }
             
             return
@@ -460,9 +456,7 @@ extension PlaylistController {
         if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
             
             Async.main {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "You can't edit your active playlist.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                }
+                WCLNotification(body: ("You can't edit your active stream.", "can't edit"), image: "notification-error").addToQueue()
             }
             
             return

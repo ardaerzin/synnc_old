@@ -16,6 +16,7 @@ import CoreMedia
 import WCLNotificationManager
 import AsyncDisplayKit
 import WCLUserManager
+import Async
 
 enum PlayerManagerPlayer : String {
     case URLPlayerOdd = "Player1"
@@ -264,6 +265,8 @@ class StreamPlayerManager : NSObject {
                 }
             }
         }
+        
+        self.syncManager.timestamp = nil
         self.activePlayer = nil
         playerIndexedPlaylist = [SynncTrack : TrackPlayerInfo]()
         self.stream = nil
@@ -280,54 +283,54 @@ class StreamPlayerManager : NSObject {
         
         resetPlayer()
         
-            if let st = stream {
+        if let st = stream {
+            
+            
+            self.stream = st
+            self.playlist = st.playlist.songs
+            
+            Async.background {
                 
+                self.playerIndexedPlaylist = self.assignTracksToPlayers(st.playlist.songs, currentIndex: st.currentSongIndex as Int)
                 
-                self.stream = st
-                self.playlist = st.playlist.songs
-                
-                Async.background {
-                
-                    self.playerIndexedPlaylist = self.assignTracksToPlayers(st.playlist.songs, currentIndex: st.currentSongIndex as Int)
-                
-                    for (_,info) in self.playerIndexedPlaylist {
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.playerDidPlayToEnd(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: info.item)
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.itemPlaybackStalled(_:)), name: AVPlayerItemPlaybackStalledNotification, object: info.item)
-                        
-                        for key in self.observedItemKeys {
-                            if let i = info.item {
-                                i.addObserver(self, forKeyPath: key, options: [], context: nil)
-                            }
-                        }
-                    }
+                for (_,info) in self.playerIndexedPlaylist {
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.playerDidPlayToEnd(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: info.item)
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamPlayerManager.itemPlaybackStalled(_:)), name: AVPlayerItemPlaybackStalledNotification, object: info.item)
                     
-                    if userStream {
-                        
-                        let a = (st.currentSongIndex as Int)...((st.currentSongIndex as Int)+1)
-                        
-                        for i in a {
-                            self.loadSong(i)
-                            if i < self.playlist.count && i == st.currentSongIndex as Int {
-                                let track = self.playlist[i]
-                                if let info = self.playerIndexedPlaylist[track], let player = self.players[info.player] {
-                                    
-                                    self.activePlayer = player
-                                }
-                            }
-                        }
-//                        self.play()
-                    } else {
-                        Async.main {
-                            self.syncManager.timestamp = st.timestamp
-                            print("ACTIVE PLAYER", self.activePlayer)
-                        
-                            if let p = self.activePlayer as? MPMusicPlayerController {
-                                p.play()
-                            }
+                    for key in self.observedItemKeys {
+                        if let i = info.item {
+                            i.addObserver(self, forKeyPath: key, options: [], context: nil)
                         }
                     }
                 }
+                
+                if userStream {
+                    
+                    let a = (st.currentSongIndex as Int)...((st.currentSongIndex as Int)+1)
+                    
+                    for i in a {
+                        self.loadSong(i)
+                        if i < self.playlist.count && i == st.currentSongIndex as Int {
+                            let track = self.playlist[i]
+                            if let info = self.playerIndexedPlaylist[track], let player = self.players[info.player] {
+                                
+                                self.activePlayer = player
+                            }
+                        }
+                    }
+                } else {
+                    Async.main {
+                        self.syncManager.timestamp = st.timestamp
+//                        if let p = self.activePlayer as? MPMusicPlayerController {
+//                            p.play()
+//                        }
+                        self.play()
+                    }
+                }
             }
+        } else {
+            self.resetPlayer()
+        }
         
         
     }

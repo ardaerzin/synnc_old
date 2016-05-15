@@ -70,6 +70,8 @@ class StreamImageHeader : ASDisplayNode {
         self.backgroundColor = .clearColor()
         
         self.clipsToBounds = true
+        
+        self.userInteractionEnabled = false
     }
     
     override func fetchData() {

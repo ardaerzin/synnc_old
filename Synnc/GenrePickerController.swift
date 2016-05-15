@@ -15,6 +15,7 @@ import pop
 import WCLUserManager
 import WCLSoundCloudKit
 import WCLPopupManager
+import Async
 
 protocol GenrePickerDelegate {
     func genrePicker(picker: GenrePicker, dismissedWithGenres genres: [Genre])
@@ -74,13 +75,7 @@ extension GenrePicker : ASCollectionDataSource {
         let node = GenreCellNode()
         let item = genresDataSource.allItems[indexPath.row]
         node.configure(item)
-        
-        let genre = genresDataSource.allItems[indexPath.item]
-        if let _ = self.selectedGenres.indexOf(genre) {
-            node.selected = true
-        } else {
-            node.selected = false
-        }
+
         return node
     }
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -110,19 +105,23 @@ extension GenrePicker : ASCollectionDelegate {
     }
     func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
         let genre = genresDataSource.allItems[indexPath.item]
-        // dodowarningsoru isareti koydum 3 satir alta
-        if let _ = self.selectedGenres.indexOf(genre) {
-
-            Async.main {
-                self.node.genreCollection.view.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+        
+        
+        Async.main {
+        
+            var x : Bool
+            if let _ = self.selectedGenres.indexOf(genre) {
+                x = true
+                collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            } else {
+                x = false
+                collectionView.deselectItemAtIndexPath(indexPath, animated: true)
             }
-//           self.node.genreCollection
-//            if let node = self.node?.genreCollection.view.nodeForItemAtIndexPath(indexPath) {
-//                node.selected = true
-//            }
             
-        } else {
-            
+            if let cell = collectionView.nodeForItemAtIndexPath(indexPath) as? GenreCellNode {
+                cell.pop_removeAllAnimations()
+                cell.state = x
+            }
         }
     }
 }

@@ -51,17 +51,11 @@ extension WildAppleMusicUser : WCLMusicKitDelegate {
             
             if !s2 && enableNotif {
                 enableNotif = false
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to login to Apple Music with your premium account.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                        notif in
-                        
-                        UIApplication.sharedApplication().openURL(NSURL(string: "music:account")!)
-                        
-                    }
-                    Async.main {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-                    }
-                }
+                WCLNotification(body: ("You need to login to Apple Music with your premium account.", "premium account"), image: "notification-access") {
+                    notif in
+                    
+                    UIApplication.sharedApplication().openURL(NSURL(string: "music:account")!)
+                }.addToQueue()
             }
         }
     }
@@ -71,32 +65,18 @@ extension WildAppleMusicUser : WCLMusicKitDelegate {
         if let s = status where enableNotif {
             print("ENABLE NOTIF?", enableNotif)
             if !s {
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    let info = WCLNotificationInfo(defaultActionName: "", body: "You need to allow access to Apple Music before continuing", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil) {
-                        notif in
-                        
-                        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                        
-                    }
-                    enableNotif = false
-                    Async.main {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: info)
-                    }
-                }
+                WCLNotification(body: ("You need to allow access to Apple Music before continuing", "allow access"), image: "notification-access") {
+                    notif in
+                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                }.addToQueue()
             }
         } else if enableNotif {
             
             
             do {
                 try musicKit.requestAuth()
-            } catch let err as NSError {
-                print(err)
-                if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-                    enableNotif = false
-                    Async.main {
-                        WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Apple Music Playback is supported on iOS 9.3 or newer.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-                    }
-                }
+            } catch {
+                WCLNotification(body: ("Apple Music Playback is supported on iOS 9.3 or newer.", "iOS 9.3 or newer."), image: "notification-access").addToQueue()
             }
             
         }

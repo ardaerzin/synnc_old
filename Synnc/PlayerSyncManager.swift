@@ -11,10 +11,9 @@ import AVFoundation
 import WCLUtilities
 import SwiftyJSON
 import MediaPlayer
+import Async
 
 class WildPlayerSyncManager {
-    
-//    weak var player: WildPlayer!
     
     var updateInterval : Double = 2.0
     var oldUpdate : Float64?
@@ -27,12 +26,12 @@ class WildPlayerSyncManager {
     var timestamp : StreamTimeStamp! {
         didSet {
             if timestamp != oldValue {
-                print("timestamp changed", StreamPlayerManager.sharedInstance.stream)
+                
+                guard let ts = timestamp else {
+                    return
+                }
                 if let stream = StreamPlayerManager.sharedInstance.stream where !stream.isUserStream {
-                    print("listener")
-                    self.handleTimeStampChange(timestamp)
-                } else {
-                    print("host")
+                    self.handleTimeStampChange(ts)
                 }
             }
         }
@@ -92,18 +91,12 @@ extension WildPlayerSyncManager {
     func handleTimeStampChange(ts: StreamTimeStamp){
         let manager = StreamPlayerManager.sharedInstance
         if manager.currentIndex != ts.playlist_index {
-//            manager.isSyncing = true
-            
-            print("handleTimeStampChange")
             
             let index = ts.playlist_index as Int
-            
-            
             manager.loadSong(ts.playlist_index as Int)
             manager.loadSong((ts.playlist_index as Int) + 1)
             
             let ind = ts.playlist_index as Int
-//            if ind < ts.pla
             let manager = StreamPlayerManager.sharedInstance
             if ind < manager.playlist.count && ind == manager.stream!.currentSongIndex as Int {
                 let track = manager.playlist[ind]
@@ -131,7 +124,6 @@ extension WildPlayerSyncManager {
         if manager.currentIndex != self.timestamp.playlist_index {
             print("indexes are not the same", manager.currentIndex, self.timestamp.playlist_index)
 //            manager.rate = 0
-            //do not update time until song indices are the same.
             return
         }
         
@@ -196,8 +188,7 @@ extension WildPlayerSyncManager {
             }
         } else {
             if let sptPlayer = manager.activePlayer as? SynncSpotifyPlayer where !sptPlayer.isSeeking {
-                let x = NSDate()
-//                print(playerNewTime - actualTime)
+                
                 Async.background {
                     if abs(playerNewTime - actualTime) > 0.03 {
                         sptPlayer.isSeeking = true
@@ -209,7 +200,6 @@ extension WildPlayerSyncManager {
                                 sptPlayer.isSeeking = false
                                 return
                             }
-                            //                        print("seeked", NSDate().timeIntervalSince1970 - x.timeIntervalSince1970)
                             sptPlayer.isSeeking = false
                         }
                     } else {

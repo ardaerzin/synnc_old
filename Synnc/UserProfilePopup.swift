@@ -73,9 +73,7 @@ class UserProfilePopup : WCLPopupViewController {
     }
     
     func followUser(sender: AnyObject) {
-        if let a = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil).first as? WCLNotificationView {
-            WCLNotificationManager.sharedInstance().newNotification(a, info: WCLNotificationInfo(defaultActionName: "", body: "Follow option is coming soon.", title: "Synnc", sound: nil, fireDate: nil, showLocalNotification: true, object: nil, id: nil))
-        }
+        WCLNotification(body: ("Follow feature is coming soon.", "coming soon"), image: "notification-warning").addToQueue()
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "user_follow", value: nil)
     }
     

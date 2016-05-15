@@ -9,11 +9,11 @@
 import Foundation
 import WCLNotificationManager
 
-class SynncNotificationView : WCLNotificationView {
-    override var iconView: UIImageView! {
-        didSet {
-            iconView.layer.cornerRadius = 3
-            iconView.image = Synnc.appIcon
-        }
-    }
+class SynncNotificationView : WCLNotification {
+//    override var iconView: UIImageView! {
+//        didSet {
+//            iconView.layer.cornerRadius = 3
+//            iconView.image = Synnc.appIcon
+//        }
+//    }
 }
