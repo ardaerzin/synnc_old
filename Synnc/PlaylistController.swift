@@ -83,38 +83,52 @@ class PlaylistController : PagerBaseController {
         
         (self.screenNode.headerNode as! PlaylistHeaderNode).toggleButton.addTarget(self, action: #selector(PlaylistController.toggleWindowPosition(_:)), forControlEvents: .TouchUpInside)
         (self.screenNode.headerNode as! PlaylistHeaderNode).tracksearchButton.addTarget(self, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
+        
+        if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist == fav {
+            (self.screenNode.headerNode as! PlaylistHeaderNode).tracksearchButton.hidden = true
+        }
     }
     
     func displaySubmenu(sender : AnyObject){
         
+        var buttons : [ButtonNode] = []
+//            [streamButton, addSongsButton, editButton, deleteButton]
+        
         let paragraphAtrributes = NSMutableParagraphStyle()
         paragraphAtrributes.alignment = .Center
-        
-        let deleteButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
-        deleteButton.setAttributedTitle(NSAttributedString(string: "Delete", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
-        deleteButton.minScale = 1
-        deleteButton.cornerRadius = 8
-        deleteButton.addTarget(self, action: #selector(PlaylistController.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
-        
-        let editButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
-        editButton.setAttributedTitle(NSAttributedString(string: "Edit Tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
-        editButton.minScale = 1
-        editButton.cornerRadius = 8
-        editButton.addTarget(self, action: #selector(PlaylistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
         
         let streamButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
         streamButton.setAttributedTitle(NSAttributedString(string: "Stream", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         streamButton.minScale = 1
         streamButton.cornerRadius = 8
         streamButton.addTarget(self, action: #selector(PlaylistController.streamPlaylist(_:)), forControlEvents: .TouchUpInside)
+        buttons.append(streamButton)
         
         let addSongsButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
         addSongsButton.setAttributedTitle(NSAttributedString(string: "Add Tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
         addSongsButton.minScale = 1
         addSongsButton.cornerRadius = 8
         addSongsButton.addTarget(self, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
+        if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist != fav {
+            buttons.append(addSongsButton)
+        }
         
-        let buttons = [streamButton, addSongsButton, editButton, deleteButton]
+        let editButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        editButton.setAttributedTitle(NSAttributedString(string: "Edit Tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        editButton.minScale = 1
+        editButton.cornerRadius = 8
+        editButton.addTarget(self, action: #selector(PlaylistController.toggleEditMode(_:)), forControlEvents: .TouchUpInside)
+        buttons.append(editButton)
+        
+        let deleteButton = ButtonNode(normalColor: .whiteColor(), selectedColor: .whiteColor())
+        deleteButton.setAttributedTitle(NSAttributedString(string: "Delete", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size : 16)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes]), forState: ASControlState.Normal)
+        deleteButton.minScale = 1
+        deleteButton.cornerRadius = 8
+        deleteButton.addTarget(self, action: #selector(PlaylistController.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
+        if let fav = SharedPlaylistDataSource.findUserFavoritesPlaylist() where playlist != fav {
+            buttons.append(deleteButton)
+        }
+        
         
         actionSheet = ActionSheetPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 200), buttons : buttons)
         actionSheet.onCancel = {
@@ -431,11 +445,17 @@ extension PlaylistController {
     
     func deleteAction(sender : AnyObject){
         
-        let plist = self.playlist
+        guard let plist = self.playlist else {
+            return
+        }
+        
+        let id = plist.id
         let json = plist.toJSON(nil, populate: true)
         
         playlist.delete()
+        
         self.playlist = nil
+        
         Async.background {
             Async.main {
                 Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)

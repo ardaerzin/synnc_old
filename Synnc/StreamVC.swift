@@ -26,6 +26,27 @@ enum StreamControllerState : Int {
     case Active = 1
 }
 
+class ShareWrapperVC : WCLPopupViewController {
+    var shareController : UIActivityViewController!
+    
+    init(controller : UIActivityViewController) {
+        super.init(nibName: nil, bundle: nil, size: UIScreen.mainScreen().bounds.size)
+        self.shareController = controller
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func didDisplay() {
+        super.didDisplay()
+        self.presentViewController(shareController, animated: true, completion: nil)
+    }
+    override func didHide() {
+        super.didHide()
+        shareController.dismissViewControllerAnimated(true, completion: nil)
+    }
+}
+
 class StreamVC : PagerBaseController {
     
     var currentTrack : SynncTrack? {
@@ -142,10 +163,16 @@ class StreamVC : PagerBaseController {
                                                 UIActivityTypePostToTencentWeibo,
                                                 UIActivityTypeAirDrop,
                                                 UIActivityTypePostToFacebook]
+           
+            let x = ShareWrapperVC(controller: activityVC)
+            
             activityVC.completionWithItemsHandler = {
                 (activityType, completed:Bool, returnedItems:[AnyObject]?, error: NSError?) in
                 
                 AnalyticsEvent.new(category: "StreamSubsection", action: "share", label: activityType, value: nil)
+                
+                x.closeView(true)
+                
                 if let w = self.view.wclWindow {
                     w.panRecognizer.enabled = true
                 }
@@ -154,7 +181,8 @@ class StreamVC : PagerBaseController {
             if let w = self.view.wclWindow {
                 w.panRecognizer.enabled = false
             }
-            self.presentViewController(activityVC, animated: true, completion: nil)
+            
+            Synnc.sharedInstance.topPopupManager.newPopup(x)
         }
     }
     
@@ -227,6 +255,7 @@ class StreamVC : PagerBaseController {
         likeButton.addTarget(self, action: #selector(StreamVC.toggleTrackFav(_:)), forControlEvents: .TouchUpInside)
         
         let buttons = [shareButton, likeButton, stateButton]
+        
         
         actionSheet = ActionSheetPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 200), buttons : buttons)
         actionSheet.onCancel = {

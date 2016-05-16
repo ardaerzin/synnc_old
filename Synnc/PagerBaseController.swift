@@ -60,6 +60,7 @@ class PagerBaseController : ASViewController {
         screenNode.headerNode.pageControl.styles = pagerStyles
         
         screenNode.headerNode.delegate = self
+        screenNode.headerNode.pageControl.delegate = self
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -71,6 +72,12 @@ class PagerBaseController : ASViewController {
     }
     
     func updatedCurrentIndex(index : Int) {
+    }
+}
+
+extension PagerBaseController : PageControlDelegate {
+    func pageControl(control: PageControlNode, scrollToInd ind: Int) {
+        self.screenNode.pager.scrollToPageAtIndex(ind, animated: true)
     }
 }
 
@@ -106,6 +113,7 @@ extension PagerBaseController : ASCollectionDelegate {
     }
     func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
         let cp = Int(scrollView.contentOffset.x / scrollView.frame.width)
+        screenNode.headerNode.pageControl.currentPage = cp
         currentIndex = cp
         screenNode.headerNode.pageControl.updateCurrentPageDisplay()
     }

@@ -36,7 +36,7 @@ class LogoutPopup : WCLPopupViewController {
         self.view.addSubnode(node)
         
         n.yesButton.addTarget(self, action: #selector(LogoutPopup.logout(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
-        n.noButton.addTarget(self, action: #selector(NotificationRequestPopupVC.dismissNotificationAccess(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
+        n.noButton.addTarget(self, action: #selector(LogoutPopup.dismiss(_:)), forControlEvents: ASControlNodeEvent.TouchUpInside)
         
         node.view.frame = CGRect(origin: CGPointZero, size: self.size)
     }
@@ -74,7 +74,7 @@ class LogoutPopup : WCLPopupViewController {
             AnalyticsEvent.new(category: "LogoutPopup", action: "buttonTap", label: "logout", value: nil)
         }
     }
-    func dismissNotificationAccess(sender : ButtonNode) {
+    func dismiss(sender : ButtonNode) {
         AnalyticsEvent.new(category: "LogoutPopup", action: "buttonTap", label: "dismiss", value: nil)
         self.closeView(true)
     }

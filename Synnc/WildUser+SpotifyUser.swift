@@ -69,7 +69,7 @@ public extension WCLUser {
 class WildSpotifyUser : WCLUserExtension {
     
     var loginPopup : WCLPopupViewController!
-    var loginController : SpotifyLoginViewController!
+//    var loginController : SpotifyLoginViewController!
     
     override var id : String? {
         get {
