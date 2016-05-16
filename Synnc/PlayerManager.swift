@@ -194,7 +194,13 @@ class StreamPlayerManager : NSObject {
                     }
                 }
             } else {
-                
+                if let player = self.players[.SpotifyPlayer] as? SynncSpotifyPlayer {
+                    player.queueClear() {
+                        error in
+                        
+                        player.logout(nil)
+                    }
+                }
             }
         }
     }
