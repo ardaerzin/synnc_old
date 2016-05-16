@@ -64,11 +64,6 @@ extension UIColor {
     }
 }
 
-protocol WildAnimated {
-    var animator : WildTransitioning! { get set }
-    var displayStatusBar : Bool! { get set }
-}
-
 extension UIColor {
     func rgb() -> (red:Int, green:Int, blue:Int, alpha:Int)? {
         var fRed : CGFloat = 0

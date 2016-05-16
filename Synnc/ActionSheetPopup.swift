@@ -64,12 +64,6 @@ class ActionSheetPopup : WCLPopupViewController {
         self.onCancel?()
         self.closeView(true)
     }
-    func spotifyLogin(sender: AnyObject) {
-        print("login with spotify")
-        if let user = Synnc.sharedInstance.user {
-            user.socialLogin(.Spotify)
-        }
-    }
 }
 
 class ActionSheetPopupNode : ASDisplayNode, TrackedView {

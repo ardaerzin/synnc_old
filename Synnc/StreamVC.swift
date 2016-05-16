@@ -228,6 +228,7 @@ class StreamVC : PagerBaseController {
         
         let buttons = [shareButton, likeButton, stateButton]
         
+        
         actionSheet = ActionSheetPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 200), buttons : buttons)
         actionSheet.onCancel = {
             if let node = sender as? ButtonNode {

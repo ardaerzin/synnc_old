@@ -245,7 +245,7 @@ class PlaylistInfoNode : WCLScrollNode {
                 }
             }
         } else {
-            self.imageNode.image = UIImage(named: "placeholder")!
+            self.imageNode.image = UIImage(named: "camera-placeholder")!
             self.imageNode.contentMode = .ScaleAspectFill
 //            self.imageNode.contentMode = .Center
         }
@@ -306,7 +306,7 @@ class PlaylistInfoNode : WCLScrollNode {
         
         let a = ASStaticLayoutSpec(children: [trackCountNode, addSongsButton])
         let spacer = ASStaticLayoutSpec(children: [topSeperator])
-        spacer.spacingBefore = 10
+        spacer.spacingBefore = 15
         
         let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [imageSpec, titleNode, a, spacer, genreHolder, ASStaticLayoutSpec(children: [genreSeperator]), locationHolder, ASStaticLayoutSpec(children: [locationSeperator])])
         

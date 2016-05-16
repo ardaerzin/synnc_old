@@ -10,7 +10,13 @@ import Foundation
 import AsyncDisplayKit
 import pop
 
+protocol PageControlDelegate {
+    func pageControl(control : PageControlNode, scrollToInd ind : Int)
+}
+
 class PageControlNode : ASDisplayNode {
+    
+    var delegate : PageControlDelegate?
     
     internal class PageControlItemNode : ASDisplayNode {
         
@@ -61,7 +67,6 @@ class PageControlNode : ASDisplayNode {
 //            self.selectedColor = selectedColor
 //            self.normalColor = tintColor
             
-            self.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0)
         }
     }
     
@@ -112,6 +117,30 @@ class PageControlNode : ASDisplayNode {
         super.init()
     }
     
+    override func didLoad() {
+        super.didLoad()
+        let tr = UITapGestureRecognizer(target: self, action: #selector(PageControlNode.didTap(_:)))
+        self.view.addGestureRecognizer(tr)
+    }
+    
+    func didTap(recognizer : UITapGestureRecognizer) {
+        let touchPosition = recognizer.locationInView(self.view)
+        let currentPosition = self.items[self.currentPage].position
+    
+        var i = self.currentPage
+        if touchPosition.x < currentPosition.x {
+            //left
+            i -= 1
+        } else if touchPosition.x > currentPosition.x {
+            //right
+            i += 1
+        }
+        
+        if i >= 0 && i < self.items.count {
+            self.delegate?.pageControl(self, scrollToInd: i)
+        }
+    }
+    
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         var children : [ASLayoutable] = []
@@ -119,7 +148,8 @@ class PageControlNode : ASDisplayNode {
             children.append(ASStaticLayoutSpec(children: [item]))
         }
         
-        return ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: children)
+        let a = ASStackLayoutSpec(direction: .Horizontal, spacing: 5, justifyContent: .Center, alignItems: .Center, children: children)
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(5, 10, 5, 10), child: a)
     }
     
     func updateCurrentPageDisplay() {

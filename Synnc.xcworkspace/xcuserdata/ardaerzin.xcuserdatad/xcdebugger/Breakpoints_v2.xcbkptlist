@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "484965017.075205"
+            timestampString = "485031730.753631"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "gestureRecognizer(_:shouldRequireFailureOfGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "484965017.075205"
+            timestampString = "485031730.753631"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "216"
-            endingLineNumber = "216"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
             landmarkName = "gestureRecognizer(_:shouldRequireFailureOfGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "484965017.075205"
+            timestampString = "485031730.753631"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
             landmarkName = "gestureRecognizer(_:shouldBeRequiredToFailByGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "484965017.075205"
+            timestampString = "485031730.753631"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "224"
-            endingLineNumber = "224"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
             landmarkName = "gestureRecognizer(_:shouldRecognizeSimultaneouslyWithGestureRecognizer:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/StreamVC.swift"
-            timestampString = "484952578.408603"
+            timestampString = "485088276.203991"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "452"
-            endingLineNumber = "452"
+            startingLineNumber = "482"
+            endingLineNumber = "482"
             landmarkName = "playerManager(_:volumeChanged:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -864,6 +864,22 @@
             startingLineNumber = "46"
             endingLineNumber = "46"
             landmarkName = "assignTracksToPlayers(_:currentIndex:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/StreamVC.swift"
+            timestampString = "485088276.203991"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
+            landmarkName = "shareStream(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
