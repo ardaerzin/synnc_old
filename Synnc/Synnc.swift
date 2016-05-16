@@ -141,6 +141,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         self.initSynnc()
         performNTPCheck()
         
+        print(WCLPopupManager.sharedInstance.instanceId)
         topPopupManager = WCLPopupManager()
         
         let lagFreeField: UITextField = UITextField()

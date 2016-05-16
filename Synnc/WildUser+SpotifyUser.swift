@@ -149,6 +149,7 @@ class WildSpotifyUser : WCLUserExtension {
         
         let x = SpotifyLVC(controller: loginViewController)
         
+        print("instanceId", Synnc.sharedInstance.topPopupManager.instanceId, WCLPopupManager.sharedInstance.instanceId)
         Synnc.sharedInstance.topPopupManager.newPopup(x)
         loginPopup = x
     }
