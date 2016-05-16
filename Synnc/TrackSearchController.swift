@@ -496,6 +496,7 @@ extension TrackSearchController {
         }
         
         if offset >= appleMusicAlbums.count {
+            self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: [])
             return
         }
         
@@ -626,11 +627,15 @@ extension TrackSearchController {
         guard let id = self.selectedArtist?.id else {
             AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: nil, value: nil)
             
+            self.tracksDataSource.nextAction = nil
+            self.artistsDataSource.nextAction = nil
+            
             if let str = (self.screenNode.inputNode.textView.text as NSString).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()) {
                 self.searchStringChanged(str)
             } else {
                 self.searchStringChanged("")
             }
+            
             return
         }
         

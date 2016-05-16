@@ -443,7 +443,9 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         artistEmptyStateNode = EmptyStateNode()
         
         clearButton = ButtonNode()
-        clearButton.setAttributedTitle(NSAttributedString(string: "clear", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Light", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)]), forState: .Normal)
+//        clearButton.setAttributedTitle(NSAttributedString(string: "clear", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Light", size: 12)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)]), forState: .Normal)
+        
+        clearButton.setImage(UIImage(named: "close-small"), forState: .Normal)
         clearButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5)
         clearButton.alpha = 0
         

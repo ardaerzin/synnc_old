@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/StreamVC.swift"
-            timestampString = "485088276.203991"
+            timestampString = "485089229.58832"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "482"
-            endingLineNumber = "482"
+            startingLineNumber = "481"
+            endingLineNumber = "481"
             landmarkName = "playerManager(_:volumeChanged:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -426,27 +426,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pods/WCLMusicKit/WCLMusicKit/Classes/WCLMusicKit.swift"
-            timestampString = "484403546.769931"
+            timestampString = "485089229.58832"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "328"
-            endingLineNumber = "328"
-            landmarkName = "albumTracks(_:handler:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/WCLMusicKit/WCLMusicKit/Classes/WCLMusicKit.swift"
-            timestampString = "484403546.769931"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
+            startingLineNumber = "359"
+            endingLineNumber = "359"
             landmarkName = "artistAlbums(_:limit:handler:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -864,22 +848,6 @@
             startingLineNumber = "46"
             endingLineNumber = "46"
             landmarkName = "assignTracksToPlayers(_:currentIndex:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Synnc/StreamVC.swift"
-            timestampString = "485088276.203991"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
-            landmarkName = "shareStream(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
