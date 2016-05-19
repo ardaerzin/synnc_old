@@ -108,7 +108,12 @@ class StreamVC : PagerBaseController {
             self.stream = s
         }
         
+        let isUserStream = self.stream == StreamManager.sharedInstance.userStream
+        
+        node.nowPlayingArea.joinButton.setAttributedTitle(NSAttributedString(string: isUserStream ? "START" : "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.whiteColor()]), forState: .Normal)
+        node.nowPlayingArea.joinButton.addTarget(self, action: isUserStream ? #selector(StreamVC.startStream(_:)) : #selector(StreamVC.joinStream(_:)), forControlEvents: .TouchUpInside)
         node.nowPlayingArea.submenuButton.addTarget(self, action: #selector(StreamVC.displayActionSheet(_:)), forControlEvents: .TouchUpInside)
+        
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(StreamVC.userFavPlaylistUpdated(_:)), name: "UpdatedFavPlaylist", object: nil)
     }
@@ -118,8 +123,6 @@ class StreamVC : PagerBaseController {
         self.configure(stream)
         (self.screenNode.headerNode as! StreamHeaderNode).shareButton.addTarget(self, action: #selector(StreamVC.shareStream(_:)), forControlEvents: .TouchUpInside)
         (self.screenNode as! StreamVCNode).nowPlayingArea.volumeButton.addTarget(self, action: #selector(StreamVC.toggleMute(_:)), forControlEvents: .TouchUpInside)
-        
-        (self.screenNode as! StreamVCNode).nowPlayingArea.joinButton.addTarget(self, action: #selector(StreamVC.joinStream(_:)), forControlEvents: .TouchUpInside)
     }
     
     func toggleWindowPosition(sender : AnyObject) {
@@ -393,11 +396,6 @@ class StreamVC : PagerBaseController {
         self.chatController.configure(stream)
         self.chatController.isEnabled = self.state == .Active ? true : false
         self.infoController.screenNode.infoNode.topSection.configure(self.stream!)
-        if let w = self.view.wclWindow {
-            if let pos = w.position where pos == .LowerLinked {
-                w.transitionProgress = 1
-            }
-        }
         
         if let window = self.screenNode.view.wclWindow {
             
@@ -418,6 +416,15 @@ class StreamVC : PagerBaseController {
             }
             
             window.lowerPercentage = lowerLimit
+        }
+        
+        if let w = self.view.wclWindow {
+            
+            print("window shit", self, w.lowerPercentage)
+            
+            if let pos = w.position where pos == .LowerLinked {
+                w.animation.toValue = 1
+            }
         }
     }
     func updatedStream(notification: NSNotification){
@@ -552,6 +559,18 @@ extension StreamVC {
         }
     }
     
+    func startStream(sender : AnyObject!) {
+        print("start stream now", self.stream.status)
+        
+        if self.stream != StreamManager.sharedInstance.userStream || self.stream.status {
+            return
+        }
+        
+        stream.update(["status" : true])
+        StreamManager.setActiveStream(stream)
+        StreamManager.playStream(stream)
+    }
+    
     func joinStream(sender : AnyObject!){
         
         if let s = actionSheet {
@@ -571,6 +590,10 @@ extension StreamVC {
         }
         
         if let s = self.stream {
+            
+            if !s.status {
+                return
+            }
             
             let t = s.playlist.canPlay()
             if t.status {
@@ -606,13 +629,13 @@ extension StreamVC {
                             str += index == 0 ? "\(src)" : index == missingSources.count - 1 ? " and \(src)" : ", \(src)"
                         }
                         
-                        notificationMessage = ("Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream.", "\(str.fixAppleMusic())")
+                        notificationMessage = ("Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream.", "login")
                         notificationAction = nil
                         
                     } else if let src = missingSources.first {
                         
                         let str = src.fixAppleMusic()
-                        notificationMessage = ("Please login to \(str) to listen to the Premium content in this stream.", "\(str)")
+                        notificationMessage = ("Please login to \(str) to listen to the Premium content in this stream.", "login")
                         notificationAction = {
                            notif in
                             if let type = WCLUserLoginType(rawValue: src.lowercaseString) {

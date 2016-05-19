@@ -390,7 +390,7 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         
         
         self.closeButton = ButtonNode()
-        let title = NSAttributedString(string: "Done", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)])
+        let title = NSAttributedString(string: "Done", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu", size: 14)!, NSForegroundColorAttributeName : UIColor.SynncColor(), NSKernAttributeName : 0.4])
         self.closeButton.setAttributedTitle(title, forState: .Normal)
         self.closeButton.imageNode.contentMode = .Center
         self.closeButton.contentEdgeInsets = UIEdgeInsetsMake(10, 5, 10, 5)
@@ -413,8 +413,8 @@ class TrackSearchNode : ASDisplayNode, TrackedView {
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .Horizontal
-        layout.minimumInteritemSpacing = 20
-        layout.minimumLineSpacing = 20
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
         
         layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 0)
         self.artistsCollection = ASCollectionNode(collectionViewLayout: layout)

@@ -13,6 +13,7 @@ import SwiftyJSON
 import WCLNotificationManager
 import Dollar
 import Async
+import WCLUIKit
 
 class StreamManager : NSObject, StreamDelegate {
     
@@ -123,6 +124,32 @@ extension StreamManager {
 }
 
 extension StreamManager {
+    
+    func createStreamWindow(playlist: SynncPlaylist) -> WCLWindow {
+        let stream = Stream(user: Synnc.sharedInstance.user)
+        stream.playlist = playlist
+        stream.lat = 0
+        stream.lon = 0
+        Synnc.sharedInstance.streamManager.userStream = stream
+        let vc = StreamVC(stream: stream)
+        
+        let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height, dismissable: true)
+        let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
+        a.delegate = vc
+        a.panRecognizer.delegate = vc
+        a.clipsToBounds = false
+        stream.createCallback = {
+            created in
+            if StreamManager.canSetActiveStream(stream) {
+                if stream == StreamManager.sharedInstance.userStream {
+                    StreamManager.setActiveStream(stream)
+                    StreamManager.playStream(stream)
+                }
+            }
+        }
+        stream.update([NSObject : AnyObject]())
+        return a
+    }
     
     func stopStream(stream: Stream, completion : ((status: Bool) -> Void)?) {
         if stream != self.activeStream {
@@ -517,19 +544,24 @@ extension StreamManager {
                 var json = JSON(data)
                 let stream = self.findStream(json["_id"].string)
                 if stream != nil {
-                    stream!.delegate = nil
-                    if stream == self.activeStream {
-                        self.activeStream = nil
-                    }
-                    self.streams.removeAtIndex(self.streams.indexOf(stream!)!)
-                    
-                    let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
-                    NSNotificationCenter.defaultCenter().postNotification(notification)
-                    
-                    if let ind = self.userFeed.indexOf(stream!) {
-                        self.userFeed.removeAtIndex(ind)
-                        print("remove item at index")
-                    }
+                    stream?.fromJSON(json, callback: {
+                        stream in
+                        
+                        stream.delegate = nil
+                        if stream == self.activeStream {
+                            self.activeStream = nil
+                        }
+                        if let ind = self.streams.indexOf(stream) {
+                            self.streams.removeAtIndex(ind)
+                        }
+                        let notification = NSNotification(name: "RemovedStream", object: stream, userInfo: nil)
+                        NSNotificationCenter.defaultCenter().postNotification(notification)
+                        
+                        if let ind = self.userFeed.indexOf(stream) {
+                            self.userFeed.removeAtIndex(ind)
+                            print("remove item at index")
+                        }
+                    })
                 }
             }
         }

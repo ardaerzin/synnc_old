@@ -117,11 +117,15 @@ extension WildPlayerSyncManager {
     
     func checkTimeSync(){
         
-        let manager = StreamPlayerManager.sharedInstance
-        let hpt = self.timestamp.player_time as Double
-        let hlut = self.timestamp.timeStamp as Double
+        guard let ts = self.timestamp else {
+            return
+        }
         
-        if manager.currentIndex != self.timestamp.playlist_index {
+        let manager = StreamPlayerManager.sharedInstance
+        let hpt = ts.player_time as Double
+        let hlut = ts.timeStamp as Double
+        
+        if manager.currentIndex != ts.playlist_index {
             print("indexes are not the same", manager.currentIndex, self.timestamp.playlist_index)
 //            manager.rate = 0
             return

@@ -11,6 +11,7 @@ import WCLPopupManager
 import AsyncDisplayKit
 import WCLDataManager
 import pop
+import Async
 
 class DeletePlaylistPopup : WCLPopupViewController {
     
@@ -31,7 +32,7 @@ class DeletePlaylistPopup : WCLPopupViewController {
         self.draggable = true
         
         let node = DeletePlaylistNode()
-        node.yesButton.addTarget(self, action: #selector(DeletePlaylistPopup.dismiss(_:)), forControlEvents: .TouchUpInside)
+        node.yesButton.addTarget(self, action: #selector(DeletePlaylistPopup.deletePlaylist(_:)), forControlEvents: .TouchUpInside)
         node.noButton.addTarget(self, action: #selector(DeletePlaylistPopup.dismiss(_:)), forControlEvents: .TouchUpInside)
         self.screenNode = node
         self.view.addSubnode(node)
@@ -63,8 +64,24 @@ class DeletePlaylistPopup : WCLPopupViewController {
         }
     }
     
-    func dismiss(sender: AnyObject) {
+    func dismiss(sender: AnyObject!) {
         self.closeView(true)
+    }
+    
+    func deletePlaylist(sender : ButtonNode) {
+        guard let plist = self.playlist else {
+            return
+        }
+        
+        let json = plist.toJSON(nil, populate: true)
+        playlist.delete()
+        
+        self.playlist = nil
+        Async.main {
+            Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
+        }
+        
+        self.dismiss(nil)
     }
 }
 
@@ -89,7 +106,7 @@ class DeletePlaylistNode : ASDisplayNode, TrackedView {
         
         let paragraphAtrributes = NSMutableParagraphStyle()
         paragraphAtrributes.alignment = .Center
-        infoNode.attributedString = NSAttributedString(string: "Are you sure you want to delete your stream, \(title) ?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
+        infoNode.attributedString = NSAttributedString(string: "Are you sure you want to delete your playlist, \(title) ?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
 //        infoNode.setNeedsLayout()
 //
 //        self.setNeedsLayout()
@@ -108,7 +125,7 @@ class DeletePlaylistNode : ASDisplayNode, TrackedView {
         
         infoNode = ASTextNode()
         infoNode.alignSelf = .Stretch
-        infoNode.attributedString = NSAttributedString(string: "Are you sure you want to delete your stream?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
+        infoNode.attributedString = NSAttributedString(string: "Are you sure you want to delete your playlist?", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Light", size : 16)!, NSForegroundColorAttributeName : UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1), NSKernAttributeName : 0.3, NSParagraphStyleAttributeName : paragraphAtrributes])
         
         imageNode = ASImageNode()
         imageNode.image = Synnc.appIcon

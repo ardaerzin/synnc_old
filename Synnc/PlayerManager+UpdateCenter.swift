@@ -25,7 +25,6 @@ extension StreamPlayerManager {
     }
     func updateControlCenterRate(){
         guard let ci = currentItem, let ct = currentTime else {
-            print(#function, "nil")
             return
         }
         let duration = self.currentItemDuration
@@ -44,7 +43,7 @@ extension StreamPlayerManager {
     func updateControlCenterItem(){
         
         let ci = self.currentIndex as Int
-        print(self.stream, self.currentItem)
+//        print(self.stream, self.currentItem)
         guard let st = self.stream, let npi = self.currentItem, let ct = currentTime where ci >= 0 else {
             MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [String : AnyObject]()
             print(#function, "nil")
@@ -94,6 +93,7 @@ extension StreamPlayerManager {
                 
                 self.nowPlayingInfo.updateValue(NSTimeInterval(duration), forKey: MPMediaItemPropertyPlaybackDuration)
                 Async.main {
+//                    print(self.nowPlayingInfo)
                     MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingInfo
                 }
 //                    self.nowPlayingInfo

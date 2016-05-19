@@ -187,7 +187,6 @@ class NowPlayingNode : ASDisplayNode {
         self.addSubnode(progressBar)
         
         joinButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
-        joinButton.setAttributedTitle(NSAttributedString(string: "JOIN", attributes: [NSFontAttributeName: UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.whiteColor()]), forState: .Normal)
         joinButton.spacingAfter = 21
         
         joinButton.contentEdgeInsets = UIEdgeInsetsMake(12, 15, 12, 15)

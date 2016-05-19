@@ -86,6 +86,9 @@ extension SynncPlaylist {
     :param: indexPaths   Index paths of items to be removed
     */
     func removeSong(atIndexPath indexPath : NSIndexPath) {
+        if indexPath.item >= self.songs.count {
+            return
+        }
         self.songs.removeAtIndex(indexPath.item)
         NSNotificationCenter.defaultCenter().postNotificationName("PlaylistUpdatedSongs", object: self, userInfo: ["removedSongs" : ["songs" : [], "indexPaths" : [indexPath]]])
     }

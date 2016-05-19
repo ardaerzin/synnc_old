@@ -127,6 +127,8 @@ extension StreamPlayerManager {
             if time.isFinite {
                 self.playerTimeUpdated(CMTimeMakeWithSeconds(time, 1000))
             }
+            
+//            print("!*!*!*", MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo)
         }
     }
 }

@@ -83,13 +83,15 @@ extension StreamPlayerManager {
         if !spotifyUris.isEmpty {
             if let player = self.players[.SpotifyPlayer] as? SynncSpotifyPlayer {
  
-                player.queueURIs(spotifyUris, clearQueue: true) { (err) in
-                    if let error = err {
-                        print("couldn't queue URIs", error.description)
-                        return
+                player.stop() {
+                    err in
+                    player.queueURIs(spotifyUris, clearQueue: true) { (err) in
+                        if let error = err {
+                            print("couldn't queue URIs", error.description)
+                            return
+                        }
+                        player.setIsPlaying(false, callback: nil)
                     }
-                    print("stop player")
-                    player.setIsPlaying(false, callback: nil)
                 }
             }
         }

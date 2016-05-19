@@ -44,6 +44,9 @@ extension SynncTrack {
         } else if let smallCover = track.album.smallestCover {
             coverUrl = smallCover.imageURL.absoluteString
         }
+        if let smallCover = track.album.smallestCover {
+            self.artwork_small = smallCover.imageURL.absoluteString
+        }
         self.artwork_url = coverUrl
     }
 }

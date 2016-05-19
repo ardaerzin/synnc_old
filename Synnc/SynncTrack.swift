@@ -39,6 +39,7 @@ let _sharedTrackStore: SynncTrackStore = { SynncTrackStore() }()
 class SynncTrack: Serializable {
     
     var artwork_url: String?
+    var artwork_small : String?
     var source: String!
     var id: String!
     var song_id: String!
