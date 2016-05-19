@@ -255,13 +255,30 @@ class StreamPlayerManager : NSObject {
     
     func resetPlayer(){
         self.rate = 0
+        self.delegate?.playerManager?(self, updatedToPosition: 0)
         
         for (_,player) in players {
             if let avplayer = player as? AVPlayer {
                 avplayer.replaceCurrentItemWithPlayerItem(nil)
             } else if let sptPlayer = player as? SynncSpotifyPlayer {
-                sptPlayer.stop(nil)
-                sptPlayer.queueClear(nil)
+//                sptPlayer.stop() {
+//                    err in
+//                    sptPlayer.queueClear(nil)
+//                }
+                
+//                sptPlayer.remove
+                
+//                sptPlayer.queueURIs(nil, clearQueue: true, callback: nil)
+                
+//                Async.main {
+
+//                sptPlayer.queueClear(nil)
+                sptPlayer.stop() {
+                    err in
+////                    sptPlayer.skipNext(nil)
+//                    sptPlayer.queueURIs([NSURL()], clearQueue: true, callback: nil)
+                }
+//                }
             }
         }
         for (track, info) in self.playerIndexedPlaylist {

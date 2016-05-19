@@ -137,10 +137,12 @@ class TappableUserArea : ASControlNode {
 class SourceHolder : ASDisplayNode {
     
     var buttons : [SourceButton] = []
+    var buttonSize : CGSize!
     
-    override init() {
+    init(size : CGSize? = CGSizeMake(25, 25)) {
         super.init()
         
+        self.buttonSize = size!
         for type in SynncExternalSource.premiumSources {
             if let t = WCLUserLoginType(rawValue: type.rawValue.lowercaseString), let user = Synnc.sharedInstance.user, let ext = user.userExtension(t) {
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SourceHolder.extensionLoginStatusChanged(_:)), name: "\(t.rawValue)LoginStatusChanged", object: ext)
@@ -190,7 +192,7 @@ class SourceHolder : ASDisplayNode {
                 button.selected = true
             }
             
-            button.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(CGSizeMake(25, 25))
+            button.sizeRange = ASRelativeSizeRangeMakeWithExactCGSize(self.buttonSize)
             self.addSubnode(button)
             buttons.append(button)
         }

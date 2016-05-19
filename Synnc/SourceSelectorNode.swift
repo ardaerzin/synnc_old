@@ -91,9 +91,9 @@ class SourceSelectionNode : ASDisplayNode {
         titleNode.attributedString = NSAttributedString(string: "Select a music provider", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu", size: 16)!, NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6), NSKernAttributeName : -0.09])
         
         self.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
-        self.shadowOffset = CGSizeMake(0,2)
+        self.shadowOffset = CGSizeMake(0,1)
         self.shadowOpacity = 1
-        self.shadowRadius = 4
+        self.shadowRadius = 2
         
         doneButton = ButtonNode(normalColor: .SynncColor(), selectedColor: .SynncColor())
         doneButton.backgroundColor = UIColor.SynncColor()
@@ -114,13 +114,13 @@ class SourceSelectionNode : ASDisplayNode {
         if canSelect == nil || !canSelect! {
             if sender.source == .Spotify {
                 
-                WCLNotification(body: ("You need to login to Spotify first.", "Spotify"), image: "notification-access") {
+                WCLNotification(body: ("You need to login to Spotify first.", "login"), image: "notification-access") {
                     notif in
                     
                     Synnc.sharedInstance.user.socialLogin(.Spotify)
                 }.addToQueue()
             } else if sender.source == .AppleMusic {
-                WCLNotification(body: ("You need to login to Apple Music first.", "Apple Music"), image: "notification-access") {
+                WCLNotification(body: ("You need to login to Apple Music first.", "login"), image: "notification-access") {
                     notif in
                     
                     Synnc.sharedInstance.user.socialLogin(.AppleMusic)

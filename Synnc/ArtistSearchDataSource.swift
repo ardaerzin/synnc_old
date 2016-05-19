@@ -16,7 +16,7 @@ class ArtistSearchDataSource : WCLAsyncCollectionViewDataSource {
     var nextAction : (()->Void)?
     
     override func collectionView(collectionView: ASCollectionView, constrainedSizeForNodeAtIndexPath indexPath: NSIndexPath) -> ASSizeRange {
-        return ASSizeRangeMakeExactSize(CGSizeMake(100, collectionView.frame.height - 5))
+        return ASSizeRangeMakeExactSize(CGSizeMake(110, collectionView.frame.height - 5))
     }
     
     override func collectionView(collectionView: ASCollectionView, nodeForItemAtIndexPath indexPath: NSIndexPath) -> ASCellNode {

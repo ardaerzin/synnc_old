@@ -14,11 +14,47 @@ import SwiftyJSON
 import WCLMusicKit
 import WCLUtilities
 
+class SynncTrackSearchEntityBackgroundNode : ASDisplayNode {
+    var imageNode : ASNetworkImageNode!
+    var tintNode : ASDisplayNode!
+    var blurView : UIVisualEffectView!
+    
+    override init() {
+        super.init()
+        
+        imageNode = ASNetworkImageNode()
+        imageNode.backgroundColor = .yellowColor()
+        self.addSubnode(imageNode)
+        
+        tintNode = ASDisplayNode()
+        tintNode.backgroundColor = UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 0.3)
+        self.addSubnode(tintNode)
+        
+        let x = UIBlurEffect(style: .Light)
+        blurView = UIVisualEffectView(effect: x)
+        self.view.addSubview(blurView)
+    }
+    
+    override func layout() {
+        super.layout()
+        
+        if blurView.frame == CGRectZero {
+            blurView.frame = CGRect(origin: CGPointZero, size: self.calculatedSize)
+        }
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        self.imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value : 1), ASRelativeDimension(type: .Percent, value : 1))
+        let x = ASStaticLayoutSpec(children: [self.imageNode])
+        return ASOverlayLayoutSpec(child: x, overlay: tintNode)
+    }
+}
+
 class SynncArtistSmallNode : ASCellNode {
     var imageNode : ASNetworkImageNode!
     var usernameNode : ASTextNode!
     var selectionIndicator : ASDisplayNode!
-    
+    var backgroundNode : SynncTrackSearchEntityBackgroundNode!
     
     override var selected : Bool {
         didSet {
@@ -54,24 +90,23 @@ class SynncArtistSmallNode : ASCellNode {
                     obj, values in
                     (obj as! SynncArtistSmallNode).cellStateAnimationProgress = values[0]
                 }
-                prop.threshold = 0.001
+                prop.threshold = 0.01
             }) as! POPAnimatableProperty
             
             return x
         }
     }
-    var cellStateAnimation : POPSpringAnimation {
+    var cellStateAnimation : POPBasicAnimation {
         get {
             if let anim = self.pop_animationForKey("cellStateAnimation") {
-                return anim as! POPSpringAnimation
+                return anim as! POPBasicAnimation
             } else {
-                let x = POPSpringAnimation()
+                let x = POPBasicAnimation()
                 x.completionBlock = {
                     anim, finished in
                     
                     self.pop_removeAnimationForKey("cellStateAnimation")
                 }
-                x.springBounciness = 1
                 x.property = self.cellStateAnimatableProperty
                 self.pop_addAnimation(x, forKey: "cellStateAnimation")
                 return x
@@ -99,11 +134,13 @@ class SynncArtistSmallNode : ASCellNode {
             }
             
 
-            let bg_redT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 236) / 255
-            let bg_greenT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 89) / 255
-            let bg_blueT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 26) / 255
+            self.backgroundNode.alpha = cellStateAnimationProgress
             
-            self.backgroundColor = UIColor(red: bg_redT, green: bg_greenT, blue: bg_blueT, alpha: 1)
+//            let bg_redT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 236) / 255
+//            let bg_greenT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 89) / 255
+//            let bg_blueT = POPTransition(cellStateAnimationProgress, startValue: 246, endValue: 26) / 255
+//            
+//            self.backgroundColor = UIColor(red: bg_redT, green: bg_greenT, blue: bg_blueT, alpha: 1)
             
             //            let translation = POPTransition(cellStateAnimationProgress, startValue: -self.selectedSeperatorNode.bounds.width / 2, endValue: 0)
 //            POPLayerSetScaleX(self.selectionIndicator.layer, cellStateAnimationProgress)
@@ -121,11 +158,9 @@ class SynncArtistSmallNode : ASCellNode {
         self.usernameNode = ASTextNode()
         self.usernameNode.maximumNumberOfLines = 1
         
-//        self.selectionIndicator = ASDisplayNode()
-//        self.selectionIndicator.backgroundColor = UIColor.SynncColor()
-//        self.selectionIndicator.flexBasis = ASRelativeDimension(type: .Points, value: 3)
-//        self.selectionIndicator.alignSelf = .Stretch
+        backgroundNode = SynncTrackSearchEntityBackgroundNode()
         
+        self.addSubnode(backgroundNode)
         self.addSubnode(self.imageNode)
         self.addSubnode(self.usernameNode)
 //        self.addSubnode(self.selectionIndicator)
@@ -133,6 +168,7 @@ class SynncArtistSmallNode : ASCellNode {
     func configureForArtist(artist : SynncArtist) {
         if let x = artist.avatar, url = NSURL(string: x) {
             self.imageNode.URL = url
+            self.backgroundNode.imageNode.URL = url
         }
         if let name = artist.name {
             self.usernameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 10.66)!, NSForegroundColorAttributeName : UIColor(red: 87/255, green: 87/255, blue: 87/255, alpha: 1)])
@@ -147,6 +183,10 @@ class SynncArtistSmallNode : ASCellNode {
                     } else if let img = artist.smallestImage, url = img.imageURL {
                         self.imageNode.URL = url
                     }
+                    
+                    if let img = artist.smallestImage, url = img.imageURL {
+                        self.backgroundNode.imageNode.URL = url
+                    }
                 }
             })
         } else if artist.source == SynncExternalSource.AppleMusic.rawValue {
@@ -156,6 +196,9 @@ class SynncArtistSmallNode : ASCellNode {
                 
                 if let arr = data, let album = arr.first as? WCLMusicKitAlbum, let urlStr = album.artworkUrl100, let url = NSURL(string: urlStr) {
                     self.imageNode.URL = url
+                }
+                if let arr = data, let album = arr.first as? WCLMusicKitAlbum, let urlStr = album.artworkUrl60, let url = NSURL(string: urlStr) {
+                    self.backgroundNode.imageNode.URL = url
                 }
             }
         }
@@ -169,7 +212,7 @@ class SynncArtistSmallNode : ASCellNode {
         spacer2.flexGrow = true
         
         let a = ASStackLayoutSpec(direction: .Vertical, spacing: 5, justifyContent: .Center, alignItems: .Center, children: [self.imageNode, self.usernameNode])
-        return a
+        return ASBackgroundLayoutSpec(child: a, background: backgroundNode)
     }
     
     

@@ -19,6 +19,8 @@ import WCLDataManager
 import WCLNotificationManager
 import WCLMusicKit
 import Async
+import Dollar
+import Cent
 
 enum EntityType : String {
     case Artist = "artist"
@@ -29,9 +31,12 @@ protocol TrackSearchControllerDelegate {
     func trackSearcher(controller : TrackSearchController, hasTrack track : SynncTrack) -> Bool
     func trackSearcher(controller : TrackSearchController, didSelect track : SynncTrack)
     func trackSearcher(controller : TrackSearchController, didDeselect track : SynncTrack)
+    func trackSearcher(controller : TrackSearchController, updatedTracklist newList : [SynncTrack])
 }
 
 class TrackSearchController : WCLPopupViewController {
+    
+    var data : [SynncTrack] = []
     
     var queryString_artists : String = ""
     var queryString_tracks : String = ""
@@ -79,11 +84,14 @@ class TrackSearchController : WCLPopupViewController {
     var spotifyAlbums : [SPTAlbum] = []
     var appleMusicAlbums : [WCLMusicKitAlbum] = []
     
-    init(size: CGSize) {
+    init(size: CGSize, playlist: SynncPlaylist) {
         let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = opts
+        
+        self.data = playlist.songs
     }
+    
     override func loadView() {
         super.loadView()
         
@@ -140,9 +148,19 @@ class TrackSearchController : WCLPopupViewController {
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Close TrackSearch", value: nil)
     }
     
+    override func beginPanGesture(recognizer: UIPanGestureRecognizer) {
+        super.beginPanGesture(recognizer)
+        Async.background {
+            self.delegate?.trackSearcher(self, updatedTracklist: self.data)
+        }
+    }
+    
     override func closeView(animated: Bool) {
         super.closeView(animated)
         self.screenNode.inputNode.resignFirstResponder()
+        Async.background {
+            self.delegate?.trackSearcher(self, updatedTracklist: self.data)
+        }
     }
     override func display() {
         super.display()
@@ -186,18 +204,28 @@ extension TrackSearchController : ASTableViewDelegate {
         if indexPath.item >= self.tracksDataSource.data.count {
             return
         }
-        if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
+        if let d = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
+            
+            self.data.append(d)
+            self.data = $.uniq(self.data)
             AnalyticsEvent.new(category: "trackSearch", action: "itemSelect", label: "track", value: nil)
-            self.delegate?.trackSearcher(self, didSelect: data)
+            
+            
+            
+            
+//            self.delegate?.trackSearcher(self, didSelect: data)
         }
     }
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.item >= self.tracksDataSource.data.count {
             return
         }
-        if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
+        if let d = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
             AnalyticsEvent.new(category: "trackSearch", action: "itemDeselect", label: "track", value: nil)
-            self.delegate?.trackSearcher(self, didDeselect: data)
+            let x = $.remove(self.data) {
+                $0.source == d.source && $0.song_id == d.song_id
+            }
+            self.data = $.uniq(x)
         }
     }
     func tableView(tableView: ASTableView, willDisplayNodeForRowAtIndexPath indexPath: NSIndexPath) {
@@ -206,13 +234,30 @@ extension TrackSearchController : ASTableViewDelegate {
             if indexPath.item >= self.tracksDataSource.data.count {
                 return
             }
-            if let data = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.delegate!.trackSearcher(self, hasTrack: data) {
+            
+            var selected : Bool
+            if let d = self.tracksDataSource.data[indexPath.item] as? SynncTrack where indexPath.item < self.tracksDataSource.data.count && self.hasTrack(d) {
                 tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+                selected = true
             } else {
+                selected = false
                 tableView.deselectRowAtIndexPath(indexPath, animated: false)
-//                    .deselectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
             }
+            
+            if let node = tableView.nodeForRowAtIndexPath(indexPath) as? SynncTrackNode {
+                node.pop_removeAllAnimations()
+                node.selected = selected
+            }
+            
         }
+    }
+    
+    func hasTrack(track : SynncTrack) -> Bool {
+        let x = self.data.filter{
+            t in
+            return t.source == track.source && t.song_id == track.song_id
+        }
+        return !x.isEmpty
     }
 }
 extension TrackSearchController : ASCollectionDelegate {
@@ -226,7 +271,6 @@ extension TrackSearchController : ASCollectionDelegate {
         if let _ = self.tracksDataSource.nextAction {
             self.screenNode.trackSearchState = true
             self.screenNode.moreTracksIndicatorState = true
-            print("SECTOR")
             self.tracksDataSource.loadMore()
         }
         
@@ -252,7 +296,9 @@ extension TrackSearchController : ASCollectionDelegate {
             } else {
                 self.selectedArtist = artist
             }
-            artistSearch()
+            Async.main(after: 0.3) {
+                self.artistSearch()
+            }
         }
     }
     func collectionView(collectionView: ASCollectionView, willDisplayNodeForItemAtIndexPath indexPath: NSIndexPath) {
@@ -624,6 +670,9 @@ extension TrackSearchController {
     }
     
     func artistSearch(){
+        
+        self.screenNode.inputNode.resignFirstResponder()
+        
         guard let id = self.selectedArtist?.id else {
             AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: nil, value: nil)
             
@@ -714,7 +763,7 @@ extension TrackSearchController : SourceSelectorDelegate {
 extension TrackSearchController {
     func notifyForSource(source : SynncExternalSource) {
         let x = source.rawValue.fixAppleMusic()
-        WCLNotification(body: ("You need to login to \(x) first.", x), image: "notification-access") {
+        WCLNotification(body: ("You need to login to \(x) first.", "login"), image: "notification-access") {
             notif in
             
             Synnc.sharedInstance.user.socialLogin(WCLUserLoginType(rawValue: source.rawValue)!)

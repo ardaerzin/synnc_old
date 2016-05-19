@@ -274,7 +274,27 @@ extension PlaylistController {
         let t = plist.canPlay()
         
         if t.status {
-            createStream(plist)
+            let w = StreamManager.sharedInstance.createStreamWindow(plist)
+            w.onDisplay = {
+                [weak self] in
+                
+                if self == nil {
+                    return
+                }
+                
+                if let window = self!.view.wclWindow {
+                    Async.main {
+                        window.onDismiss = {
+                            cb in
+                            
+                            print("SECTOOOOOR")
+                        }
+                        window.hide(true)
+                        print("!*!*!*!*!*", window.onDismiss)
+                    }
+                }
+            }
+            w.display(true)
         } else {
 
             guard let dict = t.reasonDict else {
@@ -294,13 +314,13 @@ extension PlaylistController {
                         str += index == 0 ? "\(src)" : index == missingSources.count - 1 ? " and \(src)" : ", \(src)"
                     }
                     
-                    notificationMessage = ("Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream.","\(str.fixAppleMusic())")
+                    notificationMessage = ("Please login to \(str.fixAppleMusic()) to listen to the Premium content in this stream.","login")
                     notificationAction = nil
                     
                 } else if let src = missingSources.first {
                     
                     let str = src.fixAppleMusic()
-                    notificationMessage = ("Please login to \(str) to listen to the Premium content in this stream.", "\(str)")
+                    notificationMessage = ("Please login to \(str) to listen to the Premium content in this stream.", "login")
                     notificationAction = {
                         notif in
                         if let type = WCLUserLoginType(rawValue: src.lowercaseString) {
@@ -353,43 +373,6 @@ extension PlaylistController {
                 return
             }
         }
-    }
-    
-    internal func createStream(playlist: SynncPlaylist) {
-        let stream = Stream(user: Synnc.sharedInstance.user)
-        stream.playlist = playlist
-        stream.lat = 0
-        stream.lon = 0
-        Synnc.sharedInstance.streamManager.userStream = stream
-        let vc = StreamVC(stream: stream)
-        
-        let opts = WCLWindowOptions(link: false, draggable: true, limit: UIScreen.mainScreen().bounds.height, dismissable: true)
-        let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
-        a.delegate = vc
-        a.panRecognizer.delegate = vc
-        a.clipsToBounds = false
-        stream.createCallback = {
-            created in
-            if StreamManager.canSetActiveStream(stream) {
-                if stream == StreamManager.sharedInstance.userStream {
-                    StreamManager.setActiveStream(stream)
-                    StreamManager.playStream(stream)
-                }
-            }
-        }
-        a.onDisplay = {
-            [weak self] in
-            
-            if self == nil {
-                return
-            }
-            
-            if let window = self!.view.wclWindow {
-                window.hide(true)
-            }
-        }
-        stream.update([NSObject : AnyObject]())
-        a.display(true)
     }
 }
 
@@ -444,23 +427,7 @@ extension PlaylistController {
     }
     
     func deleteAction(sender : AnyObject){
-        
-        guard let plist = self.playlist else {
-            return
-        }
-        
-        let id = plist.id
-        let json = plist.toJSON(nil, populate: true)
-        
-        playlist.delete()
-        
         self.playlist = nil
-        
-        Async.background {
-            Async.main {
-                Synnc.sharedInstance.socket.emit("SynncPlaylist:delete", json)
-            }
-        }
         if let window = self.view.wclWindow {
             window.hide(true)
         }

@@ -6,13 +6,13 @@
 //
 //
 
-extension Dictionary {
-    mutating func merge<K, V>(dict: [K: V]){
-        for (k, v) in dict {
-            self.updateValue(v as! Value, forKey: k as! Key)
-        }
-    }
-}
+//extension Dictionary {
+//    mutating func merge<K, V>(dict: [K: V]){
+//        for (k, v) in dict {
+//            self.updateValue(v as! Value, forKey: k as! Key)
+//        }
+//    }
+//}
 
 import Foundation
 import CoreData
@@ -94,7 +94,6 @@ class SynncPlaylist: NSManagedObject {
         
         var dict = infoDict.reasonDict!
         dict.merge(sourceDict.reasonDict!)
-        
         
         return (status: status, reasonDict: dict)
     }

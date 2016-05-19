@@ -39,6 +39,9 @@ extension SynncTrack {
         }
         if let artwork = json["artwork_url"].string {
             self.artwork_url = WildSoundCloud.appendAccessToken(artwork)
+            
+            let z = artwork.stringByReplacingOccurrencesOfString("-large.", withString: "-small.")
+            self.artwork_small = z
         }
     }
 }

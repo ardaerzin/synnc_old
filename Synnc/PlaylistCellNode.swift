@@ -13,10 +13,34 @@ import AsyncDisplayKit
 import Cloudinary
 import pop
 
+class PlaylistCellCover : ASDisplayNode {
+    var imageNode : ASNetworkImageNode!
+    
+    override init() {
+        super.init()
+        imageNode = ASNetworkImageNode()
+        imageNode.image = Synnc.appIcon
+        imageNode.contentMode = UIViewContentMode.Center
+        imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value : 1), ASRelativeDimension(type: .Percent, value : 1))
+        self.addSubnode(imageNode)
+    }
+    
+    override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASStaticLayoutSpec(children: [imageNode])
+    }
+}
+
+class CellButtonNode : ButtonNode {
+    var indexPath : NSIndexPath!
+}
+
 class PlaylistCellInfoHolder : ASDisplayNode {
     var nameNode : ASTextNode!
     var trackCountNode : ASTextNode!
     var genresNode : ASTextNode!
+    var buttonNode : CellButtonNode!
+    var sourceHolder : SourceHolder!
+    var genresText : String!
     
     override init() {
         super.init()
@@ -37,6 +61,13 @@ class PlaylistCellInfoHolder : ASDisplayNode {
         self.genresNode.flexShrink = true
         self.addSubnode(genresNode)
         
+        self.buttonNode = CellButtonNode()
+        self.buttonNode.setImage(UIImage(named: "submenu"), forState: .Normal)
+        self.addSubnode(buttonNode)
+        
+        sourceHolder = SourceHolder(size: CGSizeMake(15, 15))
+        self.addSubnode(sourceHolder)
+        
         backgroundColor = .whiteColor()
         
     }
@@ -47,38 +78,64 @@ class PlaylistCellInfoHolder : ASDisplayNode {
         }
         self.trackCountNode.attributedString = NSAttributedString(string: "\(playlist.songs.count) tracks", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 1)])
         
-        var genreText = ""
+        var genreText : String!
         for (ind,genre) in playlist.genres.enumerate() {
+            if genreText == nil {
+                genreText = ""
+            }
             if ind == 0 {
-                genreText += genre.name
+                genreText! += genre.name
             } else {
-                genreText += (" / " + genre.name)
+                genreText! += (", " + genre.name)
             }
         }
-        self.genresNode.attributedString = NSAttributedString(string: genreText, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()])
-        
+        if genreText == nil {
+            self.genresNode.attributedString = nil
+        } else {
+            self.genresNode.attributedString = NSAttributedString(string: genreText, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor.SynncColor()])
+        }
+        self.genresText = genreText
+        self.sourceHolder.configure(playlist.allSources())
+    
         self.genresNode.setNeedsLayout()
+        self.setNeedsLayout()
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
         
         let spacer = ASLayoutSpec()
         spacer.flexGrow = true
-        let bottomStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 8, justifyContent: .Center, alignItems: .Center, children: [trackCountNode, genresNode, spacer])
+        let bottomStack = ASStackLayoutSpec(direction: .Horizontal, spacing: 8, justifyContent: .Center, alignItems: .Center, children: [trackCountNode, sourceHolder, spacer])
         
         bottomStack.spacingBefore = 5
-        bottomStack.spacingAfter = 24
+        bottomStack.spacingAfter = 5
         bottomStack.alignSelf = .Stretch
         
-        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 2, justifyContent: .Center, alignItems: .Center, children: [nameNode, bottomStack])
+        genresNode.alignSelf = .Stretch
+        var items : [ASLayoutable] = [nameNode, bottomStack]
+        if genresText != nil {
+            items.append(genresNode)
+            genresNode.spacingAfter = 24
+        } else {
+            bottomStack.spacingAfter = 24
+        }
+        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 2, justifyContent: .Center, alignItems: .Center, children: items)
+        stack.flexBasis = ASRelativeDimension(type: .Points, value: constrainedSize.max.width - 50)
+        let x = ASStackLayoutSpec(direction: .Horizontal, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [stack, buttonNode])
+        buttonNode.flexGrow = true
         
-        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 9, 0, 9), child: stack)
+        return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 9, 0, 9), child: x)
     }
 }
 
 class PlaylistCell : ASDisplayNode {
     
-    var imageNode : ASNetworkImageNode!
+    var imageNode : ASNetworkImageNode! {
+        get {
+            return self.coverNode.imageNode
+        }
+    }
+    var coverNode : PlaylistCellCover!
     var infoNode : PlaylistCellInfoHolder!
     var img : AnyObject!
     
@@ -105,12 +162,11 @@ class PlaylistCell : ASDisplayNode {
     override init() {
         super.init()
         
-        self.imageNode = ASNetworkImageNode()
-        self.imageNode.backgroundColor = UIColor.whiteColor()
-        self.imageNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 70))
-        self.imageNode.image = Synnc.appIcon
-        self.imageNode.contentMode = UIViewContentMode.Center
-        self.addSubnode(self.imageNode)
+        self.coverNode = PlaylistCellCover()
+        self.coverNode.backgroundColor = UIColor.whiteColor()
+        self.coverNode.sizeRange = ASRelativeSizeRangeMakeWithExactRelativeDimensions(ASRelativeDimension(type: .Percent, value: 1), ASRelativeDimension(type: .Points, value: 70))
+        
+        self.addSubnode(self.coverNode)
         
         infoNode = PlaylistCellInfoHolder()
         infoNode.alignSelf = .Stretch
@@ -135,7 +191,7 @@ class PlaylistCell : ASDisplayNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [self.imageNode]), infoNode])
+        let a = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent: .Center, alignItems: .Center, children: [ASStaticLayoutSpec(children: [self.coverNode]), infoNode])
         return a
     }
 }

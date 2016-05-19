@@ -15,13 +15,14 @@ import pop
 import WCLPopupManager
 import WCLNotificationManager
 import Async
+import Dollar
 
 extension PlaylistTracklistController : TrackSearchControllerDelegate {
     func trackSearcher(controller: TrackSearchController, didSelect track: SynncTrack) {
-        self.playlist!.addSongs([track])
-        playlistUpdated()
-        
-        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+//        self.playlist!.addSongs([track])
+//        playlistUpdated()
+//        
+//        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
     func trackSearcher(controller: TrackSearchController, hasTrack track: SynncTrack) -> Bool {
         if let p = self.playlist {
@@ -31,10 +32,24 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
         }
     }
     func trackSearcher(controller: TrackSearchController, didDeselect track: SynncTrack) {
-        self.playlist!.removeSongs([track])
+//        self.playlist!.removeSongs([track])
+//        playlistUpdated()
+//        
+//        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+    }
+    func trackSearcher(controller: TrackSearchController, updatedTracklist newList: [SynncTrack]) {
+        let addedSongs = $.difference(newList, self.playlist!.songs)
+        let removedSongs = $.difference(self.playlist!.songs, newList)
+        
+        self.playlist?.removeSongs(removedSongs)
+        self.playlist?.addSongs(addedSongs)
+        
         playlistUpdated()
         
-        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
+        Async.main {
+            self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade)
+        }
+//        self.screenNode.tracksTable.view.reloadSections(NSIndexSet(index: 0), withRowAnimation: .None)
     }
 }
 
@@ -47,6 +62,10 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     }
     func displayTrackSearch(sender : ASButtonNode!) {
         
+        guard let plist = self.playlist else {
+            return
+        }
+        
         if !canDisplayTrackSearch() {
             
             Async.main {
@@ -55,7 +74,7 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
             return
         }
         
-        let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size)
+        let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size, playlist: plist)
         lc.delegate = self
         WCLPopupManager.sharedInstance.newPopup(lc)
         
@@ -72,10 +91,12 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     var emptyState : Bool! {
         didSet {
             if emptyState != oldValue {
-                self.screenNode.emptyState = emptyState
-                self.screenNode.emptyStateNode?.setText("This playlist does not contain any songs", withAction: true)
-                self.screenNode.emptyStateNode?.subTextNode.addTarget(self, action: #selector(PlaylistTracklistController.displayTrackSearch(_:)), forControlEvents: .TouchUpInside)
-                self.screenNode.emptyStateNode?.setNeedsLayout()
+                Async.main {
+                    self.screenNode.emptyState = self.emptyState
+                    self.screenNode.emptyStateNode?.setText("This playlist does not contain any songs", withAction: true)
+                    self.screenNode.emptyStateNode?.subTextNode.addTarget(self, action: #selector(PlaylistTracklistController.displayTrackSearch(_:)), forControlEvents: .TouchUpInside)
+                    self.screenNode.emptyStateNode?.setNeedsLayout()
+                }
             }
         }
     }

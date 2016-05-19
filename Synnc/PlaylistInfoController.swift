@@ -415,7 +415,6 @@ extension PlaylistInfoController {
     func getAddress(){
         AnalyticsEvent.new(category: "PlaylistAction", action: "infoEdit", label: "location", value: nil)
         let location = WCLLocationManager.sharedInstance().getCurrentLocation()
-        
         WCLLocationManager.sharedInstance().gpsManager.reverseGeocodeLocationUsingGoogleWithCoordinates(location, callback: { (address, error) -> Void in
             if let ad = address {
                 if let sublocality = ad.subLocalities.first, let sub = sublocality {

@@ -187,6 +187,9 @@ extension StreamPlayerManager : SPTAudioStreamingPlaybackDelegate {
         if audioStreaming === self.activePlayer {
             if self.rate == 0 {
                 print("sEctor")
+                if !audioStreaming.isPlaying {
+                    audioStreaming.setIsPlaying(true, callback: nil)
+                }
             } else {
                 print("nooope")
             }

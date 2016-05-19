@@ -9,6 +9,7 @@
 import Foundation
 import AsyncDisplayKit
 import Shimmer
+import Async
 
 class PlaylistInfoHolder : ASDisplayNode, TrackedView {
     var infoNode : PlaylistInfoNode!
@@ -247,17 +248,6 @@ class PlaylistInfoNode : WCLScrollNode {
         } else {
             self.imageNode.image = UIImage(named: "camera-placeholder")!
             self.imageNode.contentMode = .ScaleAspectFill
-//            self.imageNode.contentMode = .Center
-        }
-        
-        if let title = self.infoDelegate?.titleForPlaylist!() {
-            self.titleNode.attributedText = NSAttributedString(string: title, attributes: self.titleAttributes)
-        }
-        
-        if let location = self.infoDelegate!.locationForPlaylist!() {
-            self.locationHolder.contentTextNode.attributedText = NSAttributedString(string: location, attributes: self.locationHolder.contentAttributes)
-        } else {
-            self.locationHolder.contentTextNode.attributedText = NSAttributedString(string: "", attributes: self.locationHolder.contentAttributes)
         }
         
         let genres = self.infoDelegate!.genresForPlaylist!()
@@ -269,14 +259,27 @@ class PlaylistInfoNode : WCLScrollNode {
                 genreText += (", " + genre.name)
             }
         }
-        self.genreHolder.contentTextNode.attributedText = NSAttributedString(string: genreText, attributes: self.genreHolder.contentAttributes)
-        genreHolder.setNeedsLayout()
         
         let trackCount = self.infoDelegate!.trackCountForPlaylist!()
         let trackText = "\(trackCount) Tracks"
         
-        self.trackCountNode.attributedString = NSAttributedString(string: trackText, attributes: self.trackCountAttributes)
-        self.setNeedsLayout()
+        Async.main {
+            self.genreHolder.contentTextNode.attributedText = NSAttributedString(string: genreText, attributes: self.genreHolder.contentAttributes)
+            self.genreHolder.setNeedsLayout()
+        
+            self.trackCountNode.attributedString = NSAttributedString(string: trackText, attributes: self.trackCountAttributes)
+            self.setNeedsLayout()
+            
+            if let title = self.infoDelegate?.titleForPlaylist!() {
+                self.titleNode.attributedText = NSAttributedString(string: title, attributes: self.titleAttributes)
+            }
+            
+            if let location = self.infoDelegate!.locationForPlaylist!() {
+                self.locationHolder.contentTextNode.attributedText = NSAttributedString(string: location, attributes: self.locationHolder.contentAttributes)
+            } else {
+                self.locationHolder.contentTextNode.attributedText = NSAttributedString(string: "", attributes: self.locationHolder.contentAttributes)
+            }
+        }
     }
     
     override func layout() {

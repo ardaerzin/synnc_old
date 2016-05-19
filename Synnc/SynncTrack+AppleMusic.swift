@@ -45,6 +45,7 @@ extension SynncTrack {
         self.name = track.trackName
         self.song_id = "\(track.trackId)"
         self.artwork_url = track.artworkUrl100
+        self.artwork_small = track.artworkUrl60
         self.duration = track.trackTimeMillis
         self.albumName = track.collectionName
         
