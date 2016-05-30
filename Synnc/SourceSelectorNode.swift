@@ -114,13 +114,13 @@ class SourceSelectionNode : ASDisplayNode {
         if canSelect == nil || !canSelect! {
             if sender.source == .Spotify {
                 
-                WCLNotification(body: ("You need to login to Spotify first.", "login"), image: "notification-access") {
+                SynncNotification(body: ("You need to login to Spotify first.", "login"), image: "notification-access") {
                     notif in
                     
                     Synnc.sharedInstance.user.socialLogin(.Spotify)
                 }.addToQueue()
             } else if sender.source == .AppleMusic {
-                WCLNotification(body: ("You need to login to Apple Music first.", "login"), image: "notification-access") {
+                SynncNotification(body: ("You need to login to Apple Music first.", "login"), image: "notification-access") {
                     notif in
                     
                     Synnc.sharedInstance.user.socialLogin(.AppleMusic)
@@ -145,7 +145,7 @@ class SourceSelectionNode : ASDisplayNode {
     
     func closeSelector(sender: ButtonNode) {
         self.toggle()
-        AnalyticsEvent.new(category: "searchSourceSelect", action: "close", label: nil, value: nil)
+        AnalyticsEvent.new(category: "ui_action", action: "buttonTap", label: "closeSourceSelector", value: nil)
     }
     
     func toggle(selectedSource: SynncExternalSource? = nil){

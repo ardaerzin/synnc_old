@@ -55,12 +55,29 @@ class SettingsController : ASViewController, PagerSubcontroller {
     override var inputAccessoryView : UIView! {
         get {
             
-            if self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() {
+            if self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() || self.screenNode.settingsNode.inviteNode.feedbackArea.isFirstResponder() {
                 
                 if _inputAccessoryNode == nil {
                     _inputAccessoryNode = SettingsInputAccessoryNode()
+                    _inputAccessoryNode.noButton.addTarget(self, action: #selector(SettingsController.cancelFeedback(_:)), forControlEvents: .TouchUpInside)
+                }
+             
+//                cancelFeedback
+//                cancel
+                
+                _inputAccessoryNode.noButton.removeTarget(self, action: #selector(SettingsController.cancelFeedback(_:)), forControlEvents: .TouchUpInside)
+                _inputAccessoryNode.noButton.removeTarget(self, action: #selector(SettingsController.cancelInvitation(_:)), forControlEvents: .TouchUpInside)
+                
+                _inputAccessoryNode.yesButton.removeTarget(self, action: #selector(SettingsController.sendFeedback(_:)), forControlEvents: .TouchUpInside)
+                _inputAccessoryNode.yesButton.removeTarget(self, action: #selector(SettingsController.sendInvitation(_:)), forControlEvents: .TouchUpInside)
+                
+                
+                if self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() {
                     _inputAccessoryNode.yesButton.addTarget(self, action: #selector(SettingsController.sendFeedback(_:)), forControlEvents: .TouchUpInside)
                     _inputAccessoryNode.noButton.addTarget(self, action: #selector(SettingsController.cancelFeedback(_:)), forControlEvents: .TouchUpInside)
+                } else {
+                    _inputAccessoryNode.yesButton.addTarget(self, action: #selector(SettingsController.sendInvitation(_:)), forControlEvents: .TouchUpInside)
+                    _inputAccessoryNode.noButton.addTarget(self, action: #selector(SettingsController.cancelInvitation(_:)), forControlEvents: .TouchUpInside)
                 }
                 
                 _inputAccessoryNode.frame = CGRectMake(0,0,self.view.frame.width,40)
@@ -128,6 +145,7 @@ class SettingsController : ASViewController, PagerSubcontroller {
         self.screenNode.settingsNode.aboutNode.librariesButton.addTarget(self, action: #selector(SettingsController.librariesButtonAction(_:)), forControlEvents: .TouchUpInside)
         
         self.screenNode.settingsNode.feedbackNode.feedbackArea.delegate = self
+        self.screenNode.settingsNode.inviteNode.feedbackArea.delegate = self
         
         self.screenNode.settingsNode.loginSourcesNode.appleMusicButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
         self.screenNode.settingsNode.loginSourcesNode.spotifyButton.addTarget(self, action: #selector(SettingsController.toggleSocialLogin(_:)), forControlEvents: .TouchUpInside)
@@ -152,7 +170,7 @@ class SettingsController : ASViewController, PagerSubcontroller {
         
         self.keyboardTranslation = translation
         
-        if isDisplayed && self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() {
+        if isDisplayed && (self.screenNode.settingsNode.feedbackNode.feedbackArea.isFirstResponder() || self.screenNode.settingsNode.inviteNode.feedbackArea.isFirstResponder()) {
             POPLayerSetTranslationY(self.screenNode.layer, -translation)
         } else {
             POPLayerSetTranslationY(self.screenNode.layer, 0)
@@ -244,6 +262,26 @@ extension SettingsController {
 }
 
 extension SettingsController {
+    func sendInvitation(sender: AnyObject) {
+        self.screenNode.settingsNode.inviteNode.feedbackArea.resignFirstResponder()
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "sendInvitation", value: nil)
+        
+        if let email = self.screenNode.settingsNode.inviteNode.feedbackArea.attributedText?.string {
+            
+            self.screenNode.settingsNode.inviteNode.feedbackArea.attributedText = NSAttributedString(string: "")
+            editableTextNodeDidUpdateText(self.screenNode.settingsNode.inviteNode.feedbackArea)
+            
+            Synnc.sharedInstance.socket.emitWithAck("new beta tester", email)(timeoutAfter: 0, callback: {
+                (dataArr) in
+                if let status = dataArr.first, let stat = JSON(status).bool where stat {
+                    Async.main {
+                        AnalyticsEvent.new(category: "InvitationCallback", action: "email", label: "success", value: nil)
+                        SynncNotification(body: ("Your friend will be here soon.", "friend"), image: "notification-error").addToQueue()
+                    }
+                }
+            })
+        }
+    }
     func sendFeedback(sender : ButtonNode) {
         self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
         AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "sendFeedback", value: nil)
@@ -263,7 +301,7 @@ extension SettingsController {
                 (dataArr) in
                 if let status = dataArr.first, let stat = JSON(status).bool where stat {
                     Async.main {
-                        WCLNotification(body: ("We're on it! Thank you for your feedback.", "Thank you"), image: "notification-error").addToQueue()
+                        SynncNotification(body: ("We're on it! Thank you for your feedback.", "Thank you"), image: "notification-error").addToQueue()
                     }
                 }
             })
@@ -273,16 +311,22 @@ extension SettingsController {
         self.screenNode.settingsNode.feedbackNode.feedbackArea.resignFirstResponder()
         AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "cancelFeedback", value: nil)
     }
+    func cancelInvitation(sender : ButtonNode) {
+        self.screenNode.settingsNode.inviteNode.feedbackArea.resignFirstResponder()
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "cancelInvitation", value: nil)
+    }
 }
 
 extension SettingsController : ASEditableTextNodeDelegate {
     func editableTextNodeDidUpdateText(editableTextNode: ASEditableTextNode) {
 
-        self.screenNode.settingsNode.feedbackNode.feedbackArea.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(editableTextNode.calculatedSize.width, 100), CGSizeMake(editableTextNode.calculatedSize.width, CGFloat.max)))
-        self.screenNode.settingsNode.feedbackNode.setNeedsLayout()
-        
-        let y = 65 + 20 + self.screenNode.settingsNode.disconnectButton.calculatedSize.height
-        self.screenNode.settingsNode.view.setContentOffset(CGPointMake(0, max(0,(self.screenNode.settingsNode.view.contentSize.height - y) - self.screenNode.calculatedSize.height)), animated: false)
+        if editableTextNode == self.screenNode.settingsNode.feedbackNode.feedbackArea {
+            editableTextNode.measureWithSizeRange(ASSizeRangeMake(CGSizeMake(editableTextNode.calculatedSize.width, 100), CGSizeMake(editableTextNode.calculatedSize.width, CGFloat.max)))
+            self.screenNode.settingsNode.feedbackNode.setNeedsLayout()
+            
+            let y = 65 + 20 + self.screenNode.settingsNode.disconnectButton.calculatedSize.height
+            self.screenNode.settingsNode.view.setContentOffset(CGPointMake(0, max(0,(self.screenNode.settingsNode.view.contentSize.height - y) - self.screenNode.calculatedSize.height)), animated: false)
+        }
     }
     func editableTextNodeDidBeginEditing(editableTextNode: ASEditableTextNode) {
         if let pvc = self.parentViewController as? RootWindowController {

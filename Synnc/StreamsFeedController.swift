@@ -164,7 +164,7 @@ extension StreamsFeedController : ASTableDelegate {
             a.panRecognizer.delegate = vc
             a.display(true)
             
-            AnalyticsEvent.new(category : "ui_action", action: "cell_tap", label: "stream", value: nil)
+            AnalyticsEvent.new(category : "ui_action", action: "cell_tap", label: "stream", value: nil, customAttributes: ["contentType" : "stream", "contentId" : stream.o_id, "contentName" : stream.playlist.name!])
         }
     }
 }

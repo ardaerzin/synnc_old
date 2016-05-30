@@ -114,14 +114,11 @@ class WildTwitterUser : WCLUserExtension {
             self.accessTokenSecret = b.authTokenSecret
             self.accessToken = b.authToken
             status = true
-            AnalyticsEvent.new(category : "login_handler", action: "twitter", label: "true", value: 0)
-            
         } else {
             self.session = nil
             self.accessToken = ""
             self.accessTokenSecret = ""
             status = false
-            AnalyticsEvent.new(category : "login_handler", action: "twitter", label: "false", value: 0)
         }
         
         self.loginData = ["accessToken" : self.accessToken!, "accessTokenSecret" : self.accessTokenSecret!]

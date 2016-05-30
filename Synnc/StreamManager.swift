@@ -172,25 +172,11 @@ extension StreamManager {
                     let json = JSON(d)
                     stream.fromJSON(json)
                 }
+                
+                AnalyticsEvent.new(category: "StreamAction", action: "stop", label: nil, value: nil)
             }
         } else {
-            Synnc.sharedInstance.socket.emitWithAck("Stream:leave", stream.o_id)(timeoutAfter: 0) {
-                
-                [weak self]
-                data in
-                
-                if self == nil {
-                    return
-                }
-                
-                
-                completion?(status: true)
-                
-                if let ind = stream.users.indexOf(Synnc.sharedInstance.user) {
-                    stream.users.removeAtIndex(ind)
-                    self?.updatedStreamFromServer(stream, changedKeys: ["users"])
-                }
-            }
+            self.leaveStream(stream, completion: completion)
         }
     }
     
@@ -198,7 +184,7 @@ extension StreamManager {
         
         if self.activeStream == nil {
             
-            WCLNotification(body: ("Your active stream ended", "ended"), image: "notification-warning", showLocalNotification: true).addToQueue()
+            SynncNotification(body: ("Your active stream ended", "ended"), image: "notification-warning", showLocalNotification: true).addToQueue()
             
         } else {
             
@@ -212,7 +198,9 @@ extension StreamManager {
             }
             
             if let msg = notificationMsg {
-                WCLNotification(body: msg, showLocalNotification: true, image: "notification-warning").addToQueue()
+                Async.main {
+                    SynncNotification(body: msg, showLocalNotification: true, image: "notification-warning").addToQueue()
+                }
             }
         }
         
@@ -256,6 +244,7 @@ extension StreamManager {
                 stream.users.removeAtIndex(ind)
                 self?.updatedStreamFromServer(stream, changedKeys: ["users"])
             }
+            AnalyticsEvent.new(category: "StreamAction", action: "leave", label: nil, value: nil)
         }
     }
     
@@ -283,6 +272,7 @@ extension StreamManager {
                 completion?(status: false)
             }
             
+            AnalyticsEvent.new(category: "StreamAction", action: "join", label: nil, value: nil)
         }
     }
     
@@ -304,6 +294,7 @@ extension StreamManager {
                     } else {
                         self.userStream?.createCallback?(status: false)
                     }
+                    AnalyticsEvent.new(category: "StreamAction", action: "create", label: nil, value: nil)
                 }
             }
             

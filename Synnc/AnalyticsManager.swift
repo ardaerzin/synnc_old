@@ -8,6 +8,7 @@
 
 import Foundation
 import AsyncDisplayKit
+import Crashlytics
 
 protocol TrackedView {
     var title : String! {get}
@@ -35,16 +36,18 @@ struct AnalyticsEvent {
     var action : String!
     var label : String!
     var value : NSNumber!
+    var customAttributes : [String : AnyObject]!
     
     init(){
         
     }
-    static func new(category category : String, action: String, label: String!, value: NSNumber?){
+    static func new(category category : String, action: String, label: String!, value: NSNumber?, customAttributes : [String : AnyObject]? = nil){
         var event = AnalyticsEvent()
         event.category = category
         event.action = action
         event.label = label
         event.value = value
+        event.customAttributes = customAttributes
         
         AnalyticsManager.sharedInstance.newEvent(event)
     }
@@ -91,8 +94,23 @@ class AnalyticsManager {
     
     func newEvent(event : AnalyticsEvent) {
         
+       
         let dict = GAIDictionaryBuilder.createEventWithCategory(event.category, action: event.action, label: event.label, value: event.value).build() as [NSObject : AnyObject]
         GAI.sharedInstance().defaultTracker.send(dict)
         
+        // Answers
+        
+        print("IS DEV?", isDev)
+        if event.category == "login_handler" {
+            Answers.logLoginWithMethod(event.action, success: event.label == "true" ? 1 : 0, customAttributes: ["env" : isDev ? "dev" : "prod"])
+        } else if event.category == "StreamAction" {
+            Answers.logCustomEventWithName("Stream: \(event.action)", customAttributes: ["env" : isDev ? "dev" : "prod"])
+        } else if event.category == "Share", let att = event.customAttributes {
+            Answers.logShareWithMethod(event.action, contentName: att["contentName"] as? String, contentType: att["contentType"] as? String, contentId: att["contentId"] as? String, customAttributes: ["env" : isDev ? "dev" : "prod"])
+        } else if event.action == "cell_tap" && event.label == "stream", let att = event.customAttributes {
+            Answers.logContentViewWithName(att["contentName"] as? String, contentType: att["contentType"] as? String, contentId: att["contentId"] as? String, customAttributes: ["env" : isDev ? "dev" : "prod"])
+        } else if event.category == "InvitationCallback" {
+            Answers.logInviteWithMethod(event.action, customAttributes: ["env" : isDev ? "dev" : "prod"])
+        }
     }
 }

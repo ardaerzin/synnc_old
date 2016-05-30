@@ -183,7 +183,7 @@ class WildSpotifyUser : WCLUserExtension {
                 } else {
                     self.loginStatus = false
                     Async.main {
-                        WCLNotification(body: ("You need a Spotify Premium Account to use Synnc.", "Premium Account"), image: "notification-access") {
+                        SynncNotification(body: ("You need a Spotify Premium Account to use Synnc.", "Premium Account"), image: "notification-access") {
                             notif in
                             
                             UIApplication.sharedApplication().openURL(NSURL(string: "https://www.spotify.com/premium")!)

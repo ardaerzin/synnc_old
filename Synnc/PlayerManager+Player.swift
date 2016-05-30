@@ -86,7 +86,8 @@ extension StreamPlayerManager {
             if let avplayer = player as? AVPlayer {
                 avplayer.rate = newValue
             } else if let spotifyPlayer = player as? SPTAudioStreamingController {
-                
+               
+                spotifyPlayer.setIsPlaying(newValue == 1 ? true : false, callback: nil)
             } else if let appleMusicPlayer = player as? MPMusicPlayerController {
                 if newValue == 1 {
                     Async.main {

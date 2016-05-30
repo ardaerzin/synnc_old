@@ -171,7 +171,7 @@ extension LoginVC {
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "facebook_login", value: nil)
     }
     func loginWithTwitter(sender : AnyObject){
-        WCLNotification(body: ("Twitter Login option is not available yet", "Twitter Login"), image: "notification-error").addToQueue()
+        SynncNotification(body: ("Twitter Login option is not available yet", "Twitter Login"), image: "notification-error").addToQueue()
         
         
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "twitter_login", value: nil)

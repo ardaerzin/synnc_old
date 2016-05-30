@@ -13,6 +13,7 @@ import FBSDKCoreKit
 import SwiftyJSON
 import WCLUtilities
 import Cloudinary
+import Crashlytics
 
 class MainUser : WCLUser {
     
@@ -99,16 +100,14 @@ class MainUser : WCLUser {
         if self.status {
             self.syncFollowed()
         }
+
+        AnalyticsEvent.new(category: "login_handler", action: self.provider, label: "\(self.status)", value: nil)
     }
     
     override func extensionLoginStatusChanged(forUser user: WCLUserExtension) {
         super.extensionLoginStatusChanged(forUser: user)
-        if user.type == .Soundcloud {
-            if let status = user.loginStatus {
-                AnalyticsEvent.new(category: "login_handler", action: "soundcloud", label: status ? "true" : "false", value: nil)
-            }
-            
-//            new event AnalyticsEvent(category: "login_handler", action: "facebook", label: "true", value: nil)
+        if user.options.indexOf(WCLUserExtensionOptions.authServer) == nil {
+            AnalyticsEvent.new(category: "account_link_handler", action: user.type.rawValue, label: status ? "true" : "false", value: nil)
         }
     }
     override func updateUserInfo(info: JSON) {

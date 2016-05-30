@@ -130,7 +130,7 @@ class TrackSearchController : WCLPopupViewController {
     }
     func toggleSourceSelector(sender : ButtonNode){
         self.screenNode.sourceSelectionNode.toggle(self.selectedSource)
-        AnalyticsEvent.new(category: "trackSearch", action: "sourceSelect", label: nil, value: nil)
+        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "toggle sourceSelect", value: nil)
     }
     
     override func viewWillLayoutSubviews() {
@@ -145,7 +145,7 @@ class TrackSearchController : WCLPopupViewController {
     
     func closeTrackSearch(sender : ButtonNode) {
         self.closeView(true)
-        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Close TrackSearch", value: nil)
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "Done TrackSearch", value: nil)
     }
     
     override func beginPanGesture(recognizer: UIPanGestureRecognizer) {
@@ -156,11 +156,11 @@ class TrackSearchController : WCLPopupViewController {
     }
     
     override func closeView(animated: Bool) {
-        super.closeView(animated)
-        self.screenNode.inputNode.resignFirstResponder()
         Async.background {
             self.delegate?.trackSearcher(self, updatedTracklist: self.data)
         }
+        super.closeView(animated)
+        self.screenNode.inputNode.resignFirstResponder()
     }
     override func display() {
         super.display()
@@ -208,7 +208,7 @@ extension TrackSearchController : ASTableViewDelegate {
             
             self.data.append(d)
             self.data = $.uniq(self.data)
-            AnalyticsEvent.new(category: "trackSearch", action: "itemSelect", label: "track", value: nil)
+            AnalyticsEvent.new(category: "trackSearch", action: "itemSelect", label: "track \(self.selectedSource.rawValue)", value: nil)
             
             
             
@@ -221,7 +221,7 @@ extension TrackSearchController : ASTableViewDelegate {
             return
         }
         if let d = self.tracksDataSource.data[indexPath.item] as? SynncTrack {
-            AnalyticsEvent.new(category: "trackSearch", action: "itemDeselect", label: "track", value: nil)
+            AnalyticsEvent.new(category: "trackSearch", action: "itemDeselect", label: "track \(self.selectedSource.rawValue)", value: nil)
             let x = $.remove(self.data) {
                 $0.source == d.source && $0.song_id == d.song_id
             }
@@ -266,7 +266,7 @@ extension TrackSearchController : ASCollectionDelegate {
     }
     func tableView(tableView: ASTableView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.tracksManager.batchContext = context
-        AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "track", value: nil)
+        AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "track \(self.selectedSource.rawValue)", value: nil)
         
         if let _ = self.tracksDataSource.nextAction {
             self.screenNode.trackSearchState = true
@@ -280,7 +280,7 @@ extension TrackSearchController : ASCollectionDelegate {
     }
     func collectionView(collectionView: ASCollectionView, willBeginBatchFetchWithContext context: ASBatchContext) {
         self.artistsManager.batchContext = context
-        AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "artist", value: nil)
+        AnalyticsEvent.new(category: "trackSearch", action: "loadMore", label: "artist \(self.selectedSource.rawValue)", value: nil)
         
         if let _ = self.artistsDataSource.nextAction {
             self.screenNode.artistSearchState = true
@@ -567,18 +567,18 @@ extension TrackSearchController {
             
         }
     }
-    func parseSpotifyAlbum(offset : Int? = 0, timeStamp : NSDate!) {
+    func parseSpotifyAlbum(offset : Int? = 0, timeStamp : NSDate!, prevData: [SPTPartialTrack]? = []) {
         guard let artist = self.selectedArtist else {
-            return
-        }
-        
-        if offset >= spotifyAlbums.count {
-            self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: [])
             return
         }
         
         if !checkSourceAvailability(self.selectedSource) {
             notifyForSource(self.selectedSource)
+            return
+        }
+        
+        if offset >= spotifyAlbums.count {
+            self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: [])
             return
         }
         
@@ -596,9 +596,16 @@ extension TrackSearchController {
                             trackItem.setValue(album, forKey: "album")
                         }
                         
-                        self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: tracks)
-                        self.tracksDataSource.nextAction = {
-                            self.parseSpotifyAlbum(offset!+1, timeStamp: timeStamp)
+                        let x = tracks + prevData!
+                        if x.count < 20 && offset!+1 < self.spotifyAlbums.count {
+                            
+                            self.parseSpotifyAlbum(offset!+1, timeStamp: timeStamp, prevData: x)
+                            
+                        } else {
+                            self.processResults(artist.id + ":search", source: .Spotify, entity : .Track, timestamp: timeStamp, dataArr: x)
+                            self.tracksDataSource.nextAction = {
+                                self.parseSpotifyAlbum(offset!+1, timeStamp: timeStamp)
+                            }
                         }
                     } else {
                         self.tracksDataSource.nextAction = nil
@@ -623,7 +630,13 @@ extension TrackSearchController {
         }
     }
     
-    func spotifyArtistSearch(artist : SPTArtist, uri : NSURL? = nil, timeStamp : NSDate? = nil) {
+    var sptAlbumTypes : [SPTAlbumType] {
+        get {
+            return [SPTAlbumType.Album, SPTAlbumType.Compilation, SPTAlbumType.AppearsOn, SPTAlbumType.Single]
+        }
+    }
+    
+    func spotifyArtistSearch(artist : SPTArtist, uri : NSURL? = nil, timeStamp : NSDate? = nil, albumType : SPTAlbumType? = .Album) {
         
         if !checkSourceAvailability(self.selectedSource) {
             notifyForSource(self.selectedSource)
@@ -637,7 +650,11 @@ extension TrackSearchController {
         self.spotifyAlbums = []
         
         do {
-            let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: .Album, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: sptUser.territory)
+            let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: albumType!, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: sptUser.territory)
+            
+            
+//            SPTAlbumType.
+//            SPTArtist.createRequestForAlbumsByArtist(<#T##artist: NSURL!##NSURL!#>, ofType: <#T##SPTAlbumType#>, withAccessToken: <#T##String!#>, market: <#T##String!#>)
             
             NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (data, res, err) in
                 do {
@@ -649,14 +666,34 @@ extension TrackSearchController {
                         return
                     }
                     
+                    print("ALBUMS", x)
+                    
                     if let albums = x.items as? [SPTAlbum] {
                         
                         self.addSpotifyAlbums(albums, timeStamp: timeStamp)
                         if self.selectedArtist != nil && x.hasNextPage {
                             self.spotifyArtistSearch(artist, uri : x.nextPageURL, timeStamp: timeStamp)
+                        } else if self.selectedArtist != nil {
+//                            let nextType 
+                            var ind = self.sptAlbumTypes.indexOf(albumType!)!
+                            if ind == self.sptAlbumTypes.count - 1 {
+                                
+                            } else {
+                                ind += 1
+                                let newType = self.sptAlbumTypes[ind]
+                                self.spotifyArtistSearch(artist, uri: nil, timeStamp: timeStamp, albumType: newType)
+                             }
                         }
                     } else {
                         self.addSpotifyAlbums([], timeStamp: timeStamp)
+                        var ind = self.sptAlbumTypes.indexOf(albumType!)!
+                        if ind == self.sptAlbumTypes.count - 1 {
+                            
+                        } else {
+                            ind += 1
+                            let newType = self.sptAlbumTypes[ind]
+                            self.spotifyArtistSearch(artist, uri: nil, timeStamp: timeStamp, albumType: newType)
+                        }
                     }
                     
                 } catch let error as NSError {
@@ -674,7 +711,7 @@ extension TrackSearchController {
         self.screenNode.inputNode.resignFirstResponder()
         
         guard let id = self.selectedArtist?.id else {
-            AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: nil, value: nil)
+            AnalyticsEvent.new(category: "trackSearch", action: "deselectArtist", label: self.selectedSource.rawValue, value: nil)
             
             self.tracksDataSource.nextAction = nil
             self.artistsDataSource.nextAction = nil
@@ -693,7 +730,7 @@ extension TrackSearchController {
             return
         }
         
-        AnalyticsEvent.new(category: "trackSearch", action: "selectArtist", label: nil, value: nil)
+        AnalyticsEvent.new(category: "trackSearch", action: "selectArtist", label: self.selectedSource.rawValue, value: nil)
         
         last_search = NSDate()
         let ts = last_search
@@ -763,7 +800,7 @@ extension TrackSearchController : SourceSelectorDelegate {
 extension TrackSearchController {
     func notifyForSource(source : SynncExternalSource) {
         let x = source.rawValue.fixAppleMusic()
-        WCLNotification(body: ("You need to login to \(x) first.", "login"), image: "notification-access") {
+        SynncNotification(body: ("You need to login to \(x) first.", "login"), image: "notification-access") {
             notif in
             
             Synnc.sharedInstance.user.socialLogin(WCLUserLoginType(rawValue: source.rawValue)!)

@@ -175,6 +175,7 @@ extension MyPlaylistsController : ASTableViewDataSource {
         
         Async.main {
             Synnc.sharedInstance.topPopupManager.newPopup(self.actionSheet)
+            AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "MyPlaylists ActionSheet display", value: nil)
         }
     }
     
@@ -193,12 +194,11 @@ extension MyPlaylistsController : ASTableViewDataSource {
         
         let plist = SharedPlaylistDataSource.allItems[indexPath.row]
         
-        AnalyticsEvent.new(category : "MyPlaylistsAction", action: "button_tap", label: "stream", value: nil)
+        AnalyticsEvent.new(category : "MyPlaylistsActionSheet", action: "button_tap", label: "stream", value: nil)
         
         if StreamManager.sharedInstance.activeStream != nil {
             
             let x = StreamInProgressPopup(size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200), playlist: nil)
-//            x.callback = self.streamPlaylist
             WCLPopupManager.sharedInstance.newPopup(x)
             
             return
@@ -261,7 +261,7 @@ extension MyPlaylistsController : ASTableViewDataSource {
             
             if let msg = notificationMessage {
                 Async.main {
-                    WCLNotification(body: msg, image: "notification-error", callback: notificationAction).addToQueue()
+                    SynncNotification(body: msg, image: "notification-error", callback: notificationAction).addToQueue()
                 }
                 return
             }
@@ -288,11 +288,13 @@ extension MyPlaylistsController : ASTableViewDataSource {
         if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == playlist {
             
             Async.main {
-                WCLNotification(body: ("You can't delete your active stream.", "can't delete"), image: "notification-error").addToQueue()
+                SynncNotification(body: ("You can't delete your active stream.", "can't delete"), image: "notification-error").addToQueue()
             }
             
             return
         }
+        
+        AnalyticsEvent.new(category : "MyPlaylistsActionSheet", action: "button_tap", label: "delete", value: nil)
         
         let x = DeletePlaylistPopup(playlist : playlist, size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
         Async.main {
@@ -312,15 +314,6 @@ extension MyPlaylistsController : ASTableViewDelegate {
         AnalyticsEvent.new(category : "ui_action", action: "cell_tap", label: "playlist", value: nil)
     }
 }
-
-//extension MyPlaylistsController : ASCollectionDelegate {
-//    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-//        let playlist = SharedPlaylistDataSource.allItems[indexPath.item]
-//        self.selectedPlaylist = playlist
-//        self.displayPlaylist(playlist)
-//        AnalyticsEvent.new(category : "ui_action", action: "playlist_tap", label: nil, value: nil)
-//    }
-//}
 
 extension MyPlaylistsController : PlaylistsDataSourceDelegate {
     func playlistsDataSource(addedItem item: SynncPlaylist, newIndexPath indexPath: NSIndexPath) {

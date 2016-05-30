@@ -482,9 +482,9 @@ extension StreamPlayerManager {
                 
                 self.activePlayer = p
                 
-                if let sptPlayer = self.activePlayer as? SynncSpotifyPlayer where !sptPlayer.isPlaying {
-                    sptPlayer.setIsPlaying(true, callback: nil)
-                }
+//                if let sptPlayer = self.activePlayer as? SynncSpotifyPlayer where !sptPlayer.isPlaying {
+//                    sptPlayer.setIsPlaying(true, callback: nil)
+//                }
                 self.play()
             }
         }

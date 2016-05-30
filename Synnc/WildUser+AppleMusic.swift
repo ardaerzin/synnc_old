@@ -51,7 +51,7 @@ extension WildAppleMusicUser : WCLMusicKitDelegate {
             
             if !s2 && enableNotif {
                 enableNotif = false
-                WCLNotification(body: ("You need to login to Apple Music with your premium account.", "premium account"), image: "notification-access") {
+                SynncNotification(body: ("You need to login to Apple Music with your premium account.", "premium account"), image: "notification-access") {
                     notif in
                     
                     UIApplication.sharedApplication().openURL(NSURL(string: "music:account")!)
@@ -60,12 +60,10 @@ extension WildAppleMusicUser : WCLMusicKitDelegate {
         }
     }
     func wclMusicKit(musicKit: WCLMusicKit, didChangeAvailability status: Bool?, withError error: NSError?) {
-        print("********* did change availability", status)
-        
         if let s = status where enableNotif {
             print("ENABLE NOTIF?", enableNotif)
             if !s {
-                WCLNotification(body: ("You need to allow access to Apple Music before continuing", "allow access"), image: "notification-access") {
+                SynncNotification(body: ("You need to allow access to Apple Music before continuing", "allow access"), image: "notification-access") {
                     notif in
                     UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
                 }.addToQueue()
@@ -76,7 +74,7 @@ extension WildAppleMusicUser : WCLMusicKitDelegate {
             do {
                 try musicKit.requestAuth()
             } catch {
-                WCLNotification(body: ("Apple Music Playback is supported on iOS 9.3 or newer.", "iOS 9.3 or newer."), image: "notification-access").addToQueue()
+                SynncNotification(body: ("Apple Music Playback is supported on iOS 9.3 or newer.", "iOS 9.3 or newer."), image: "notification-access").addToQueue()
             }
             
         }
@@ -151,16 +149,6 @@ class WildAppleMusicUser : WCLUserExtension {
         self.enableNotif = true
         WCLMusicKit.sharedInstance.authenticate()
     }
-//    private func loginWithTwitter(){
-//        
-//        Twitter.sharedInstance().logInWithCompletion { (session, error) -> Void in
-//            
-//            if let _ = error {
-//                AnalyticsEvent.new(category : "login_action", action: "twitter", label: "error", value: nil)
-//            }
-//            self.loadTwitterSession()
-//        }
-//    }
     
     //Mark: Logout
     /*
@@ -169,22 +157,6 @@ class WildAppleMusicUser : WCLUserExtension {
     private func logoutAppleMusicSession() {
         
     }
-//    private func logoutTwitterSession(){
-    
-        //        SPTAuth.defaultInstance().session = nil
-//        self.accessToken = nil
-//        self.loginStatus = false
-    
-        //        let storage : NSHTTPCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-        //        //get soundcloud cookies
-        //        let scCookies = storage.cookies?.filter({$0.domain.rangeOfString("soundcloud.com") != nil})
-        //        for cookie in scCookies!{
-        //            storage.deleteCookie(cookie)
-        //        }
-        //        NSUserDefaults.standardUserDefaults().synchronize()
-        //        self.accessToken = nil
-        //        SPTAuth.defaultInstance()
-//    }
     
     internal func getUserAppleMusicProfile(){
 //        twitterAPIClient?.loadUserWithID(self.session.userID) { (user, err) -> Void in

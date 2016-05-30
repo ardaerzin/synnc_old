@@ -13,34 +13,37 @@ import pop
 import SwiftyJSON
 import WCLMusicKit
 import WCLUtilities
+import Accelerate
 
 class SynncTrackSearchEntityBackgroundNode : ASDisplayNode {
     var imageNode : ASNetworkImageNode!
     var tintNode : ASDisplayNode!
-    var blurView : UIVisualEffectView!
+    var imageBlurOperation: NSOperation?
     
     override init() {
         super.init()
         
         imageNode = ASNetworkImageNode()
         imageNode.backgroundColor = .yellowColor()
+        imageNode.imageModificationBlock = { input in
+            print("blur image")
+            if let blurredImage = input.applyBlurWithRadius(
+                30,
+                tintColor: UIColor(white: 0.5, alpha: 0.3),
+                saturationDeltaFactor: 1,
+                maskImage: nil,
+                didCancel:{ return false }) {
+                print("blurred image")
+                return blurredImage
+            } else {
+                return input
+            }
+        }
         self.addSubnode(imageNode)
         
         tintNode = ASDisplayNode()
         tintNode.backgroundColor = UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 0.3)
         self.addSubnode(tintNode)
-        
-        let x = UIBlurEffect(style: .Light)
-        blurView = UIVisualEffectView(effect: x)
-        self.view.addSubview(blurView)
-    }
-    
-    override func layout() {
-        super.layout()
-        
-        if blurView.frame == CGRectZero {
-            blurView.frame = CGRect(origin: CGPointZero, size: self.calculatedSize)
-        }
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -163,7 +166,6 @@ class SynncArtistSmallNode : ASCellNode {
         self.addSubnode(backgroundNode)
         self.addSubnode(self.imageNode)
         self.addSubnode(self.usernameNode)
-//        self.addSubnode(self.selectionIndicator)
     }
     func configureForArtist(artist : SynncArtist) {
         if let x = artist.avatar, url = NSURL(string: x) {

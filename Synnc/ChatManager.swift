@@ -55,7 +55,11 @@ class ChatRoomDataSource : WCLAsyncTableViewDataSource {
 
 typealias ChatSaveBatch = (data : [JSON], completionHandler : ((chatItems : [ChatItem])->Void)?)
 class ChatBatchSaver {
-    var isLocked : Bool = false
+    var isLocked : Bool = false {
+        didSet {
+            print("!*!*!*!* IS LOCKED", isLocked)
+        }
+    }
     var batches : [ChatSaveBatch] = [] {
         didSet {
             if let batch = batches.first where !isLocked {
@@ -96,7 +100,6 @@ class ChatBatchSaver {
                 if b.data.isEmpty {
                     b.completionHandler?(chatItems: self.savedItems)
                     self.savedItems.removeAll()
-                    
                     self.isLocked = false
                     self.batches.removeFirst()
                 } else {
@@ -118,6 +121,8 @@ class ChatBatchSaver {
                     }
                 })
             }
+        } else {
+            self.isLocked = false
         }
     }
 }
@@ -148,6 +153,7 @@ class ChatManager : NSObject {
                     return
                 }
                 
+                print(jsonArr)
                 
                 
                 Async.background {

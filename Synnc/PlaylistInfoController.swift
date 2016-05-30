@@ -106,9 +106,16 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         super.viewDidLoad()
         
         self.screenNode.infoNode.view.delegate = self
-        screenNode.infoNode.addSongsButton.addTarget(self.parentViewController, action: #selector(PlaylistController.addSongs(_:)), forControlEvents: .TouchUpInside)
+        screenNode.infoNode.addSongsButton.addTarget(self, action: #selector(PlaylistInfoController.addSongs(_:)), forControlEvents: .TouchUpInside)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaylistInfoController.checkActiveStream(_:)), name: "DidSetActiveStream", object: nil)
+    }
+    
+    func addSongs(sender : ButtonNode) {
+        if let vc = self.parentViewController as? PlaylistController {
+            vc.addSongs(sender)
+            AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch info", value: nil)
+        }
     }
     
     func checkActiveStream(notification : NSNotification) {
@@ -366,7 +373,7 @@ extension PlaylistInfoController {
         switch managerStatus {
         case -1:
             
-            WCLNotification(body: ("You need to allow Synnc to use your location.", "allow"), image: "notification-location") {
+            SynncNotification(body: ("You need to allow Synnc to use your location.", "allow"), image: "notification-location") {
                 notif in
                 
                 AnalyticsEvent.new(category: "LocationPopup", action: "buttonTap", label: "request", value: nil)
@@ -391,7 +398,7 @@ extension PlaylistInfoController {
         case 0:
             
             
-            WCLNotification(body: ("Please go to iOS settings and enable location access for Synnc.", "location access"), image: "notification-location") {
+            SynncNotification(body: ("Please go to iOS settings and enable location access for Synnc.", "location access"), image: "notification-location") {
                     notif in
                 
                     UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)

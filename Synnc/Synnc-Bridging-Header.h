@@ -10,3 +10,4 @@
 #import "GAIDictionaryBuilder.h"
 #import "GAIFields.h"
 #import <Spotify/Spotify.h>
+#import "UIImage+ImageEffects.h"

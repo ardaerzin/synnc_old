@@ -126,13 +126,17 @@ class StreamVC : PagerBaseController {
     }
     
     func toggleWindowPosition(sender : AnyObject) {
+        var action : String = ""
         if let w = self.view.wclWindow {
             if w.position == .Displayed {
                 w.hide(true)
+                action = "close"
             } else {
                 w.display(true)
+                action = "display"
             }
         }
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "\(action) Stream", value: nil)
     }
     
     func toggleMute(sender: ButtonNode) {
@@ -168,9 +172,14 @@ class StreamVC : PagerBaseController {
                                                 UIActivityTypePostToFacebook]
            
             let x = ShareWrapperVC(controller: activityVC)
-            
             activityVC.completionWithItemsHandler = {
                 (activityType, completed:Bool, returnedItems:[AnyObject]?, error: NSError?) in
+                
+                print("completed share", activityType)
+                
+                if let type = activityType {
+                    AnalyticsEvent.new(category: "Share", action: type, label: nil, value: nil, customAttributes: ["contentName" : self.stream.playlist.name!, "contentType" : "stream", "contentId" : self.stream.o_id])
+                }
                 
                 AnalyticsEvent.new(category: "StreamSubsection", action: "share", label: activityType, value: nil)
                 
@@ -451,12 +460,13 @@ class StreamVC : PagerBaseController {
         }
     }
     internal func updateTrack(stream : Stream){
-        if let ind = stream.currentSongIndex {
+        if let ind = stream.currentSongIndex where (Int(ind) >= 0) {
             Async.main {
                 let i = ind as Int
                 if i >= stream.playlist.songs.count {
                     return
                 }
+                print("SECTOR", ind)
                 let track = stream.playlist.songs[ind as Int]
                 self.tracklistController.currentIndex = ind as Int
                 (self.screenNode as! StreamVCNode).nowPlayingArea.configure(track)
@@ -496,8 +506,13 @@ extension StreamVC : WCLWindowDelegate {
             
             
             let p = POPProgress(progress, startValue: 0, endValue: window.lowerPercentage)
-            let transition = POPTransition(p, startValue: 0, endValue: -screenNode.calculatedSize.height*window.lowerPercentage)            
-            screenNode.nowPlayingArea.windowTransition = transition
+            let transition = POPTransition(p, startValue: 0, endValue: -screenNode.calculatedSize.height*window.lowerPercentage)
+            if progress < 0 {
+                screenNode.nowPlayingArea.windowTransition = 0
+            } else {
+                screenNode.nowPlayingArea.windowTransition = transition
+            }
+//            screenNode.nowPlayingArea.windowTransition = transition
         }
         
         Async.main {
@@ -577,7 +592,7 @@ extension StreamVC {
             s.closeView(true)
         }
         
-        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
+//        AnalyticsEvent.new(category: "ui_action", action: "button_tap", label: "Join Stream", value: nil)
         
         if let _ = StreamManager.sharedInstance.activeStream {
             
@@ -646,7 +661,7 @@ extension StreamVC {
                 }
                 
                 if let msg = notificationMessage {
-                    WCLNotification(body: msg, image: "notification-warning", callback: notificationAction).addToQueue()
+                    SynncNotification(body: msg, image: "notification-warning", callback: notificationAction).addToQueue()
                 }
             }
         }
