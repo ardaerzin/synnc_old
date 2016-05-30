@@ -78,6 +78,8 @@ class PagerBaseController : ASViewController {
 extension PagerBaseController : PageControlDelegate {
     func pageControl(control: PageControlNode, scrollToInd ind: Int) {
         self.screenNode.pager.scrollToPageAtIndex(ind, animated: true)
+        
+        AnalyticsEvent.new(category: "ui_action", action: "pagerIndicator_tap", label: self.getClassName(), value: nil)
     }
 }
 

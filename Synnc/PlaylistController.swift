@@ -51,6 +51,11 @@ class PlaylistController : PagerBaseController {
     deinit {
     }
     
+    override func resignFirstResponder() -> Bool {
+        self.infoController.screenNode.infoNode.titleNode.resignFirstResponder()
+        return super.resignFirstResponder()
+    }
+    
     init(playlist : SynncPlaylist?){
         let node = PlaylistBaseNode()
         super.init(pagerNode: node)
@@ -142,27 +147,35 @@ class PlaylistController : PagerBaseController {
     }
     
     func toggleWindowPosition(sender : AnyObject) {
+        var action : String = ""
         if let w = self.view.wclWindow {
             if w.position == .Displayed {
                 w.hide(true)
+                action = "close"
             } else {
                 w.display(true)
+                action = "display"
             }
         }
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "\(action) Playlist", value: nil)
     }
     
-    func addSongs(sender : AnyObject) {
+    func addSongs(sender : AnyObject!) {
         
+        var fromActionSheet : Bool = false
         if let s = actionSheet {
             s.closeView(true)
+            fromActionSheet = true
         }
         
         if !self.tracklistController.canDisplayTrackSearch() {
             Async.main {
-                WCLNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
+                SynncNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
             }
             return
         }
+        
+        self.resignFirstResponder()
 
         if self.currentIndex != 1 {
             needsToShowTrackSearch = true
@@ -170,7 +183,10 @@ class PlaylistController : PagerBaseController {
         } else {
             self.tracklistController.displayTrackSearch(nil)
         }
-        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch 2", value: nil)
+    
+        if sender != nil {
+            AnalyticsEvent.new(category : fromActionSheet ? "ui_action" : "PlaylistActionSheet", action: "button_tap", label: "trackSearch", value: nil)
+        }
     }
     
     override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
@@ -252,15 +268,17 @@ extension PlaylistController : UIGestureRecognizerDelegate {
 extension PlaylistController {
     func streamPlaylist(sender: AnyObject!) {
         
+        var fromActionSheet : Bool = false
         if let s = actionSheet {
             s.closeView(true)
+            fromActionSheet = true
         }
 
         guard let plist = self.playlist else {
             return
         }
         
-        AnalyticsEvent.new(category : "PlaylistAction", action: "button_tap", label: "stream", value: nil)
+        AnalyticsEvent.new(category : fromActionSheet ? "ui_action" : "PlaylistActionSheet", action: "button_tap", label: "stream", value: nil)
         
         if StreamManager.sharedInstance.activeStream != nil {
             
@@ -369,7 +387,7 @@ extension PlaylistController {
             }
             
             if let msg = notificationMessage {
-                WCLNotification(body: msg, image: "notification-error", callback: notificationAction).addToQueue()
+                SynncNotification(body: msg, image: "notification-error", callback: notificationAction).addToQueue()
                 return
             }
         }
@@ -415,7 +433,7 @@ extension PlaylistController {
         if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
             
             Async.main {
-                WCLNotification(body: ("You can't delete your active stream.", "can't delete"), image: "notification-error").addToQueue()
+                SynncNotification(body: ("You can't delete your active stream.", "can't delete"), image: "notification-error").addToQueue()
             }
             
             return
@@ -424,6 +442,8 @@ extension PlaylistController {
         let x = DeletePlaylistPopup(playlist : self.playlist!, size: CGSizeMake(UIScreen.mainScreen().bounds.width - 100, UIScreen.mainScreen().bounds.height - 200))
         x.screenNode.yesButton.addTarget(self, action: #selector(PlaylistController.deleteAction(_:)), forControlEvents: .TouchUpInside)
         WCLPopupManager.sharedInstance.newPopup(x)
+        
+        AnalyticsEvent.new(category : "PlaylistActionSheet", action: "button_tap", label: "delete", value: nil)
     }
     
     func deleteAction(sender : AnyObject){
@@ -443,7 +463,7 @@ extension PlaylistController {
         if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
             
             Async.main {
-                WCLNotification(body: ("You can't edit your active stream.", "can't edit"), image: "notification-error").addToQueue()
+                SynncNotification(body: ("You can't edit your active stream.", "can't edit"), image: "notification-error").addToQueue()
             }
             
             return
@@ -454,5 +474,7 @@ extension PlaylistController {
         }
         sender.selected = !sender.selected
         self.tracklistController.editMode = !self.tracklistController.editMode
+        
+        AnalyticsEvent.new(category : "PlaylistActionSheet", action: "button_tap", label: "edit mode \(self.tracklistController.editMode)", value: nil)
     }
 }

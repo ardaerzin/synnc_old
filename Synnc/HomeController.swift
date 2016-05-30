@@ -48,13 +48,19 @@ class HomeController : PagerBaseController {
     }
     
     func toggleWindowPosition(sender : AnyObject) {
+        
+        var action : String = ""
         if let w = self.view.wclWindow {
             if w.position == .Displayed {
                 w.hide(true)
+                action = "close"
             } else {
                 w.display(true)
+                action = "display"
             }
         }
+        
+        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "\(action) Home", value: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {

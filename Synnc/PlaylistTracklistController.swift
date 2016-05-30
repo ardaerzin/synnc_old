@@ -69,12 +69,13 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
         if !canDisplayTrackSearch() {
             
             Async.main {
-                WCLNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
+                SynncNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
             }
             return
         }
         
         let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size, playlist: plist)
+        lc.becomeFirstResponder()
         lc.delegate = self
         WCLPopupManager.sharedInstance.newPopup(lc)
         

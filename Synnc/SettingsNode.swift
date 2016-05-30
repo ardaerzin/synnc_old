@@ -40,6 +40,9 @@ class SettingsNode : ASScrollNode {
     var feedbackTitle : ASTextNode!
     var feedbackNode : FeedbackNode!
     
+    var inviteTitle : ASTextNode!
+    var inviteNode : InviteNode!
+    
     var disconnectButton : ButtonNode!
     
     var contentSizeDiff : CGFloat! = 0 {
@@ -81,6 +84,16 @@ class SettingsNode : ASScrollNode {
         feedbackNode.alignSelf = .Stretch
         self.addSubnode(feedbackNode)
         
+        inviteTitle = ASTextNode()
+        inviteTitle.attributedString = NSAttributedString(string: "INVITE A FRIEND", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Bold", size: 10)!, NSForegroundColorAttributeName : UIColor(red: 168/255, green: 168/255, blue: 168/255, alpha: 1), NSKernAttributeName : 0.5])
+        inviteTitle.spacingBefore = 20
+        inviteTitle.spacingAfter = 10
+        self.addSubnode(inviteTitle)
+        
+        inviteNode = InviteNode()
+        inviteNode.alignSelf = .Stretch
+        self.addSubnode(inviteNode)
+        
         disconnectButton = ButtonNode()
         let title = NSAttributedString(string: "logout", attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 13)!, NSForegroundColorAttributeName : UIColor(red: 217/255, green: 217/255, blue: 217/255, alpha: 1), NSKernAttributeName : 0.7])
         disconnectButton.setAttributedTitle(title, forState: .Normal)
@@ -95,7 +108,7 @@ class SettingsNode : ASScrollNode {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [loginSourcesTitle, loginSourcesNode, aboutTitle, aboutNode, feedbackTitle, feedbackNode, disconnectButton])
+        let stack = ASStackLayoutSpec(direction: .Vertical, spacing: 0, justifyContent:.Start, alignItems: .Center, children: [loginSourcesTitle, loginSourcesNode, aboutTitle, aboutNode, feedbackTitle, feedbackNode, inviteTitle, inviteNode, disconnectButton])
         
         return ASInsetLayoutSpec(insets: UIEdgeInsetsMake(0, 35, 0, 35), child: stack)
     }

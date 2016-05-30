@@ -33,53 +33,53 @@ import AudioToolbox
 //                       ioData: UnsafeMutablePointer<AudioBufferList>) -> OSStatus
 //}
 
-class SynncCoreAudioController : SPTCoreAudioController {
-    var myNode : AUNode = AUNode()
-    var myUnit : AudioUnit = nil
-    var graph : AUGraph?
-    var ioUnit : AudioUnit = nil
-    
-    override init() {
-        super.init()
-    }
-    
-    func performRender(ioActionFlags: UnsafeMutablePointer<AudioUnitRenderActionFlags>, inTimeStamp: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>) -> OSStatus {
-        
-        var a = inTimeStamp.memory
-        if ioActionFlags.memory == .UnitRenderAction_PostRender {
-            
-            var timebaseInfo : mach_timebase_info = mach_timebase_info()
-            if timebaseInfo.denom == 0 {
-                mach_timebase_info(&timebaseInfo)
-            }
-            var time2nsFactor = UInt64(timebaseInfo.numer / timebaseInfo.denom)
-            let x : CGFloat = pow(10, 9)
-            var ts = a.mSampleTime * Float64(time2nsFactor/UInt64(x))
-//            ioData.memory.mBuffers
-            
-            var a :  AudioTimeStamp = AudioTimeStamp()
-            
-            
-            var propSize: Int = sizeof(Int64)
-            var propSize32 = UInt32(1024)
-            
-            let eqFrequencies: [UInt32] = [ 32, 250, 500, 1000, 2000, 16000 ]
-            let b = AudioUnitGetProperty(myUnit, kAudioUnitProperty_CurrentPlayTime, AudioUnitScope(kAudioUnitScope_Global), 0, &a, &propSize32)
-        }
-        
-        return noErr
-    }
-    
-    func findCurrentFrame(){
-        
-    }
-    
-    override func connectOutputBus(sourceOutputBusNumber: UInt32, ofNode sourceNode: AUNode, toInputBus destinationInputBusNumber: UInt32, ofNode destinationNode: AUNode, inGraph graph: AUGraph) throws {
-        self.graph = graph
-        
-        try super.connectOutputBus(sourceOutputBusNumber, ofNode: sourceNode, toInputBus: destinationInputBusNumber, ofNode: destinationNode, inGraph: graph)
-    }
-}
+//class SynncCoreAudioController : SPTCoreAudioController {
+//    var myNode : AUNode = AUNode()
+//    var myUnit : AudioUnit = nil
+//    var graph : AUGraph?
+//    var ioUnit : AudioUnit = nil
+//    
+//    override init() {
+//        super.init()
+//    }
+//    
+//    func performRender(ioActionFlags: UnsafeMutablePointer<AudioUnitRenderActionFlags>, inTimeStamp: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>) -> OSStatus {
+//        
+//        var a = inTimeStamp.memory
+//        if ioActionFlags.memory == .UnitRenderAction_PostRender {
+//            
+//            var timebaseInfo : mach_timebase_info = mach_timebase_info()
+//            if timebaseInfo.denom == 0 {
+//                mach_timebase_info(&timebaseInfo)
+//            }
+//            var time2nsFactor = UInt64(timebaseInfo.numer / timebaseInfo.denom)
+//            let x : CGFloat = pow(10, 9)
+//            var ts = a.mSampleTime * Float64(time2nsFactor/UInt64(x))
+////            ioData.memory.mBuffers
+//            
+//            var a :  AudioTimeStamp = AudioTimeStamp()
+//            
+//            
+//            var propSize: Int = sizeof(Int64)
+//            var propSize32 = UInt32(1024)
+//            
+//            let eqFrequencies: [UInt32] = [ 32, 250, 500, 1000, 2000, 16000 ]
+//            let b = AudioUnitGetProperty(myUnit, kAudioUnitProperty_CurrentPlayTime, AudioUnitScope(kAudioUnitScope_Global), 0, &a, &propSize32)
+//        }
+//        
+//        return noErr
+//    }
+//    
+//    func findCurrentFrame(){
+//        
+//    }
+//    
+//    override func connectOutputBus(sourceOutputBusNumber: UInt32, ofNode sourceNode: AUNode, toInputBus destinationInputBusNumber: UInt32, ofNode destinationNode: AUNode, inGraph graph: AUGraph) throws {
+//        self.graph = graph
+//        
+//        try super.connectOutputBus(sourceOutputBusNumber, ofNode: sourceNode, toInputBus: destinationInputBusNumber, ofNode: destinationNode, inGraph: graph)
+//    }
+//}
 
 class SynncSpotifyPlayer : SPTAudioStreamingController {
     
@@ -94,29 +94,22 @@ class SynncSpotifyPlayer : SPTAudioStreamingController {
     }
     var isSeeking : Bool = false
     let observedKeys : [String] = ["currentPlaybackPosition"]
-    var audioController : SynncCoreAudioController!
     
     override init!(clientId: String!, audioController: SPTCoreAudioController!) {
         super.init(clientId: clientId, audioController: audioController)
     }
     override init!(clientId: String!) {
-        let audioController = SynncCoreAudioController()
         
-        super.init(clientId: clientId, audioController: audioController)
-        
-        self.audioController = audioController
-//        self.audioController.delegate = self
-        
+        super.init(clientId: clientId)
         self.shuffle = false
         self.setValue(false, forKey: "repeat")
         self.addObserver(self, forKeyPath: "currentPlaybackPosition", options: [], context: nil)
+        
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         
         if let item = object as? SynncSpotifyPlayer {
-            self.audioController.findCurrentFrame()
-            
             if StreamPlayerManager.sharedInstance.activePlayer === self {
                 StreamPlayerManager.sharedInstance.playerTimeUpdated(CMTimeMakeWithSeconds(self.currentPlaybackPosition, 1000))
 //                StreamPlayerManager.sharedInstance.updateControlCenterRate()
@@ -174,11 +167,14 @@ extension StreamPlayerManager : SPTAudioStreamingPlaybackDelegate {
         guard let info = self.songInfo(trackUri) else {
             return
         }
-        if info.index == self.playlist.count - 1 {
+        
+        if info.index == self.playlist.count - 1 && !(CGFloat(CMTimeGetSeconds(self.currentTime!)) < self.currentItemDuration) {
             endOfPlaylist = true
+            self.syncManager.needsUpdate = true
             return
-        } else {
+        } else if !(CGFloat(CMTimeGetSeconds(self.currentTime!)) < self.currentItemDuration) {
             switchPlayers(info)
+            self.syncManager.needsUpdate = true
             self.loadNextSongForPlayer(info)
         }
     }
@@ -186,12 +182,11 @@ extension StreamPlayerManager : SPTAudioStreamingPlaybackDelegate {
         print("DID START PLAYING TRACK", trackUri)
         if audioStreaming === self.activePlayer {
             if self.rate == 0 {
-                print("sEctor")
                 if !audioStreaming.isPlaying {
-                    audioStreaming.setIsPlaying(true, callback: nil)
+                    self.play()
+//                    audioStreaming.setIsPlaying(true, callback: nil)
                 }
             } else {
-                print("nooope")
             }
             updateControlCenterItem()
             updateControlCenterRate()
@@ -212,9 +207,11 @@ extension StreamPlayerManager : SPTAudioStreamingPlaybackDelegate {
         if let data = trackMetadata {
             if let uri = data[SPTAudioStreamingMetadataTrackURI] as? String, let ci = self.currentItem as? NSURL where uri == ci.absoluteString {
                 if !audioStreaming.isPlaying {
-                    audioStreaming.setIsPlaying(true, callback: nil)
+                    self.play()
+//                    audioStreaming.setIsPlaying(true, callback: nil)
                 }
             }
+            self.readyToPlay = true
         } else {
             print("DID BECOME NIL SHIT")
 //            audioStreaming.stop(nil)

@@ -73,7 +73,7 @@ class UserProfilePopup : WCLPopupViewController {
     }
     
     func followUser(sender: AnyObject) {
-        WCLNotification(body: ("Follow feature is coming soon.", "coming soon"), image: "notification-warning").addToQueue()
+        SynncNotification(body: ("Follow feature is coming soon.", "coming soon"), image: "notification-warning").addToQueue()
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "user_follow", value: nil)
     }
     

@@ -55,7 +55,7 @@ extension StreamPlayerManager {
                         
                         if oldVolume > 0 {
                             
-                            WCLNotification(body: ("Your stream is now muted, but continues in the background", "muted"), image: "notification-warning", showLocalNotification: true).addToQueue()
+                            SynncNotification(body: ("Your stream is now muted, but continues in the background", "muted"), image: "notification-warning", showLocalNotification: true).addToQueue()
                         }
                         
                     }

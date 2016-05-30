@@ -31,9 +31,11 @@ import Async
 //let socketURLString = "https://digital-reform.codio.io:9500"
 let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-3"
+let isDev = true
 #else
 let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-4"
+let isDev = false
 #endif
 
 @UIApplicationMain
@@ -293,7 +295,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         
         if SPTAuth.defaultInstance().canHandleURL(url) {
             SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url, callback: { (err, session) in
-                if let error = err {
+                if err != nil {
                     return
                 }
                 if let u = self.user.userExtension(.Spotify) as? WildSpotifyUser {

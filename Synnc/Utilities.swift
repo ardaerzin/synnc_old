@@ -8,6 +8,14 @@
 
 import Foundation
 
+extension NSObject {
+    public func getClassName() -> String {
+        return NSStringFromClass(self.classForCoder).componentsSeparatedByString(".").last!
+    }
+}
+
+
+
 // MARK: - Version Checker
 extension String {
     

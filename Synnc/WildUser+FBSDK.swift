@@ -178,8 +178,6 @@ class WildFacebookUser : WCLUserExtension {
             return
         }
         
-        let s = loginStatus!
-        AnalyticsEvent.new(category : "login_handler", action: "facebook", label: s ? "true" : "false", value: nil)
         EXIT_LOG()
         
     }
@@ -195,6 +193,7 @@ class WildFacebookUser : WCLUserExtension {
             if error != nil {
                 AnalyticsEvent.new(category : "login_action", action: "facebook", label: "error", value: error!.code)
                 print(error!.description)
+                AnalyticsEvent.new(category: "ERROR", action: "\(error!.code)", label: error!.description, value: nil)
                 SLogError("Error with FBLogin process")
             } else if result.isCancelled {
                 AnalyticsEvent.new(category : "login_action", action: "facebook", label: "cancelled", value: nil)
