@@ -59,7 +59,7 @@ class MyPlaylistsController : ASViewController, PagerSubcontroller {
         }
     }
     
-    var selectedPlaylist : SynncPlaylist!
+    var selectedPlaylist : SynncPersistentPlaylist!
     var playlistController : PlaylistController!
     var screenNode : MyPlaylistsNode!
 
@@ -93,7 +93,7 @@ extension MyPlaylistsController {
         AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "New Playlist", value: nil)
     }
     
-    func displayPlaylist(playlist: SynncPlaylist?) {
+    func displayPlaylist(playlist: SynncPersistentPlaylist?) {
         let vc = PlaylistController(playlist: playlist)
         let opts = WCLWindowOptions(link: false, draggable: true, dismissable: true)
         let a = WCLWindowManager.sharedInstance.newWindow(vc, animated: true, options: opts)
@@ -192,7 +192,8 @@ extension MyPlaylistsController : ASTableViewDataSource {
             return
         }
         
-        let plist = SharedPlaylistDataSource.allItems[indexPath.row]
+        let p = SharedPlaylistDataSource.allItems[indexPath.row]
+        let plist = p.sharedPlaylist()
         
         AnalyticsEvent.new(category : "MyPlaylistsActionSheet", action: "button_tap", label: "stream", value: nil)
         
@@ -205,6 +206,7 @@ extension MyPlaylistsController : ASTableViewDataSource {
         }
         
         let t = plist.canPlay()
+        
         
         if t.status {
             StreamManager.sharedInstance.createStreamWindow(plist).display(true)
@@ -254,7 +256,7 @@ extension MyPlaylistsController : ASTableViewDataSource {
                         return
                     }
                     
-                    self?.displayPlaylist(plist)
+                    self?.displayPlaylist(p)
                 }
                 
             }
@@ -316,37 +318,27 @@ extension MyPlaylistsController : ASTableViewDelegate {
 }
 
 extension MyPlaylistsController : PlaylistsDataSourceDelegate {
-    func playlistsDataSource(addedItem item: SynncPlaylist, newIndexPath indexPath: NSIndexPath) {
+    func playlistsDataSource(addedItem item: SynncPersistentPlaylist, newIndexPath indexPath: NSIndexPath) {
         
         self.screenNode.tableNode.view.beginUpdates()
         self.screenNode.tableNode.view.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         self.screenNode.tableNode.view.endUpdates()
         updatedPlaylists()
     }
-    func playlistsDataSource(removedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath) {
+    func playlistsDataSource(removedItem item: SynncPersistentPlaylist, fromIndexPath indexPath: NSIndexPath) {
         
         self.screenNode.tableNode.view.beginUpdates()
         self.screenNode.tableNode.view.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         self.screenNode.tableNode.view.endUpdates()
         updatedPlaylists()
     }
-    func playlistsDataSource(updatedItem item: SynncPlaylist, atIndexPath indexPath: NSIndexPath) {
-        
-        if let stream = StreamManager.sharedInstance.activeStream where stream.playlist == item {
-            
-//            var keys : [String] = []
-//            if stream.name != item.name {
-//                keys.append("name")
-//            }
-            StreamManager.sharedInstance.updatedStreamLocally(stream, changedKeys: ["playlist"])
-        }
-        
+    func playlistsDataSource(updatedItem item: SynncPersistentPlaylist, atIndexPath indexPath: NSIndexPath) {
         self.screenNode.tableNode.view.beginUpdates()
         self.screenNode.tableNode.view.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         self.screenNode.tableNode.view.endUpdates()
         updatedPlaylists()
     }
-    func playlistsDataSource(movedItem item: SynncPlaylist, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
+    func playlistsDataSource(movedItem item: SynncPersistentPlaylist, fromIndexPath indexPath: NSIndexPath, toIndexPath newIndexPath: NSIndexPath) {
         
         self.screenNode.tableNode.view.beginUpdates()
         self.screenNode.tableNode.view.moveRowAtIndexPath(indexPath, toIndexPath: newIndexPath)

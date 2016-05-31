@@ -11,11 +11,7 @@ import SwiftyJSON
 import SocketSync
 import CoreData
 
-extension SynncPlaylist {
-    override func awakeFromInsert() {
-        self.createdAt = NSDate()
-    }
-    
+extension SynncPersistentPlaylist {
     func indexOf(track : SynncTrack) -> Int? {
         let x = self.songs.filter{
             t in

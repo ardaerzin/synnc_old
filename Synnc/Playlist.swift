@@ -26,9 +26,9 @@ import WCLUserManager
     optional func willChangeCurrentIndex(index: Int)
 }
 
-@objc (SynncPlaylist)
+@objc (SynncPersistentPlaylist)
 
-class SynncPlaylist: NSManagedObject {
+class SynncPersistentPlaylist: NSManagedObject {
     
     @NSManaged var cover_id: String?
     @NSManaged var createdAt: NSDate?
@@ -36,7 +36,6 @@ class SynncPlaylist: NSManagedObject {
     @NSManaged var last_update: NSDate?
     @NSManaged var name: String?
     @NSManaged var songs: [SynncTrack]
-    @NSManaged var source: String?
     @NSManaged var sources: [String]?
     @NSManaged var user: String?
     @NSManaged var v: NSNumber?
@@ -45,7 +44,7 @@ class SynncPlaylist: NSManagedObject {
     
     var delegate : PlaylistDelegate?
     var needsNotifySocket : Bool = false
-    var socketCallback : ((playlist : SynncPlaylist) -> Void)?
+    var socketCallback : ((playlist : SynncPersistentPlaylist) -> Void)?
     var isDeleting : Bool = false
     
     /// Computed Properties
@@ -82,56 +81,16 @@ class SynncPlaylist: NSManagedObject {
         return x
     }
     
-    func canPlay() -> (status: Bool, reasonDict : [String : AnyObject]?) {
-        
-        var reasonDict = [String : AnyObject]()
-        
-        
-        let infoDict = self.validateInfo()
-        let sourceDict = self.checkSources()
-        
-        let status = infoDict.status && sourceDict.status
-        
-        var dict = infoDict.reasonDict!
-        dict.merge(sourceDict.reasonDict!)
-        
-        return (status: status, reasonDict: dict)
+    override class func getClassName() -> String{
+        return "SynncPlaylist"
+    }
+    override func awakeFromInsert() {
+        super.awakeFromInsert()
+        self.createdAt = NSDate()
     }
     
-    internal func validateInfo() -> (status: Bool, reasonDict : [String : AnyObject]?) {
-        
-        var status = true
-        var missingKeys : [String] = []
-        
-        if self.songs.isEmpty {
-            status = false
-            missingKeys.append("songs")
-        }
-        
-        if self.name == nil || self.name == "" {
-            status = false
-            missingKeys.append("name")
-        }
-        
-        return (status: status, reasonDict: ["missingInfo" : missingKeys])
-    }
-    
-    internal func checkSources() -> (status: Bool, reasonDict : [String : AnyObject]?) {
-        
-        let sources = allSources()
-        var missingSources : [String] = []
-        
-        for source in SynncExternalSource.premiumSources {
-            let x = source.rawValue
-            if let _ = sources.indexOf(x) {
-                guard let user = Synnc.sharedInstance.user, let type = WCLUserLoginType(rawValue: x.lowercaseString), let ext = user.userExtension(type), let status = ext.loginStatus where status else {
-                    
-                    missingSources.append(x)
-                    continue
-                }
-            }
-        }
-        
-        return (status: missingSources.isEmpty, reasonDict: ["missingSources" : missingSources])
+    func sharedPlaylist() -> SynncSharedPlaylist {
+        let a = SynncSharedPlaylist(playlist: self)
+        return a
     }
 }

@@ -72,7 +72,7 @@ class PlaylistCellInfoHolder : ASDisplayNode {
         
     }
     
-    func configureForPlaylist(playlist : SynncPlaylist) {
+    func configureForPlaylist(playlist : SynncPersistentPlaylist) {
         if let name = playlist.name {
             self.nameNode.attributedString = NSAttributedString(string: name, attributes: [NSFontAttributeName : UIFont(name: "Ubuntu-Medium", size: 16)!, NSForegroundColorAttributeName : UIColor(red: 97/255, green: 97/255, blue: 97/255, alpha: 1), NSKernAttributeName : 0.5 ])
         }
@@ -178,7 +178,7 @@ class PlaylistCell : ASDisplayNode {
         
     }
     
-    func configureForPlaylist(playlist : SynncPlaylist) {
+    func configureForPlaylist(playlist : SynncPersistentPlaylist) {
         self.infoNode.configureForPlaylist(playlist)
         if let id = playlist.cover_id where id != "" {
             self.img = id
@@ -214,7 +214,7 @@ class PlaylistCellNode : ASCellNode {
         self.shadowOffset = CGSizeMake(0, 1)
         self.shadowRadius = 2
     }
-    func configureForPlaylist(playlist : SynncPlaylist) {
+    func configureForPlaylist(playlist : SynncPersistentPlaylist) {
         contentNode.configureForPlaylist(playlist)
     }
     

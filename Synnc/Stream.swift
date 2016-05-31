@@ -54,7 +54,7 @@ class Stream : Serializable {
     var userid: String!
     var currentSongIndex : NSNumber! = 0
     var info : String = ""
-    var playlist : SynncPlaylist!
+    var playlist : SynncSharedPlaylist!
     var users : [WCLUser] = []
     
     var createCallback : ((status : Bool) -> Void)?
@@ -70,7 +70,7 @@ class Stream : Serializable {
         }
     }
     
-    class func create(playlist : SynncPlaylist, callback : ((status : Bool) -> Void)?) -> Stream {
+    class func create(playlist : SynncPersistentPlaylist, callback : ((status : Bool) -> Void)?) -> Stream {
         
         let stream = Stream(user: Synnc.sharedInstance.user)
         stream.createCallback = callback
@@ -186,7 +186,10 @@ extension Stream {
         var dict = super.toJSON(prop)
         
         if self.playlist != nil, let _ = playlistInd {
-            dict["playlist"] = self.playlist.id
+            //dodo
+            dict["playlist"] = self.playlist.toJSON()
+            
+//            dict["playlist"] = self.playlist.id
             //                self.playlist.toJSON(nil, populate: true)
         }
         if !self.users.isEmpty, let _ = usersInd {
@@ -283,17 +286,25 @@ extension Stream {
                 }
                 
                 if self.playlist == nil && JSON(plistInfo).null == nil {
-                    if let plist = SynncPlaylist.finder(inContext: Synnc.sharedInstance.moc).filter(NSPredicate(format: "id == %@", JSON(plistInfo)["_id"].stringValue)).sort(keys: ["id"], ascending: [true]).find()?.first as? SynncPlaylist {
-                        self.playlist = plist
-                    } else {
-                        let newPlaylist = SynncPlaylist.create(inContext: Synnc.sharedInstance.moc, fromJSON: JSON(plistInfo)) as! SynncPlaylist
-                        self.playlist = newPlaylist
-                    }
-                } else if JSON(plistInfo).dictionary != nil{
-                    if self.playlist.v != JSON(plistInfo)["__v"].intValue {
-                        self.playlist.parseFromJSON(Synnc.sharedInstance.moc, json: JSON(plistInfo))
-                        keys.append("playlist")
-                    }
+//                    let plist = SynncSharedPlaylist()
+                    
+                    let plist = SynncSharedPlaylist(json: JSON(plistInfo))
+                    self.playlist = plist
+                    
+//                    if let plist = SynncPersistentPlaylist.finder(inContext: Synnc.sharedInstance.moc).filter(NSPredicate(format: "id == %@", JSON(plistInfo)["_id"].stringValue)).sort(keys: ["id"], ascending: [true]).find()?.first as? SynncPersistentPlaylist {
+//                        self.playlist = plist
+//                    } else {
+//                        let newPlaylist = SynncPersistentPlaylist.create(inContext: Synnc.sharedInstance.moc, fromJSON: JSON(plistInfo)) as! SynncPersistentPlaylist
+//                        self.playlist = newPlaylist
+//                    }
+                } else if JSON(plistInfo).dictionary != nil {
+                    
+                    self.playlist.fromJSON(JSON(plistInfo))
+                    
+//                    if self.playlist.v != JSON(plistInfo)["__v"].intValue {
+//                        self.playlist.parseFromJSON(Synnc.sharedInstance.moc, json: JSON(plistInfo))
+//                        keys.append("playlist")
+//                    }
                 }
                 
                 if let _ = self.user {

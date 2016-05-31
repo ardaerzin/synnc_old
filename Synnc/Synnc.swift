@@ -346,7 +346,7 @@ extension Synnc {
             if self.user.generatedUsername {
             }
             StreamManager.sharedInstance.updateUserFeed()
-            SynncPlaylist.socketSync(self.socket, inStack: WildDataManager.sharedInstance().coreDataStack, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
+            SynncPersistentPlaylist.socketSync(self.socket, inStack: WildDataManager.sharedInstance().coreDataStack, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
         }
     }
 }

@@ -25,7 +25,7 @@ import Async
 class PlaylistController : PagerBaseController {
     
     var isNewPlaylist : Bool = false
-    var playlist : SynncPlaylist!
+    var playlist : SynncPersistentPlaylist!
     var needsToShowTrackSearch : Bool = false
     var actionSheet : ActionSheetPopup!
     
@@ -56,12 +56,12 @@ class PlaylistController : PagerBaseController {
         return super.resignFirstResponder()
     }
     
-    init(playlist : SynncPlaylist?){
+    init(playlist : SynncPersistentPlaylist?){
         let node = PlaylistBaseNode()
         super.init(pagerNode: node)
         
         if playlist == nil {
-            self.playlist = SynncPlaylist.create(inContext: Synnc.sharedInstance.moc) as! SynncPlaylist
+            self.playlist = SynncPersistentPlaylist.create(inContext: Synnc.sharedInstance.moc) as! SynncPersistentPlaylist
             self.playlist.user = Synnc.sharedInstance.user._id
             isNewPlaylist = true
         } else {
@@ -274,9 +274,11 @@ extension PlaylistController {
             fromActionSheet = true
         }
 
-        guard let plist = self.playlist else {
+        guard let playlist = self.playlist else {
             return
         }
+        
+        let plist = playlist.sharedPlaylist()
         
         AnalyticsEvent.new(category : fromActionSheet ? "ui_action" : "PlaylistActionSheet", action: "button_tap", label: "stream", value: nil)
         

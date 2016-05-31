@@ -84,7 +84,7 @@ class TrackSearchController : WCLPopupViewController {
     var spotifyAlbums : [SPTAlbum] = []
     var appleMusicAlbums : [WCLMusicKitAlbum] = []
     
-    init(size: CGSize, playlist: SynncPlaylist) {
+    init(size: CGSize, playlist: SynncPersistentPlaylist) {
         let opts = WCLPopupAnimationOptions(fromLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Bottom), toLocation: (WCLPopupRelativePointToSuperView.Center, WCLPopupRelativePointToSuperView.Center), withShadow: true)
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = opts

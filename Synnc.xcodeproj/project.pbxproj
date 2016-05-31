@@ -271,6 +271,8 @@
 		473450F71CE001D2003E4421 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 473450F61CE001D2003E4421 /* Spotify.framework */; };
 		47354E401C50E5FE00A5F03E /* SynncSCLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */; };
 		473579051CBF09CA00B03DCE /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473579041CBF09CA00B03DCE /* PlayerManager.swift */; };
+		473C38BE1CFCB4290053A12C /* SynncSharedPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C38BD1CFCB4290053A12C /* SynncSharedPlaylist.swift */; };
+		473C38C01CFCCE9E0053A12C /* SynncPlaylistProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473C38BF1CFCCE9E0053A12C /* SynncPlaylistProtocol.swift */; };
 		473E8BD11CA4D9D800DB9F5B /* PlaylistInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E8BD01CA4D9D800DB9F5B /* PlaylistInfoController.swift */; };
 		473E8BD51CA4DA7300DB9F5B /* PlaylistTracklistController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E8BD41CA4DA7300DB9F5B /* PlaylistTracklistController.swift */; };
 		473E8BD71CA549BE00DB9F5B /* PlaylistBaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E8BD61CA549BE00DB9F5B /* PlaylistBaseNode.swift */; };
@@ -720,6 +722,9 @@
 		473450F61CE001D2003E4421 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		47354E3F1C50E5FE00A5F03E /* SynncSCLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncSCLoginController.swift; sourceTree = "<group>"; };
 		473579041CBF09CA00B03DCE /* PlayerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
+		473C38BA1CFCB2AF0053A12C /* SynncDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "SynncDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
+		473C38BD1CFCB4290053A12C /* SynncSharedPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncSharedPlaylist.swift; sourceTree = "<group>"; };
+		473C38BF1CFCCE9E0053A12C /* SynncPlaylistProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncPlaylistProtocol.swift; sourceTree = "<group>"; };
 		473E8BD01CA4D9D800DB9F5B /* PlaylistInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistInfoController.swift; sourceTree = "<group>"; };
 		473E8BD41CA4DA7300DB9F5B /* PlaylistTracklistController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistTracklistController.swift; sourceTree = "<group>"; };
 		473E8BD61CA549BE00DB9F5B /* PlaylistBaseNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistBaseNode.swift; sourceTree = "<group>"; };
@@ -1315,6 +1320,23 @@
 			name = Popups;
 			sourceTree = "<group>";
 		};
+		473C38BB1CFCB4130053A12C /* PersistentPlaylist */ = {
+			isa = PBXGroup;
+			children = (
+				47EBDF861C1BD8A80075CF0B /* Playlist.swift */,
+				47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */,
+			);
+			name = PersistentPlaylist;
+			sourceTree = "<group>";
+		};
+		473C38BC1CFCB41C0053A12C /* SharedPlaylist */ = {
+			isa = PBXGroup;
+			children = (
+				473C38BD1CFCB4290053A12C /* SynncSharedPlaylist.swift */,
+			);
+			name = SharedPlaylist;
+			sourceTree = "<group>";
+		};
 		473E8BCD1CA4D91400DB9F5B /* SubControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1828,8 +1850,9 @@
 		47C8F97A1C1CA25100333492 /* Playlist */ = {
 			isa = PBXGroup;
 			children = (
-				47EBDF861C1BD8A80075CF0B /* Playlist.swift */,
-				47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */,
+				473C38BF1CFCCE9E0053A12C /* SynncPlaylistProtocol.swift */,
+				473C38BC1CFCB41C0053A12C /* SharedPlaylist */,
+				473C38BB1CFCB4130053A12C /* PersistentPlaylist */,
 			);
 			name = Playlist;
 			sourceTree = "<group>";
@@ -2472,6 +2495,7 @@
 				4714D2481C8909DB00F6F5AD /* NHNetworkClock.m in Sources */,
 				477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */,
 				47C8F98C1C1F59E900333492 /* TrackSearchNode.swift in Sources */,
+				473C38C01CFCCE9E0053A12C /* SynncPlaylistProtocol.swift in Sources */,
 				475771261CB98A2A004FBB11 /* FacebookActivity.swift in Sources */,
 				47C8F9811C1CD03900333492 /* MyPlaylistsNode.swift in Sources */,
 				47D763801C3B06B4008E0334 /* GenrePickerController.swift in Sources */,
@@ -2538,6 +2562,7 @@
 				470D2B321CA329C300526778 /* RootHeaderNode.swift in Sources */,
 				470F8C091C48825000624F0F /* ChatTableManager.swift in Sources */,
 				472379351C9F033C00D79C55 /* ProfileController.swift in Sources */,
+				473C38BE1CFCB4290053A12C /* SynncSharedPlaylist.swift in Sources */,
 				476CC81C1CAC542C00CBA0E3 /* NowPlayingNode.swift in Sources */,
 				477705221C3DF4F6007089D0 /* ChatController.swift in Sources */,
 				47D7637B1C3A283B008E0334 /* WildPlayerItem.swift in Sources */,
@@ -3043,9 +3068,10 @@
 		47EBDF8F1C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				473C38BA1CFCB2AF0053A12C /* SynncDataModel 2.xcdatamodel */,
 				47EBDF901C1BDC0A0075CF0B /* SynncDataModel.xcdatamodel */,
 			);
-			currentVersion = 47EBDF901C1BDC0A0075CF0B /* SynncDataModel.xcdatamodel */;
+			currentVersion = 473C38BA1CFCB2AF0053A12C /* SynncDataModel 2.xcdatamodel */;
 			path = SynncDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

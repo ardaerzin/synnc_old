@@ -136,7 +136,7 @@ class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     }
     
     var screenNode : PlaylistTracksNode!
-    var playlist : SynncPlaylist? {
+    var playlist : SynncPersistentPlaylist? {
         get {
             if let parent = self.parentViewController as? PlaylistController, let pl = parent.playlist {
                 return pl

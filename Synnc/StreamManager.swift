@@ -125,7 +125,7 @@ extension StreamManager {
 
 extension StreamManager {
     
-    func createStreamWindow(playlist: SynncPlaylist) -> WCLWindow {
+    func createStreamWindow(playlist: SynncSharedPlaylist) -> WCLWindow {
         let stream = Stream(user: Synnc.sharedInstance.user)
         stream.playlist = playlist
         stream.lat = 0

@@ -16,9 +16,9 @@ import Async
 class DeletePlaylistPopup : WCLPopupViewController {
     
     var screenNode : DeletePlaylistNode!
-    var playlist : SynncPlaylist!
+    var playlist : SynncPersistentPlaylist!
     
-    init(playlist: SynncPlaylist, size: CGSize) {
+    init(playlist: SynncPersistentPlaylist, size: CGSize) {
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
         self.screenNode.configure(playlist)
@@ -95,7 +95,7 @@ class DeletePlaylistNode : ASDisplayNode, TrackedView {
     var yesButton : ButtonNode!
     var noButton : ButtonNode!
     
-    func configure(playlist: SynncPlaylist) {
+    func configure(playlist: SynncPersistentPlaylist) {
        
         var title : String
         if let name = playlist.name {

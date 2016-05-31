@@ -77,7 +77,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
         }
     }
     var coverImage : UIImage!
-    var playlist : SynncPlaylist? {
+    var playlist : SynncPersistentPlaylist? {
         get {
             if let parent = self.parentViewController as? PlaylistController, let pl = parent.playlist {
                 return pl
@@ -88,7 +88,7 @@ class PlaylistInfoController : ASViewController, PagerSubcontroller {
     }
     var screenNode : PlaylistInfoHolder!
     
-    init(playlist : SynncPlaylist){
+    init(playlist : SynncPersistentPlaylist){
         let n = PlaylistInfoHolder()
         super.init(node: n)
         self.screenNode = n

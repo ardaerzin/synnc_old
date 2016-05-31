@@ -15,9 +15,9 @@ import WCLNotificationManager
 
 class StreamInProgressPopup : WCLPopupViewController {
     var node : StreamInProgressPopupNode!
-    var playlist : SynncPlaylist!
+    var playlist : SynncPersistentPlaylist!
     
-    init(size: CGSize, playlist : SynncPlaylist? = nil) {
+    init(size: CGSize, playlist : SynncPersistentPlaylist? = nil) {
         super.init(nibName: nil, bundle: nil, size: size)
         self.animationOptions = WCLPopupAnimationOptions(fromLocation: (.Center, .Bottom), toLocation: (.Center, .Center), withShadow: true)
         self.view.layer.cornerRadius = 5
