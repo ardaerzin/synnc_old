@@ -30,9 +30,6 @@
 		470F8C091C48825000624F0F /* ChatTableManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470F8C081C48825000624F0F /* ChatTableManager.swift */; };
 		4712B63B1C11149800C49522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63A1C11149800C49522 /* Utilities.swift */; };
 		4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */; };
-		4714D2471C8909DB00F6F5AD /* NHNetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4714D2401C8909DB00F6F5AD /* NHNetAssociation.m */; };
-		4714D2481C8909DB00F6F5AD /* NHNetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 4714D2421C8909DB00F6F5AD /* NHNetworkClock.m */; };
-		4714D2491C8909DB00F6F5AD /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 4714D2461C8909DB00F6F5AD /* NSDate+NetworkClock.m */; };
 		4714D24C1C89178100F6F5AD /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = 4714D24B1C89178100F6F5AD /* ntp.hosts */; };
 		472379271C9D998200D79C55 /* LoginToggleButtonHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472379261C9D998200D79C55 /* LoginToggleButtonHolder.swift */; };
 		472379291C9D9AAB00D79C55 /* LoginVCHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472379281C9D9AAB00D79C55 /* LoginVCHolder.swift */; };
@@ -421,8 +418,8 @@
 		47EBDF701C1BBB810075CF0B /* MyPlaylistsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF6F1C1BBB810075CF0B /* MyPlaylistsController.swift */; };
 		47EBDF801C1BBBEB0075CF0B /* StreamsFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF7F1C1BBBEB0075CF0B /* StreamsFeedController.swift */; };
 		47EBDF881C1BD8A80075CF0B /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF851C1BD8A80075CF0B /* Genre.swift */; };
-		47EBDF891C1BD8A80075CF0B /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF861C1BD8A80075CF0B /* Playlist.swift */; };
-		47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */; };
+		47EBDF891C1BD8A80075CF0B /* SynncPersistentPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF861C1BD8A80075CF0B /* SynncPersistentPlaylist.swift */; };
+		47EBDF8C1C1BD9010075CF0B /* SynncPersistentPlaylist+Synnc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8B1C1BD9010075CF0B /* SynncPersistentPlaylist+Synnc.swift */; };
 		47EBDF911C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF8F1C1BDC0A0075CF0B /* SynncDataModel.xcdatamodeld */; };
 		47EBDF981C1BDD5A0075CF0B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */; };
 		47EBDF9A1C1BE1470075CF0B /* SynncArtist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EBDF991C1BE1470075CF0B /* SynncArtist.swift */; };
@@ -475,14 +472,6 @@
 		4712B62E1C0F594600C49522 /* Synnc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Synnc-Bridging-Header.h"; sourceTree = "<group>"; };
 		4712B63A1C11149800C49522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		4712B63F1C1321BB00C49522 /* WildUser+TwitterUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WildUser+TwitterUser.swift"; sourceTree = "<group>"; };
-		4714D23F1C8909DB00F6F5AD /* NHNetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetAssociation.h; sourceTree = "<group>"; };
-		4714D2401C8909DB00F6F5AD /* NHNetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NHNetAssociation.m; sourceTree = "<group>"; };
-		4714D2411C8909DB00F6F5AD /* NHNetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetworkClock.h; sourceTree = "<group>"; };
-		4714D2421C8909DB00F6F5AD /* NHNetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NHNetworkClock.m; sourceTree = "<group>"; };
-		4714D2431C8909DB00F6F5AD /* NHNetworkTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNetworkTime.h; sourceTree = "<group>"; };
-		4714D2441C8909DB00F6F5AD /* NHNTLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NHNTLog.h; sourceTree = "<group>"; };
-		4714D2451C8909DB00F6F5AD /* NSDate+NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NetworkClock.h"; sourceTree = "<group>"; };
-		4714D2461C8909DB00F6F5AD /* NSDate+NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NetworkClock.m"; sourceTree = "<group>"; };
 		4714D24B1C89178100F6F5AD /* ntp.hosts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ntp.hosts; sourceTree = "<group>"; };
 		472379261C9D998200D79C55 /* LoginToggleButtonHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginToggleButtonHolder.swift; sourceTree = "<group>"; };
 		472379281C9D9AAB00D79C55 /* LoginVCHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVCHolder.swift; sourceTree = "<group>"; };
@@ -879,8 +868,8 @@
 		47EBDF6F1C1BBB810075CF0B /* MyPlaylistsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPlaylistsController.swift; sourceTree = "<group>"; };
 		47EBDF7F1C1BBBEB0075CF0B /* StreamsFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamsFeedController.swift; sourceTree = "<group>"; };
 		47EBDF851C1BD8A80075CF0B /* Genre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
-		47EBDF861C1BD8A80075CF0B /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
-		47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Playlist+Synnc.swift"; sourceTree = "<group>"; };
+		47EBDF861C1BD8A80075CF0B /* SynncPersistentPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncPersistentPlaylist.swift; sourceTree = "<group>"; };
+		47EBDF8B1C1BD9010075CF0B /* SynncPersistentPlaylist+Synnc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SynncPersistentPlaylist+Synnc.swift"; sourceTree = "<group>"; };
 		47EBDF901C1BDC0A0075CF0B /* SynncDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SynncDataModel.xcdatamodel; sourceTree = "<group>"; };
 		47EBDF971C1BDD5A0075CF0B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		47EBDF991C1BE1470075CF0B /* SynncArtist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynncArtist.swift; sourceTree = "<group>"; };
@@ -967,21 +956,6 @@
 				4777051D1C3DC5EA007089D0 /* ListenerCellNode.swift */,
 			);
 			name = Nodes;
-			sourceTree = "<group>";
-		};
-		4714D24A1C8909F000F6F5AD /* NHTime */ = {
-			isa = PBXGroup;
-			children = (
-				4714D23F1C8909DB00F6F5AD /* NHNetAssociation.h */,
-				4714D2401C8909DB00F6F5AD /* NHNetAssociation.m */,
-				4714D2411C8909DB00F6F5AD /* NHNetworkClock.h */,
-				4714D2421C8909DB00F6F5AD /* NHNetworkClock.m */,
-				4714D2431C8909DB00F6F5AD /* NHNetworkTime.h */,
-				4714D2441C8909DB00F6F5AD /* NHNTLog.h */,
-				4714D2451C8909DB00F6F5AD /* NSDate+NetworkClock.h */,
-				4714D2461C8909DB00F6F5AD /* NSDate+NetworkClock.m */,
-			);
-			name = NHTime;
 			sourceTree = "<group>";
 		};
 		472379251C9D91C000D79C55 /* Nodes */ = {
@@ -1323,8 +1297,8 @@
 		473C38BB1CFCB4130053A12C /* PersistentPlaylist */ = {
 			isa = PBXGroup;
 			children = (
-				47EBDF861C1BD8A80075CF0B /* Playlist.swift */,
-				47EBDF8B1C1BD9010075CF0B /* Playlist+Synnc.swift */,
+				47EBDF861C1BD8A80075CF0B /* SynncPersistentPlaylist.swift */,
+				47EBDF8B1C1BD9010075CF0B /* SynncPersistentPlaylist+Synnc.swift */,
 			);
 			name = PersistentPlaylist;
 			sourceTree = "<group>";
@@ -1674,7 +1648,6 @@
 		47A4E67B1C0CAE6100354EA8 /* Synnc */ = {
 			isa = PBXGroup;
 			children = (
-				4714D24A1C8909F000F6F5AD /* NHTime */,
 				475771241CB989DC004FBB11 /* FacebookActivity */,
 				47EEACCC1CBBF842004E5229 /* Spotify */,
 				47A4E67C1C0CAE6100354EA8 /* Synnc.swift */,
@@ -2484,7 +2457,6 @@
 				47B808C91C8245CC00312C96 /* OnboardingVC.swift in Sources */,
 				475771191CB72CC2004FBB11 /* DeletePlaylistPopup.swift in Sources */,
 				477705261C3EB020007089D0 /* ChatManager.swift in Sources */,
-				4714D2471C8909DB00F6F5AD /* NHNetAssociation.m in Sources */,
 				4723792B1C9DEACA00D79C55 /* LoginSpinner.swift in Sources */,
 				47478F6B1CC0588F0020706A /* PlayerManager+Player.swift in Sources */,
 				4728F94A1C34494000B427EA /* WildUser+SpotifyUser.swift in Sources */,
@@ -2492,7 +2464,6 @@
 				476CC81E1CAF1BDE00CBA0E3 /* UserProfilePopup.swift in Sources */,
 				470F8C061C4880D200624F0F /* StreamListenersController.swift in Sources */,
 				4741E85D1C9CB33B007DE80E /* LoginVC.swift in Sources */,
-				4714D2481C8909DB00F6F5AD /* NHNetworkClock.m in Sources */,
 				477232BC1C5FF08000CAC71A /* PlaylistEmptyNode.swift in Sources */,
 				47C8F98C1C1F59E900333492 /* TrackSearchNode.swift in Sources */,
 				473C38C01CFCCE9E0053A12C /* SynncPlaylistProtocol.swift in Sources */,
@@ -2509,13 +2480,12 @@
 				470D2B341CA348E000526778 /* ProfileCard.swift in Sources */,
 				4757711D1CB93066004FBB11 /* (null) in Sources */,
 				4797B13F1CA0C90800AE2936 /* PagerHeaderTitleNode.swift in Sources */,
-				47EBDF8C1C1BD9010075CF0B /* Playlist+Synnc.swift in Sources */,
+				47EBDF8C1C1BD9010075CF0B /* SynncPersistentPlaylist+Synnc.swift in Sources */,
 				47C8F9921C20F37800333492 /* TrackSearchDataSource.swift in Sources */,
 				4797B1431CA0DFD500AE2936 /* PageControlNode.swift in Sources */,
 				470D2B3E1CA35D9300526778 /* FeedbackNode.swift in Sources */,
-				4714D2491C8909DB00F6F5AD /* NSDate+NetworkClock.m in Sources */,
 				475E22A41C99A79100F6D211 /* NotCompatiblePopup.swift in Sources */,
-				47EBDF891C1BD8A80075CF0B /* Playlist.swift in Sources */,
+				47EBDF891C1BD8A80075CF0B /* SynncPersistentPlaylist.swift in Sources */,
 				47DE5D011C6DD218006876E6 /* StreamInProgressPopup.swift in Sources */,
 				475771231CB96778004FBB11 /* (null) in Sources */,
 				4712B6401C1321BB00C49522 /* WildUser+TwitterUser.swift in Sources */,

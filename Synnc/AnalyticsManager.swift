@@ -100,7 +100,6 @@ class AnalyticsManager {
         
         // Answers
         
-        print("IS DEV?", isDev)
         if event.category == "login_handler" {
             Answers.logLoginWithMethod(event.action, success: event.label == "true" ? 1 : 0, customAttributes: ["env" : isDev ? "dev" : "prod"])
         } else if event.category == "StreamAction" {

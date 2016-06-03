@@ -185,7 +185,7 @@ class PlaylistController : PagerBaseController {
         }
     
         if sender != nil {
-            AnalyticsEvent.new(category : fromActionSheet ? "ui_action" : "PlaylistActionSheet", action: "button_tap", label: "trackSearch", value: nil)
+            AnalyticsEvent.new(category : fromActionSheet ? "PlaylistActionSheet" : "ui_action", action: "button_tap", label: "trackSearch", value: nil)
         }
     }
     

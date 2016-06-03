@@ -16,6 +16,7 @@ pod 'WCLLocationManager', :git => 'git@github.com:doguhanokumus/WCLLocationManag
 pod 'WCLSoundCloudKit', :git => 'git@github.com:doguhanokumus/WCLSoundCloudKit.git', :branch => 'master'
 pod 'WCLUserManager', :git => 'git@github.com:doguhanokumus/WCLUserManager.git', :branch => 'master'
 pod 'WCLMusicKit', :git => 'git@github.com:doguhanokumus/WCLMusicKit.git', :branch => 'master'
+pod 'NHNetworkTime', :git => 'git@github.com:huynguyencong/NHNetworkTime.git', :branch => 'master'
 
 pod 'pop'
 
@@ -29,7 +30,6 @@ pod 'Fabric'
 pod 'TwitterKit'
 pod 'TwitterCore'
 pod 'Crashlytics'
-
 pod 'DKImagePickerController'
 pod 'BFPaperCheckbox'
 pod 'Shimmer'

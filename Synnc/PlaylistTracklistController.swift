@@ -18,6 +18,9 @@ import Async
 import Dollar
 
 extension PlaylistTracklistController : TrackSearchControllerDelegate {
+    func trackSearcher(controller: TrackSearchController, didHide animated: Bool) {
+        self.searchController = nil
+    }
     func trackSearcher(controller: TrackSearchController, didSelect track: SynncTrack) {
 //        self.playlist!.addSongs([track])
 //        playlistUpdated()
@@ -55,40 +58,12 @@ extension PlaylistTracklistController : TrackSearchControllerDelegate {
 
 class PlaylistTracklistController : ASViewController, PagerSubcontroller {
     
+    var searchController : TrackSearchController!
     var editMode : Bool = false {
         didSet {
             self.screenNode.tracksTable.view.setEditing(editMode, animated: true)
         }
     }
-    func displayTrackSearch(sender : ASButtonNode!) {
-        
-        guard let plist = self.playlist else {
-            return
-        }
-        
-        if !canDisplayTrackSearch() {
-            
-            Async.main {
-                SynncNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
-            }
-            return
-        }
-        
-        let lc = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size, playlist: plist)
-        lc.becomeFirstResponder()
-        lc.delegate = self
-        WCLPopupManager.sharedInstance.newPopup(lc)
-        
-        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch", value: nil)
-    }
-    
-    func canDisplayTrackSearch() -> Bool {
-        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
-            return false
-        }
-        return true
-    }
-    
     var emptyState : Bool! {
         didSet {
             if emptyState != oldValue {
@@ -244,6 +219,40 @@ extension PlaylistTracklistController : ASTableViewDataSource {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         self.screenNode.scrollPosition = scrollView.contentOffset.y        
     }
+    
+    func displayTrackSearch(sender : ASButtonNode!) {
+        
+        guard let plist = self.playlist else {
+            return
+        }
+        
+        if let sc = self.searchController {
+            return
+        }
+        
+        if !canDisplayTrackSearch() {
+            
+            Async.main {
+                SynncNotification(body: ("You can't edit your active playlist.", "can't edit"), image: "notification-error").addToQueue()
+            }
+            return
+        }
+        
+        searchController = TrackSearchController(size: CGRectInset(UIScreen.mainScreen().bounds, 0, 0).size, playlist: plist)
+        searchController.becomeFirstResponder()
+        searchController.delegate = self
+        WCLPopupManager.sharedInstance.newPopup(searchController)
+        
+//        AnalyticsEvent.new(category : "ui_action", action: "button_tap", label: "trackSearch", value: nil)
+    }
+    
+    func canDisplayTrackSearch() -> Bool {
+        if let activeStream = StreamManager.sharedInstance.activeStream where activeStream.playlist == self.playlist {
+            return false
+        }
+        return true
+    }
+    
 }
 
 

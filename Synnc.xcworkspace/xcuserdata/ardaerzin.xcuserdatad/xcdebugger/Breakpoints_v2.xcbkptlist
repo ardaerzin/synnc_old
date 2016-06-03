@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/Stream.swift"
-            timestampString = "484952578.408603"
+            timestampString = "486391932.514458"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
             landmarkName = "fromJSON(_:callback:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "486002169.941079"
+            timestampString = "486395167.418765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "247"
@@ -106,7 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "486002169.941079"
+            timestampString = "486395167.418765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "246"
@@ -154,7 +154,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "486002169.941079"
+            timestampString = "486395167.418765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "234"
@@ -170,7 +170,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/PlaylistController.swift"
-            timestampString = "486002169.941079"
+            timestampString = "486395167.418765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "254"
@@ -570,11 +570,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/TrackSearchController.swift"
-            timestampString = "485194264.256673"
+            timestampString = "486397258.997025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "454"
-            endingLineNumber = "454"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "searchSoundcloud(_:timeStamp:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -586,11 +586,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/TrackSearchController.swift"
-            timestampString = "485194264.256673"
+            timestampString = "486397258.997025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "464"
-            endingLineNumber = "464"
+            startingLineNumber = "470"
+            endingLineNumber = "470"
             landmarkName = "searchSoundcloud(_:timeStamp:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -602,11 +602,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/TrackSearchController.swift"
-            timestampString = "485194264.256673"
+            timestampString = "486397258.997025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "451"
-            endingLineNumber = "451"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
             landmarkName = "searchSoundcloud(_:timeStamp:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -618,11 +618,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Synnc/TrackSearchController.swift"
-            timestampString = "485194264.256673"
+            timestampString = "486397258.997025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "450"
-            endingLineNumber = "450"
+            startingLineNumber = "456"
+            endingLineNumber = "456"
             landmarkName = "searchSoundcloud(_:timeStamp:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1073,6 +1073,22 @@
                   offsetFromSymbolStart = "28">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Synnc/Stream.swift"
+            timestampString = "486391932.514458"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "285"
+            endingLineNumber = "285"
+            landmarkName = "fromJSON(_:callback:)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

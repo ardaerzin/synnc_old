@@ -75,7 +75,6 @@ class SourceSelectionNode : ASDisplayNode {
         
         for source in sources {
             let src = SynncExternalSource(rawValue: source.capitalizedString)
-            print(source.capitalizedString, src)
             if let x = src {
                 let button = SourceButton(source: x)
                 

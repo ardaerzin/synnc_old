@@ -26,10 +26,11 @@ import SwiftyJSON
 import WCLUIKit
 import SafariServices
 import Async
+import NHNetworkTime
 
 #if DEBUG
-//let socketURLString = "https://digital-reform.codio.io:9500"
-let socketURLString = "https://synnc.herokuapp.com"
+let socketURLString = "https://digital-reform.codio.io:9500"
+//let socketURLString = "https://synnc.herokuapp.com"
 let analyticsId = "UA-65806539-3"
 let isDev = true
 #else
@@ -152,6 +153,7 @@ class Synnc : UIResponder, UIApplicationDelegate {
         lagFreeField.resignFirstResponder()
         lagFreeField.removeFromSuperview()
 
+        Crashlytics.sharedInstance().setBoolValue(isDev, forKey: "development")
         
         return true
     }
@@ -206,17 +208,17 @@ class Synnc : UIResponder, UIApplicationDelegate {
     var ntpShit : NSDate!
     func performNTPCheck(){
         ntpShit = NSDate()
-        NHNetworkClock.sharedNetworkClock().syncWithComplete(nil)
+        NHNetworkClock.sharedNetworkClock().synchronize()
     }
     
     func syncCompleteNotification(notification : NSNotification){
         
-        let x = NSDate().timeIntervalSince1970 - ntpShit.timeIntervalSince1970
-        if x >= 5 {
-            Async.main {
-                self.performNTPCheck()
-            }
-        }
+//        let x = NSDate().timeIntervalSince1970 - ntpShit.timeIntervalSince1970
+//        if x >= 5 {
+//            Async.main {
+//                self.performNTPCheck()
+//            }
+//        }
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
@@ -347,6 +349,11 @@ extension Synnc {
             }
             StreamManager.sharedInstance.updateUserFeed()
             SynncPersistentPlaylist.socketSync(self.socket, inStack: WildDataManager.sharedInstance().coreDataStack, withMessage: "ofUser", dictValues: ["user_id" : self.user._id])
+            
+            if isDev {
+                Crashlytics.sharedInstance().setUserName(self.user.username)
+            }
+            Crashlytics.sharedInstance().setUserIdentifier(self.user._id)
         }
     }
 }

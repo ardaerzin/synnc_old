@@ -14,19 +14,17 @@ import WCLDataManager
 
 func ==(left: SynncSharedPlaylist?, right: SynncPersistentPlaylist?) -> Bool {
     guard let l = left, r = right else {
-        return false
+        let aNotNil = left != nil
+        let bNotNil = right != nil
+        
+        if !aNotNil && !bNotNil {
+            return true
+        }
+        
+        return true
     }
     return l.id == r.id
 }
-func ==(left: SynncPersistentPlaylist?, right: SynncSharedPlaylist?) -> Bool {
-    guard let l = left, r = right else {
-        return false
-    }
-    return l.id == r.id
-}
-//func !=(left: CustomClass, right: CustomClass) -> Bool {
-//    return !(left == right)
-//}
 
 class SynncSharedPlaylist {
     var cover_id: String?

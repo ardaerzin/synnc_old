@@ -26,14 +26,12 @@ class SynncTrackSearchEntityBackgroundNode : ASDisplayNode {
         imageNode = ASNetworkImageNode()
         imageNode.backgroundColor = .yellowColor()
         imageNode.imageModificationBlock = { input in
-            print("blur image")
             if let blurredImage = input.applyBlurWithRadius(
                 30,
                 tintColor: UIColor(white: 0.5, alpha: 0.3),
                 saturationDeltaFactor: 1,
                 maskImage: nil,
                 didCancel:{ return false }) {
-                print("blurred image")
                 return blurredImage
             } else {
                 return input

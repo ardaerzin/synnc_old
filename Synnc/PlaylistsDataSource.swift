@@ -93,8 +93,6 @@ class PlaylistsDataSource : NSObject {
         }
 //        NSPredicate(format: "user == %@ AND id != %@", Synnc.sharedInstance.user._id, NSNull())
         frc = SynncPersistentPlaylist.finder(inContext: WildDataManager.sharedInstance().coreDataStack.getMainContext()).filter(NSCompoundPredicate(type: type, subpredicates: predicates)).sort(keys: ["last_update"], ascending: [false]).createFRC(delegate: self)
-        
-        print(frc.controller.fetchedObjects)
         self.playableItems_all = self.playableItems.map({return $0})
     }
     

@@ -167,10 +167,6 @@ extension Stream {
             userInd = ind
             prop.removeAtIndex(ind)
         }
-        if let plistInd = prop.indexOf("playlist") {
-            playlistInd = plistInd
-            prop.removeAtIndex(plistInd)
-        }
         if let dInd = prop.indexOf("delegate") {
             prop.removeAtIndex(dInd)
         }
@@ -184,10 +180,9 @@ extension Stream {
         }
         
         var dict = super.toJSON(prop)
-        
-        if self.playlist != nil, let _ = playlistInd {
+        if self.playlist != nil {
             //dodo
-            dict["playlist"] = self.playlist.toJSON()
+            dict["playlist"] = self.playlist!.id
             
 //            dict["playlist"] = self.playlist.id
             //                self.playlist.toJSON(nil, populate: true)
@@ -284,7 +279,6 @@ extension Stream {
                     self.users = usersArr
                     
                 }
-                
                 if self.playlist == nil && JSON(plistInfo).null == nil {
 //                    let plist = SynncSharedPlaylist()
                     
@@ -299,7 +293,7 @@ extension Stream {
 //                    }
                 } else if JSON(plistInfo).dictionary != nil {
                     
-                    self.playlist.fromJSON(JSON(plistInfo))
+                    self.playlist!.fromJSON(JSON(plistInfo))
                     
 //                    if self.playlist.v != JSON(plistInfo)["__v"].intValue {
 //                        self.playlist.parseFromJSON(Synnc.sharedInstance.moc, json: JSON(plistInfo))

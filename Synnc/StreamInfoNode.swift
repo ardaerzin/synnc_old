@@ -29,8 +29,6 @@ class StreamInfoHolder : ASDisplayNode, TrackedView {
     }
     
     override func layoutSpecThatFits(constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        //        if let x = self.supernode as? PagerBaseControllerNode
-        //        print("SUPER NODE", self.supernode)
         return ASStaticLayoutSpec(children: [infoNode, headerSpacer])
     }
     

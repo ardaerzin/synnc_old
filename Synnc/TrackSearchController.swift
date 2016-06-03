@@ -32,6 +32,8 @@ protocol TrackSearchControllerDelegate {
     func trackSearcher(controller : TrackSearchController, didSelect track : SynncTrack)
     func trackSearcher(controller : TrackSearchController, didDeselect track : SynncTrack)
     func trackSearcher(controller : TrackSearchController, updatedTracklist newList : [SynncTrack])
+    func trackSearcher(controller : TrackSearchController, didHide animated: Bool)
+    
 }
 
 class TrackSearchController : WCLPopupViewController {
@@ -126,7 +128,10 @@ class TrackSearchController : WCLPopupViewController {
     }
     override func didHide() {
         super.didHide()
-        AnalyticsManager.sharedInstance.newScreen(oldScreen)
+        if let os = oldScreen {
+            AnalyticsManager.sharedInstance.newScreen(os)
+        }
+        self.delegate?.trackSearcher(self, didHide: true)
     }
     func toggleSourceSelector(sender : ButtonNode){
         self.screenNode.sourceSelectionNode.toggle(self.selectedSource)
@@ -652,10 +657,6 @@ extension TrackSearchController {
         do {
             let req = uri != nil ? try SPTRequest.createRequestForURL(uri, withAccessToken: SPTAuth.defaultInstance().session.accessToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: false) : try SPTArtist.createRequestForAlbumsByArtist(artist.uri, ofType: albumType!, withAccessToken: SPTAuth.defaultInstance().session.accessToken, market: sptUser.territory)
             
-            
-//            SPTAlbumType.
-//            SPTArtist.createRequestForAlbumsByArtist(<#T##artist: NSURL!##NSURL!#>, ofType: <#T##SPTAlbumType#>, withAccessToken: <#T##String!#>, market: <#T##String!#>)
-            
             NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (data, res, err) in
                 do {
                     let x = try SPTListPage(fromData: data, withResponse: res, expectingPartialChildren: false, rootObjectKey: nil)
@@ -666,15 +667,12 @@ extension TrackSearchController {
                         return
                     }
                     
-                    print("ALBUMS", x)
-                    
                     if let albums = x.items as? [SPTAlbum] {
                         
                         self.addSpotifyAlbums(albums, timeStamp: timeStamp)
                         if self.selectedArtist != nil && x.hasNextPage {
                             self.spotifyArtistSearch(artist, uri : x.nextPageURL, timeStamp: timeStamp)
                         } else if self.selectedArtist != nil {
-//                            let nextType 
                             var ind = self.sptAlbumTypes.indexOf(albumType!)!
                             if ind == self.sptAlbumTypes.count - 1 {
                                 
